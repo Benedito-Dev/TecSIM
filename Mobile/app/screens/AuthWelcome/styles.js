@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-around", // centraliza verticalmente
+    justifyContent: "space-center", // centraliza verticalmente
     alignItems: "center",     // centraliza horizontalmente
     backgroundColor: "#fff",  // fundo branco
   },
@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     width: 200,   // largura da imagem
     height: 200,  // altura da imagem
     resizeMode: "contain", // evita distorção da imagem
+    marginTop: 80,
   },
   containerDown: {
     position: "absolute",       // Posiciona em relação à tela
