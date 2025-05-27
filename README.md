@@ -28,8 +28,8 @@
 
 ## 🛠️ Tecnologias sugeridas
 
-- **Frontend:** Flutter / React Native  
-- **Backend:** Firebase / Node.js (opcional)  
+- **Frontend:** React Native  
+- **Backend:** Node.js  
 - **APIs médicas:** OpenFDA, WHO Drug Dictionary (futuramente)  
 - **Banco de dados:** Firestore ou SQLite  
 
