@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     zIndex: 20,
   },
   topImage: {
-    height: height * 0.50, // Ocupa 45% da tela
+    height: height * 0.45, // Ocupa 45% da tela
     width: '130%',
     marginLeft: -120, // Para estender a imagem além da tela
     zIndex: 1,
@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 80,
     borderRadius: 20,
-    marginTop: 30,
+    marginTop: 40,
   },
   buttonSecondary: {
     backgroundColor: '#1c1c3c',

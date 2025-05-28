@@ -6,12 +6,6 @@ import { styles } from './styles';
 export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* Imagem de fundo superior */}
-      {/* <ImageBackground
-        source={require('../../../assets/images/AuthWelcome/Image-Background.png')}
-        style={styles.topImage}
-        resizeMode="cover"
-      /> */}
       <View style={styles.Imagecontainer}>
         <ImageBackground
           source={require('../../../assets/images/AuthWelcome/Image-Background.png')}
@@ -33,7 +27,7 @@ export default function WelcomeScreen({ navigation }) {
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonSecondary} onPress={() => navigation.navigate('Signup')}>
+        <TouchableOpacity style={styles.buttonSecondary} onPress={() => navigation.navigate('Register')}>
           <Text style={styles.buttonText}>Criar conta</Text>
         </TouchableOpacity>
       </View>
