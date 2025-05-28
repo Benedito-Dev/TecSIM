@@ -11,28 +11,33 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: height * 0.45, // Ocupa 45% da tela
+    height: height * 0.35, // Ocupa 45% da tela
     backgroundColor: '#5f65d9',
   },
   logo: {
-    width: 160,
-    height: 160,
+    width: 140,
+    height: 140,
+  },
+  text: {
+    color: "black"
   },
   title: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: "30",
+    fontSize: 25,
     marginTop: 20,
   },
   subtitle: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: "16",
+    fontSize: 14,
     marginTop: 10,
   },
   content: {
     flex: 1,
+    display: "flex",
     alignItems: 'center',
+    flexDirection: "column",
     paddingTop: 20,
   },
   label: {
@@ -57,25 +62,36 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
+    flexDirection: "row",
     width: "100%",
+    marginTop: 20
   },
-  checkInput: {
-    height: 24,
-    width: 24,
-    borderWidth: 2,
-    borderColor: '#4942ce',
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
+  Remenber: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  EsqueciSenha: {
+    color: "#0097b2",
+    fontWeight: "bold"
   },
   button: {
-    backgroundColor: '#5e17eb',
+    backgroundColor: '#0097b2',
     width: "85%",
     paddingVertical: 12,
     paddingHorizontal: 80,
     borderRadius: 12,
     marginTop: 40,
+  },
+  subButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    flexDirection: "row",
+    marginTop: 20,
+    width: "80%"
   },
   buttonText: {
     color: '#fff',
