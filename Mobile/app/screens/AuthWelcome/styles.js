@@ -1,32 +1,71 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+const { height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-center", // centraliza verticalmente
-    alignItems: "center",     // centraliza horizontalmente
-    backgroundColor: "#fff",  // fundo branco
+    backgroundColor: '#fff',
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
+  Imagecontainer: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: '#686fea',
+    opacity: 1,
+    zIndex: 20,
+  },
+  topImage: {
+    height: height * 0.45, // Ocupa 45% da tela
+    width: '130%',
+    marginLeft: -120, // Para estender a imagem além da tela
+    zIndex: 1,
+    opacity: 0.5, // Opacidade da imagem de fundo
+  },
+  content: {
+    flex: 1,
+    display: "flex",
+    alignItems: 'center',
+    paddingTop: 20,
   },
   logo: {
-    width: 200,   // largura da imagem
-    height: 200,  // altura da imagem
-    resizeMode: "contain", // evita distorção da imagem
-    marginTop: 80,
+    width: 160,
+    height: 160,
+    marginTop: -100, // Para sobrepor a imagem de fundo
+    marginBottom: 10,
+    zIndex: 100,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 20, // Para deixar a imagem circular/
   },
-  containerDown: {
-    position: "absolute",       // Posiciona em relação à tela
-    bottom: 0,                  // Gruda na base da tela
-    width: "100%",              // Ocupa toda a largura
-    height: "50%",              // Até 50% da tela
-    backgroundColor: "#4942ce",
-    borderTopLeftRadius: 30,    // Arredonda canto superior esquerdo
-    borderTopRightRadius: 30,   // Arredonda canto superior direito
-    padding: 20,                // Espaçamento interno (opcional)
-    alignItems: "center",       // Centraliza conteúdo horizontalmente
-    justifyContent: "center",   // Centraliza conteúdo verticalmente
-}
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+  },
+  subtitleBold: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#686fea',
+    paddingVertical: 12,
+    paddingHorizontal: 80,
+    borderRadius: 20,
+    marginTop: 40,
+  },
+  buttonSecondary: {
+    backgroundColor: '#686fea',
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 20,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 18,
+  },
 });
