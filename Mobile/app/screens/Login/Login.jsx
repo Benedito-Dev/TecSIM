@@ -85,7 +85,7 @@ export default function Login({ navigation }) {
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Register')}>
+        <TouchableOpacity style={styles.subButton} onPress={() => navigation.replace('Register')}>
           <Text style={styles.text}>Não Tem uma Conta ?</Text>
           <Text style={styles.EsqueciSenha}>Crie sua Conta</Text>
         </TouchableOpacity>

@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    backgroundColor: '#5f65d9',
+    backgroundColor: '#00acd2',
     opacity: 1,
     zIndex: 20,
   },
@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    display: "flex",
     alignItems: 'center',
     paddingTop: 20,
   },
@@ -48,14 +49,14 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#1c1c3c',
+    backgroundColor: '#0097b2',
     paddingVertical: 12,
     paddingHorizontal: 80,
     borderRadius: 20,
     marginTop: 40,
   },
   buttonSecondary: {
-    backgroundColor: '#1c1c3c',
+    backgroundColor: '#0097b2',
     paddingVertical: 12,
     paddingHorizontal: 40,
     borderRadius: 20,

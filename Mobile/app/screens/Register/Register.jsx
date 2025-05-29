@@ -25,7 +25,7 @@ export default function Login({ navigation }) {
         <Text style={styles.label}>Nome Completo</Text>
         <TextInput
             style={styles.input}
-            placeholder="Antonio Nascimento Barros"
+            placeholder="Ex: Antonio Nascimento Barros"
             placeholderTextColor={"gray"}
             secureTextEntry={!showPassword} // 👈 alterna visibilidade
           />
@@ -108,7 +108,7 @@ export default function Login({ navigation }) {
           <Text style={styles.buttonText}>Criar conta</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.subButton} onPress={() => navigation.navigate('Register')}>
+        <TouchableOpacity style={styles.subButton} onPress={() => navigation.replace('Login')}>
           <Text style={styles.text}>Já tem uma conta ?</Text>
           <Text style={styles.EsqueciSenha}>Faça o login</Text>
         </TouchableOpacity>
