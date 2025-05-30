@@ -107,7 +107,7 @@ export default function Login({ navigation }) {
             </Pressable>
             <Text style={{ marginLeft: 8 }}>Lembrar-me</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity onPress={() => navigation.navigate('EmailRecovery')}>
             <Text style={styles.EsqueciSenha}>Esqueci Minha Senha</Text>
           </TouchableOpacity>
         </View>

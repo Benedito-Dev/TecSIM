@@ -7,6 +7,7 @@ import WelcomeScreen from "./screens/AuthWelcome/AuthWelcome";
 import Login from "./screens/Login/Login";
 import Register from "./screens/Register/Register";
 import Dashboard from "./screens/Dashboard/Dashboard";
+import EmailRecovery from './screens/EmailRecovery/EmailRecovery'
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ export default function App() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Dashboard" component={Dashboard} />
+      <Stack.Screen name="EmailRecovery" component={EmailRecovery} />
     </Stack.Navigator>
   );
 }
