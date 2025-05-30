@@ -1,13 +1,38 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, Pressable } from 'react-native';
+import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
+import { login } from '../../src/services/authService'
 
 import { styles } from './styles';
 
 export default function Login({ navigation }) {
   const [checked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // 👈 controle da visibilidade da senha
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState('')
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Chama a função de login do authService
+      await login(email, password);
+      
+      // Redireciona para a tela principal após login bem-sucedido
+      navigation.replace('Dashboard');
+    } catch (error) {
+      // Exibe mensagem de erro adequada
+      Alert.alert('Erro', error.message || 'Falha no login. Verifique suas credenciais.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -30,6 +55,10 @@ export default function Login({ navigation }) {
             style={{ flex: 1 }}
             placeholder="Digite seu email"
             placeholderTextColor={"gray"}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
           <Icon
             name={'mail'}
@@ -46,6 +75,8 @@ export default function Login({ navigation }) {
             placeholder="Digite sua senha"
             placeholderTextColor={"gray"}
             secureTextEntry={!showPassword} // 👈 alterna visibilidade
+            value={password}
+            onChangeText={setPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Icon
@@ -81,9 +112,13 @@ export default function Login({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Dashboard')}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity style={styles.subButton} onPress={() => navigation.replace('Register')}>
           <Text style={styles.text}>Não Tem uma Conta ?</Text>
