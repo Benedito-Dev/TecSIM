@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const authRoutes = require('./routes/authRoutes')
 const dbInit = require('./db/dbinit');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig'); // <- import Swagger config
@@ -27,6 +28,7 @@ class Server {
 
   routes() {
     this.app.use('/usuarios', usuarioRoutes);
+    this.app.use('/auth', authRoutes);
 
     this.app.get('/', (req, res) => {
       res.send('API de Usuarios está funcionando!');
