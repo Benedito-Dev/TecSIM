@@ -26,8 +26,8 @@ class UsuarioService {
     return usuarioAtualizado;  // Retorna um objeto usuario
   }
 
-  static async updatePassword(id, novaSenha) {
-    const usuarioSenhaAtualizado = await repository.updatePassword(id, novaSenha);
+  static async updatePassword(id, senhaAtual, novaSenha) {
+    const usuarioSenhaAtualizado = await repository.updatePassword(id, senhaAtual, novaSenha);
     return usuarioSenhaAtualizado;  // Retorna um objeto Usuario
   }
 
