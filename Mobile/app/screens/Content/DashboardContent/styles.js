@@ -34,7 +34,9 @@ export const styles = StyleSheet.create({
     fontSize: 20
   },
   text: {
-    color: "black"
+    color: "black",
+    fontWeight: "bold",
+    fontSize: 16
   },
   content: {
     flex: 1,
@@ -78,5 +80,30 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20
   },
-  consultas: {}
+  consultas: {
+    display: "flex",
+    margin: 10,
+    width: "80%",
+    gap: 15
+  },
+  consulta: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 10,
+    borderColor: "gray",
+    borderWidth: 2
+  },
+  consultaTitle: {
+    color: "black",
+    fontWeight: "bold",
+    fontSize: 16
+  },
+  subTitle: {
+    color: "gray",
+    fontWeight: "bold"
+  }
 });
