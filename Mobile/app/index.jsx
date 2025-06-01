@@ -3,6 +3,8 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+import { AuthProvider } from "./src/context/AuthContext";
+
 import WelcomeScreen from "./screens/AuthWelcome/AuthWelcome";
 import Login from "./screens/Login/Login";
 import Register from "./screens/Register/Register";
@@ -17,7 +19,9 @@ export default function App() {
       <Stack.Screen name="AuthWelcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="Dashboard" component={Dashboard} />
+      <AuthProvider>
+        <Stack.Screen name="Dashboard" component={Dashboard} />
+      </AuthProvider>
       <Stack.Screen name="EmailRecovery" component={EmailRecovery} />
     </Stack.Navigator>
   );
