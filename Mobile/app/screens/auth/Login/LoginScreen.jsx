@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
-import { login } from '../../src/services/authService'
+import { login } from '../../../services/authService'
 
 import { styles } from './styles';
 
-export default function Login({ navigation }) {
+export default function LoginScreen({ navigation }) {
   const [checked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // 👈 controle da visibilidade da senha
   const [email, setEmail] = useState('')
@@ -25,7 +25,7 @@ export default function Login({ navigation }) {
       await login(email, password);
       
       // Redireciona para a tela principal após login bem-sucedido
-      navigation.replace('Dashboard');
+      navigation.replace('App');
     } catch (error) {
       // Exibe mensagem de erro adequada
       Alert.alert('Erro', error.message || 'Falha no login. Verifique suas credenciais.');
@@ -41,7 +41,7 @@ export default function Login({ navigation }) {
         style={styles.TopContainer}
       >
         <Image
-          source={require('../../../assets/images/logo_branca.png')}
+          source={require('../../../../assets/images/logo_branca.png')}
           style={styles.logo}
         />
         <Text style={styles.title}>Welcome Back</Text>

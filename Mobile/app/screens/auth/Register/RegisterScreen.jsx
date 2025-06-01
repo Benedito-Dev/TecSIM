@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { styles } from './styles';
 
-export default function Login({ navigation }) {
+export default function RegisterScreen({ navigation }) {
   const [checked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // 👈 controle da visibilidade da senha
 
@@ -16,7 +16,7 @@ export default function Login({ navigation }) {
         style={styles.TopContainer}
       >
         <Image
-          source={require('../../../assets/images/logo_branca.png')}
+          source={require('../../../../assets/images/logo_branca.png')}
           style={styles.logo}
         />
       </LinearGradient>

@@ -1,0 +1,36 @@
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Feather';
+
+//Importando telas
+import DashboardScreen from '../screens/home/Dashboard/Dashboard';
+import ProfileScreen from '../screens/home/Profile/Profile';
+// import HistoryScreen from '../screens/app/HistoryScreen';
+
+const Tab = createBottomTabNavigator();
+
+export default function MainTabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          
+          if (route.name === 'Dashboard') iconName = 'home';
+          if (route.name === 'History') iconName = 'clock';
+          if (route.name === 'Profile') iconName = 'user';
+          
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#00c4cd',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+      {/* <Tab.Screen name="History" component={HistoryScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} /> */}
+    </Tab.Navigator>
+  );
+}
