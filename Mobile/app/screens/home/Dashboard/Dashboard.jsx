@@ -9,6 +9,7 @@ import { useAuth } from '../../../context/AuthContext';
 
 // Estilos
 import { styles } from './styles';
+import NotificationIcon from '../../../components/Notification';
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
@@ -38,7 +39,7 @@ export default function DashboardScreen() {
       >
         <View style={styles.headerContent}>
           <Text style={styles.usernameText}>Bem-vindo, {user.nome || 'Usuário'}</Text>
-          {/* <NotificationIcon count={user.notifications?.length || 0} /> */}
+          <NotificationIcon initialCount={10} />
         </View>
       </LinearGradient>
 
