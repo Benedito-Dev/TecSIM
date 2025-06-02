@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     flexDirection: "row",
-    width: "130%"
+    width: "110%"
   },
   logo: {
     width: 140,
