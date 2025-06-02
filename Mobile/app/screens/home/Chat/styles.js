@@ -49,6 +49,38 @@ export const styles = StyleSheet.create({
   botTime: {
     color: '#666',
   },
+  botName: {
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+    fontSize: 12,
+  },
+  statusIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 6,
+  },
+  statusText: {
+    color: '#fff',
+    fontSize: 12,
+  },
+  disabledButton: {
+    opacity: 0.6,
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    marginRight: 10,
+    maxHeight: 120,
+  },
   userTime: {
     color: 'rgba(255, 255, 255, 0.7)',
   },

@@ -1,37 +1,49 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Configuração do Gemini
-const genAI = new GoogleGenerativeAI('AIzaSyCVVUtnrSh_AU6oNvosFHTxorXiGBERwTc'); // Substitua pela sua chave do Gemini
+// Configuração do Gemini com a chave da API
+const genAI = new GoogleGenerativeAI('AIzaSyCVVUtnrSh_AU6oNvosFHTxorXiGBERwTc');
 
 export const getAIResponse = async (message, history = []) => {
   try {
-    // Inicializa o modelo Gemini Pro
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    
-    // Formata o histórico de conversa
-    const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: "Você é o TecSim, assistente virtual de saúde. Siga estas regras:\n" +
-                 "1. Nunca dê diagnósticos definitivos\n" +
-                 "2. Recomende sempre consultar um profissional\n" +
-                 "3. Seja claro e objetivo\n" +
-                 "4. Use markdown para formatação quando útil"
-        },
-        {
-          role: "model",
-          parts: "Entendido! Sou o TecSim, seu assistente de saúde. Como posso ajudar?"
-        },
-        ...history
-      ],
+    const model = genAI.getGenerativeModel({
+      model: "gemini-pro",
       generationConfig: {
-        maxOutputTokens: 1000,
+        maxOutputTokens: 2000,
         temperature: 0.7,
-      },
+        topP: 0.9,
+        topK: 40
+      }
     });
 
-    // Envia a mensagem e obtém a resposta
+    // Instrução do sistema
+    const systemInstruction = {
+      role: "user",
+      parts: [{ text: "Você é o TecSim, assistente virtual de saúde. Regras:\n1. Nunca dê diagnósticos\n2. Recomende profissionais\n3. Seja claro e objetivo" }]
+    };
+
+    // Formatação do histórico, garantindo alternância correta de papéis
+    const formattedHistory = [
+      systemInstruction,
+      ...history.map(msg => ({
+        role: msg.isBot ? "model" : "user",
+        parts: [{ text: msg.text }]
+      }))
+    ];
+
+    // Verificação para evitar duas mensagens consecutivas com o mesmo papel
+    for (let i = 1; i < formattedHistory.length; i++) {
+      if (formattedHistory[i].role === formattedHistory[i - 1].role) {
+        throw new Error(`Mensagens consecutivas com o mesmo papel detectadas: '${formattedHistory[i].role}' nas posições ${i - 1} e ${i}.`);
+      }
+    }
+
+    const chat = model.startChat({
+      history: formattedHistory,
+      generationConfig: {
+        maxOutputTokens: 1000
+      }
+    });
+
     const result = await chat.sendMessage(message);
     const response = await result.response;
     const text = response.text();
@@ -40,11 +52,12 @@ export const getAIResponse = async (message, history = []) => {
       success: true,
       response: text
     };
+
   } catch (error) {
-    console.error("Erro no Gemini:", error);
+    console.error("Erro completo:", JSON.stringify(error, null, 2));
     return {
       success: false,
-      error: "Desculpe, estou com dificuldades. Tente novamente mais tarde."
+      error: error.message || "Erro ao processar sua solicitação"
     };
   }
 };
