@@ -13,8 +13,9 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../../context/AuthContext';
-import { getAIResponse } from '../../../services/aiService';
+import { getAIResponse, listAvailableModels } from '../../../services/aiService';
 import { styles } from './styles';
+
 
 export default function ChatScreen() {
   const { user } = useAuth();
@@ -23,7 +24,6 @@ export default function ChatScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollViewRef = useRef();
 
-  // Formata a hora atual
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString('pt-BR', { 
       hour: '2-digit', 
@@ -32,20 +32,13 @@ export default function ChatScreen() {
     });
   };
 
-  // Mensagens iniciais do bot
   useEffect(() => {
     const initialMessages = [
       { 
         id: 1, 
-        text: 'Olá! Sou o TecSim, seu assistente virtual de saúde. Como posso te ajudar hoje?', 
+        text: 'Olá! Sou o TecSim, seu assistente virtual de saúde.', 
         isBot: true,
         time: getCurrentTime() 
-      },
-      { 
-        id: 2, 
-        text: 'Você pode me perguntar sobre sintomas, medicamentos ou orientações gerais de saúde.', 
-        isBot: true,
-        time: getCurrentTime()
       }
     ];
     
@@ -55,7 +48,6 @@ export default function ChatScreen() {
   const handleSendMessage = async () => {
     if (newMessage.trim() === '' || isLoading) return;
 
-    // Adiciona mensagem do usuário
     const userMessage = {
       id: Date.now(),
       text: newMessage,
@@ -68,8 +60,15 @@ export default function ChatScreen() {
     setIsLoading(true);
 
     try {
-      // Obtém resposta do Gemini via seu aiService.js
-      const aiResponse = await getAIResponse(newMessage, messages);
+      // Filtra e formata o histórico corretamente
+      const apiHistory = messages
+        .filter(msg => msg.id !== 1) // Remove mensagem inicial fixa
+        .map(msg => ({
+          isBot: msg.isBot,
+          text: msg.text
+        }));
+
+      const aiResponse = await getAIResponse(newMessage, apiHistory);
 
       if (aiResponse.success) {
         const botMessage = {
@@ -81,24 +80,23 @@ export default function ChatScreen() {
 
         setMessages(prev => [...prev, botMessage]);
       } else {
-        throw new Error(aiResponse.error || 'Erro ao processar sua mensagem');
+        throw new Error(aiResponse.error);
       }
     } catch (error) {
-      Alert.alert(
-        'Erro',
-        error.message,
-        [{ text: 'OK' }]
-      );
+      console.error("Erro na chamada da API:", error);
       
-      // Mensagem de erro no chat
       const errorMessage = {
         id: Date.now() + 1,
-        text: '⚠️ ' + error.message,
+        text: '⚠️ ' + (error.message || 'Desculpe, ocorreu um erro. Tente novamente.'),
         isBot: true,
         time: getCurrentTime()
       };
       
       setMessages(prev => [...prev, errorMessage]);
+      
+      if (error.message.includes('API key')) {
+        Alert.alert('Erro', 'Problema com a chave de API. Verifique as configurações.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -106,7 +104,6 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Cabeçalho */}
       <LinearGradient
         colors={['#00c4cd', '#0c87c4']}
         style={styles.TopContainer}
@@ -122,19 +119,18 @@ export default function ChatScreen() {
         </View>
       </LinearGradient>
 
-      {/* Área de mensagens */}
       <ScrollView 
         style={styles.content}
         ref={scrollViewRef}
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-        keyboardDismissMode="interactive"
       >
         {messages.map((message) => (
           <View 
             key={message.id} 
             style={[
               styles.messageBubble, 
-              message.isBot ? styles.botMessage : styles.userMessage
+              message.isBot ? styles.botMessage : styles.userMessage,
+              message.text.startsWith('⚠️') && styles.errorMessage
             ]}
           >
             {message.isBot && (
@@ -142,7 +138,8 @@ export default function ChatScreen() {
             )}
             <Text style={[
               styles.messageText,
-              message.isBot ? styles.botMessageText : styles.userMessageText
+              message.isBot ? styles.botMessageText : styles.userMessageText,
+              message.text.startsWith('⚠️') && styles.errorText
             ]}>
               {message.text}
             </Text>
@@ -162,7 +159,6 @@ export default function ChatScreen() {
         )}
       </ScrollView>
 
-      {/* Input de mensagem */}
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.inputContainer}
