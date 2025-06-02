@@ -11,8 +11,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headerContent: {
+    display: "flex",
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   usernameText: {
@@ -39,6 +40,17 @@ export const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: '#00c4cd',
     borderBottomRightRadius: 5,
+  },
+  timeText: {
+    fontSize: 10,
+    marginTop: 4,
+    textAlign: 'right',
+  },
+  botTime: {
+    color: '#666',
+  },
+  userTime: {
+    color: 'rgba(255, 255, 255, 0.7)',
   },
   messageText: {
     fontSize: 16,

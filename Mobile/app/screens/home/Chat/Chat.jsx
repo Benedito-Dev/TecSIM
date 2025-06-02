@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollVi
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../../context/AuthContext';
-
 import { styles } from './styles';
 
 export default function ChatScreen() {
@@ -12,11 +11,26 @@ export default function ChatScreen() {
   const [newMessage, setNewMessage] = useState('');
   const scrollViewRef = useRef();
 
+  // Formata a hora atual
+  const getCurrentTime = () => {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   // Mensagens iniciais do bot
   useEffect(() => {
     setMessages([
-      { id: 1, text: 'Olá! Sou o HealthBot, como posso te ajudar hoje?', isBot: true },
-      { id: 2, text: 'Você pode me perguntar sobre sintomas, medicamentos ou agendamentos.', isBot: true }
+      { 
+        id: 1, 
+        text: 'Olá! Sou o HealthBot, como posso te ajudar hoje?', 
+        isBot: true,
+        time: getCurrentTime() 
+      },
+      { 
+        id: 2, 
+        text: 'Você pode me perguntar sobre sintomas, medicamentos ou agendamentos.', 
+        isBot: true,
+        time: getCurrentTime()
+      }
     ]);
   }, []);
 
@@ -27,7 +41,8 @@ export default function ChatScreen() {
     const userMessage = {
       id: messages.length + 1,
       text: newMessage,
-      isBot: false
+      isBot: false,
+      time: getCurrentTime()
     };
     
     setMessages([...messages, userMessage]);
@@ -38,7 +53,8 @@ export default function ChatScreen() {
       const botResponse = {
         id: messages.length + 2,
         text: `Recebi sua mensagem: "${newMessage}". Estou processando sua solicitação...`,
-        isBot: true
+        isBot: true,
+        time: getCurrentTime()
       };
       setMessages(prev => [...prev, botResponse]);
     }, 1000);
@@ -52,7 +68,7 @@ export default function ChatScreen() {
         style={styles.TopContainer}
       >
         <View style={styles.headerContent}>
-          <Text style={styles.usernameText}>Chat de Saúde</Text>
+          <Text style={styles.usernameText}>Chat - TecSim</Text>
         </View>
       </LinearGradient>
 
@@ -71,6 +87,12 @@ export default function ChatScreen() {
             ]}
           >
             <Text style={styles.messageText}>{message.text}</Text>
+            <Text style={[
+              styles.timeText,
+              message.isBot ? styles.botTime : styles.userTime
+            ]}>
+              {message.time}
+            </Text>
           </View>
         ))}
       </ScrollView>
