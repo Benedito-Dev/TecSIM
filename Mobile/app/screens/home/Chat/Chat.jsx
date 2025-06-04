@@ -171,8 +171,8 @@ export default function ChatScreen() {
           placeholder="Digite sua mensagem..."
           placeholderTextColor="#999"
           editable={!isLoading}
-          multiline
-          blurOnSubmit={false}
+          multiline={false}
+          blurOnSubmit={true}
           onSubmitEditing={handleSendMessage}
         />
         <TouchableOpacity 

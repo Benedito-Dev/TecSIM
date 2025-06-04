@@ -13,12 +13,12 @@ export const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#00acd2',
     opacity: 1,
-    zIndex: 20,
+    zIndex: 0,
   },
   topImage: {
     height: height * 0.45, // Ocupa 45% da tela
-    width: '130%',
-    marginLeft: -120, // Para estender a imagem além da tela
+    width: '100%',
+    marginLeft: -0, // Para estender a imagem além da tela
     zIndex: 1,
     opacity: 0.5, // Opacidade da imagem de fundo
   },

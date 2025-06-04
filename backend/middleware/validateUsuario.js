@@ -1,6 +1,6 @@
 class ValidateUsuario {
   static validateCreate(req, res, next) {
-    const { nome, email, senha, data_nascimento, peso_kg } = req.body;
+    const { nome, email, senha, data_nascimento, peso_kg, aceite_termos } = req.body;
 
     // Validação de campos obrigatórios
     if (!nome || !email || !senha) {
@@ -38,6 +38,11 @@ class ValidateUsuario {
       if (isNaN(pesoNumber) || pesoNumber <= 0 || pesoNumber > 500) {
         return res.status(400).json({ error: 'Peso deve ser um número entre 0.1 e 500 kg.' });
       }
+    }
+
+    // Validação de aceite de termos
+    if (typeof aceite_termos !== 'boolean' || !aceite_termos) {
+      return res.status(400).json({ error: 'É necessário aceitar os termos de uso.' });
     }
 
     next();

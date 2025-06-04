@@ -63,6 +63,7 @@ class UsuarioController {
         return res.status(400).json({ error: 'Email já cadastrado.' });
       }
       
+      res.status(400).json({ error: 'Dados inválidos.', message: error.message });
       res.status(500).json({ error: 'Erro ao criar usuário.' });
     }
   }

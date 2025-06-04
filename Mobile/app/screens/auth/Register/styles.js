@@ -6,6 +6,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  loading: {
+    marginVertical: 20,
+  },
   TopContainer: {
     display: 'flex',
     justifyContent: 'center',
@@ -38,7 +41,7 @@ export const styles = StyleSheet.create({
     display: "flex",
     alignItems: 'center',
     flexDirection: "column",
-    paddingTop: 20,
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,

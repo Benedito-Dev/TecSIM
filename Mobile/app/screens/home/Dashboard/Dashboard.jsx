@@ -26,6 +26,7 @@ export default function DashboardScreen() {
 
   // Se não houver usuário (não autenticado), não renderiza nada
   // O AuthContext já redireciona para Login automaticamente
+  console.log("Usuário logado:", user);
   if (!user) {
     return null;
   }
@@ -68,7 +69,7 @@ export default function DashboardScreen() {
         </View>
 
         {/* Seção de consultas */}
-        <View style={styles.consultas}>
+        {/* <View style={styles.consultas}>
           <Text style={styles.text}>Últimas consultas</Text>
           
           {user.appointments?.length > 0 ? (
@@ -89,7 +90,7 @@ export default function DashboardScreen() {
           ) : (
             <Text style={styles.noAppointments}>Nenhuma consulta recente</Text>
           )}
-        </View>
+        </View> */}
          <View style={styles.consultas}>
           <Text style={styles.text}>Ultimas consultas</Text>
           <TouchableOpacity style={styles.consulta}>

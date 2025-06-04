@@ -1,49 +1,85 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, Pressable } from 'react-native';
+import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { register } from '../../../services/authService';
 import { styles } from './styles';
 
 export default function RegisterScreen({ navigation }) {
   const [checked, setChecked] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // 👈 controle da visibilidade da senha
+  const [showPassword, setShowPassword] = useState(false);
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [peso_kg, setPesoKg] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Erro', 'As senhas não coincidem');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const mensagem = await register(nome, email, password, dataNascimento, peso_kg, checked);
+      Alert.alert('Sucesso', mensagem);
+      console.log('Usuário registrado com sucesso:', mensagem);
+      // navigation.replace('Login');
+    } catch (error) {
+      Alert.alert('Erro', error.message || 'Ocorreu um erro ao registrar. Tente novamente mais tarde.');
+      console.error('Erro ao registrar usuário:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#00c4cd', '#0c87c4']}
-        style={styles.TopContainer}
-      >
+      <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
         <Image
           source={require('../../../../assets/images/logo_branca.png')}
           style={styles.logo}
         />
       </LinearGradient>
 
-      <View style={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.label}>Nome Completo</Text>
-        <TextInput
-            style={styles.input}
+        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
+          <TextInput
+            style={{ flex: 1 }}
             placeholder="Ex: Antonio Nascimento Barros"
-            placeholderTextColor={"gray"}
-            secureTextEntry={!showPassword} // 👈 alterna visibilidade
+            value={nome}
+            onChangeText={setNome}
+            placeholderTextColor="gray"
           />
+          <TouchableOpacity>
+            <Icon name="user" size={20} color="gray" style={{ marginRight: 10 }} />
+          </TouchableOpacity>
+        </View>
+
         <Text style={styles.label}>Email</Text>
         <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
           <TextInput
             style={{ flex: 1 }}
-            placeholder="Digite sua senha"
-            placeholderTextColor={"gray"}
-            secureTextEntry={!showPassword} // 👈 alterna visibilidade
+            placeholder="Digite seu email"
+            value={email}
+            onChangeText={setEmail}
+            placeholderTextColor="gray"
           />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Icon
-              name={'mail'}
-              size={20}
-              color="gray"
-              style={{ marginRight: 10 }}
-            />
+          <TouchableOpacity>
+            <Icon name="mail" size={20} color="gray" style={{ marginRight: 10 }} />
           </TouchableOpacity>
         </View>
 
@@ -52,8 +88,10 @@ export default function RegisterScreen({ navigation }) {
           <TextInput
             style={{ flex: 1 }}
             placeholder="Digite sua senha"
-            placeholderTextColor={"gray"}
-            secureTextEntry={!showPassword} // 👈 alterna visibilidade
+            value={password}
+            onChangeText={setPassword}
+            placeholderTextColor="gray"
+            secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Icon
@@ -70,8 +108,10 @@ export default function RegisterScreen({ navigation }) {
           <TextInput
             style={{ flex: 1 }}
             placeholder="Digite sua senha"
-            placeholderTextColor={"gray"}
-            secureTextEntry={!showPassword} // 👈 alterna visibilidade
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholderTextColor="gray"
+            secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Icon
@@ -80,6 +120,36 @@ export default function RegisterScreen({ navigation }) {
               color="gray"
               style={{ marginRight: 10 }}
             />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>Data de Nascimento</Text>
+        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
+          <TextInput
+            style={{ flex: 1 }}
+            placeholder="Ex: 15/08/1990"
+            value={dataNascimento}
+            onChangeText={setDataNascimento}
+            placeholderTextColor="gray"
+            keyboardType="numeric"
+          />
+          <TouchableOpacity>
+            <Icon name="calendar" size={20} color="gray" style={{ marginRight: 10 }} />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>Peso (kg)</Text>
+        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
+          <TextInput
+            style={{ flex: 1 }}
+            placeholder="Ex: 70"
+            value={peso_kg}
+            onChangeText={setPesoKg}
+            placeholderTextColor="gray"
+            keyboardType="numeric"
+          />
+          <TouchableOpacity>
+            <Icon name="activity" size={20} color="gray" style={{ marginRight: 10 }} />
           </TouchableOpacity>
         </View>
 
@@ -100,19 +170,23 @@ export default function RegisterScreen({ navigation }) {
             >
               {checked && <Icon name="check" size={16} color="#fff" />}
             </Pressable>
-            <Text style={{ marginLeft: 8, fontWeight: "bold"}}>Aceitar termos</Text>
+            <Text style={{ marginLeft: 8, fontWeight: 'bold' }}>Aceitar termos</Text>
           </View>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.buttonText}>Criar conta</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Criar Conta</Text>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity style={styles.subButton} onPress={() => navigation.replace('Login')}>
           <Text style={styles.text}>Já tem uma conta ?</Text>
           <Text style={styles.EsqueciSenha}>Faça o login</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 }
