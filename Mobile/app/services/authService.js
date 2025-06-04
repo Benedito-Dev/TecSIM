@@ -41,17 +41,23 @@ export const register = async (nome, email, senha, data_nascimento, peso_kg, ace
     const response = await api.post('/usuarios', { nome, email, senha, data_nascimento, peso_kg, aceite_termos });
     mensagem = response.data.message
 
-    // Cadastro bem-sucedido, retorna mensagem
-    return mensagem;
-  } catch (error) {
-    // Exibe erro no console (opcional)
-    // Captura a mensagem específica vinda do backend
-    const mensagem = response?.data?.message || 'Erro ao registrar usuário. Verifique os dados e tente novamente.';
+    // Se o status 201 for retornado corretamente
+    if (response.status === 201) {
+      return { success: true, message: 'Usuário cadastrado com sucesso!' };
+    }
 
-    // Lança o erro para ser tratado no componente
-    throw new Error(mensagem);
-  }
-};
+    // Se retornar qualquer outro status
+    return { success: false, message: 'Erro desconhecido ao cadastrar usuário.' };
+  } catch (error) {
+    console.error('Erro ao registrar usuário:', error);
+
+    // Se o back-end retornar uma mensagem de erro
+    if (error.response && error.response.data?.error) {
+      return { success: false, message: error.response.data.error };
+    }
+
+    return { success: false, message: 'Erro ao registrar usuário. Verifique os dados e tente novamente.' };
+}};
 
 export const getCurrentUser = async () => {
   try {

@@ -29,17 +29,29 @@ export default function RegisterScreen({ navigation }) {
 
     setLoading(true);
     try {
-      const mensagem = await register(nome, email, password, dataNascimento, peso_kg, checked);
-      Alert.alert('Sucesso', mensagem);
-      console.log('Usuário registrado com sucesso:', mensagem);
-      // navigation.replace('Login');
+      const { success, message } = await register(
+        nome,
+        email,
+        password,
+        dataNascimento,
+        peso_kg,
+        checked
+      );
+
+      if (success) {
+        Alert.alert('Sucesso', message);
+        console.log('Usuário registrado com sucesso:', message);
+        // navigation.replace('Login');
+      } else {
+        Alert.alert('Erro', message);
+      }
     } catch (error) {
-      Alert.alert('Erro', error.message || 'Ocorreu um erro ao registrar. Tente novamente mais tarde.');
-      console.error('Erro ao registrar usuário:', error);
+      Alert.alert('Erro', 'Ocorreu um erro inesperado. Tente novamente mais tarde.');
+      console.error('Erro inesperado ao registrar usuário:', error);
     } finally {
       setLoading(false);
     }
-  };
+};
 
   return (
     <View style={styles.container}>
