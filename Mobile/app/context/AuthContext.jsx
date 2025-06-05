@@ -1,6 +1,5 @@
 // src/contexts/AuthContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import { getCurrentUser, isAuthenticated } from '../services/authService';
 
 const AuthContext = createContext();
@@ -8,38 +7,30 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigation = useNavigation();
 
   useEffect(() => {
     const checkAuthAndLoad = async () => {
       try {
         const authenticated = await isAuthenticated();
-        if (!authenticated) {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-          });
-          return;
+        if (authenticated) {
+          const userData = await getCurrentUser();
+          setUser(userData);
+        } else {
+          setUser(null);
         }
-
-        const userData = await getCurrentUser();
-        setUser(userData);
       } catch (error) {
-        console.error('Erro:', error);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
+        console.error('Erro ao verificar autenticação:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
     checkAuthAndLoad();
-  }, [navigation]);
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, setUser }}>
       {children}
     </AuthContext.Provider>
   );

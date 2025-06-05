@@ -41,7 +41,7 @@ export default function RegisterScreen({ navigation }) {
       if (success) {
         Alert.alert('Sucesso', message);
         console.log('Usuário registrado com sucesso:', message);
-        // navigation.replace('Login');
+        navigation.replace('Login');
       } else {
         Alert.alert('Erro', message);
       }
@@ -89,6 +89,9 @@ export default function RegisterScreen({ navigation }) {
             value={email}
             onChangeText={setEmail}
             placeholderTextColor="gray"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
           />
           <TouchableOpacity>
             <Icon name="mail" size={20} color="gray" style={{ marginRight: 10 }} />
@@ -143,7 +146,6 @@ export default function RegisterScreen({ navigation }) {
             value={dataNascimento}
             onChangeText={setDataNascimento}
             placeholderTextColor="gray"
-            keyboardType="numeric"
           />
           <TouchableOpacity>
             <Icon name="calendar" size={20} color="gray" style={{ marginRight: 10 }} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
@@ -13,22 +13,23 @@ import NotificationIcon from '../../../components/Notification';
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
-  const { user, loading } = useAuth(); // Usando diretamente o hook do contexto
+  const { user, loading } = useAuth();
 
-  // Se estiver carregando, mostra spinner
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !user) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }
+  }, [loading, user]);
+
+  if (loading || !user) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
-  }
-
-  // Se não houver usuário (não autenticado), não renderiza nada
-  // O AuthContext já redireciona para Login automaticamente
-  console.log("Usuário logado:", user);
-  if (!user) {
-    return null;
   }
 
   return (

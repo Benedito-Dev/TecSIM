@@ -37,11 +37,9 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   content: {
-    flex: 1,
     display: "flex",
     alignItems: 'center',
     flexDirection: "column",
-    marginBottom: 20,
   },
   label: {
     fontSize: 16,
