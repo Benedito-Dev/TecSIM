@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { login } from '../../../services/authService'
 
 import { styles } from './styles';
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
   const [checked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // 👈 controle da visibilidade da senha
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState('')
+
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
     if (!email || !password) {
