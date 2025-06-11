@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Pressable,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { login as loginService, getCurrentUser } from '../../../services/authService'; // 👈 login e get user
-import { useAuth } from '../../../context/AuthContext'; // 👈 importa o contexto
+import { login as loginService, getCurrentUser } from '../../../services/auth/authService';
+import { useAuth } from '../../../context/AuthContext';
 
+import InputField from '../../../components/InputField'; // 👈 usa o mesmo InputField da tela Register
 import { styles } from './styles';
 
 export default function LoginScreen() {
@@ -16,7 +25,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
-  const { setUser } = useAuth(); // 👈 pega o setUser do contexto
+  const { setUser } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -26,12 +35,12 @@ export default function LoginScreen() {
 
     setLoading(true);
     try {
-      await loginService(email, password); // 👈 login pelo serviço
+      await loginService(email, password);
 
-      const userData = await getCurrentUser(); // 👈 busca dados do usuário
-      setUser(userData); // 👈 define no contexto global
+      const userData = await getCurrentUser();
+      setUser(userData);
 
-      navigation.replace('App'); // 👈 navega para a tela principal
+      navigation.replace('App');
     } catch (error) {
       Alert.alert('Erro', error.message || 'Falha no login. Verifique suas credenciais.');
     } finally {
@@ -41,12 +50,9 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#00c4cd', '#0c87c4']}
-        style={styles.TopContainer}
-      >
+      <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
         <Image
-          source={require('../../../../assets/images/logo_branca.png')}
+          source={require('../../../assets/images/logo_branca.png')}
           style={styles.logo}
         />
         <Text style={styles.title}>Welcome Back</Text>
@@ -54,39 +60,25 @@ export default function LoginScreen() {
       </LinearGradient>
 
       <View style={styles.content}>
-        <Text style={styles.label}>Email</Text>
-        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
-          <TextInput
-            style={{ flex: 1 }}
-            placeholder="Digite seu email"
-            placeholderTextColor="gray"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <Icon name="mail" size={20} color="gray" style={{ marginRight: 10 }} />
-        </View>
+        <InputField
+          label="Email"
+          placeholder="Digite seu email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          iconName="mail"
+        />
 
-        <Text style={styles.label}>Senha</Text>
-        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
-          <TextInput
-            style={{ flex: 1 }}
-            placeholder="Digite sua senha"
-            placeholderTextColor="gray"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Icon
-              name={showPassword ? 'eye' : 'eye-off'}
-              size={20}
-              color="gray"
-              style={{ marginRight: 10 }}
-            />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Senha"
+          placeholder="Digite sua senha"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
+          iconName={showPassword ? 'eye' : 'eye-off'}
+          onIconPress={() => setShowPassword(!showPassword)}
+        />
 
         <View style={styles.authExtras}>
           <View style={styles.Remenber}>

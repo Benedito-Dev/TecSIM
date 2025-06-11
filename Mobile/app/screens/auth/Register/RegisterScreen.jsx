@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, Scrol
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { register } from '../../../services/authService';
+import InputField from '../../../components/InputField';
 import { styles } from './styles';
 
 export default function RegisterScreen({ navigation }) {
@@ -57,7 +58,7 @@ export default function RegisterScreen({ navigation }) {
     <View style={styles.container}>
       <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
         <Image
-          source={require('../../../../assets/images/logo_branca.png')}
+          source={require('../../../assets/images/logo_branca.png')}
           style={styles.logo}
         />
       </LinearGradient>
@@ -67,105 +68,59 @@ export default function RegisterScreen({ navigation }) {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.label}>Nome Completo</Text>
-        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
-          <TextInput
-            style={{ flex: 1 }}
-            placeholder="Ex: Antonio Nascimento Barros"
-            value={nome}
-            onChangeText={setNome}
-            placeholderTextColor="gray"
-          />
-          <TouchableOpacity>
-            <Icon name="user" size={20} color="gray" style={{ marginRight: 10 }} />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Nome Completo"
+          placeholder="Ex: Antonio Nascimento Barros"
+          value={nome}
+          onChangeText={setNome}
+          iconName="user"
+        />
 
-        <Text style={styles.label}>Email</Text>
-        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
-          <TextInput
-            style={{ flex: 1 }}
-            placeholder="Digite seu email"
-            value={email}
-            onChangeText={setEmail}
-            placeholderTextColor="gray"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-          <TouchableOpacity>
-            <Icon name="mail" size={20} color="gray" style={{ marginRight: 10 }} />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Email"
+          placeholder="Digite seu email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          iconName="mail"
+        />
 
-        <Text style={styles.label}>Senha</Text>
-        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
-          <TextInput
-            style={{ flex: 1 }}
-            placeholder="Digite sua senha"
-            value={password}
-            onChangeText={setPassword}
-            placeholderTextColor="gray"
-            secureTextEntry={!showPassword}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Icon
-              name={showPassword ? 'eye' : 'eye-off'}
-              size={20}
-              color="gray"
-              style={{ marginRight: 10 }}
-            />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Senha"
+          placeholder="Digite sua senha"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
+          iconName={showPassword ? 'eye' : 'eye-off'}
+          onIconPress={() => setShowPassword(!showPassword)}
+        />
 
-        <Text style={styles.label}>Confirmar senha</Text>
-        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
-          <TextInput
-            style={{ flex: 1 }}
-            placeholder="Digite sua senha"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            placeholderTextColor="gray"
-            secureTextEntry={!showPassword}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Icon
-              name={showPassword ? 'eye' : 'eye-off'}
-              size={20}
-              color="gray"
-              style={{ marginRight: 10 }}
-            />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Confirmar senha"
+          placeholder="Digite sua senha"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={!showPassword}
+          iconName={showPassword ? 'eye' : 'eye-off'}
+          onIconPress={() => setShowPassword(!showPassword)}
+        />
 
-        <Text style={styles.label}>Data de Nascimento</Text>
-        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
-          <TextInput
-            style={{ flex: 1 }}
-            placeholder="Ex: 15/08/1990"
-            value={dataNascimento}
-            onChangeText={setDataNascimento}
-            placeholderTextColor="gray"
-          />
-          <TouchableOpacity>
-            <Icon name="calendar" size={20} color="gray" style={{ marginRight: 10 }} />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Data de Nascimento"
+          placeholder="Ex: 15/08/1990"
+          value={dataNascimento}
+          onChangeText={setDataNascimento}
+          iconName="calendar"
+        />
 
-        <Text style={styles.label}>Peso (kg)</Text>
-        <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
-          <TextInput
-            style={{ flex: 1 }}
-            placeholder="Ex: 70"
-            value={peso_kg}
-            onChangeText={setPesoKg}
-            placeholderTextColor="gray"
-            keyboardType="numeric"
-          />
-          <TouchableOpacity>
-            <Icon name="activity" size={20} color="gray" style={{ marginRight: 10 }} />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Peso (kg)"
+          placeholder="Ex: 70"
+          value={peso_kg}
+          onChangeText={setPesoKg}
+          keyboardType="numeric"
+          iconName="activity"
+        />
 
         <View style={styles.authExtras}>
           <View style={styles.Remenber}>

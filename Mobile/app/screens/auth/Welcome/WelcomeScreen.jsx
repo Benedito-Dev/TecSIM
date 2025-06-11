@@ -8,7 +8,7 @@ export default function WelcomeScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.Imagecontainer}>
         <ImageBackground
-          source={require('../../../../assets/images/AuthWelcome/Image-Background.png')}
+          source={require('../../../assets/images/AuthWelcome/Image-Background.png')}
           style={styles.topImage}
           resizeMode="cover"
         />
@@ -17,7 +17,7 @@ export default function WelcomeScreen({ navigation }) {
       {/* Conteúdo principal */}
       <View style={styles.content}>
         <Image
-          source={require('../../../../assets/images/logo.png')}
+          source={require('../../../assets/images/logo.png')}
           style={styles.logo}
         />
         <Text style={styles.subtitle}>assistente de saúde</Text>
