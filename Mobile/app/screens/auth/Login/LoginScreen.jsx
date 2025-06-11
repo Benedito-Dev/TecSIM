@@ -3,18 +3,20 @@ import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, Activ
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { login } from '../../../services/authService'
+import { login as loginService, getCurrentUser } from '../../../services/authService'; // 👈 login e get user
+import { useAuth } from '../../../context/AuthContext'; // 👈 importa o contexto
 
 import { styles } from './styles';
 
 export default function LoginScreen() {
   const [checked, setChecked] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // 👈 controle da visibilidade da senha
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState('')
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+  const { setUser } = useAuth(); // 👈 pega o setUser do contexto
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -24,18 +26,18 @@ export default function LoginScreen() {
 
     setLoading(true);
     try {
-      // Chama a função de login do authService
-      await login(email, password);
-      
-      // Redireciona para a tela principal após login bem-sucedido
-      navigation.replace('App');
+      await loginService(email, password); // 👈 login pelo serviço
+
+      const userData = await getCurrentUser(); // 👈 busca dados do usuário
+      setUser(userData); // 👈 define no contexto global
+
+      navigation.replace('App'); // 👈 navega para a tela principal
     } catch (error) {
-      // Exibe mensagem de erro adequada
       Alert.alert('Erro', error.message || 'Falha no login. Verifique suas credenciais.');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -57,18 +59,13 @@ export default function LoginScreen() {
           <TextInput
             style={{ flex: 1 }}
             placeholder="Digite seu email"
-            placeholderTextColor={"gray"}
+            placeholderTextColor="gray"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          <Icon
-            name={'mail'}
-            size={20}
-            color="gray"
-            style={{ marginRight: 10 }}
-          />
+          <Icon name="mail" size={20} color="gray" style={{ marginRight: 10 }} />
         </View>
 
         <Text style={styles.label}>Senha</Text>
@@ -76,8 +73,8 @@ export default function LoginScreen() {
           <TextInput
             style={{ flex: 1 }}
             placeholder="Digite sua senha"
-            placeholderTextColor={"gray"}
-            secureTextEntry={!showPassword} // 👈 alterna visibilidade
+            placeholderTextColor="gray"
+            secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
           />

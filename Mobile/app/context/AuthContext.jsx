@@ -1,6 +1,7 @@
 // src/contexts/AuthContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getCurrentUser, isAuthenticated } from '../services/authService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext();
 
@@ -29,13 +30,24 @@ export function AuthProvider({ children }) {
     checkAuthAndLoad();
   }, []);
 
+  const login = async () => {
+    const userData = await getCurrentUser();
+    setUser(userData);
+  };
+
+  const Logout = async () => {
+    await AsyncStorage.removeItem('@Auth:user'); // 👈 Correção aqui também
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
+    <AuthContext.Provider value={{ user, loading, setUser, login, Logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
+// ✅ Aqui está a função que faltava
 export function useAuth() {
   return useContext(AuthContext);
 }
