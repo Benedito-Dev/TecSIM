@@ -1,109 +1,89 @@
-import { StyleSheet, Dimensions } from "react-native";
-const { height } = Dimensions.get('window');
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
+  scrollContent: {
+    padding: 20,
+    backgroundColor: '#f8f8f8',
+  },
+  loadingContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  loading: {
-    marginTop: 80,
-  },
-  TopContainer: {
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: height * 0.12, // Ocupa 45% da tela
-    backgroundColor: '#5f65d9',
+    backgroundColor: '#f8f8f8',
   },
-  headerContent: {
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "110%"
-  },
-  logo: {
-    width: 140,
-    height: 140,
-  },
-  usernameText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 20
-  },
-  text: {
-    color: "black",
-    fontWeight: "bold",
-    fontSize: 16
-  },
-  content: {
-    flex: 1,
-    display: "flex",
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    flexDirection: "column",
-    paddingTop: 20,
-    backgroundColor: "#ececec"
+    marginBottom: 16,
   },
-  chipsContainer: {
-    display: "flex",
-    alignItems: "center",
-    padding: 20,
-    width: "80%",
-    height: "50%",
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "gray"
+  logoText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#0c87c4',
   },
-  sintomaButton: {
-    backgroundColor: "#2f6ba4",
-    padding: 20,
-    borderRadius: 20
+  welcomeText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+    textAlign: 'left',
   },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 14
+  subWelcome: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+    textAlign: 'left',
   },
-  chips: {
-    display: "flex",
-    flexDirection: "row",
-    margin: 40,
-    width: "100%",
-    flexWrap: "wrap", // Isso permite a quebra de linha
-    gap: 10
+  chatCard: {
+    backgroundColor: '#0c87c4',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
   },
-  chip: {
-    backgroundColor: "#ff9a00",
-    padding: 10,
-    borderRadius: 20
+  chatCardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginTop: 10,
   },
-  consultas: {
-    display: "flex",
-    margin: 10,
-    width: "80%",
-    gap: 15
+  chatCardDescription: {
+    fontSize: 14,
+    color: '#e0f7ff',
+    marginTop: 4,
   },
-  consulta: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-around",
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 10,
-    borderColor: "gray",
-    borderWidth: 2
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
   },
-  consultaTitle: {
-    color: "black",
-    fontWeight: "bold",
-    fontSize: 16
+  cardGrid: {
+    flexDirection: 'column',
+    gap: 12,
   },
-  subTitle: {
-    color: "gray",
-    fontWeight: "bold"
-  }
+  toolCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    alignItems: 'center',
+  },
+  toolCardTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#0c87c4',
+    marginTop: 8,
+  },
+  toolCardDescription: {
+    fontSize: 13,
+    color: '#555',
+    textAlign: 'center',
+    marginTop: 4,
+  },
 });

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
-import { register } from '../../../services/authService';
+import { register } from '../../../services/auth/authService';
 import InputField from '../../../components/InputField';
 import { styles } from './styles';
 

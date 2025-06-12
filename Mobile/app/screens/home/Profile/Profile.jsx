@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from "react-na
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 
-import { logout } from "../../../services/authService";
+import { logout } from "../../../services/auth/authService";
 import { useAuth } from '../../../context/AuthContext';
 
 import { styles } from './styles'
