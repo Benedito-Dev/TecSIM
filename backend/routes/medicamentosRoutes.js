@@ -1,25 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const medicamentoService = require('../services/mongoMedicamentosServices');
+const controller = require('../controllers/medicamentoController');uire('../services/mongoMedicamentosServices');
 
-router.post('/', async (req, res) => {
-  try {
-    const resultado = await medicamentoService.inserirMedicamento(req.body);
-    res.status(201).json({ id: resultado.insertedId });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ erro: 'Erro ao inserir medicamento.' });
-  }
-});
+/**
+ * @swagger
+ * tags:
+ *   name: Medicamentos
+ *   description: Gestão de medicamentos
+ */
 
-router.get('/', async (req, res) => {
-  try {
-    const medicamentos = await medicamentoService.listarMedicamentos();
-    res.status(200).json(medicamentos);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ erro: 'Erro ao buscar medicamentos.' });
-  }
-});
+/**
+ * @swagger
+ * /medicamentos:
+ *   post:
+ *     summary: Cria um novo medicamento
+ *     tags: [Medicamentos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [nome, dosagem]
+ *             properties:
+ *               nome: { type: string }
+ *               dosagem: { type: string }
+ *               laboratorio: { type: string }
+ *               quantidade: { type: integer }
+ *     responses:
+ *       201: { description: Medicamento criado }
+ */
+router.post('/', controller.create);
 
+/**
+ * @swagger
+ * /medicamentos:
+ *   get:
+ *     summary: Retorna todos os medicamentos
+ *     tags: [Medicamentos]
+ *     responses:
+ *       200: { description: Lista de medicamentos }
+ */
+router.get('/', ctrl.findAll);
 module.exports = router;

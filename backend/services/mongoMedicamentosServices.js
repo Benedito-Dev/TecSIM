@@ -1,18 +1,15 @@
-const connectMongo = require('../db/mongo');
+const repository = require('../repository/medicamentoRepository');
 
-async function inserirMedicamento(dados) {
-  const db = await connectMongo();
-  const colecao = db.collection('medicamentos');
-  return await colecao.insertOne(dados);
+class MedicamentoService {
+  async create(data) {
+    return await repository.create(data);
+  }
+
+  async findAll() {
+    return await repository.findAll();
+  }
 }
 
-async function listarMedicamentos() {
-  const db = await connectMongo();
-  const colecao = db.collection('medicamentos');
-  return await colecao.find().toArray();
-}
+module.exports = new MedicamentoService();
 
-module.exports = {
-  inserirMedicamento,
-  listarMedicamentos,
-};
+
