@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/medicamentoController');uire('../services/mongoMedicamentosServices');
+const controller = require('../controllers/medicamentoController');
 
 /**
  * @swagger
@@ -41,5 +41,5 @@ router.post('/', controller.create);
  *     responses:
  *       200: { description: Lista de medicamentos }
  */
-router.get('/', ctrl.findAll);
+router.get('/', controller.findAll);
 module.exports = router;

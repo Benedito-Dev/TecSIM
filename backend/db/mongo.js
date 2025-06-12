@@ -12,6 +12,7 @@ async function connectMongo() {
     if (!client.topology || !client.topology.isConnected()) {
       await client.connect();
       console.log('✅ Conectado ao MongoDB');
+      console.log(`Banco de dados: ${dbName}`);
     }
     const db = client.db(dbName);
     return db;

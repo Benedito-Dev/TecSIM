@@ -11,8 +11,6 @@ const connectMongo = require('./db/mongo');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
 
 
-
-
 class Server {
   constructor() {
     this.app = express();

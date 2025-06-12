@@ -4,6 +4,7 @@ class MedicamentoController {
     async create(req, res) {
         try {
             const medicamento = await service.create(req.body);
+            res.status(201).json({ message: 'Medicamento criado com sucesso' });
         } catch (err) {
             console.log(err);
             res.status(400).json({ error: err.message});
@@ -13,10 +14,12 @@ class MedicamentoController {
     async findAll(req, res) {
         try { 
             const medicamentos = await service.findAll();
-            res.json(meds);
+            res.json(medicamentos);
         } catch (err) {
             console.log(err);
             res.status(500).json({error: err.message})
         }
     }
 }
+
+module.exports = new MedicamentoController();
