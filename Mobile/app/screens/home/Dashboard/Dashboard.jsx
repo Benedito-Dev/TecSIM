@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
+import { styles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import NotificationIcon from '../../../components/Notification';
-import { styles } from './styles';
+import { MessageSquare, Pill, Clock } from 'lucide-react-native'; // Ou substitua por Feather se necessário
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
@@ -22,58 +23,56 @@ export default function DashboardScreen() {
   if (loading || !user) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#00c4cd" />
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
-      {/* Header */}
+      {/* Cabeçalho */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
-        <NotificationIcon initialCount={2} />
+        <NotificationIcon initialCount={10} />
       </View>
 
       {/* Saudação */}
       <Text style={styles.welcomeText}>Olá, {user.nome || 'Usuário'} 👋</Text>
       <Text style={styles.subWelcome}>Como podemos ajudar na sua saúde hoje?</Text>
 
-      {/* Card Assistente */}
+      {/* Cartão de Chat com o Assistente */}
       <TouchableOpacity
         style={styles.chatCard}
         onPress={() => navigation.navigate('SymptomReport')}
       >
-        <Icon name="message-square" size={28} color="#fff" />
+        <MessageSquare color="#fff" size={32} />
         <Text style={styles.chatCardTitle}>Iniciar Conversar com Assistente</Text>
-        <Text style={styles.chatCardDescription}>Obtenha recomendações personalizadas para seus sintomas.</Text>
+        <Text style={styles.chatCardDescription}>
+          Obtenha recomendações personalizadas para seus sintomas.
+        </Text>
       </TouchableOpacity>
 
-      {/* Seção Ferramentas */}
+      {/* Ferramentas */}
       <Text style={styles.sectionTitle}>Suas Ferramentas de Saúde</Text>
-
       <View style={styles.cardGrid}>
-        {tools.map((tool, index) => (
-          <TouchableOpacity key={index} style={styles.toolCard}>
-            <Icon name={tool.icon} size={32} color="#0c87c4" />
-            <Text style={styles.toolCardTitle}>{tool.title}</Text>
-            <Text style={styles.toolCardDescription}>{tool.description}</Text>
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity
+          style={styles.toolCard}
+          onPress={() => navigation.navigate('Medicamentos')}
+        >
+          <Pill color="#0c87c4" size={28} />
+          <Text style={styles.toolCardTitle}>Medicamentos</Text>
+          <Text style={styles.toolCardDescription}>Informações gerais sobre medicamentos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.toolCard}
+          onPress={() => navigation.navigate('Lembretes')}
+        >
+          <Clock color="#0c87c4" size={28} />
+          <Text style={styles.toolCardTitle}>Lembretes</Text>
+          <Text style={styles.toolCardDescription}>Nunca esqueça de tomar seus remédios</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 }
-
-const tools = [
-  {
-    title: 'Medicamentos',
-    description: 'Informações gerais sobre medicamentos',
-    icon: 'package',
-  },
-  {
-    title: 'Lembretes',
-    description: 'Nunca esqueça de tomar seus remédios',
-    icon: 'clock',
-  },
-];
