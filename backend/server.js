@@ -7,6 +7,11 @@ const authRoutes = require('./routes/authRoutes')
 const dbInit = require('./db/dbinit');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig'); // <- import Swagger config
+const connectMongo = require('./db/mongo');
+const medicamentoRoutes = require('./routes/medicamentosRoutes');
+
+
+
 
 class Server {
   constructor() {
@@ -29,6 +34,7 @@ class Server {
   routes() {
     this.app.use('/usuarios', usuarioRoutes);
     this.app.use('/auth', authRoutes);
+    this.app.use('/medicamentos', medicamentoRoutes);
 
     this.app.get('/', (req, res) => {
       res.send('API de Usuarios está funcionando!');
@@ -55,6 +61,19 @@ class Server {
       console.log(`Documentação Swagger em http://localhost:${this.port}/api-docs`);
     });
   }
+
+  async testMongo() {
+    const db = await connectMongo();
+    const colecao = db.collection('medicamentos');
+
+    const resultado = await colecao.insertOne({
+      mensagem: 'MongoDB está funcionando!',
+      criadoEm: new Date()
+    });
+
+    console.log('Documento inserido:', resultado.insertedId);
+  }
+
 }
 
 module.exports = Server;
