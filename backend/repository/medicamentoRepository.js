@@ -21,6 +21,27 @@ class MedicamentoRepository {
         const col = await this.getCollection();
         return await col.find().toArray();
     }
+
+    async findById(id) {
+    const col = await this.getCollection();
+    return await col.findOne({ _id: new ObjectId(id) });
+  }
+
+  async update(id, data) {
+    const col = await this.getCollection();
+    const result = await col.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: data },
+      { returnDocument: 'after' }
+    );
+    return result.value;
+  }
+
+  async remove(id) {
+    const col = await this.getCollection();
+    const result = await col.findOneAndDelete({ _id: new ObjectId(id) });
+    return result.value;
+  }
 }
 
 module.exports = new MedicamentoRepository();

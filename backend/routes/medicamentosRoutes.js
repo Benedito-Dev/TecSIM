@@ -42,4 +42,66 @@ router.post('/', controller.create);
  *       200: { description: Lista de medicamentos }
  */
 router.get('/', controller.findAll);
+
+/**
+ * @swagger
+ * /medicamentos/{id}:
+ *   get:
+ *     summary: Obtém um medicamento por ID
+ *     tags: [Medicamentos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema: { type: string }
+ *         required: true
+ *     responses:
+ *       200: { description: Medicamento encontrado }
+ *       404: { description: Não encontrado }
+ */
+router.get('/:id', controller.findById);
+
+/**
+ * @swagger
+ * /medicamentos/{id}:
+ *   put:
+ *     summary: Atualiza um medicamento existente
+ *     tags: [Medicamentos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema: { type: string }
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nome: { type: string }
+ *               dosagem: { type: string }
+ *               laboratorio: { type: string }
+ *               quantidade: { type: integer }
+ *     responses:
+ *       200: { description: Medicamento atualizado }
+ *       404: { description: Não encontrado }
+ */
+router.put('/:id', controller.update);
+
+/**
+ * @swagger
+ * /medicamentos/{id}:
+ *   delete:
+ *     summary: Remove um medicamento
+ *     tags: [Medicamentos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema: { type: string }
+ *         required: true
+ *     responses:
+ *       204: { description: Remoção bem‑sucedida }
+ *       404: { description: Não encontrado }
+ */
+router.delete('/:id', controller.remove);
 module.exports = router;
