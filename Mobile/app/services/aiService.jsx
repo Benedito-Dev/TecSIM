@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { API_KEY } from '@env'
 
 // Configuração segura da chave de API (usando variáveis de ambiente)
-const API_KEY = 'AIzaSyCVVUtnrSh_AU6oNvosFHTxorXiGBERwTc';
 
 if (!API_KEY) {
   throw new Error("Chave de API não configurada. Configure a variável de ambiente REACT_APP_GOOGLE_API_KEY ou GOOGLE_API_KEY.");

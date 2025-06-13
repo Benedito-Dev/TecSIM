@@ -40,7 +40,7 @@ export default function DashboardScreen() {
       {/* Conteúdo rolável com padding */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Saudação */}
-        <Text style={styles.welcomeText}>Olá, {user.nome || 'Usuário'} 👋</Text>
+        <Text style={styles.welcomeText}>Olá, <Text style={{color: '#0c87c4', fontWeight: 'bold'}} >{user.nome || 'Usuário'}</Text> 👋</Text>
         <Text style={styles.subWelcome}>Como podemos ajudar na sua saúde hoje?</Text>
 
         {/* Cartão de Chat com o Assistente */}
