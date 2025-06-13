@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import { styles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import NotificationIcon from '../../../components/Notification';
-import { MessageSquare, Pill, Clock } from 'lucide-react-native'; // Ou substitua por Feather se necessário
+import { MessageSquare, Pill, Clock } from 'lucide-react-native'; // Ou Feather
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
@@ -29,50 +29,54 @@ export default function DashboardScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContent}>
-      {/* Cabeçalho */}
+    <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
+      
+      {/* Cabeçalho fixo sem padding lateral */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
         <NotificationIcon initialCount={10} />
       </View>
 
-      {/* Saudação */}
-      <Text style={styles.welcomeText}>Olá, {user.nome || 'Usuário'} 👋</Text>
-      <Text style={styles.subWelcome}>Como podemos ajudar na sua saúde hoje?</Text>
+      {/* Conteúdo rolável com padding */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Saudação */}
+        <Text style={styles.welcomeText}>Olá, {user.nome || 'Usuário'} 👋</Text>
+        <Text style={styles.subWelcome}>Como podemos ajudar na sua saúde hoje?</Text>
 
-      {/* Cartão de Chat com o Assistente */}
-      <TouchableOpacity
-        style={styles.chatCard}
-        onPress={() => navigation.navigate('SymptomReport')}
-      >
-        <MessageSquare color="#fff" size={32} />
-        <Text style={styles.chatCardTitle}>Iniciar Conversar com Assistente</Text>
-        <Text style={styles.chatCardDescription}>
-          Obtenha recomendações personalizadas para seus sintomas.
-        </Text>
-      </TouchableOpacity>
-
-      {/* Ferramentas */}
-      <Text style={styles.sectionTitle}>Suas Ferramentas de Saúde</Text>
-      <View style={styles.cardGrid}>
+        {/* Cartão de Chat com o Assistente */}
         <TouchableOpacity
-          style={styles.toolCard}
-          onPress={() => navigation.navigate('Medicamentos')}
+          style={styles.chatCard}
+          onPress={() => navigation.navigate('SymptomReport')}
         >
-          <Pill color="#0c87c4" size={28} />
-          <Text style={styles.toolCardTitle}>Medicamentos</Text>
-          <Text style={styles.toolCardDescription}>Informações gerais sobre medicamentos</Text>
+          <MessageSquare color="#fff" size={32} />
+          <Text style={styles.chatCardTitle}>Iniciar Conversar com Assistente</Text>
+          <Text style={styles.chatCardDescription}>
+            Obtenha recomendações personalizadas para seus sintomas.
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.toolCard}
-          onPress={() => navigation.navigate('Lembretes')}
-        >
-          <Clock color="#0c87c4" size={28} />
-          <Text style={styles.toolCardTitle}>Lembretes</Text>
-          <Text style={styles.toolCardDescription}>Nunca esqueça de tomar seus remédios</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        {/* Ferramentas */}
+        <Text style={styles.sectionTitle}>Suas Ferramentas de Saúde</Text>
+        <View style={styles.cardGrid}>
+          <TouchableOpacity
+            style={styles.toolCard}
+            onPress={() => navigation.navigate('Medicamentos')}
+          >
+            <Pill color="#0c87c4" size={28} />
+            <Text style={styles.toolCardTitle}>Medicamentos</Text>
+            <Text style={styles.toolCardDescription}>Informações gerais sobre medicamentos</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.toolCard}
+            onPress={() => navigation.navigate('Lembretes')}
+          >
+            <Clock color="#0c87c4" size={28} />
+            <Text style={styles.toolCardTitle}>Lembretes</Text>
+            <Text style={styles.toolCardDescription}>Nunca esqueça de tomar seus remédios</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 }

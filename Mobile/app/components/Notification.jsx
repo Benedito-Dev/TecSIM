@@ -28,7 +28,7 @@ const NotificationIcon = ({ initialCount = 0, onPress }) => {
       onPress={handlePress}
       style={styles.container}
     >
-      <Icon name="bell" size={24} color="#fff" />
+      <Icon name="bell" size={24} color="#0c87c4" />
       {count > 0 && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>
