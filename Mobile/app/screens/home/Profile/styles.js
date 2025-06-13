@@ -1,56 +1,102 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff",
-    padding: 16,
+    backgroundColor: '#f9fbfd',
+    paddingHorizontal: 20,
   },
-  loading: {
-    marginVertical: 20,
-  },
-  containerUser: {
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    maxWidth: 400,
-    padding: 20,
-    backgroundColor: "#ececec",
-    borderWidth: 1.5,
-    borderColor: "black",
-    borderRadius: 20,
-    marginVertical: 20,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 20,
   },
   title: {
-    fontWeight: "bold",
-    fontSize: 22,
-    textAlign: "center",
-    marginBottom: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
   },
-  circle: {
-    aspectRatio: 1,
-    width: "60%",
-    maxWidth: 180,
-    borderRadius: 999,
-    backgroundColor: "gray",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 20,
+  profileSection: {
+    alignItems: 'center',
+    marginBottom: 24,
   },
-  logoutButton: {
-    backgroundColor: "red",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 25,
-    alignSelf: "center",
-    marginTop: 10,
+  avatar: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    marginBottom: 12,
   },
-  textButton: {
-    fontWeight: "bold",
-    color: "#fff",
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  age: {
+    fontSize: 14,
+    color: '#555',
+  },
+  email: {
+    fontSize: 14,
+    color: '#0c87c4',
+    marginTop: 4,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
     fontSize: 16,
-    textAlign: "center",
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 12,
   },
+  row: {
+    borderTopWidth: 1,
+    borderColor: '#e0e0e0',
+    paddingVertical: 12,
+  },
+  label: {
+    color: '#0c87c4',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  value: {
+    color: '#333',
+    fontSize: 14,
+  },
+  chatItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  chatText: {
+    marginLeft: 12,
+  },
+  chatTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#000',
+  },
+  chatDate: {
+    fontSize: 12,
+    color: '#666',
+  },
+  configItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  configText: {
+    marginLeft: 12,
+    fontSize: 14,
+    color: '#333',
+  },
+  logoutIcon: {
+    transform: [{ rotate: '180deg' }],
+  },
+  logoutText: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: 'red',
+  }
 });

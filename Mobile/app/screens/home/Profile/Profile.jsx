@@ -1,66 +1,100 @@
-import React, {useState} from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
-import Icon from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
-
-import { logout } from "../../../services/auth/authService";
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { styles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
+import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut  } from 'lucide-react-native';
 
-import { styles } from './styles'
+export default function ProfileScreen({ navigation }) {
+  const { user, loading } = useAuth();
 
-export default function ProfileScreen() {
-    const navigation = useNavigation();
-    const { user, loading } = useAuth(); // Usando diretamente o hook do contexto
-    const [loadingLogout, setLoading] = useState('')
+  return (
+    <ScrollView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <ArrowLeft size={24} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.title}>TecSIM</Text>
+        <View style={{ width: 24 }} /> {/* placeholder para centralizar o título */}
+      </View>
 
-    const handleLogout = async () => {
+      {/* Avatar */}
+      <View style={styles.profileSection}>
+        <Image
+          source={require('../../../assets/images/logo.png')} // substitua pela imagem real
+          style={styles.avatar}
+        />
+        <Text style={styles.name}>{user.nome}</Text>
+        <Text style={styles.age}>32 anos</Text>
+        <Text style={styles.email}>{user.email}</Text>
+      </View>
 
-        setLoading(true);
-        try {
-        // Chama a função de login do authService
-        await logout();
-        
-        // Redireciona para a tela principal após login bem-sucedido
-        navigation.replace('Welcome');
-        } catch (error) {
-        // Exibe mensagem de erro adequada
-        Alert.alert('Erro', error.message || 'Falha no login. Verifique suas credenciais.');
-        } finally {
-        setLoading(false);
-        }
-    }
-
-    // Se estiver carregando, mostra spinner
-      if (loading) {
-        return (
-          <View style={styles.container}>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
-        );
-      }
-    
-      // Se não houver usuário (não autenticado), não renderiza nada
-      // O AuthContext já redireciona para Login automaticamente
-      console.log("Usuário logado:", user);
-      if (!user) {
-        return null;
-      }
-
-    return (
-        <View style={styles.container}>
-            <View style={styles.containerUser}>
-                <Text style={styles.title}>Olá {user.nome || 'Usuário'}!</Text>
-                <View style={styles.circle}>
-                    <Icon name="camera" size={30} color="#fff" />
-                </View>
-                {loadingLogout ? (
-                <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
-                ) : (
-                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                    <Text style={styles.textButton}>Logout</Text>
-                </TouchableOpacity>
-                )}
-            </View>
+      {/* Resumo de Saúde */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Resumo de Saúde</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Alergias</Text>
+          <Text style={styles.value}>Penicilina, Polen</Text>
         </View>
-    )
+        <View style={styles.row}>
+          <Text style={styles.label}>Medicações</Text>
+          <Text style={styles.value}>Ibuprofeno (200mg/dia), Vitamina D (1000UI/dia)</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Condições</Text>
+          <Text style={styles.value}>Asma leve, Rinite alérgica</Text>
+        </View>
+      </View>
+
+      {/* Interações com o Chatbot */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Interações com o Chatbot</Text>
+        <TouchableOpacity style={styles.chatItem}>
+          <MessageCircle size={20} color="#0c87c4" />
+          <View style={styles.chatText}>
+            <Text style={styles.chatTitle}>Receitas de Baixo Risco</Text>
+            <Text style={styles.chatDate}>15/03/2024</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.chatItem}>
+          <MessageCircle size={20} color="#0c87c4" />
+          <View style={styles.chatText}>
+            <Text style={styles.chatTitle}>Tratamentos Naturais</Text>
+            <Text style={styles.chatDate}>20/02/2024</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* Configurações */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Configurações</Text>
+
+        <TouchableOpacity style={styles.configItem}>
+          <Edit3 size={20} color="#0c87c4" />
+          <Text style={styles.configText}>Editar Perfil</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.configItem}>
+          <Bell size={20} color="#0c87c4" />
+          <Text style={styles.configText}>Notificações</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.configItem}>
+          <Shield size={20} color="#0c87c4" />
+          <Text style={styles.configText}>Privacidade</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.configItem}>
+          <HelpCircle size={20} color="#0c87c4" />
+          <Text style={styles.configText}>Ajuda</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.configItem}>
+          <LogOut  size={20} color="red" />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
 }
