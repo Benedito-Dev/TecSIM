@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, Pressable, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { register } from '../../../services/auth/authService';
 import InputField from '../../../components/InputField';
+import DateInput from '../../../components/DataInput';
 import { styles } from './styles';
 
 export default function RegisterScreen({ navigation }) {
@@ -16,6 +17,15 @@ export default function RegisterScreen({ navigation }) {
   const [dataNascimento, setDataNascimento] = useState('');
   const [peso_kg, setPesoKg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
 
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
@@ -105,12 +115,11 @@ export default function RegisterScreen({ navigation }) {
           onIconPress={() => setShowPassword(!showPassword)}
         />
 
-        <InputField
+        <DateInput
           label="Data de Nascimento"
-          placeholder="Ex: 15/08/1990"
+          placeholder="Ex: 1990-08-15"
           value={dataNascimento}
-          onChangeText={setDataNascimento}
-          iconName="calendar"
+          onChange={setDataNascimento}
         />
 
         <InputField
