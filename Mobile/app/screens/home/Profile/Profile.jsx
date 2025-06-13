@@ -1,11 +1,39 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { styles } from './styles';
+
 import { useAuth } from '../../../context/AuthContext';
+import { logout as logoutService } from '../../../services/auth/authService';
+import { useNavigation } from '@react-navigation/native';
+
 import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut  } from 'lucide-react-native';
 
-export default function ProfileScreen({ navigation }) {
-  const { user, loading } = useAuth();
+export default function ProfileScreen() {
+  const navigation = useNavigation();
+  const { user, loading, Logout } = useAuth();
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Sair",
+      "Você realmente deseja sair?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Sim", onPress: async () => {
+            try {
+              await logoutService();
+              await Logout();
+              navigation.replace('Welcome');
+            } catch (error) {
+              console.error("Erro ao fazer logout:", error);
+              Alert.alert("Erro", "Não foi possível sair.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
 
   return (
     <ScrollView style={styles.container}>
@@ -90,7 +118,7 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.configText}>Ajuda</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.configItem}>
+        <TouchableOpacity style={styles.configItem} onPress={handleLogout}>
           <LogOut  size={20} color="red" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
