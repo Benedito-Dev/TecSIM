@@ -28,24 +28,25 @@ export default function LoginScreen() {
   const { setUser } = useAuth();
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
-      return;
-    }
+    // if (!email || !password) {
+    //   Alert.alert('Erro', 'Por favor, preencha todos os campos');
+    //   return;
+    // }
 
-    setLoading(true);
-    try {
-      await loginService(email, password);
+    // setLoading(true);
+    // try {
+    //   await loginService(email, password);
 
-      const userData = await getCurrentUser();
-      setUser(userData);
+    //   const userData = await getCurrentUser();
+    //   setUser(userData);
 
-      navigation.replace('App');
-    } catch (error) {
-      Alert.alert('Erro', error.message || 'Falha no login. Verifique suas credenciais.');
-    } finally {
-      setLoading(false);
-    }
+    //   navigation.replace('App');
+    // } catch (error) {
+    //   Alert.alert('Erro', error.message || 'Falha no login. Verifique suas credenciais.');
+    // } finally {
+    //   setLoading(false);
+    // }
+    navigation.replace('Code')
   };
 
   return (
