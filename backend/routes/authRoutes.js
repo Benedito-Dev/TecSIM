@@ -1,5 +1,6 @@
 const express = require('express');
 const authController = require('../controllers/authController');
+const otpController = require('../controllers/otpController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 class AuthRoutes {
@@ -113,6 +114,66 @@ class AuthRoutes {
      *         description: Usuário não encontrado
      */
     this.router.get('/me', authMiddleware, authController.me);
+
+    // Request OTP (exemplo: para quem não está autenticado, remova authMiddleware, se quiser proteger, adicione)
+    /**
+     * @swagger
+     * /auth/request-otp:
+     *   post:
+     *     summary: Envia o código OTP para o usuário via email
+     *     description: Envia um código OTP para o email informado.
+     *     tags: [Autenticação]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/OTP'
+     *     responses:
+     *       200:
+     *         description: Código OTP enviado com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/OTPResponse'
+     *       400:
+     *         description: Email inválido ou não fornecido
+     *       500:
+     *         description: Erro interno no servidor
+     */
+    this.router.post('/request-otp', otpController.sendOtp);
+
+    // Verify OTP
+    /**
+     * @swagger
+     * /auth/verify-otp:
+     *   post:
+     *     summary: Verifica o código OTP enviado para o usuário
+     *     description: Verifica o código OTP informado para o email.
+     *     tags: [Autenticação]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/OTPVerifyRequest'
+     *     responses:
+     *       200:
+     *         description: Código OTP verificado com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   example: OTP verificado com sucesso.
+     *       400:
+     *         description: OTP inválido ou expirado
+     *       500:
+     *         description: Erro interno no servidor
+     */
+    this.router.post('/verify-otp', otpController.verifyOtp);
   }
 
   getRouter() {
