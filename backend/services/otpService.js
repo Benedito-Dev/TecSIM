@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const otpRepository = require('../repository/otpRepository');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
@@ -5,8 +7,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'tecsimassistente@gmail.com',
-    pass: 'TecSim123'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -27,11 +29,25 @@ class OtpService {
 
     // Aqui envia o email
     const mailOptions = {
-      from: 'seu-email@gmail.com',
+      from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Seu código OTP',
+      subject: '🔐 Seu código OTP de verificação',
       text: `Seu código OTP é: ${otpCode}. Ele expira em 5 minutos.`,
-      // você pode usar html: '<p>Seu código OTP é <b>${otpCode}</b></p>'
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
+          <h2 style="color:rgb(19, 190, 233);">Código de Verificação (OTP)</h2>
+          <strong><p>Olá,</p></strong>
+          <strong><p>Você solicitou um código de verificação para acessar sua conta.</p></strong>
+          <p style="font-size: 18px;">Seu código é:</p>
+          <div style="background-color: #f1f1f1; padding: 15px; border-radius: 8px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 3px;">
+            ${otpCode}
+          </div>
+          <p style="margin-top: 20px; color:rgb(233, 18, 18); font-weight:bold;">Este código expira em 5 minutos.</p>
+          <p style="color: #888;">Se você não solicitou este código, ignore este e-mail.</p>
+          <br>
+          <p style="color:rgb(1, 161, 41);">Atenciosamente,<br><strong>Equipe TecSim</strong></p>
+        </div>
+      `
     };
 
     try {
@@ -41,8 +57,6 @@ class OtpService {
       console.error('Erro ao enviar email:', error);
       // Pode tratar erro, ou lançar para a camada acima lidar
     }
-
-    console.log(`[OTP Enviado] Para: ${email} | Código: ${otpCode}`);
 
     return otpData;
   }

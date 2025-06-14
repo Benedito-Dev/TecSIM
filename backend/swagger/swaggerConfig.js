@@ -46,15 +46,19 @@ const options = {
             nivel_risco: { type: 'string', example: 'alto' }
           }
         },
-        OTP: {
+        OTPRequest: {
+          type: 'object',
+          required: ['email', 'otp'],
+          properties: {
+            email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' },
+          }
+        },
+        OTPVerifyRequest: {
           type: 'object',
           required: ['email', 'otp'],
           properties: {
             email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' },
             otp: { type: 'string', example: '483920' },
-            expires_at: { type: 'string', format: 'date-time', example: '2025-06-14T12:34:56Z' },
-            verified: { type: 'boolean', example: false },
-            attempts: { type: 'integer', example: 1 }
           }
         }
       }

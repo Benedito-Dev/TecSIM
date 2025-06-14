@@ -128,7 +128,7 @@ class AuthRoutes {
      *       content:
      *         application/json:
      *           schema:
-     *             $ref: '#/components/schemas/OTP'
+     *             $ref: '#/components/schemas/OTPRequest'
      *     responses:
      *       200:
      *         description: Código OTP enviado com sucesso
