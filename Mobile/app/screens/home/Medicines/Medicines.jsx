@@ -62,9 +62,6 @@ export default function MedicineScreen() {
         </TouchableOpacity>
         <Text style={styles.title}>Medicamentos</Text>
         </View>
-        <TouchableOpacity style={styles.addButton}>
-          <FeatherIcon name="plus" size={24} color="#2563EB" />
-        </TouchableOpacity>
       </View>
 
       {/* Barra de busca */}
