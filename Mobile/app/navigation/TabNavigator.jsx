@@ -31,7 +31,7 @@ export default function MainTabNavigator() {
             </View>
           );
         },
-        tabBarActiveTintColor: '#00c4cd',
+        tabBarActiveTintColor: '#0c87c4',
         tabBarInactiveTintColor: '#95a5a6',
         headerShown: false,
         tabBarShowLabel: false, // Remove os labels para um visual mais limpo
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#00c4cd',
+    backgroundColor: '#0c87c4',
     marginTop: 4,
   },
 });
