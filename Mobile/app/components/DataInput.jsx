@@ -5,19 +5,36 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  Modal,
+  Pressable,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Feather';
 
 export default function DateInput({ label, value, onChange, placeholder = 'Selecione uma data' }) {
   const [showPicker, setShowPicker] = useState(false);
+  const [tempDate, setTempDate] = useState(new Date());
 
-  const handleDateChange = (event, selectedDate) => {
-    setShowPicker(false);
-    if (selectedDate) {
-      const formatted = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
-      onChange(formatted);
+  const handleChange = (event, selectedDate) => {
+    if (Platform.OS === 'android') {
+      setShowPicker(false);
+      if (selectedDate) {
+        const formatted = selectedDate.getFullYear() + '-' +
+          String(selectedDate.getMonth() + 1).padStart(2, '0') + '-' +
+          String(selectedDate.getDate()).padStart(2, '0');
+        onChange(formatted);
+      }
+    } else {
+      if (selectedDate) setTempDate(selectedDate);
     }
+  };
+
+  const handleConfirmIOS = () => {
+    setShowPicker(false);
+    const formatted = tempDate.getFullYear() + '-' +
+      String(tempDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(tempDate.getDate()).padStart(2, '0');
+    onChange(formatted);
   };
 
   return (
@@ -30,14 +47,39 @@ export default function DateInput({ label, value, onChange, placeholder = 'Selec
         <Icon name="calendar" size={20} color="#888" />
       </TouchableOpacity>
 
-      {showPicker && (
+      {Platform.OS === 'android' && showPicker && (
         <DateTimePicker
           mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          display="default"
           value={value ? new Date(value) : new Date()}
-          onChange={handleDateChange}
-          themeVariant="light" // 👈 ISSO RESOLVE O PROBLEMA DE VISIBILIDADE
+          onChange={handleChange}
+          themeVariant="light"
         />
+      )}
+
+      {Platform.OS === 'ios' && (
+        <Modal visible={showPicker} transparent animationType="slide">
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContent}>
+              <DateTimePicker
+                mode="date"
+                display="spinner"
+                value={value ? new Date(value) : tempDate}
+                onChange={handleChange}
+                themeVariant="light"
+                style={{ backgroundColor: '#fff' }}
+              />
+              <View style={styles.modalButtons}>
+                <Pressable onPress={() => setShowPicker(false)} style={styles.cancelBtn}>
+                  <Text style={styles.cancelText}>Cancelar</Text>
+                </Pressable>
+                <Pressable onPress={handleConfirmIOS} style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Confirmar</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
       )}
     </>
   );
@@ -67,5 +109,37 @@ const styles = StyleSheet.create({
   inputText: {
     fontSize: 15,
     color: '#000',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    paddingTop: 16,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 12,
+  },
+  cancelBtn: {
+    padding: 10,
+  },
+  confirmBtn: {
+    padding: 10,
+  },
+  cancelText: {
+    color: '#ff4444',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  confirmText: {
+    color: '#0097b2',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
