@@ -57,5 +57,10 @@
     "metro-react-native-babel-preset": "^0.77.0",
     "typescript": "~5.8.3"
   },
+  "expo": {
+    "router": {
+      "appRoot": "app"
+    }
+  },
   "private": true
 }
