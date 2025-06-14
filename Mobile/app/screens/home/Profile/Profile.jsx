@@ -34,6 +34,18 @@ export default function ProfileScreen() {
     );
   };
 
+  const getAvatarSource = (gender) => {
+    switch (gender) {
+      case 'man':
+        return require('../../../assets/images/Profile/man.png');
+      case 'woman':
+        return require('../../../assets/images/Profile/woman.png');
+      case 'neutral':
+      default:
+        return require('../../../assets/images/Profile/neutral.png');
+    }
+  };
+
 
   return (
     <ScrollView style={styles.container}>
@@ -49,11 +61,11 @@ export default function ProfileScreen() {
       {/* Avatar */}
       <View style={styles.profileSection}>
         <Image
-          source={require('../../../assets/images/logo.png')} // substitua pela imagem real
+          source={getAvatarSource(user.genero)}
           style={styles.avatar}
         />
         <Text style={styles.name}>{user.nome}</Text>
-        <Text style={styles.age}>32 anos</Text>
+        <Text style={styles.age}>{user.idade} anos</Text>
         <Text style={styles.email}>{user.email}</Text>
       </View>
 

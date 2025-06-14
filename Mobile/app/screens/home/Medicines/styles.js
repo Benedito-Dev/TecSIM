@@ -1,0 +1,238 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+    paddingHorizontal: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 60,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  addButton: {
+    backgroundColor: '#EFF6FF',
+    borderRadius: 12,
+    padding: 8,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    height: 50,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#111827',
+    height: '100%',
+  },
+  clearButton: {
+    padding: 8,
+  },
+  resultsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  resultsControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  resultsCount: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginRight: 12,
+  },
+  filterButton: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    padding: 8,
+  },
+  filterButtonActive: {
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  listContent: {
+    paddingBottom: 20,
+  },
+  medItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  medIcon: {
+    backgroundColor: '#EFF6FF',
+    borderRadius: 10,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  medInfo: {
+    flex: 1,
+  },
+  medName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  medDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  medDose: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginRight: 12,
+  },
+  medType: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  medTypeText: {
+    fontSize: 12,
+    color: '#4B5563',
+    fontWeight: '500',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#F3F4F6',
+    marginVertical: 8,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#9CA3AF',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 24,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  filtersContainer: {
+    marginBottom: 24,
+  },
+  filterOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: '#F9FAFB',
+  },
+  filterOptionActive: {
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  filterOptionText: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: '#6B7280',
+  },
+  filterOptionTextActive: {
+    color: '#2563EB',
+    fontWeight: '500',
+  },
+  filterCheckIcon: {
+    marginLeft: 'auto',
+  },
+  modalFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    paddingTop: 16,
+  },
+  clearFiltersButton: {
+    padding: 12,
+  },
+  clearFiltersText: {
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  applyFiltersButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  applyFiltersText: {
+    color: '#FFFFFF',
+    fontWeight: '500',
+  },
+});

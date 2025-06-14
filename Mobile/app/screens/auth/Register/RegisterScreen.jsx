@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { register } from '../../../services/auth/authService';
 import InputField from '../../../components/InputField';
 import DateInput from '../../../components/DataInput';
+import GenderInput from '../../../components/InputGender';
 import { styles } from './styles';
 
 export default function RegisterScreen({ navigation }) {
@@ -16,6 +17,7 @@ export default function RegisterScreen({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
   const [peso_kg, setPesoKg] = useState('');
+  const [genero, setGenero] = useState('');
   const [loading, setLoading] = useState(false);
 
   const formatDate = (date) => {
@@ -46,6 +48,7 @@ export default function RegisterScreen({ navigation }) {
         password,
         dataNascimento,
         peso_kg,
+        genero,
         checked
       );
 
@@ -121,6 +124,8 @@ export default function RegisterScreen({ navigation }) {
           value={dataNascimento}
           onChange={setDataNascimento}
         />
+
+        <GenderInput value={genero} onChange={setGenero} />
 
         <InputField
           label="Peso (kg)"

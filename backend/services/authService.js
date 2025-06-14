@@ -7,6 +7,8 @@ class AuthService {
     try {
       // Usa o repository existente para verificar credenciais
       const usuario = await usuarioRepository.verifyCredentials(email, senha);
+
+      const idade = this.calcularIdade(usuario.data_nascimento);
       
       // Gera o token JWT
       const token = jwt.sign(
@@ -19,7 +21,9 @@ class AuthService {
         usuario: {
           id: usuario.id_usuario,
           nome: usuario.nome,
-          email: usuario.email
+          email: usuario.email,
+          idade: idade,
+          genero: usuario.genero
         },
         token
       };
@@ -27,6 +31,19 @@ class AuthService {
       throw new Error('Falha na autenticação: ' + error.message);
     }
   }
+
+  calcularIdade(dataNascimento) {
+      const nascimento = new Date(dataNascimento);
+      const hoje = new Date();
+      let idade = hoje.getFullYear() - nascimento.getFullYear();
+      const m = hoje.getMonth() - nascimento.getMonth();
+
+      if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+        idade--;
+      }
+
+      return idade;
+    }
 
   async verifyToken(token) {
     try {

@@ -36,9 +36,9 @@ export const login = async (email, senha) => {
   }
 };
 
-export const register = async (nome, email, senha, data_nascimento, peso_kg, aceite_termos) => {
+export const register = async (nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos) => {
   try {
-    const response = await api.post('/usuarios', { nome, email, senha, data_nascimento, peso_kg, aceite_termos });
+    const response = await api.post('/usuarios', { nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos });
     mensagem = response.data.message
 
     // Se o status 201 for retornado corretamente

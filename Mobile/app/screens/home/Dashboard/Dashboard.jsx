@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Feather';
 import { styles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import NotificationIcon from '../../../components/Notification';

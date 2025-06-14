@@ -19,6 +19,7 @@ const createTable = async () => {
             senha VARCHAR(255) NOT NULL,
             data_nascimento DATE,
             peso_kg DECIMAL(5,2),
+            genero VARCHAR(100) NOT NULL,
             aceite_termos BOOLEAN DEFAULT TRUE,
             data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );

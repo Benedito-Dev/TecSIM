@@ -28,16 +28,16 @@ class UsuarioRepository {
   }
 
   // Método para criar um novo usuário com senha criptografada
-  async create({ nome, email, senha, data_nascimento, peso_kg, aceite_termos }) {
+  async create({ nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos }) {
     // Criptografa a senha antes de armazenar
     const senhaHash = await bcrypt.hash(senha, SALT_ROUNDS);
     
     const result = await db.query(
       `INSERT INTO usuarios 
-      (nome, email, senha, data_nascimento, peso_kg, aceite_termos) 
-      VALUES ($1, $2, $3, $4, $5, $6) 
-      RETURNING id_usuario, nome, email, data_nascimento, peso_kg, aceite_termos, data_cadastro`,
-      [nome, email, senhaHash, data_nascimento, peso_kg, aceite_termos]
+      (nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      RETURNING id_usuario, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro`,
+      [nome, email, senhaHash, data_nascimento, peso_kg, genero, aceite_termos]
     );
     
     return new Usuario(result.rows[0]);
@@ -113,6 +113,7 @@ class UsuarioRepository {
       email: usuario.email,
       data_nascimento: usuario.data_nascimento,
       peso_kg: usuario.peso_kg,
+      genero: usuario.genero,
       aceite_termos: usuario.aceite_termos,
       data_cadastro: usuario.data_cadastro
     });

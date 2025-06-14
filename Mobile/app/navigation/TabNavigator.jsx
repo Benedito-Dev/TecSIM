@@ -1,12 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
+import { StyleSheet, View } from 'react-native';
 
-// Importando telas (mantendo os paths originais)
+// Importando telas
 import DashboardScreen from '../screens/home/Dashboard/Dashboard';
 import ProfileScreen from '../screens/home/Profile/Profile';
 import ChatScreen from '../screens/home/Chat/Chat';
-import MedicineScreen from '../screens/home/Medicines/Medicines';
 
 const Tab = createBottomTabNavigator();
 
@@ -14,25 +14,79 @@ export default function MainTabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
+        tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           
           if (route.name === 'Dashboard') iconName = 'home';
-          if (route.name === 'Medicines') iconName = 'package'; // Ícone para medicamentos
-          if (route.name === 'Chat') iconName = 'message-square'; // Ícone para chat
+          if (route.name === 'Chat') iconName = 'message-square';
           if (route.name === 'Profile') iconName = 'user';
           
-          return <Icon name={iconName} size={size} color={color} />;
+          // Aumenta o ícone quando está ativo
+          const iconSize = focused ? size + 2 : size;
+          
+          return (
+            <View style={focused ? styles.iconContainerFocused : styles.iconContainer}>
+              <Icon name={iconName} size={iconSize} color={color} />
+              {focused && <View style={styles.activeIndicator} />}
+            </View>
+          );
         },
         tabBarActiveTintColor: '#00c4cd',
-        tabBarInactiveTintColor: 'gray',
+        tabBarInactiveTintColor: '#95a5a6',
         headerShown: false,
+        tabBarShowLabel: false, // Remove os labels para um visual mais limpo
+        tabBarStyle: {
+          backgroundColor: '#ffffff',
+          borderTopWidth: 0,
+          height: 60,
+          paddingBottom: 5,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 10,
+        },
       })}
     >
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Medicines" component={MedicineScreen} />
-      <Tab.Screen name="Chat" component={ChatScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen 
+        name="Dashboard" 
+        component={DashboardScreen} 
+        options={{ title: 'Início' }} 
+      />
+      <Tab.Screen 
+        name="Chat" 
+        component={ChatScreen} 
+        options={{ 
+          title: 'Assistente IA',
+          // Adiciona um badge para indicar novas mensagens (opcional)
+          // tabBarBadge: hasNewMessages ? '' : null 
+        }} 
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen} 
+        options={{ title: 'Perfil' }} 
+      />
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 8,
+  },
+  iconContainerFocused: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 8,
+  },
+  activeIndicator: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#00c4cd',
+    marginTop: 4,
+  },
+});
