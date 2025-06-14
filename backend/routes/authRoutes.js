@@ -46,10 +46,19 @@ class AuthRoutes {
      *           properties:
      *             id:
      *               type: integer
+     *               example: 1
      *             nome:
      *               type: string
+     *               example: Usuario
      *             email:
      *               type: string
+     *               example: usuario@example.com
+     *             genero:
+     *                type: string
+     *                example: man
+     *             idade:
+     *                type: integer
+     *                example: 17
      *         token:
      *           type: string
      *           description: Token JWT para autenticação

@@ -35,6 +35,16 @@ const options = {
             laboratorio: { type: 'string', example: 'Neo Química' },
             quantidade: { type: 'integer', example: 10 }
           }
+        },
+        InteracoesMedicamentos: {
+          type: 'object',
+          required: ['medicamento_id', 'medicamento_interagente_id', 'descricao'],
+          properties: {
+            medicamento_a_id: { type: 'integer', example: 100 },
+            medicamento_b_id: { type: 'integer', example: 200 },
+            descricao: { type: 'string', example: 'Pode causar aumento do risco de hemorragia' },
+            nivel_risco: { type: 'string', example: 'alto' }
+          }
         }
       }
     }
