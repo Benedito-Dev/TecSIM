@@ -7,6 +7,7 @@ import {
   Platform,
   Modal,
   Pressable,
+  TextInput,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Feather';
@@ -19,9 +20,7 @@ export default function DateInput({ label, value, onChange, placeholder = 'Selec
     if (Platform.OS === 'android') {
       setShowPicker(false);
       if (selectedDate) {
-        const formatted = selectedDate.getFullYear() + '-' +
-          String(selectedDate.getMonth() + 1).padStart(2, '0') + '-' +
-          String(selectedDate.getDate()).padStart(2, '0');
+        const formatted = formatDate(selectedDate);
         onChange(formatted);
       }
     } else {
@@ -31,11 +30,30 @@ export default function DateInput({ label, value, onChange, placeholder = 'Selec
 
   const handleConfirmIOS = () => {
     setShowPicker(false);
-    const formatted = tempDate.getFullYear() + '-' +
-      String(tempDate.getMonth() + 1).padStart(2, '0') + '-' +
-      String(tempDate.getDate()).padStart(2, '0');
+    const formatted = formatDate(tempDate);
     onChange(formatted);
   };
+
+  const formatDate = (date) => {
+    return date.getFullYear() + '-' +
+      String(date.getMonth() + 1).padStart(2, '0') + '-' +
+      String(date.getDate()).padStart(2, '0');
+  };
+
+  if (Platform.OS === 'web') {
+    return (
+      <View style={{ width: '85%' }}>
+        <Text style={styles.label}>{label}</Text>
+        <TextInput
+          type="date"
+          style={webStyles.inputContainer}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+        />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -143,3 +161,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+const webStyles = {
+  inputContainer: {
+    height: 45,
+    width: '100%',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+};

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Pressable, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
-import { register } from '../../../services/auth/authService';
+import { requestOtp } from '../../../services/auth/otpService'
+
 import InputField from '../../../components/InputField';
 import DateInput from '../../../components/DataInput';
 import GenderInput from '../../../components/InputGender';
+
 import { styles } from './styles';
 
 export default function RegisterScreen({ navigation }) {
@@ -20,29 +22,29 @@ export default function RegisterScreen({ navigation }) {
   const [genero, setGenero] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const formatDate = (date) => {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 
+const handleRegister = async () => {
+  if (!email || !password || !confirmPassword) {
+    Alert.alert('Erro', 'Por favor, preencha todos os campos');
+    return;
+  }
 
-  const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
-      return;
-    }
+  if (password !== confirmPassword) {
+    Alert.alert('Erro', 'As senhas não coincidem');
+    return;
+  }
 
-    if (password !== confirmPassword) {
-      Alert.alert('Erro', 'As senhas não coincidem');
-      return;
-    }
+  setLoading(true);
 
-    setLoading(true);
-    try {
-      const { success, message } = await register(
+  try {
+    // Aqui você chama uma função para enviar o OTP ao email
+    const data = await requestOtp(email);
+
+    if (data?.email && data?.expires_at) {
+      Alert.alert('Verificação', 'Enviamos um código para seu e-mail');
+
+      // Navega para a tela 'Code', passando os dados do usuário
+      navigation.navigate('Code', {
         nome,
         email,
         password,
@@ -50,21 +52,16 @@ export default function RegisterScreen({ navigation }) {
         peso_kg,
         genero,
         checked
-      );
-
-      if (success) {
-        Alert.alert('Sucesso', message);
-        console.log('Usuário registrado com sucesso:', message);
-        navigation.replace('Login');
-      } else {
-        Alert.alert('Erro', message);
-      }
-    } catch (error) {
-      Alert.alert('Erro', 'Ocorreu um erro inesperado. Tente novamente mais tarde.');
-      console.error('Erro inesperado ao registrar usuário:', error);
-    } finally {
-      setLoading(false);
+      });
+    } else {
+      Alert.alert('Erro ao enviar código', 'Tente novamente mais tarde.');
     }
+  } catch (error) {
+    console.error('Erro ao solicitar envio de OTP:', error);
+    Alert.alert('Erro', 'Não foi possível enviar o código de verificação. Tente mais tarde.');
+  } finally {
+    setLoading(false);
+  }
 };
 
   return (
