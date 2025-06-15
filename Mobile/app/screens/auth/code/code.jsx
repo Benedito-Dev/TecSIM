@@ -1,88 +1,82 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { register } from '../../../services/auth/authService'
-import { verifyOtp } from '../../../services/auth/otpService'
-
+import { register } from '../../../services/auth/authService';
+import { verifyOtp } from '../../../services/auth/otpService';
 import styles from './styles';
 
+const CODE_LENGTH = 6;
+
 export default function CodeScreen({ route }) {
-  // Estados do componente
-  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const navigation = useNavigation();
+  const [code, setCode] = useState(Array(CODE_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(30);
-  const [showResend, setShowResend] = useState(false);
+  const codeInputs = useRef(Array(CODE_LENGTH).fill().map(() => React.createRef()));
   
-  // Navegação e referências
-  const navigation = useNavigation();
-  const codeInputs = Array(6).fill(0).map(() => useRef(null));
-  
-  // Email do usuário (vindo da rota ou padrão)
-  const email = route.params?.email || 'seu@email.com';
-  console.log(email)
+  // Extrai o email corretamente da rota
+  const { email: routeEmail = 'seu@email.com', ...registrationData } = route.params;
+  const email = routeEmail || 'seu@email.com'; // Garante que sempre terá um valor
 
-  // Efeito para o countdown de reenvio
   useEffect(() => {
-    let timer;
-    if (countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-    } else {
-      setShowResend(true);
-    }
+    if (countdown <= 0) return;
+    
+    const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     return () => clearTimeout(timer);
   }, [countdown]);
 
-  const handleCodeChange = (text, index) => {
+  const handleCodeChange = useCallback((text, index) => {
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
     
-    if (text && index < 5) {
-      codeInputs[index + 1].current.focus();
+    if (text && index < CODE_LENGTH - 1) {
+      codeInputs.current[index + 1].focus();
     }
     
-    if (index === 5 && text) {
+    if (index === CODE_LENGTH - 1 && text) {
       verifyCode(newCode.join(''));
     }
-  };
+  }, [code]);
 
-  const resendCode = () => {
+  const resendCode = useCallback(() => {
     setCountdown(30);
-    setShowResend(false);
     Alert.alert('Código reenviado', `Enviamos um novo código para ${email}`);
-  };
+  }, [email]);
 
   const verifyCode = async (fullCode) => {
-    if (fullCode.length < 6) return;
+    if (fullCode.length < CODE_LENGTH) return;
 
     setLoading(true);
     try {
-      // Verifica o código OTP
       const verified = await verifyOtp(email, fullCode);
-      console.log(email, fullCode)
+      if (!verified) throw new Error('Código inválido');
 
-      if (!verified) {
-        throw new Error('Código inválido');
-      }
-
-      Alert.alert(verified)
-
-      // Extrai e renomeia os parâmetros corretamente
+      // Extrai os dados de registro corretamente
       const {
         nome,
-        email,
-        password: senha,                    // renomeia para 'senha'
-        dataNascimento: data_nascimento,   // renomeia para 'data_nascimento'
+        password: senha,
+        dataNascimento: data_nascimento,
         peso_kg,
         genero,
-        checked: aceite_termos              // renomeia para 'aceite_termos'
-      } = route.params;
+        checked: aceite_termos
+      } = registrationData;
 
+      // Usa o email que já temos (routeEmail) em vez de tentar extrair novamente
       const { success, message } = await register(
         nome,
-        email,
+        email, // Usando o email da rota que já extraímos
         senha,
         data_nascimento,
         peso_kg,
@@ -94,17 +88,23 @@ export default function CodeScreen({ route }) {
         Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
         navigation.replace('Login');
       } else {
-        Alert.alert('Erro ao cadastrar', message || 'Tente novamente mais tarde.');
+        throw new Error(message || 'Tente novamente mais tarde.');
       }
-
     } catch (error) {
       Alert.alert('Erro', error.message || 'Ocorreu um erro. Tente novamente.');
-      setCode(['', '', '', '', '', '']);
-      codeInputs[0].current.focus();
+      resetCode();
     } finally {
       setLoading(false);
     }
   };
+
+  const resetCode = () => {
+    setCode(Array(CODE_LENGTH).fill(''));
+    codeInputs.current[0].focus();
+  };
+
+  const isCodeComplete = code.every(c => c !== '');
+  const showResend = countdown <= 0;
 
   return (
     <KeyboardAvoidingView
@@ -112,7 +112,6 @@ export default function CodeScreen({ route }) {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Cabeçalho */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>TecSIM</Text>
           <Text style={styles.headerSubtitle}>Assistente de saúde inteligente</Text>
@@ -124,18 +123,17 @@ export default function CodeScreen({ route }) {
           </View>
         </View>
 
-        {/* Campos de código */}
         <View style={styles.codeSection}>
           <Text style={styles.sectionTitle}>Código de Verificação</Text>
           
           <View style={styles.codeContainer}>
             {code.map((digit, index) => (
-              <View key={index} style={[
-                styles.codeInputWrapper,
-                digit && styles.codeInputFilled
-              ]}>
+              <View 
+                key={`code-input-${index}`}
+                style={[styles.codeInputWrapper, digit && styles.codeInputFilled]}
+              >
                 <TextInput
-                  ref={codeInputs[index]}
+                  ref={el => codeInputs.current[index] = el}
                   style={styles.codeInput}
                   maxLength={1}
                   keyboardType="number-pad"
@@ -148,7 +146,6 @@ export default function CodeScreen({ route }) {
             ))}
           </View>
 
-          {/* Botão de reenvio */}
           <View style={styles.resendContainer}>
             {!showResend ? (
               <Text style={styles.resendText}>
@@ -162,11 +159,10 @@ export default function CodeScreen({ route }) {
           </View>
         </View>
 
-        {/* Botão de verificação */}
         <TouchableOpacity 
           style={styles.verifyButton}
           onPress={() => verifyCode(code.join(''))}
-          disabled={loading || code.some(c => c === '')}
+          disabled={loading || !isCodeComplete}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
@@ -175,7 +171,6 @@ export default function CodeScreen({ route }) {
           )}
         </TouchableOpacity>
 
-        {/* Rodapé */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Problemas com o código?</Text>
           <TouchableOpacity onPress={() => navigation.goBack()}>
