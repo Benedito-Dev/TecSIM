@@ -63,15 +63,16 @@ class OtpService {
 
   async verifyOtp(email, otp) {
     const storedOtp = await otpRepository.findByEmail(email);
+    console.log(storedOtp)
 
     if (!storedOtp) return false;
 
     const now = new Date();
     const isExpired = new Date(storedOtp.expires_at) < now;
 
-    if (isExpired || storedOtp.verified) {
-      return false;
-    }
+    // if (isExpired || storedOtp.verified) {
+    //   return false;
+    // }
 
     if (storedOtp.attempts >= 3) {
       return false;
