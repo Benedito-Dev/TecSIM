@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const login = async (email, senha) => {
   try {
-    console.log('Tentando login em:', api.defaults.baseURL); // Log da URL
     const response = await api.post('/auth/login', { email, senha });
     
     // Armazena o token e os dados do usuário

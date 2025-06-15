@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, Modal, ScrollView, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { getMedicametos } from '../../../services/medicamentosService'
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,6 +14,9 @@ export default function MedicineScreen() {
   const [search, setSearch] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState([]);
+
+  const medicamentos = getMedicametos()
+  console.log(medicamentos)
   
   const filterOptions = [
     { id: 'analgesico', label: 'Analgésico', icon: 'emoticon-happy' },

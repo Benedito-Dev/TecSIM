@@ -12,10 +12,19 @@ class MedicamentoRepository {
     }
 
     async create(data) {
-        const col = await this.getCollection();
-        const result = await col.insertOne(data);
-        return { id: result.insertId, ...data };
-    }
+      // Verifica se data é uma string e faz o parse para objeto/array
+      const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+      
+      // Se for um array, pega o primeiro elemento (como no seu exemplo)
+      const documentToInsert = Array.isArray(parsedData) ? parsedData[0] : parsedData;
+      
+      console.log('Dados a serem inseridos:', documentToInsert);
+      
+      const col = await this.getCollection();
+      const result = await col.insertOne(documentToInsert);
+      
+      return { id: result.insertedId, ...documentToInsert }; // Corrigido para insertedId
+  }
 
     async findAll() {
         const col = await this.getCollection();
