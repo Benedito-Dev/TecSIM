@@ -33,7 +33,8 @@ const options = {
             nome: { type: 'string', example: 'Dipirona' },
             dosagem: { type: 'string', example: '500mg' },
             laboratorio: { type: 'string', example: 'Neo Química' },
-            quantidade: { type: 'integer', example: 10 }
+            quantidade: { type: 'integer', example: 10 },
+            tipo: { type: 'string', example: 'analgesico' },
           }
         },
         InteracoesMedicamentos: {

@@ -12,19 +12,19 @@ class MedicamentoService {
 
   async findById(id) {
     const medicamento = await repository.findById(id);
-    if (!medicamento) throw new Error('medicamentoicamento não encontrado');
+    if (!medicamento) throw new Error('medicamento não encontrado');
     return medicamento;
   }
 
   async update(id, data) {
     const medicamentoUpdated = await repository.update(id, data);
-    if (!medicamentoUpdated) throw new Error('medicamentoicamento não encontrado');
+    if (!medicamentoUpdated) throw new Error('medicamento não encontrado');
     return medicamentoUpdated;
   }
 
   async remove(id) {
     const medicamentoRemoved = await repository.remove(id);
-    if (!medicamentoRemoved) throw new Error('medicamentoicamento não encontrado');
+    if (!medicamentoRemoved) throw new Error('medicamento não encontrado');
     return medicamentoRemoved;
   }
 }

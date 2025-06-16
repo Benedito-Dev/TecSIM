@@ -1,53 +1,91 @@
-const service = require('../services/mongoMedicamentosServices')
+const service = require('../services/mongoMedicamentosServices');
+const { ObjectId } = require('mongodb');
 
 class MedicamentoController {
-    async create(req, res) {
-        try {
-            const medicamento = await service.create(req.body);
-            res.status(201).json({ 
-              message: 'Medicamento criado com sucesso', 
-              data: medicamento 
-            });
-        } catch (err) {
-            console.log(err);
-            res.status(400).json({ error: err.message});
-        }
-    }
-
-    async findAll(req, res) {
-        try { 
-            const medicamentos = await service.findAll();
-            res.json(medicamentos);
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({error: err.message})
-        }
-    }
-
-     async findById(req, res) {
+  async create(req, res) {
     try {
-      const medicamento = await service.findById(req.params.id);
-      res.json(medicamento);
+      const medicamento = await service.create(req.body);
+      res.status(201).json({
+        message: 'Medicamento criado com sucesso',
+        data: medicamento
+      });
     } catch (err) {
-      res.status(404).json({ error: err.message });
+      console.error('Erro ao criar medicamento:', err);
+      res.status(400).json({ error: err.message });
+    }
+  }
+
+  async findAll(req, res) {
+    try {
+      const medicamentos = await service.findAll();
+      res.status(200).json(medicamentos);
+    } catch (err) {
+      console.error('Erro ao listar medicamentos:', err);
+      res.status(500).json({ error: 'Erro ao buscar medicamentos.' });
+    }
+  }
+
+  async findById(req, res) {
+    const { id } = req.params;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    try {
+      const medicamento = await service.findById(id);
+      if (!medicamento) {
+        return res.status(404).json({ error: 'Medicamento não encontrado' });
+      }
+      res.status(200).json(medicamento);
+    } catch (err) {
+      console.error('Erro ao buscar medicamento:', err);
+      res.status(500).json({ error: err.message });
     }
   }
 
   async update(req, res) {
+    const { id } = req.params;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
     try {
-      const medicamento = await service.update(req.params.id, req.body);
-      res.json(medicamento);
+      const medicamento = await service.update(id, req.body);
+      console.log(id)
+      if (!medicamento) {
+        return res.status(404).json({ error: 'Medicamento não encontrado' });
+      }
+      res.status(200).json({
+        message: 'Medicamento atualizado com sucesso',
+        data: medicamento
+      });
     } catch (err) {
-      res.status(404).json({ error: err.message });
+      console.error('Erro ao atualizar medicamento:', err);
+      res.status(500).json({ error: err.message });
     }
   }
 
   async remove(req, res) {
+    const { id } = req.params;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
     try {
-      await service.remove(req.params.id);
-      res.status(204).send();
+      const removed = await service.remove(id);
+      if (!removed) {
+        return res.status(404).json({ error: 'Medicamento não encontrado' });
+      }
+      res.status(200).json({
+        message: 'Medicamento removido com sucesso',
+        data: removed
+      });
     } catch (err) {
-      res.status(404).json({ error: err.message });
+      console.error('Erro ao remover medicamento:', err);
+      res.status(500).json({ error: err.message });
     }
   }
 }
