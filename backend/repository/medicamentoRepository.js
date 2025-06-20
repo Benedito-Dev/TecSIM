@@ -15,8 +15,6 @@ class MedicamentoRepository {
     const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
     const documentToInsert = Array.isArray(parsedData) ? parsedData[0] : parsedData;
 
-    console.log('Criando documento:', documentToInsert);
-
     const col = await this.getCollection();
     const result = await col.insertOne(documentToInsert);
 
