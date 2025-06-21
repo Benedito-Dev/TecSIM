@@ -1,8 +1,8 @@
 const express = require('express');
-const controller = require('../controllers/usuarioController');
-const ValidateUsuario = require('../middleware/validateUsuario');
+const controller = require('../controllers/pacientesController');
+const ValidatePaciente = require('../middleware/validatePaciente');
 
-class UsuarioRoutes {
+class PacientesRoutes {
   constructor() {
     this.router = express.Router();
     this.registerRoutes();
@@ -136,7 +136,7 @@ class UsuarioRoutes {
      *       409:
      *         description: Email já cadastrado
      */
-    this.router.post('/', ValidateUsuario.validateCreate, controller.create);
+    this.router.post('/', ValidatePaciente.validateCreate, controller.create);
 
     /**
      * @swagger
@@ -173,7 +173,7 @@ class UsuarioRoutes {
      *       404:
      *         description: Usuário não encontrado
      */
-    this.router.put('/:id', ValidateUsuario.validateUpdate, controller.update);
+    this.router.put('/:id', ValidatePaciente.validateUpdate, controller.update);
 
     /**
      * @swagger
@@ -217,7 +217,7 @@ class UsuarioRoutes {
      *       404:
      *         description: Usuário não encontrado
      */
-    this.router.patch('/:id/password', ValidateUsuario.validatePassword, controller.updatePassword);
+    this.router.patch('/:id/password', ValidatePaciente.validatePassword, controller.updatePassword);
 
     /**
      * @swagger
@@ -250,4 +250,4 @@ class UsuarioRoutes {
   }
 }
 
-module.exports = new UsuarioRoutes().getRouter();
+module.exports = new PacientesRoutes().getRouter();

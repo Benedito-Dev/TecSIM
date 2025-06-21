@@ -1,4 +1,4 @@
-const OtpService = require('../services/otpService');
+const OtpService = require('../../services/auth/otpService');
 
 class OtpController {
   async sendOtp(req, res) {

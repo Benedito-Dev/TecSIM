@@ -1,5 +1,5 @@
-const db = require('../db/db');
-const Otp = require('../models/OtpModel');
+const db = require('../../db/db');
+const Otp = require('../../models/OtpModel');
 
 class OtpRepository {
   async save({ email, otp, expires_at }) {

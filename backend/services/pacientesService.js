@@ -1,6 +1,6 @@
-const repository = require('../repository/usuarioRepository');
+const repository = require('../repository/pacientesRepository');
 
-class UsuarioService {
+class PacienteService {
   static async getAll() {
     const usuarios = await repository.findAll();
     return usuarios;  // Já é um array de objetos Usuario
@@ -37,4 +37,4 @@ class UsuarioService {
   }
 }
 
-module.exports = UsuarioService;
+module.exports = PacienteService;

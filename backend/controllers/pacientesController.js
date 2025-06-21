@@ -1,10 +1,10 @@
-const UsuarioService = require('../services/usuarioService');
+const PacienteService = require('../services/pacientesService');
 
-class UsuarioController {
+class PacienteController {
   // Buscar todos os usuários (sem senhas)
   async getAll(req, res) {
     try {
-      const usuarios = await UsuarioService.getAll();
+      const usuarios = await PacienteService.getAll();
       res.status(200).json(usuarios);
     } catch (error) {
       console.error('Erro ao buscar usuários:', error);
@@ -16,7 +16,7 @@ class UsuarioController {
   async getById(req, res) {
     try {
       const { id } = req.params;
-      const usuario = await UsuarioService.getById(id);
+      const usuario = await PacienteService.getById(id);
 
       if (!usuario) {
         return res.status(404).json({ error: 'Usuário não encontrado.' });
@@ -33,7 +33,7 @@ class UsuarioController {
   async getByEmail(req, res) {
     try {
       const { email } = req.params;
-      const usuario = await UsuarioService.getByEmail(email);
+      const usuario = await PacienteService.getByEmail(email);
 
       if (!usuario) {
         return res.status(404).json({ error: 'Usuário não encontrado.' });
@@ -50,7 +50,7 @@ class UsuarioController {
   async create(req, res) {
     try {
       const dadosUsuario = req.body;
-      const novoUsuario = await UsuarioService.create(dadosUsuario);
+      const novoUsuario = await PacienteService.create(dadosUsuario);
       
       res.status(201).json({ 
         message: 'Usuário criado com sucesso', 
@@ -79,7 +79,7 @@ class UsuarioController {
       delete dadosAtualizacao.id_usuario;
       delete dadosAtualizacao.data_cadastro;
 
-      const usuarioAtualizado = await UsuarioService.update(id, dadosAtualizacao);
+      const usuarioAtualizado = await PacienteService.update(id, dadosAtualizacao);
 
       if (!usuarioAtualizado) {
         return res.status(404).json({ error: 'Usuário não encontrado para atualizar.' });
@@ -101,7 +101,7 @@ class UsuarioController {
       const { id } = req.params;
       const { senhaAtual, novaSenha } = req.body;
 
-      const resultado = await UsuarioService.updatePassword(id, senhaAtual, novaSenha);
+      const resultado = await PacienteService.updatePassword(id, senhaAtual, novaSenha);
 
       if (!resultado) {
         return res.status(400).json({ error: 'Senha atual incorreta ou usuário não encontrado.' });
@@ -118,7 +118,7 @@ class UsuarioController {
   async remove(req, res) {
     try {
       const { id } = req.params;
-      const resultado = await UsuarioService.remove(id);
+      const resultado = await PacienteService.remove(id);
 
       if (!resultado) {
         return res.status(404).json({ error: 'Usuário não encontrado para remover.' });
@@ -132,4 +132,4 @@ class UsuarioController {
   }
 }
 
-module.exports = new UsuarioController();
+module.exports = new PacienteController();

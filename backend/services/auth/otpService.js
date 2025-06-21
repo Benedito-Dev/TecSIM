@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const otpRepository = require('../repository/otpRepository');
+const otpRepository = require('../../repository/auth/otpRepository');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 

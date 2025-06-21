@@ -1,4 +1,4 @@
-class Usuario {
+class Paciente {
   constructor({ id_usuario, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro }) {
     this.id_usuario = id_usuario;
     this.nome = nome;
@@ -35,4 +35,4 @@ class Usuario {
   }
 }
 
-module.exports = Usuario;
+module.exports = Paciente;

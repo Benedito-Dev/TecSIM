@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
-const authConfig = require('../config/auth');
-const usuarioRepository = require('../repository/usuarioRepository');
+const authConfig = require('../../config/auth');
+const pacienteRepository = require('../../repository/pacientesRepository');
 
 class AuthService {
   async login(email, senha) {
     try {
       // Usa o repository existente para verificar credenciais
-      const usuario = await usuarioRepository.verifyCredentials(email, senha);
+      const usuario = await pacienteRepository.verifyCredentials(email, senha);
 
       const idade = this.calcularIdade(usuario.data_nascimento);
       
@@ -48,7 +48,7 @@ class AuthService {
   async verifyToken(token) {
     try {
       const decoded = jwt.verify(token, authConfig.secret);
-      return await usuarioRepository.findById(decoded.id);
+      return await pacienteRepository.findById(decoded.id);
     } catch (error) {
       throw new Error('Token inválido: ' + error.message);
     }

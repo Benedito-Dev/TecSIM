@@ -1,4 +1,4 @@
-class ValidateUsuario {
+class ValidatePaciente {
   static validateCreate(req, res, next) {
     const { nome, email, senha, data_nascimento, peso_kg, aceite_termos } = req.body;
 
@@ -102,4 +102,4 @@ class ValidateUsuario {
   }
 }
 
-module.exports = ValidateUsuario;
+module.exports = ValidatePaciente;

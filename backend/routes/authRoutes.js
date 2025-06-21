@@ -1,6 +1,6 @@
 const express = require('express');
-const authController = require('../controllers/authController');
-const otpController = require('../controllers/otpController');
+const authController = require('../controllers/auth/authController');
+const otpController = require('../controllers/auth/otpController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 class AuthRoutes {

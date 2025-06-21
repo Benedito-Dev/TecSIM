@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const usuarioRoutes = require('./routes/usuarioRoutes');
+const pacientesRoutes = require('./routes/pacientesRoutes');
+const medicosRoutes = require('./routes/medicoRoutes')
 const authRoutes = require('./routes/authRoutes')
 const dbInit = require('./db/dbinit');
 const swaggerUi = require('swagger-ui-express');
@@ -30,7 +31,8 @@ class Server {
   }
 
   routes() {
-    this.app.use('/usuarios', usuarioRoutes);
+    this.app.use('/pacientes', pacientesRoutes);
+    this.app.use('/medicos', medicosRoutes)
     this.app.use('/auth', authRoutes);
     this.app.use('/medicamentos', medicamentoRoutes);
     this.app.get('/', (req, res) => {
