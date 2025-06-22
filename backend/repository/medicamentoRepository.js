@@ -1,64 +1,169 @@
-const connectMongo = require('../db/mongo');
-const { ObjectId } = require('mongodb');
+const db = require('../db/db');
 
 class MedicamentoRepository {
   constructor() {
-    this.collectionName = 'Medicamentos';
-  }
-
-  async getCollection() {
-    const db = await connectMongo();
-    return db.collection(this.collectionName);
+    this.tableName = 'medicamentos';
   }
 
   async create(data) {
-    const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-    const documentToInsert = Array.isArray(parsedData) ? parsedData[0] : parsedData;
+    const {
+      nome,
+      tipo,
+      descricao,
+      faixa_etaria_minima,
+      faixa_etaria_maxima,
+      contraindicacoes,
+      interacoes_comuns,
+      composicao,
+      dosagem_padrao,
+      bula_detalhada
+    } = typeof data === 'string' ? JSON.parse(data) : data;
+    
+    const result = await db.query(`
+      INSERT INTO ${this.tableName} 
+      (
+        nome, tipo, descricao, faixa_etaria_minima, faixa_etaria_maxima,
+        contraindicacoes, interacoes_comuns, composicao, dosagem_padrao, bula_detalhada
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING 
+        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+        faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
+        composicao, dosagem_padrao, bula_detalhada
+    `, [
+      nome, tipo, descricao, faixa_etaria_minima, faixa_etaria_maxima,
+      contraindicacoes, interacoes_comuns, composicao, dosagem_padrao, bula_detalhada
+    ]);
 
-    const col = await this.getCollection();
-    const result = await col.insertOne(documentToInsert);
-
-    return { id: result.insertedId, ...documentToInsert };
+    return result.rows[0];
   }
 
   async findAll() {
-    const col = await this.getCollection();
-    const documentos = await col.find().toArray();
-
-    console.log('Documentos encontrados:', documentos.length);
-    return documentos;
+    const result = await db.query(`
+      SELECT 
+        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+        faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
+        composicao, dosagem_padrao, bula_detalhada
+      FROM ${this.tableName}
+    `);
+    
+    console.log('Medicamentos encontrados:', result.rows.length);
+    return result.rows;
   }
 
   async findById(id) {
-    const col = await this.getCollection();
-    const documento = await col.findOne({ _id: new ObjectId(id) });
-
-    console.log('Documento buscado por ID:', documento);
-    return documento;
+    const result = await db.query(`
+      SELECT 
+        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+        faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
+        composicao, dosagem_padrao, bula_detalhada
+      FROM ${this.tableName} 
+      WHERE id_medicamento = $1
+    `, [id]);
+    
+    console.log('Medicamento buscado por ID:', result.rows[0]);
+    return result.rows[0];
   }
 
   async update(id, data) {
-    const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-    const updateData = Array.isArray(parsedData) ? parsedData[0] : parsedData;
-
-    const col = await this.getCollection();
-    const result = await col.findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: updateData },
-    );
-
-    console.log(result.value)
-
-    return result.value;
+    const {
+      nome,
+      tipo,
+      descricao,
+      faixa_etaria_minima,
+      faixa_etaria_maxima,
+      contraindicacoes,
+      interacoes_comuns,
+      composicao,
+      dosagem_padrao,
+      bula_detalhada
+    } = typeof data === 'string' ? JSON.parse(data) : data;
+    
+    const result = await db.query(`
+      UPDATE ${this.tableName} 
+      SET 
+        nome = $1,
+        tipo = $2,
+        descricao = $3,
+        faixa_etaria_minima = $4,
+        faixa_etaria_maxima = $5,
+        contraindicacoes = $6,
+        interacoes_comuns = $7,
+        composicao = $8,
+        dosagem_padrao = $9,
+        bula_detalhada = $10
+      WHERE id_medicamento = $11
+      RETURNING 
+        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+        faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
+        composicao, dosagem_padrao, bula_detalhada
+    `, [
+      nome, tipo, descricao, faixa_etaria_minima, faixa_etaria_maxima,
+      contraindicacoes, interacoes_comuns, composicao, dosagem_padrao, bula_detalhada,
+      id
+    ]);
+    
+    console.log('Medicamento atualizado:', result.rows[0]);
+    return result.rows[0];
   }
 
   async remove(id) {
-    console.log('Removendo documento com ID:', id);
+    console.log('Removendo medicamento com ID:', id);
+    
+    const result = await db.query(`
+      DELETE FROM ${this.tableName} 
+      WHERE id_medicamento = $1
+      RETURNING id_medicamento
+    `, [id]);
+    
+    return { id_medicamento: result.rows[0]?.id_medicamento };
+  }
 
-    const col = await this.getCollection();
-    const result = await col.findOneAndDelete({ _id: new ObjectId(id) });
+  // Métodos adicionais específicos para medicamentos
+  async findByNome(nome) {
+    const result = await db.query(`
+      SELECT 
+        id_medicamento, nome, tipo, descricao
+      FROM ${this.tableName} 
+      WHERE nome ILIKE $1
+    `, [`%${nome}%`]);
+    
+    return result.rows;
+  }
 
-    return result.value;
+  async findByTipo(tipo) {
+    const result = await db.query(`
+      SELECT 
+        id_medicamento, nome, tipo, descricao
+      FROM ${this.tableName} 
+      WHERE tipo = $1
+    `, [tipo]);
+    
+    return result.rows;
+  }
+
+  async findByFaixaEtaria(idade) {
+    const result = await db.query(`
+      SELECT 
+        id_medicamento, nome, tipo, 
+        faixa_etaria_minima, faixa_etaria_maxima
+      FROM ${this.tableName} 
+      WHERE faixa_etaria_minima <= $1 
+      AND faixa_etaria_maxima >= $1
+    `, [idade]);
+    
+    return result.rows;
+  }
+
+  async searchByComposicao(termo) {
+    const result = await db.query(`
+      SELECT 
+        id_medicamento, nome, tipo, composicao
+      FROM ${this.tableName} 
+      WHERE composicao ILIKE $1
+    `, [`%${termo}%`]);
+    
+    return result.rows;
   }
 }
 

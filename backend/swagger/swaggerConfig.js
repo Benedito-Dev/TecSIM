@@ -15,26 +15,47 @@ const options = {
     ],
     components: {
       schemas: {
-        Usuario: {
+        Paciente: {
           type: 'object',
           properties: {
+            cpf: { type: 'string', example: '224.297.389-48' },
             nome: { type: 'string', example: 'João Silva' },
             email: { type: 'string', format: 'email', example: 'joao@example.com' },
             senha: { type: 'string', example: 'senha123', writeOnly: true },
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
+            genero: { type: 'string', example: 'man'  },
             aceite_termos: { type: 'boolean', example: true }
           }
         },
         Medicamento: {
           type: 'object',
-          required: ['nome', 'dosagem'],
+          required: ['nome', 'dosagem_padrao'],
           properties: {
+            id_medicamento: { type: 'integer', example: 1 },
             nome: { type: 'string', example: 'Dipirona' },
-            dosagem: { type: 'string', example: '500mg' },
-            laboratorio: { type: 'string', example: 'Neo Química' },
-            quantidade: { type: 'integer', example: 10 },
-            tipo: { type: 'string', example: 'analgesico' },
+            tipo: { type: 'string', example: 'analgésico' },
+            descricao: { type: 'string', example: 'Analgésico e antitérmico' },
+            faixa_etaria_minima: { type: 'integer', example: 12 },
+            faixa_etaria_maxima: { type: 'integer', example: 99 },
+            contraindicacoes: { type: 'string', example: 'Hipersensibilidade' },
+            interacoes_comuns: { type: 'string', example: 'Interação com anticoagulantes' },
+            composicao: { type: 'string', example: 'Dipirona sódica 500mg' },
+            dosagem_padrao: { type: 'string', example: '500mg' },
+            bula_detalhada: { type: 'string', example: 'Tomar 1 comprimido...' }
+          }
+        },
+        Medico: {
+          type: 'object',
+          required: ['nome', 'crm', 'especialidade'],
+          properties: {
+            nome: { type: 'string', example: 'Dr. Carlos Alberto' },
+            crm: { type: 'string', example: 'CRM/SP 123456' },
+            especialidade: { type: 'string', example: 'Cardiologia' },
+            email: { type: 'string', format: 'email', example: 'carlos.alberto@exemplo.com' },
+            senha: { type: 'string', example: 'senha123', writeOnly: true },
+            telefone: { type: 'string', example: '(11) 99999-8888' },
+            ativo: { type: 'boolean', example: true }
           }
         },
         InteracoesMedicamentos: {
@@ -49,7 +70,7 @@ const options = {
         },
         OTPRequest: {
           type: 'object',
-          required: ['email', 'otp'],
+          required: ['email'],
           properties: {
             email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' },
           }
@@ -65,7 +86,7 @@ const options = {
       }
     }
   },
-  apis: ['./routes/*.js'], // Caminho dos arquivos onde estão os comentários Swagger
+  apis: ['./routes/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

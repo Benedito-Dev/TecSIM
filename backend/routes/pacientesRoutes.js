@@ -12,27 +12,27 @@ class PacientesRoutes {
     /**
      * @swagger
      * tags:
-     *   - name: Usuários
-     *     description: Gestão de usuários do sistema
+     *   - name: Pacientes
+     *     description: Gestão de pacientes do sistema
      */
 
     /**
      * @swagger
-     * /usuarios:
+     * /pacientes:
      *   get:
-     *     summary: Lista todos os usuários (sem informações sensíveis)
-     *     tags: [Usuários]
+     *     summary: Lista todos os pacientes (sem informações sensíveis)
+     *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
      *     responses:
      *       200:
-     *         description: Lista de usuários
+     *         description: Lista de pacientes
      *         content:
      *           application/json:
      *             schema:
      *               type: array
      *               items:
-     *                 $ref: '#/components/schemas/Usuario'
+     *                 $ref: '#/components/schemas/Paciente'
      *       401:
      *         description: Não autorizado
      *       500:
@@ -42,10 +42,10 @@ class PacientesRoutes {
 
     /**
      * @swagger
-     * /usuarios/{id}:
+     * /pacientes/{id}:
      *   get:
-     *     summary: Obtém um usuário pelo ID
-     *     tags: [Usuários]
+     *     summary: Obtém um paciente pelo ID
+     *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
      *     parameters:
@@ -54,16 +54,16 @@ class PacientesRoutes {
      *         schema:
      *           type: integer
      *         required: true
-     *         description: ID do usuário
+     *         description: ID do paciente
      *     responses:
      *       200:
-     *         description: Dados do usuário
+     *         description: Dados do paciente
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Usuario'
+     *               $ref: '#/components/schemas/Paciente'
      *       404:
-     *         description: Usuário não encontrado
+     *         description: paciente não encontrado
      *       401:
      *         description: Não autorizado
      */
@@ -71,10 +71,10 @@ class PacientesRoutes {
 
     /**
      * @swagger
-     * /usuarios/email/{email}:
+     * /pacientes/email/{email}:
      *   get:
-     *     summary: Busca usuário por email
-     *     tags: [Usuários]
+     *     summary: Busca paciente por email
+     *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
      *     parameters:
@@ -84,16 +84,16 @@ class PacientesRoutes {
      *           type: string
      *           format: email
      *         required: true
-     *         description: Email do usuário
+     *         description: Email do paciente
      *     responses:
      *       200:
-     *         description: Dados do usuário
+     *         description: Dados do paciente
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Usuario'
+     *               $ref: '#/components/schemas/Paciente'
      *       404:
-     *         description: Usuário não encontrado
+     *         description: paciente não encontrado
      *       401:
      *         description: Não autorizado
      */
@@ -101,17 +101,17 @@ class PacientesRoutes {
 
     /**
      * @swagger
-     * /usuarios:
+     * /pacientes:
      *   post:
-     *     summary: Cria um novo usuário
-     *     tags: [Usuários]
+     *     summary: Cria um novo paciente
+     *     tags: [Pacientes]
      *     requestBody:
      *       required: true
      *       content:
      *         application/json:
      *           schema:
      *             allOf:
-     *               - $ref: '#/components/schemas/Usuario'
+     *               - $ref: '#/components/schemas/Paciente'
      *               - type: object
      *                 required:
      *                   - senha
@@ -126,11 +126,11 @@ class PacientesRoutes {
      *                     example: true
      *     responses:
      *       201:
-     *         description: Usuário criado com sucesso
+     *         description: paciente criado com sucesso
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Usuario'
+     *               $ref: '#/components/schemas/Paciente'
      *       400:
      *         description: Dados inválidos
      *       409:
@@ -140,10 +140,10 @@ class PacientesRoutes {
 
     /**
      * @swagger
-     * /usuarios/{id}:
+     * /pacientes/{id}:
      *   put:
-     *     summary: Atualiza todos os dados do usuário
-     *     tags: [Usuários]
+     *     summary: Atualiza todos os dados do paciente
+     *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
      *     parameters:
@@ -152,35 +152,35 @@ class PacientesRoutes {
      *         schema:
      *           type: integer
      *         required: true
-     *         description: ID do usuário
+     *         description: ID do paciente
      *     requestBody:
      *       required: true
      *       content:
      *         application/json:
      *           schema:
-     *             $ref: '#/components/schemas/Usuario'
+     *             $ref: '#/components/schemas/Paciente'
      *     responses:
      *       200:
-     *         description: Usuário atualizado
+     *         description: paciente atualizado
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Usuario'
+     *               $ref: '#/components/schemas/Paciente'
      *       400:
      *         description: Dados inválidos
      *       401:
      *         description: Não autorizado
      *       404:
-     *         description: Usuário não encontrado
+     *         description: paciente não encontrado
      */
     this.router.put('/:id', ValidatePaciente.validateUpdate, controller.update);
 
     /**
      * @swagger
-     * /usuarios/{id}/password:
+     * /pacientes/{id}/password:
      *   patch:
-     *     summary: Atualiza a senha do usuário
-     *     tags: [Usuários]
+     *     summary: Atualiza a senha do paciente
+     *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
      *     parameters:
@@ -189,7 +189,7 @@ class PacientesRoutes {
      *         schema:
      *           type: integer
      *         required: true
-     *         description: ID do usuário
+     *         description: ID do paciente
      *     requestBody:
      *       required: true
      *       content:
@@ -215,16 +215,16 @@ class PacientesRoutes {
      *       401:
      *         description: Não autorizado/Senha atual incorreta
      *       404:
-     *         description: Usuário não encontrado
+     *         description: paciente não encontrado
      */
     this.router.patch('/:id/password', ValidatePaciente.validatePassword, controller.updatePassword);
 
     /**
      * @swagger
-     * /usuarios/{id}:
+     * /pacientes/{id}:
      *   delete:
-     *     summary: Remove um usuário
-     *     tags: [Usuários]
+     *     summary: Remove um paciente
+     *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
      *     parameters:
@@ -233,14 +233,14 @@ class PacientesRoutes {
      *         schema:
      *           type: integer
      *         required: true
-     *         description: ID do usuário
+     *         description: ID do paciente
      *     responses:
      *       204:
-     *         description: Usuário removido com sucesso
+     *         description: paciente removido com sucesso
      *       401:
      *         description: Não autorizado
      *       404:
-     *         description: Usuário não encontrado
+     *         description: paciente não encontrado
      */
     this.router.delete('/:id', controller.remove);
   }

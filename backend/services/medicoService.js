@@ -28,6 +28,7 @@ class MedicoService {
 
   static async create(dados) {
     const novoMedico = await repository.create(dados);
+    console.log(dados)
     return novoMedico;
   }
 

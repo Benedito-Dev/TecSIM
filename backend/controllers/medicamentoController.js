@@ -1,4 +1,4 @@
-const service = require('../services/mongoMedicamentosServices');
+const service = require('../services/medicamentosService');
 const { ObjectId } = require('mongodb');
 
 class MedicamentoController {
@@ -27,11 +27,7 @@ class MedicamentoController {
 
   async findById(req, res) {
     const { id } = req.params;
-
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'ID inválido' });
-    }
-
+    
     try {
       const medicamento = await service.findById(id);
       if (!medicamento) {
@@ -46,10 +42,6 @@ class MedicamentoController {
 
   async update(req, res) {
     const { id } = req.params;
-
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'ID inválido' });
-    }
 
     try {
       const medicamento = await service.update(id, req.body);
@@ -69,10 +61,6 @@ class MedicamentoController {
 
   async remove(req, res) {
     const { id } = req.params;
-
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'ID inválido' });
-    }
 
     try {
       const removed = await service.remove(id);

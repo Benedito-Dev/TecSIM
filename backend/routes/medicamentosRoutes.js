@@ -26,8 +26,6 @@ class MedicamentoRoutes {
      *       content:
      *           application/json:
      *             schema:
-     *               type: array
-     *               items:
      *                 $ref: '#/components/schemas/Medicamento'
      *     responses:
      *       201:
@@ -82,8 +80,6 @@ class MedicamentoRoutes {
      *       content:
      *           application/json:
      *             schema:
-     *               type: array
-     *               items:
      *                 $ref: '#/components/schemas/Medicamento'
      *     responses:
      *       200: 

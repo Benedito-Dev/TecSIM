@@ -7,7 +7,7 @@ const tables = [
     createQuery: `
       CREATE TABLE pacientes (
         id_usuario SERIAL PRIMARY KEY,
-        CPF VARCHAR(11) UNIQUE NOT NULL,
+        CPF VARCHAR(14) UNIQUE NOT NULL,
         nome VARCHAR(100) NOT NULL,
         email VARCHAR(150) UNIQUE NOT NULL,
         senha VARCHAR(255) NOT NULL,
@@ -26,7 +26,11 @@ const tables = [
         id_medico SERIAL PRIMARY KEY,
         nome VARCHAR(100) NOT NULL,
         crm VARCHAR(20) UNIQUE NOT NULL,
-        especialidade VARCHAR(100)
+        especialidade VARCHAR(100),
+        email VARCHAR(150) UNIQUE NOT NULL,
+        senha VARCHAR(255) NOT NULL,
+        telefone VARCHAR(16) NOT NULL,
+        ativo BOOLEAN DEFAULT TRUE
       );
     `
   },
