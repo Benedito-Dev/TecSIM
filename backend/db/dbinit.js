@@ -3,10 +3,10 @@ const db = require('./db');
 
 const tables = [
   {
-    name: 'pacientes',
+    name: 'paciente',
     createQuery: `
       CREATE TABLE pacientes (
-        id_usuario SERIAL PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         CPF VARCHAR(14) UNIQUE NOT NULL,
         nome VARCHAR(100) NOT NULL,
         email VARCHAR(150) UNIQUE NOT NULL,
