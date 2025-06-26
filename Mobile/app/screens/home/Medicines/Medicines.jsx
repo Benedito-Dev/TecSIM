@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, Modal, ScrollView, Keyboard } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, Modal, ScrollView, Keyboard, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getMedicametos } from '../../../services/medicamentosService';
-
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ArrowLeft } from 'lucide-react-native';
@@ -10,11 +9,11 @@ import { styles } from './styles';
 
 export default function MedicineScreen() {
   const navigation = useNavigation();
-
   const [search, setSearch] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState([]);
   const [medicines, setMedicines] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const filterOptions = [
     { id: 'analgesico', label: 'Analgésico', icon: 'emoticon-happy' },
@@ -24,53 +23,33 @@ export default function MedicineScreen() {
     { id: 'gastro', label: 'Gastroprotetor', icon: 'stomach' },
   ];
 
-  // Buscar medicamentos ao montar o componente
   useEffect(() => {
-    async function fetchMedicamentos() {
+    (async () => {
       try {
         const response = await getMedicametos();
-        if (Array.isArray(response)) {
-          setMedicines(response);
-        } else {
-          console.error("Resposta inesperada:", response);
-        }
+        setMedicines(Array.isArray(response) ? response : []);
       } catch (error) {
         console.error("Erro ao buscar medicamentos:", error);
+      } finally {
+        setLoading(false);
       }
-    }
-
-    fetchMedicamentos();
+    })();
   }, []);
 
-  const toggleFilter = (filterId) => {
-    setActiveFilters(prev =>
-      prev.includes(filterId)
-        ? prev.filter(id => id !== filterId)
-        : [...prev, filterId]
-    );
-  };
+  const toggleFilter = (id) =>
+    setActiveFilters((prev) => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
 
-  const filtered = medicines.filter(item => {
-    const matchesSearch =
-      item.nome?.toLowerCase().includes(search.toLowerCase()) ||
-      item.tipo?.toLowerCase().includes(search.toLowerCase());
-
-    const matchesFilter =
-      activeFilters.length === 0 ||
-      activeFilters.includes(item.tipo);
-
-    return matchesSearch && matchesFilter;
+  const filtered = medicines.filter(({ nome = '', tipo = '' }) => {
+    const searchMatch = nome.toLowerCase().includes(search.toLowerCase()) || tipo.toLowerCase().includes(search.toLowerCase());
+    const filterMatch = !activeFilters.length || activeFilters.includes(tipo);
+    return searchMatch && filterMatch;
   });
-
-  const handleSearchSubmit = () => {
-    Keyboard.dismiss();
-  };
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <View style={{ display: "flex", alignItems: "center", flexDirection: "row", gap: 20 }} >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <ArrowLeft size={24} color="#000" />
           </TouchableOpacity>
@@ -78,7 +57,7 @@ export default function MedicineScreen() {
         </View>
       </View>
 
-      {/* Barra de busca */}
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <FeatherIcon name="search" size={20} color="#A0A0A0" style={styles.searchIcon} />
         <TextInput
@@ -87,7 +66,7 @@ export default function MedicineScreen() {
           placeholderTextColor="#A0A0A0"
           value={search}
           onChangeText={setSearch}
-          onSubmitEditing={handleSearchSubmit}
+          onSubmitEditing={Keyboard.dismiss}
           returnKeyType="search"
         />
         {search.length > 0 && (
@@ -97,29 +76,28 @@ export default function MedicineScreen() {
         )}
       </View>
 
-      {/* Info de resultados */}
+      {/* Results Header */}
       <View style={styles.resultsHeader}>
         <Text style={styles.sectionTitle}>Meus medicamentos</Text>
         <View style={styles.resultsControls}>
-          <Text style={styles.resultsCount}>{filtered.length} {filtered.length === 1 ? 'item' : 'itens'}</Text>
+          <Text style={styles.resultsCount}>
+            {filtered.length} {filtered.length === 1 ? 'item' : 'itens'}
+          </Text>
           <TouchableOpacity
-            style={[
-              styles.filterButton,
-              activeFilters.length > 0 && styles.filterButtonActive
-            ]}
+            style={[styles.filterButton, activeFilters.length > 0 && styles.filterButtonActive]}
             onPress={() => setShowFilters(true)}
           >
-            <FeatherIcon
-              name="filter"
-              size={20}
-              color={activeFilters.length > 0 ? '#2563EB' : '#6B7280'}
-            />
+            <FeatherIcon name="filter" size={20} color={activeFilters.length > 0 ? '#2563EB' : '#6B7280'} />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Lista de medicamentos */}
-      {filtered.length === 0 ? (
+      {/* Loading */}
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#2563EB" />
+        </View>
+      ) : filtered.length === 0 ? (
         <View style={styles.emptyState}>
           <MaterialCommunityIcons name="pill-off" size={48} color="#E5E7EB" />
           <Text style={styles.emptyText}>Nenhum medicamento encontrado</Text>
@@ -134,8 +112,9 @@ export default function MedicineScreen() {
           data={filtered}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.medItem}>
+            <TouchableOpacity style={styles.medItem} onPress={() => navigation.replace('Bula')}>
               <View style={styles.medIcon}>
                 <MaterialCommunityIcons name="pill" size={24} color="#2563EB" />
               </View>
@@ -153,15 +132,14 @@ export default function MedicineScreen() {
               <FeatherIcon name="chevron-right" size={20} color="#9CA3AF" />
             </TouchableOpacity>
           )}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       )}
 
-      {/* Modal de Filtros */}
+      {/* Filter Modal */}
       <Modal
         visible={showFilters}
         animationType="slide"
-        transparent={true}
+        transparent
         onRequestClose={() => setShowFilters(false)}
       >
         <View style={styles.modalOverlay}>
@@ -174,49 +152,27 @@ export default function MedicineScreen() {
             </View>
 
             <ScrollView style={styles.filtersContainer}>
-              {filterOptions.map(filter => (
-                <TouchableOpacity
-                  key={filter.id}
-                  style={[
-                    styles.filterOption,
-                    activeFilters.includes(filter.id) && styles.filterOptionActive
-                  ]}
-                  onPress={() => toggleFilter(filter.id)}
-                >
-                  <MaterialCommunityIcons
-                    name={filter.icon}
-                    size={20}
-                    color={activeFilters.includes(filter.id) ? '#2563EB' : '#6B7280'}
-                  />
-                  <Text style={[
-                    styles.filterOptionText,
-                    activeFilters.includes(filter.id) && styles.filterOptionTextActive
-                  ]}>
-                    {filter.label}
-                  </Text>
-                  {activeFilters.includes(filter.id) && (
-                    <FeatherIcon
-                      name="check"
-                      size={18}
-                      color="#2563EB"
-                      style={styles.filterCheckIcon}
-                    />
-                  )}
-                </TouchableOpacity>
-              ))}
+              {filterOptions.map(({ id, label, icon }) => {
+                const active = activeFilters.includes(id);
+                return (
+                  <TouchableOpacity
+                    key={id}
+                    style={[styles.filterOption, active && styles.filterOptionActive]}
+                    onPress={() => toggleFilter(id)}
+                  >
+                    <MaterialCommunityIcons name={icon} size={20} color={active ? '#2563EB' : '#6B7280'} />
+                    <Text style={[styles.filterOptionText, active && styles.filterOptionTextActive]}>{label}</Text>
+                    {active && <FeatherIcon name="check" size={18} color="#2563EB" style={styles.filterCheckIcon} />}
+                  </TouchableOpacity>
+                );
+              })}
             </ScrollView>
 
             <View style={styles.modalFooter}>
-              <TouchableOpacity
-                style={styles.clearFiltersButton}
-                onPress={() => setActiveFilters([])}
-              >
+              <TouchableOpacity style={styles.clearFiltersButton} onPress={() => setActiveFilters([])}>
                 <Text style={styles.clearFiltersText}>Limpar filtros</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.applyFiltersButton}
-                onPress={() => setShowFilters(false)}
-              >
+              <TouchableOpacity style={styles.applyFiltersButton} onPress={() => setShowFilters(false)}>
                 <Text style={styles.applyFiltersText}>Aplicar filtros</Text>
               </TouchableOpacity>
             </View>
