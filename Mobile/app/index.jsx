@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // index.jsx
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -16,5 +17,16 @@ export default function App() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
     </Stack.Navigator>
+=======
+import React from 'react';
+import { AuthProvider } from './context/AuthContext';
+import AppNavigator from './navigation/AppNavigator';
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppNavigator />
+    </AuthProvider>
+>>>>>>> 5-feature-Reestruturando-Banco-De-Dados
   );
 }
