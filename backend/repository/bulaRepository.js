@@ -1,0 +1,61 @@
+const db = require('../db/db')
+
+class bulaRepository{
+
+    async findAll() {
+        const result = await db.query('SELECT * FROM bula')
+        return result.rows.map( row => new Bula(row));
+    }
+
+    async findById(id) {
+        const result = await db.query('SELECT * FROM bulas WHERE ID = $1', [id])
+        return result.rows[0] ? new Bula(result.rows[0]) :null;
+    }
+
+    async findByMedicamentoId(id_medicamento) {
+        const result = await db.query('SELECT * FROM bulas where id_medicamento = $1', [id_medicamento])
+        return result.rows[0] ? new Bula (result.rows[0]) : null;
+    }
+
+    async create({
+        id_medicamento,
+        dosagem, 
+        indicacoes,
+        contraindicacoes,
+        advertencias,
+        interacoes,
+        armazenamento
+    }) {
+        const result = await db.query(`
+      INSERT INTO bulas (
+        id_medicamento,
+        "dosagem e administração",
+        indicacoes,
+        contraindicacoes,
+        advertencias,
+        interacoes_medicamentosas,
+        "armazenamento e validade"
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *;
+    `, [
+      id_medicamento,
+      dosagem,
+      indicacoes,
+      contraindicacoes,
+      advertencias,
+      interacoes,
+      armazenamento,
+      id
+    ]);
+        return new Bula(result.rows[0]);
+    }
+
+    async remove(id) {
+        const result = await db.query('DELETE FROM bulas WHERE id = $1 RETURNING *;', [id]);
+        return result.rows[0] ? new Bula(result.rows[0]) : null;
+    }
+
+}
+
+module.exports = new bulaRepository();

@@ -5,7 +5,7 @@ const tables = [
   {
     name: 'paciente',
     createQuery: `
-      CREATE TABLE pacientes (
+      CREATE TABLE paciente (
         id SERIAL PRIMARY KEY,
         CPF VARCHAR(14) UNIQUE NOT NULL,
         nome VARCHAR(100) NOT NULL,
