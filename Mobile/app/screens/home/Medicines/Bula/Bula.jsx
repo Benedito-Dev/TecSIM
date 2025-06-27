@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Linking } from 'react-native'
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import styles from './styles';
 
-const MedicineLeafletScreen = () => {
+export default function BulaScreen() {
   const [expandedSections, setExpandedSections] = React.useState({
     dosage: true,
     contraindications: true,
@@ -235,5 +235,3 @@ const InfoRow = ({ label, value, highlight = false }) => (
     <Text style={[styles.infoValue, highlight && styles.infoHighlight]}>{value}</Text>
   </View>
 );
-
-export default MedicineLeafletScreen;
