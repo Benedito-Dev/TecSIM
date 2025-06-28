@@ -1,4 +1,5 @@
 const db = require('../db/db')
+const Bula = require('../models/bulaModel')
 
 class bulaRepository{
 
@@ -19,34 +20,33 @@ class bulaRepository{
 
     async create({
         id_medicamento,
-        dosagem, 
+        dosagem_e_administracao, 
         indicacoes,
         contraindicacoes,
         advertencias,
         interacoes,
-        armazenamento
+        armazenamento_e_validade
     }) {
         const result = await db.query(`
       INSERT INTO bulas (
         id_medicamento,
-        "dosagem e administração",
+        "dosagem_e_administracao",
         indicacoes,
         contraindicacoes,
         advertencias,
         interacoes_medicamentosas,
-        "armazenamento e validade"
+        "armazenamento_e_validade"
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;
     `, [
       id_medicamento,
-      dosagem,
+      dosagem_e_administracao,
       indicacoes,
       contraindicacoes,
       advertencias,
       interacoes,
-      armazenamento,
-      id
+      armazenamento_e_validade,
     ]);
         return new Bula(result.rows[0]);
     }

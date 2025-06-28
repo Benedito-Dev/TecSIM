@@ -53,6 +53,22 @@ const tables = [
     `
   },
   {
+    name: 'bulas',
+    createQuery: `
+      CREATE TABLE bulas (
+        id SERIAL PRIMARY KEY,
+        id_medicamento INTEGER UNIQUE NOT NULL,
+        dosagem_e_administracao TEXT[],
+        indicacoes TEXT[],
+        contraindicacoes TEXT[],
+        advertencias TEXT[],
+        interacoes_medicamentosas TEXT[],
+        armazenamento_e_validade TEXT[],
+        CONSTRAINT fk_bula_medicamento FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento) ON DELETE CASCADE
+      );
+    `
+  },
+  {
     name: 'prescricoes',
     createQuery: `
       CREATE TABLE prescricoes (
