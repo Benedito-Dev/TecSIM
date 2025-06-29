@@ -1,216 +1,143 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Linking } from 'react-native';
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { useRoute } from '@react-navigation/native';
+import {
+  View, Text, ScrollView, TouchableOpacity,
+  Linking, ActivityIndicator
+} from 'react-native';
+import {
+  MaterialIcons, FontAwesome,
+  MaterialCommunityIcons
+} from '@expo/vector-icons';
+import { getBulaPorMedicamento } from '../../../../services/bulaService';
+
 import styles from './styles';
 
 export default function BulaScreen() {
-  const [expandedSections, setExpandedSections] = React.useState({
+  const route = useRoute();
+  const { idMedicamento, nomeMedicamento, tipoMedicamento, dosagemMedicamento } = route.params;
+
+
+  const [bula, setBula] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [expandedSections, setExpandedSections] = useState({
     dosage: true,
     contraindications: true,
     indications: false,
     precautions: false,
     interactions: false,
-    storage: false
+    storage: false,
   });
 
+  useEffect(() => {
+    const fetchBula = async () => {
+      try {
+        const data = await getBulaPorMedicamento(idMedicamento);
+        setBula(data);
+      } catch (error) {
+        console.error('Erro ao buscar bula:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBula();
+  }, [idMedicamento]);
+
   const toggleSection = (section) => {
-    setExpandedSections({
-      ...expandedSections,
-      [section]: !expandedSections[section]
-    });
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#3498db" />
+        <Text style={{ marginTop: 10, color: '#3498db' }}>Carregando bula...</Text>
+      </View>
+    );
+  }
+
+  if (!bula) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: 'red', fontSize: 16 }}>Bula não encontrada.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       {/* Cabeçalho */}
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          <Text style={styles.medicineName}>PARACETAMOL</Text>
-          <Text style={styles.medicineDetails}>Analgésico e antitérmico • Comprimido 500mg</Text>
+          <Text style={styles.medicineName}>{nomeMedicamento?.toUpperCase() || 'MEDICAMENTO'}</Text>
+          <Text style={styles.medicineDetails}>
+            {tipoMedicamento || ''} • {dosagemMedicamento || ''}
+          </Text>
         </View>
         <View style={styles.headerDecoration}></View>
       </View>
 
       {/* Conteúdo principal */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Seção de DOSAGEM */}
-        <View style={styles.card}>
-          <TouchableOpacity 
-            style={styles.sectionHeader} 
-            onPress={() => toggleSection('dosage')}
-            activeOpacity={0.7}
-          >
-            <View style={styles.sectionTitle}>
-              <MaterialIcons name="medication" size={22} color="#3498db" />
-              <Text style={styles.sectionHeaderText}>DOSAGEM E ADMINISTRAÇÃO</Text>
-            </View>
-            <MaterialIcons 
-              name={expandedSections.dosage ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
-              size={24} 
-              color="#7f8c8d" 
-            />
-          </TouchableOpacity>
-          
-          {expandedSections.dosage && (
-            <View style={styles.sectionContent}>
-              <InfoRow label="Forma farmacêutica:" value="Comprimido revestido" />
-              <InfoRow label="Forma de administração:" value="Oral" />
-              <InfoRow label="Dose para adultos:" value="500mg a cada 4-6 horas" />
-              <InfoRow 
-                label="Dose máxima diária:" 
-                value="4g (8 comprimidos)" 
-                highlight 
-              />
-              <Text style={styles.noteText}>* Não recomendado para crianças abaixo de 10 anos</Text>
-            </View>
-          )}
-        </View>
+        <ExpandableSection
+          title="DOSAGEM E ADMINISTRAÇÃO"
+          icon={<MaterialIcons name="medication" size={22} color="#3498db" />}
+          expanded={expandedSections.dosage}
+          onToggle={() => toggleSection('dosage')}
+          items={bula.dosagem_e_administracao}
+        />
 
-        {/* Seção de CONTRAINDICAÇÕES */}
-        <View style={[styles.card, styles.importantCard]}>
-          <TouchableOpacity 
-            style={styles.sectionHeader} 
-            onPress={() => toggleSection('contraindications')}
-            activeOpacity={0.7}
-          >
-            <View style={styles.sectionTitle}>
-              <MaterialIcons name="warning" size={22} color="#e74c3c" />
-              <Text style={[styles.sectionHeaderText, styles.importantText]}>CONTRAINDICAÇÕES</Text>
-            </View>
-            <MaterialIcons 
-              name={expandedSections.contraindications ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
-              size={24} 
-              color="#e74c3c" 
-            />
-          </TouchableOpacity>
-          
-          {expandedSections.contraindications && (
-            <View style={styles.sectionContent}>
-              <InfoItem icon="❌" text="Alergia ao paracetamol ou qualquer componente da fórmula" />
-              <InfoItem icon="❌" text="Pacientes com insuficiência hepática grave" />
-              <InfoItem icon="❌" text="Crianças menores de 12 anos (para esta formulação)" />
-            </View>
-          )}
-        </View>
+        <ExpandableSection
+          title="CONTRAINDICAÇÕES"
+          icon={<MaterialIcons name="warning" size={22} color="#e74c3c" />}
+          expanded={expandedSections.contraindications}
+          onToggle={() => toggleSection('contraindications')}
+          items={bula.contraindicacoes}
+          important
+        />
 
-        {/* Seção de INDICAÇÕES */}
-        <View style={styles.card}>
-          <TouchableOpacity 
-            style={styles.sectionHeader} 
-            onPress={() => toggleSection('indications')}
-            activeOpacity={0.7}
-          >
-            <View style={styles.sectionTitle}>
-              <FontAwesome name="heart" size={20} color="#3498db" />
-              <Text style={styles.sectionHeaderText}>INDICAÇÕES</Text>
-            </View>
-            <MaterialIcons 
-              name={expandedSections.indications ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
-              size={24} 
-              color="#7f8c8d" 
-            />
-          </TouchableOpacity>
-          
-          {expandedSections.indications && (
-            <View style={styles.sectionContent}>
-              <InfoItem icon="🌡️" text="Febre" />
-              <InfoItem icon="🤕" text="Dor leve a moderada (incluindo dor de cabeça, dor de dente)" />
-              <InfoItem icon="💪" text="Dores musculares" />
-              <InfoItem icon="🤒" text="Sintomas de gripes e resfriados" />
-            </View>
-          )}
-        </View>
+        <ExpandableSection
+          title="INDICAÇÕES"
+          icon={<FontAwesome name="heart" size={20} color="#3498db" />}
+          expanded={expandedSections.indications}
+          onToggle={() => toggleSection('indications')}
+          items={bula.indicacoes}
+        />
 
-        {/* Seção de PRECAUÇÕES */}
-        <View style={styles.card}>
-          <TouchableOpacity 
-            style={styles.sectionHeader} 
-            onPress={() => toggleSection('precautions')}
-            activeOpacity={0.7}
-          >
-            <View style={styles.sectionTitle}>
-              <MaterialCommunityIcons name="alert-circle" size={20} color="#f39c12" />
-              <Text style={styles.sectionHeaderText}>PRECAUÇÕES E ADVERTÊNCIAS</Text>
-            </View>
-            <MaterialIcons 
-              name={expandedSections.precautions ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
-              size={24} 
-              color="#7f8c8d" 
-            />
-          </TouchableOpacity>
-          
-          {expandedSections.precautions && (
-            <View style={styles.sectionContent}>
-              <InfoItem icon="⚠️" text="Pacientes com problemas hepáticos devem usar com cautela" />
-              <InfoItem icon="⚠️" text="Evitar consumo de álcool durante o tratamento" />
-              <InfoItem icon="⚠️" text="Grávidas e lactantes: usar somente sob orientação médica" />
-              <InfoItem icon="⚠️" text="Não use por mais de 3 dias para febre sem orientação médica" />
-            </View>
-          )}
-        </View>
+        <ExpandableSection
+          title="PRECAUÇÕES E ADVERTÊNCIAS"
+          icon={<MaterialCommunityIcons name="alert-circle" size={20} color="#f39c12" />}
+          expanded={expandedSections.precautions}
+          onToggle={() => toggleSection('precautions')}
+          items={bula.advertencias}
+        />
 
-        {/* Seção de INTERAÇÕES */}
-        <View style={styles.card}>
-          <TouchableOpacity 
-            style={styles.sectionHeader} 
-            onPress={() => toggleSection('interactions')}
-            activeOpacity={0.7}
-          >
-            <View style={styles.sectionTitle}>
-              <MaterialCommunityIcons name="alert-octagon" size={20} color="#f39c12" />
-              <Text style={styles.sectionHeaderText}>INTERAÇÕES MEDICAMENTOSAS</Text>
-            </View>
-            <MaterialIcons 
-              name={expandedSections.interactions ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
-              size={24} 
-              color="#7f8c8d" 
-            />
-          </TouchableOpacity>
-          
-          {expandedSections.interactions && (
-            <View style={styles.sectionContent}>
-              <InfoItem icon="💊" text="Anticoagulantes (varfarina): pode aumentar o efeito anticoagulante" />
-              <InfoItem icon="💊" text="Outros medicamentos contendo paracetamol: risco de overdose" />
-              <InfoItem icon="🍷" text="Álcool: aumenta risco de dano hepático" />
-            </View>
-          )}
-        </View>
+        <ExpandableSection
+          title="INTERAÇÕES MEDICAMENTOSAS"
+          icon={<MaterialCommunityIcons name="alert-octagon" size={20} color="#f39c12" />}
+          expanded={expandedSections.interactions}
+          onToggle={() => toggleSection('interactions')}
+          items={bula.interacoes_medicamentosas}
+        />
 
-        {/* Seção de ARMAZENAMENTO */}
-        <View style={styles.card}>
-          <TouchableOpacity 
-            style={styles.sectionHeader} 
-            onPress={() => toggleSection('storage')}
-            activeOpacity={0.7}
-          >
-            <View style={styles.sectionTitle}>
-              <MaterialIcons name="inventory" size={20} color="#3498db" />
-              <Text style={styles.sectionHeaderText}>ARMAZENAMENTO E VALIDADE</Text>
-            </View>
-            <MaterialIcons 
-              name={expandedSections.storage ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
-              size={24} 
-              color="#7f8c8d" 
-            />
-          </TouchableOpacity>
-          
-          {expandedSections.storage && (
-            <View style={styles.sectionContent}>
-              <InfoItem icon="🌡️" text="Armazenar em local seco abaixo de 30°C" />
-              <InfoItem icon="📦" text="Manter na embalagem original" />
-              <InfoItem icon="👶" text="Manter fora do alcance de crianças" />
-              <InfoItem icon="⏱️" text="Prazo de validade: 36 meses após fabricação" />
-            </View>
-          )}
-        </View>
+        <ExpandableSection
+          title="ARMAZENAMENTO E VALIDADE"
+          icon={<MaterialIcons name="inventory" size={20} color="#3498db" />}
+          expanded={expandedSections.storage}
+          onToggle={() => toggleSection('storage')}
+          items={bula.armazenamento_e_validade}
+        />
 
         {/* Rodapé */}
         <View style={styles.footerCard}>
           <Text style={styles.footerText}>
             Para informações completas, consulte a bula profissional no site da Anvisa
           </Text>
-          <TouchableOpacity 
-            style={styles.button} 
+          <TouchableOpacity
+            style={styles.button}
             onPress={() => Linking.openURL('https://www.anvisa.gov.br')}
           >
             <Text style={styles.buttonText}>ACESSAR BULA COMPLETA</Text>
@@ -219,9 +146,41 @@ export default function BulaScreen() {
       </ScrollView>
     </View>
   );
-};
+}
 
-// Componentes auxiliares
+// Componente reutilizável para seções
+const ExpandableSection = ({ title, icon, expanded, onToggle, items, important = false }) => (
+  <View style={[styles.card, important && styles.importantCard]}>
+    <TouchableOpacity style={styles.sectionHeader} onPress={onToggle} activeOpacity={0.7}>
+      <View style={styles.sectionTitle}>
+        {icon}
+        <Text style={[styles.sectionHeaderText, important && styles.importantText]}>{title}</Text>
+      </View>
+      <MaterialIcons
+        name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+        size={24}
+        color={important ? '#e74c3c' : '#7f8c8d'}
+      />
+    </TouchableOpacity>
+    {expanded && (
+      <View style={styles.sectionContent}>
+        {items && items.length > 0 ? (
+          items.map((text, index) => (
+              <InfoItem
+                key={index}
+                icon={getIconForSection(title)}
+                text={text}
+            />
+            ))
+        ) : (
+          <Text style={styles.infoText}>Nenhuma informação disponível.</Text>
+        )}
+      </View>
+    )}
+  </View>
+);
+
+// Componente de linha com ícone
 const InfoItem = ({ icon, text }) => (
   <View style={styles.infoItem}>
     <Text style={styles.infoIcon}>{icon}</Text>
@@ -229,9 +188,21 @@ const InfoItem = ({ icon, text }) => (
   </View>
 );
 
-const InfoRow = ({ label, value, highlight = false }) => (
-  <View style={styles.infoRow}>
-    <Text style={styles.infoLabel}>{label}</Text>
-    <Text style={[styles.infoValue, highlight && styles.infoHighlight]}>{value}</Text>
-  </View>
-);
+const getIconForSection = (sectionTitle) => {
+  switch (sectionTitle) {
+    case 'CONTRAINDICAÇÕES':
+      return '❌';
+    case 'INTERAÇÕES MEDICAMENTOSAS':
+      return '💊';
+    case 'PRECAUÇÕES E ADVERTÊNCIAS':
+      return '⚠️';
+    case 'INDICAÇÕES':
+      return '✅';
+    case 'ARMAZENAMENTO E VALIDADE':
+      return '📦';
+    case 'DOSAGEM E ADMINISTRAÇÃO':
+      return '🕒';
+    default:
+      return '•';
+  }
+};

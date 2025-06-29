@@ -151,7 +151,10 @@ export default function MedicineScreen() {
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.medItem} onPress={() => navigation.replace('Bula')}>
+            <TouchableOpacity style={styles.medItem} onPress={() => navigation.navigate('Bula', { idMedicamento: item.id, 
+                                                                                                  nomeMedicamento: item.nome, 
+                                                                                                  tipoMedicamento: item.tipo, 
+                                                                                                  dosagemMedicamento: item.dosagem_padrao })}>
               <View style={styles.medIcon}>
                 <MaterialCommunityIcons name="pill" size={24} color="#2563EB" />
               </View>
