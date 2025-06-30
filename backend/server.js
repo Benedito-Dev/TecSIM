@@ -54,11 +54,17 @@ class Server {
     }
   }
 
-  start() {
-    this.app.listen(this.port, () => {
-      console.log(`Servidor rodando na porta ${this.port}`);
-      console.log(`Documentação Swagger em http://localhost:${this.port}/api-docs`);
-    });
+  async start() { 
+    try {
+      await this.initDb(); 
+      this.app.listen(this.port, () => {
+        console.log(`Servidor rodando na porta ${this.port}`);
+        console.log(`Documentação Swagger em http://localhost:${this.port}/api-docs`);
+      });
+    } catch (error) {
+      console.error('Falha crítica ao iniciar o servidor:', error);
+      process.exit(1); 
+    }
   }
 }
 
