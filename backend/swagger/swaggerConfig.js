@@ -24,7 +24,7 @@ const options = {
             senha: { type: 'string', example: 'senha123', writeOnly: true },
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
-            genero: { type: 'string', example: 'man'  },
+            genero: { type: 'string', example: 'man' },
             aceite_termos: { type: 'boolean', example: true }
           }
         },
@@ -58,6 +58,18 @@ const options = {
             ativo: { type: 'boolean', example: true }
           }
         },
+        Prescricao: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer', format: 'int32', example: 1 },
+            id_paciente: { type: 'integer', example: 101 },
+            id_medico: { type: 'integer', example: 202 },
+            diagnostico: { type: 'string', example: 'Hipertensão arterial' },
+            data_prescricao: { type: 'string', format: 'date', example: '2025-07-01' },
+            validade: { type: 'string', format: 'date', example: '2025-07-30' },
+            data_cadastro: { type: 'string', format: 'date-time', example: '2025-07-01T14:30:00Z' }
+          }
+        },
         InteracoesMedicamentos: {
           type: 'object',
           required: ['medicamento_id', 'medicamento_interagente_id', 'descricao'],
@@ -72,7 +84,7 @@ const options = {
           type: 'object',
           required: ['email'],
           properties: {
-            email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' },
+            email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' }
           }
         },
         OTPVerifyRequest: {
@@ -80,7 +92,7 @@ const options = {
           required: ['email', 'otp'],
           properties: {
             email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' },
-            otp: { type: 'string', example: '483920' },
+            otp: { type: 'string', example: '483920' }
           }
         },
         Bula: {
@@ -124,7 +136,7 @@ const options = {
       }
     }
   },
-  apis: ['./routes/*.js'],
+  apis: ['./routes/*.js']
 };
 
 const swaggerSpec = swaggerJSDoc(options);
