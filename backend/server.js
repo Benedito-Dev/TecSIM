@@ -40,7 +40,7 @@ class Server {
     this.app.use('/bulas', bulaRoutes);
     this.app.use('/prescricoes', precricoes);
     this.app.get('/', (req, res) => {
-      res.send('API de Usuarios está funcionando!');
+      res.send('API backend Tecsim de Pé!');
     });
 
     this.app.use((err, req, res, next) => {
