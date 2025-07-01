@@ -9,13 +9,14 @@ import MainTabNavigator from './TabNavigator';
 
 import MedicineScreen from '../screens/home/Medicines/Medicines'
 import CodeScreen from '../screens/auth/code/code';
+import PrescricaoScreen from '../screens/home/Prescricao/Prescricao';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
     <Stack.Navigator 
-      initialRouteName="Welcome" 
+      initialRouteName="Prescricao" 
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
@@ -24,6 +25,7 @@ export default function AppNavigator() {
       <Stack.Screen name="App" component={MainTabNavigator} />
       <Stack.Screen name="Medicamentos" component={MedicineScreen} />
       <Stack.Screen name="Code" component={CodeScreen} />
+      <Stack.Screen name="Prescricao" component={PrescricaoScreen} />
     </Stack.Navigator>
   );
 }
