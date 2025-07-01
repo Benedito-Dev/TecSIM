@@ -1,12 +1,8 @@
 const Server = require('./server');
 
-let serverApp;
+// Inicia o servidor imediatamente quando o arquivo é executado
+const server = new Server();
+server.start();
 
-module.exports = async (req, res) => {
-  if (!serverApp) {
-    const server = new Server();
-    await server.initDb();
-    serverApp = server.app;
-  }
-  return serverApp(req, res);
-};
+// Exporta o app do Express para testes ou outros usos
+module.exports = server.app;
