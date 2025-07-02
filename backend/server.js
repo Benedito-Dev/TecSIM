@@ -10,6 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig'); // <- import Swagger config
 const connectMongo = require('./db/mongo');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
+const bulaRoutes = require('./routes/bulaRoutes');
 
 
 class Server {
@@ -35,6 +36,7 @@ class Server {
     this.app.use('/medicos', medicosRoutes)
     this.app.use('/auth', authRoutes);
     this.app.use('/medicamentos', medicamentoRoutes);
+    this.app.use('/bulas', bulaRoutes);
     this.app.get('/', (req, res) => {
       res.send('API de Usuarios está funcionando!');
     });
@@ -54,11 +56,17 @@ class Server {
     }
   }
 
-  start() {
-    this.app.listen(this.port, () => {
-      console.log(`Servidor rodando na porta ${this.port}`);
-      console.log(`Documentação Swagger em http://localhost:${this.port}/api-docs`);
-    });
+  async start() { 
+    try {
+      await this.initDb(); 
+      this.app.listen(this.port, () => {
+        console.log(`Servidor rodando na porta ${this.port}`);
+        console.log(`Documentação Swagger em http://localhost:${this.port}/api-docs`);
+      });
+    } catch (error) {
+      console.error('Falha crítica ao iniciar o servidor:', error);
+      process.exit(1); 
+    }
   }
 }
 

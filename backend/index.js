@@ -1,5 +1,8 @@
-const Server = require('./server');  // Importa a classe Server
-const cors = require('cors');
+const Server = require('./server');
 
-const server = new Server();  // Cria uma instância do servidor
-server.start();  // Inicia o servidor
+// Inicia o servidor imediatamente quando o arquivo é executado
+const server = new Server();
+server.start();
+
+// Exporta o app do Express para testes ou outros usos
+module.exports = server.app;
