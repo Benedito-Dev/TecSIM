@@ -123,7 +123,11 @@ export default function PrescricaoScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FeatherIcon name="arrow-left" size={24} color="#2563EB" />
+        </TouchableOpacity>
         <Text style={styles.title}>Minhas Prescrições</Text>
+        <View style={{ width: 24 }} />
       </View>
 
       <FlatList

@@ -11,10 +11,7 @@ export default function NovaPrescricaoScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <FeatherIcon name="arrow-left" size={24} color="#2563EB" />
         </TouchableOpacity>
         <Text style={styles.title}>Registrar Minha Prescrição</Text>
