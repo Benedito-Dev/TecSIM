@@ -1,11 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Image} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "./styles";
 
-export default function RegistroPrescricaoScreen() {
+export default function NovaPrescricaoScreen() {
   const navigation = useNavigation();
 
   return (
@@ -47,7 +47,7 @@ export default function RegistroPrescricaoScreen() {
         {/* Opção 2 - Preencher manualmente */}
         <TouchableOpacity 
           style={styles.optionCard}
-          onPress={() => navigation.navigate("NovaPrescricao")}
+          onPress={() => navigation.navigate("PrescricaoManual")}
         >
           <View style={styles.optionContent}>
             <FeatherIcon name="edit-3" size={32} color="#2563EB" />
