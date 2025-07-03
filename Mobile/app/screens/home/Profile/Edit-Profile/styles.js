@@ -31,4 +31,15 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  pickerWrapper: {
+    height: 45,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  picker: {
+    height: 45,
+    width: '100%',
+  },
 });

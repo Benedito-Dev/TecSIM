@@ -1,29 +1,63 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft } from 'lucide-react-native';
 
-import { useAuth } from '../../../../context/AuthContext';
 import InputField from '../../../../components/InputField';
 import { styles } from './styles';
 
+import { getPacienteById } from '../../../../services/userService';
+
 export default function EditProfileScreen() {
   const navigation = useNavigation();
-  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
 
-  const [cpf, setCpf] = useState(user?.cpf || '');
-  const [nome, setNome] = useState(user?.nome || '');
-  const [email, setEmail] = useState(user?.email || '');
+  // 🔑 ID do usuário que será buscado (você pode passar via props, contexto ou rota)
+  const userId = 1;
+
+  const [cpf, setCpf] = useState('');
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [dataNascimento, setDataNascimento] = useState(user?.data_nascimento || '');
-  const [peso, setPeso] = useState(String(user?.peso_kg || ''));
-  const [genero, setGenero] = useState(user?.genero || '');
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [peso, setPeso] = useState('');
+  const [genero, setGenero] = useState('');
+
+  useEffect(() => {
+    const carregarPaciente = async () => {
+      try {
+        const data = await getPacienteById(userId);
+        setNome(data.nome || '');
+        setEmail(data.email || '');
+        setDataNascimento(data.data_nascimento?.split('T')[0] || '');
+        setPeso(String(data.peso_kg || ''));
+        setGenero(data.genero || '');
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar paciente:', error);
+        Alert.alert('Erro', 'Não foi possível carregar os dados do paciente.');
+        setLoading(false);
+      }
+    };
+
+    carregarPaciente();
+  }, []);
 
   const handleSalvar = () => {
-    // Chamada para API de atualização
+    // Chamada para API de atualização (futuramente)
     Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
     navigation.goBack();
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#0c87c4" />
+        <Text style={{ marginTop: 10 }}>Carregando perfil...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -44,7 +78,22 @@ export default function EditProfileScreen() {
         <InputField label="Nova Senha" value={senha} onChangeText={setSenha} placeholder="Digite sua nova senha" secureTextEntry={true} iconName="lock" />
         <InputField label="Data de Nascimento" value={dataNascimento} onChangeText={setDataNascimento} placeholder="YYYY-MM-DD" keyboardType="default" iconName="calendar" />
         <InputField label="Peso (kg)" value={peso} onChangeText={setPeso} placeholder="Ex: 70.5" keyboardType="numeric" iconName="activity" />
-        <InputField label="Gênero" value={genero} onChangeText={setGenero} placeholder="Ex: man, woman, neutral" iconName="user" />
+        
+        <View style={{ width: '85%', marginTop: 12 }}>
+          <Text style={styles.label}>Gênero</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={genero}
+              onValueChange={(itemValue) => setGenero(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione o gênero" value="" enabled={false} />
+              <Picker.Item label="Masculino" value="man" />
+              <Picker.Item label="Feminino" value="woman" />
+              <Picker.Item label="Prefiro não dizer" value="neutral" />
+            </Picker>
+          </View>
+        </View>
       </View>
 
       {/* Botão Salvar */}
