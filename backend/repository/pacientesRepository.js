@@ -87,7 +87,8 @@ class PacienteRepository {
       peso_kg: usuario.peso_kg,
       genero: usuario.genero,
       aceite_termos: usuario.aceite_termos,
-      data_cadastro: usuario.data_cadastro
+      data_cadastro: usuario.data_cadastro,
+      ativo: usuario.ativo
     });
   }
 

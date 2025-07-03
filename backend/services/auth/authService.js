@@ -7,6 +7,7 @@ class AuthService {
     try {
       // Usa o repository existente para verificar credenciais
       const usuario = await pacienteRepository.verifyCredentials(email, senha);
+      console.log(usuario)
 
       const idade = this.calcularIdade(usuario.data_nascimento);
       

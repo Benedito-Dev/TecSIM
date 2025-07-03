@@ -38,7 +38,7 @@ class PacienteService {
   }
 
   async verifyCredentials(email, senha) {
-  const usuario = await this.findByEmail(email);
+  const usuario = await repository.verifyCredentials(email);
   if (!usuario) throw new Error('Credenciais inválidas');
 
   const senhaMatch = await bcrypt.compare(senha, usuario.senha);
@@ -46,6 +46,7 @@ class PacienteService {
 
   if (usuario.ativo === false) {
     await repository.reativar(usuario.id);
+    usuario.ativo = true;
   }
 
   return new Paciente({
@@ -58,7 +59,7 @@ class PacienteService {
     genero: usuario.genero,
     aceite_termos: usuario.aceite_termos,
     data_cadastro: usuario.data_cadastro,
-    ativo: true
+    ativo: usuario.ativo
   }); 
   }
 
