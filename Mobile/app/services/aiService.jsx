@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { API_KEY } from '@env';
-import { verificarGatilhoCritico, detectarTemaForaDaSaude } from './utils/filters';
+import { verificarGatilhoCritico, detectarTemaForaDaSaude } from './filters';
 
 // Configuração segura da chave de API
 if (!API_KEY) {

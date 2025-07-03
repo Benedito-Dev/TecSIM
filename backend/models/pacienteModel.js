@@ -22,7 +22,8 @@ class Paciente {
       peso_kg: this.peso_kg,
       genero: this.genero,
       aceite_termos: this.aceite_termos,
-      data_cadastro: this.data_cadastro
+      data_cadastro: this.data_cadastro,
+      ativo: this.ativo
     };
   }
 
