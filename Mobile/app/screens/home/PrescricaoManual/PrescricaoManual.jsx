@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import styles from "./styles";
+import { styles } from "./styles";
 
 export default function PrescricaoManualScreen() {
   const navigation = useNavigation();
@@ -23,8 +24,8 @@ export default function PrescricaoManualScreen() {
       nome: "",
       dosagem: "",
       frequencia: "",
-      duracao: "",
-      via: "oral"
+      duracao_dias: "",
+      via: "Oral"
     };
     
     setForm(prev => ({
@@ -34,10 +35,22 @@ export default function PrescricaoManualScreen() {
   };
 
   const handleRemoveMedicamento = (id) => {
-    setForm(prev => ({
-      ...prev,
-      medicamentos: prev.medicamentos.filter(med => med.id !== id)
-    }));
+    Alert.alert(
+      "Remover medicamento",
+      "Tem certeza que deseja remover este medicamento?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { 
+          text: "Remover", 
+          onPress: () => {
+            setForm(prev => ({
+              ...prev,
+              medicamentos: prev.medicamentos.filter(med => med.id !== id)
+            }));
+          }
+        }
+      ]
+    );
   };
 
   const handleMedicamentoChange = (id, field, value) => {
@@ -61,7 +74,7 @@ export default function PrescricaoManualScreen() {
     }
     
     for (const med of form.medicamentos) {
-      if (!med.nome.trim() || !med.dosagem.trim() || !med.frequencia.trim() || !med.duracao.trim()) {
+      if (!med.nome.trim() || !med.dosagem.trim() || !med.frequencia.trim() || !med.duracao_dias.trim()) {
         Alert.alert("Dados incompletos", "Preencha todos os campos obrigatórios dos medicamentos");
         return;
       }
@@ -74,39 +87,70 @@ export default function PrescricaoManualScreen() {
     ]);
   };
 
+  const formatDate = (date) => {
+    return date.toLocaleDateString('pt-BR');
+  };
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <FeatherIcon name="arrow-left" size={24} color="#2563EB" />
         </TouchableOpacity>
-        <Text style={styles.title}>Prescrição Manual</Text>
-        <View style={{ width: 24 }} />
+        <Text style={styles.title}>Nova Prescrição</Text>
+        <View style={styles.headerRight} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.formSection}>
-          <Text style={styles.sectionTitle}>Informações Básicas</Text>
+          <Text style={styles.sectionTitle}>Informações da Prescrição</Text>
           
-          <Text style={styles.label}>Diagnóstico*</Text>
-          <TextInput
-            style={styles.input}
-            value={form.diagnostico}
-            onChangeText={(text) => setForm({...form, diagnostico: text})}
-            placeholder="Informe o diagnóstico principal"
-          />
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Diagnóstico Principal*</Text>
+            <TextInput
+              style={styles.input}
+              value={form.diagnostico}
+              onChangeText={(text) => setForm({...form, diagnostico: text})}
+              placeholder="Ex: Hipertensão arterial"
+              placeholderTextColor="#9CA3AF"
+            />
+          </View>
 
-          <Text style={styles.label}>Data da Prescrição</Text>
-          <TouchableOpacity 
-            style={styles.dateInput}
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Text>{form.data_prescricao.toLocaleDateString()}</Text>
-          </TouchableOpacity>
+          <View style={styles.dateRow}>
+            <View style={[styles.inputGroup, {flex: 1, marginRight: 8}]}>
+              <Text style={styles.label}>Data da Prescrição</Text>
+              <TouchableOpacity 
+                style={styles.dateInput}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
+                <FeatherIcon name="calendar" size={18} color="#6B7280" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={[styles.inputGroup, {flex: 1}]}>
+              <Text style={styles.label}>Validade</Text>
+              <TouchableOpacity 
+                style={styles.dateInput}
+                onPress={() => setShowValidadePicker(true)}
+              >
+                <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
+                <FeatherIcon name="calendar" size={18} color="#6B7280" />
+              </TouchableOpacity>
+            </View>
+          </View>
 
           {showDatePicker && (
             <DateTimePicker
               value={form.data_prescricao}
+              mode="date"
+              display="default"
               onChange={(_, date) => {
                 setShowDatePicker(false);
                 date && setForm({...form, data_prescricao: date});
@@ -114,17 +158,11 @@ export default function PrescricaoManualScreen() {
             />
           )}
 
-          <Text style={styles.label}>Validade</Text>
-          <TouchableOpacity 
-            style={styles.dateInput}
-            onPress={() => setShowValidadePicker(true)}
-          >
-            <Text>{form.validade.toLocaleDateString()}</Text>
-          </TouchableOpacity>
-
           {showValidadePicker && (
             <DateTimePicker
               value={form.validade}
+              mode="date"
+              display="default"
               onChange={(_, date) => {
                 setShowValidadePicker(false);
                 date && setForm({...form, validade: date});
@@ -135,61 +173,93 @@ export default function PrescricaoManualScreen() {
 
         <View style={styles.formSection}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Medicamentos</Text>
+            <Text style={styles.sectionTitle}>Medicamentos Prescritos</Text>
             <TouchableOpacity 
               style={styles.addButton}
               onPress={handleAddMedicamento}
             >
-              <FeatherIcon name="plus" size={20} color="#2563EB" />
+              <FeatherIcon name="plus" size={20} color="#FFFFFF" />
+              <Text style={styles.addButtonText}>Adicionar</Text>
             </TouchableOpacity>
           </View>
 
           {form.medicamentos.length === 0 ? (
-            <Text style={styles.emptyText}>Nenhum medicamento adicionado</Text>
+            <View style={styles.emptyState}>
+              <MaterialCommunityIcons name="pill" size={40} color="#E5E7EB" />
+              <Text style={styles.emptyText}>Nenhum medicamento adicionado</Text>
+            </View>
           ) : (
             form.medicamentos.map((med, index) => (
-              <View key={med.id} style={styles.medicamentoContainer}>
+              <View key={med.id} style={styles.medicamentoCard}>
                 <View style={styles.medicamentoHeader}>
-                  <Text style={styles.medicamentoTitle}>Medicamento #{index + 1}</Text>
-                  <TouchableOpacity onPress={() => handleRemoveMedicamento(med.id)}>
-                    <FeatherIcon name="trash-2" size={20} color="#EF4444" />
+                  <View style={styles.medNumber}>
+                    <Text style={styles.medNumberText}>{index + 1}</Text>
+                  </View>
+                  <Text style={styles.medicamentoTitle}>Medicamento</Text>
+                  <TouchableOpacity 
+                    style={styles.deleteButton}
+                    onPress={() => handleRemoveMedicamento(med.id)}
+                  >
+                    <MaterialCommunityIcons name="trash-can-outline" size={20} color="#EF4444" />
                   </TouchableOpacity>
                 </View>
 
-                <Text style={styles.label}>Nome*</Text>
-                <TextInput
-                  style={styles.input}
-                  value={med.nome}
-                  onChangeText={(text) => handleMedicamentoChange(med.id, 'nome', text)}
-                  placeholder="Ex: Paracetamol"
-                />
+                <View style={styles.inputGroup}>
+                  <Text style={styles.label}>Nome do Medicamento*</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={med.nome}
+                    onChangeText={(text) => handleMedicamentoChange(med.id, 'nome', text)}
+                    placeholder="Ex: Losartana"
+                    placeholderTextColor="#9CA3AF"
+                  />
+                </View>
 
-                <Text style={styles.label}>Dosagem*</Text>
-                <TextInput
-                  style={styles.input}
-                  value={med.dosagem}
-                  onChangeText={(text) => handleMedicamentoChange(med.id, 'dosagem', text)}
-                  placeholder="Ex: 500mg"
-                />
+                <View style={styles.medRow}>
+                  <View style={[styles.inputGroup, {flex: 1, marginRight: 8}]}>
+                    <Text style={styles.label}>Dosagem*</Text>
+                    <TextInput
+                      style={styles.input}
+                      value={med.dosagem}
+                      onChangeText={(text) => handleMedicamentoChange(med.id, 'dosagem', text)}
+                      placeholder="Ex: 50mg"
+                      placeholderTextColor="#9CA3AF"
+                    />
+                  </View>
 
-                <Text style={styles.label}>Frequência*</Text>
-                <TextInput
-                  style={styles.input}
-                  value={med.frequencia}
-                  onChangeText={(text) => handleMedicamentoChange(med.id, 'frequencia', text)}
-                  placeholder="Ex: 1x ao dia"
-                />
+                  <View style={[styles.inputGroup, {flex: 1}]}>
+                    <Text style={styles.label}>Via de Administração</Text>
+                    <View style={styles.picker}>
+                      <Text style={styles.pickerText}>{med.via}</Text>
+                      <FeatherIcon name="chevron-down" size={18} color="#6B7280" />
+                    </View>
+                  </View>
+                </View>
 
-                <Text style={styles.label}>Duração (dias)*</Text>
-                <TextInput
-                  style={styles.input}
-                  value={med.duracao}
-                  onChangeText={(text) => handleMedicamentoChange(med.id, 'duracao', text)}
-                  keyboardType="numeric"
-                  placeholder="Ex: 30"
-                />
+                <View style={styles.medRow}>
+                  <View style={[styles.inputGroup, {flex: 1, marginRight: 8}]}>
+                    <Text style={styles.label}>Frequência*</Text>
+                    <TextInput
+                      style={styles.input}
+                      value={med.frequencia}
+                      onChangeText={(text) => handleMedicamentoChange(med.id, 'frequencia', text)}
+                      placeholder="Ex: 1x ao dia"
+                      placeholderTextColor="#9CA3AF"
+                    />
+                  </View>
 
-                {index < form.medicamentos.length - 1 && <View style={styles.divider} />}
+                  <View style={[styles.inputGroup, {flex: 1}]}>
+                    <Text style={styles.label}>Duração (dias)*</Text>
+                    <TextInput
+                      style={styles.input}
+                      value={med.duracao_dias}
+                      onChangeText={(text) => handleMedicamentoChange(med.id, 'duracao_dias', text)}
+                      keyboardType="numeric"
+                      placeholder="Ex: 30"
+                      placeholderTextColor="#9CA3AF"
+                    />
+                  </View>
+                </View>
               </View>
             ))
           )}
@@ -199,9 +269,10 @@ export default function PrescricaoManualScreen() {
       <TouchableOpacity
         style={styles.submitButton}
         onPress={handleSubmit}
+        activeOpacity={0.8}
       >
-        <Text style={styles.buttonText}>Salvar Prescrição</Text>
+        <Text style={styles.submitButtonText}>Salvar Prescrição</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F9FAFB',
@@ -9,46 +9,71 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#FFFFFF',
+    paddingTop: 60,
+    paddingHorizontal: 24,
+    paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerRight: {
+    width: 40,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: '#111827',
+    textAlign: 'center',
   },
   scrollContainer: {
-    paddingBottom: 20,
+    paddingHorizontal: 16,
+    paddingBottom: 100,
   },
   formSection: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 16,
-    margin: 16,
-    marginBottom: 8,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#111827',
+    marginBottom: 16,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   addButton: {
-    padding: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2563EB',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 6,
+  },
+  inputGroup: {
+    marginBottom: 16,
   },
   label: {
     fontSize: 14,
     fontWeight: '500',
     color: '#374151',
     marginBottom: 8,
-    marginTop: 16,
   },
   input: {
     backgroundColor: '#FFFFFF',
@@ -56,125 +81,111 @@ export default StyleSheet.create({
     borderColor: '#E5E7EB',
     borderRadius: 8,
     padding: 12,
-    fontSize: 16,
+    fontSize: 15,
+    color: '#111827',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   dateInput: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E5E7EB',
     borderRadius: 8,
     padding: 12,
-    marginBottom: 16,
   },
-  medicamentoContainer: {
-    marginTop: 16,
+  dateText: {
+    fontSize: 15,
+    color: '#111827',
   },
-  medicamentoHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  medicamentoTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4B5563',
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#6B7280',
-    marginVertical: 16,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#E5E7EB',
-    marginVertical: 24,
-  },
-  submitButton: {
-    backgroundColor: '#10B981',
-    padding: 16,
+  medicamentoCard: {
+    backgroundColor: '#F9FAFB',
     borderRadius: 8,
-    margin: 16,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  // Estilos para a tela NovaPrescricao
-  content: {
-    flex: 1,
     padding: 16,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  optionCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 20,
     marginBottom: 16,
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
-  recommendedOption: {
-    borderColor: '#2563EB',
-    borderWidth: 1.5,
-  },
-  optionHeader: {
+  medicamentoHeader: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: 8,
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  recommendedBadge: {
+  medNumber: {
     backgroundColor: '#2563EB',
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
   },
-  recommendedText: {
+  medNumberText: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '600',
   },
-  optionContent: {
-    alignItems: 'center',
-  },
-  optionTitle: {
-    fontSize: 16,
+  medicamentoTitle: {
+    fontSize: 15,
     fontWeight: '600',
     color: '#111827',
-    marginTop: 12,
-    marginBottom: 4,
+    flex: 1,
   },
-  optionDescription: {
-    fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-  },
-  backButton: {
+  deleteButton: {
     padding: 4,
   },
-  headerRight: {
-    width: 24,
+  medRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  deleteMedButton: {
-  padding: 8,
-  marginRight: -8,
-},
-medicamentoHeader: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: 8,
-},
-medicamentoTitle: {
-  fontSize: 14,
-  fontWeight: '600',
-  color: '#4B5563',
-},
+  picker: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 8,
+    padding: 12,
+  },
+  pickerText: {
+    fontSize: 15,
+    color: '#111827',
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 24,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: '#9CA3AF',
+    marginTop: 8,
+  },
+  submitButton: {
+    backgroundColor: '#10B981',
+    padding: 16,
+    borderRadius: 12,
+    margin: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    position: 'absolute',
+    bottom: 0,
+    left: 16,
+    right: 16,
+  },
+  submitButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
