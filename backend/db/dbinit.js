@@ -59,15 +59,18 @@ const tables = [
         id_prescricao SERIAL PRIMARY KEY,
         id_usuario INT NOT NULL,
         id_medico INT NOT NULL,
+        crm VARCHAR(20),
         diagnostico TEXT NOT NULL,
         data_prescricao DATE NOT NULL,
         validade DATE,
         data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-        FOREIGN KEY (id_medico) REFERENCES medicos(id_medico)
+        FOREIGN KEY (id_medico) REFERENCES medicos(id_medico),
+        FOREIGN KEY (crm) REFERENCES medicos(crm)
       );
     `
-  },
+},
+
   {
     name: 'medicamentos_prescritos',
     createQuery: `

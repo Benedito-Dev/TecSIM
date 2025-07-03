@@ -24,7 +24,7 @@ const options = {
             senha: { type: 'string', example: 'senha123', writeOnly: true },
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
-            genero: { type: 'string', example: 'man'  },
+            genero: { type: 'string', example: 'man' },
             aceite_termos: { type: 'boolean', example: true }
           }
         },
@@ -56,6 +56,20 @@ const options = {
             senha: { type: 'string', example: 'senha123', writeOnly: true },
             telefone: { type: 'string', example: '(11) 99999-8888' },
             ativo: { type: 'boolean', example: true }
+          }
+        },
+        Prescricao: {
+          type: 'object',
+          required: ['id_paciente', 'id_medico', 'crm', 'diagnostico', 'data_prescricao'],
+          properties: {
+            id: { type: 'integer', example: 1 },
+            id_paciente: { type: 'integer', example: 101 },
+            id_medico: { type: 'integer', example: 201 },
+            crm: { type: 'string', example: 'CRM/SP 987654' },
+            diagnostico: { type: 'string', example: 'Infecção urinária' },
+            data_prescricao: { type: 'string', format: 'date', example: '2025-06-30' },
+            validade: { type: 'string', format: 'date', example: '2025-07-15' },
+            data_cadastro: { type: 'string', format: 'date-time', example: '2025-06-30T12:34:56Z' }
           }
         },
         InteracoesMedicamentos: {
