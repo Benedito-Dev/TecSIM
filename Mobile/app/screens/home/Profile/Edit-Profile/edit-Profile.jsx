@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft } from 'lucide-react-native';
+import { useAuth } from '../../../../context/AuthContext';
 
 import InputField from '../../../../components/InputField';
 import { styles } from './styles';
@@ -12,9 +13,10 @@ import { getPacienteById } from '../../../../services/userService';
 export default function EditProfileScreen() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth(); // Supondo que você tenha um contexto de autenticação
 
   // 🔑 ID do usuário que será buscado (você pode passar via props, contexto ou rota)
-  const userId = 1;
+  const userId = user.id;
 
   const [cpf, setCpf] = useState('');
   const [nome, setNome] = useState('');
@@ -50,6 +52,18 @@ export default function EditProfileScreen() {
     navigation.goBack();
   };
 
+  const getAvatarSource = (gender) => {
+    switch (gender) {
+      case 'man':
+        return require('../../../../assets/images/Profile/man.png');
+      case 'woman':
+        return require('../../../../assets/images/Profile/woman.png');
+      case 'neutral':
+      default:
+        return require('../../../../assets/images/Profile/neutral.png');
+    }
+  };
+
   if (loading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -63,11 +77,21 @@ export default function EditProfileScreen() {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate('App', { screen: 'Profile' })}>
           <ArrowLeft size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>Editar Perfil</Text>
         <View style={{ width: 24 }} />
+      </View>
+
+      <View style={styles.profileSection}>
+        <Image
+          source={getAvatarSource(genero)}
+          style={styles.avatar}
+        />
+      <TouchableOpacity style={[styles.configItem, { justifyContent: 'center' }]} onPress={handleSalvar}>
+        <Text style={[styles.configText, { color: '#0c87c4', fontWeight: 'bold' }]}>Alterar Foto do Perfil</Text>
+      </TouchableOpacity>
       </View>
 
       {/* Campos do Formulário */}

@@ -12,19 +12,30 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
   },
+  avatar: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    marginBottom: 12,
+    alignSelf: 'center', // Centraliza a imagem do avatar
+  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#000',
+    textAlign: 'center',
+    flex: 1,
   },
   section: {
-    marginBottom: 24,
-    alignItems: 'center',
+    marginBottom: 0,
+    alignItems: 'center', // Centraliza os campos do formulário
   },
   configItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center', // Centraliza o botão de salvar
     paddingVertical: 12,
+    marginBottom: 30,
   },
   configText: {
     marginLeft: 12,
@@ -37,9 +48,20 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     backgroundColor: '#fff',
+    justifyContent: 'center',
   },
   picker: {
     height: 45,
     width: '100%',
+  },
+  profileSection: {
+    alignItems: 'center', // Adicionado para centralizar o avatar
+    marginBottom: 0,
+  },
+  label: {
+    marginBottom: 6,
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333',
   },
 });
