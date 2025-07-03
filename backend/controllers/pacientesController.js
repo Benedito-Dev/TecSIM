@@ -114,6 +114,20 @@ class PacienteController {
     }
   }
 
+  async desativar(req, res) {
+  try {
+    const { id } = req.params;
+    const paciente = await PacienteService.desativar(id);
+    if (!paciente) {
+      return res.status(404).json({ error: 'Paciente não encontrado' });
+    }
+    res.status(200).json({ message: 'Paciente desativado com sucesso', data: paciente });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao desativar paciente' });
+    }
+  }
+
   // Remover usuário
   async remove(req, res) {
     try {

@@ -90,6 +90,23 @@ class PacienteRepository {
     });
   }
 
+  async desativar(id) {
+  const result = await db.query(
+    'UPDATE paciente SET ativo = FALSE WHERE id = $1 RETURNING *',
+    [id]
+    );
+  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
+  async reativar(id) {
+  const result = await db.query(
+    'UPDATE paciente SET ativo = TRUE WHERE id = $1 RETURNING *',
+    [id]
+  );
+  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
+
   async remove(id) {
     const result = await db.query(`
       DELETE FROM paciente 

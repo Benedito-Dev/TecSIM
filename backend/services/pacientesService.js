@@ -31,6 +31,37 @@ class PacienteService {
     return usuarioSenhaAtualizado;  // Retorna um objeto Usuario
   }
 
+  static async desativar(id) {
+    const paciente = await repository.desativar(id);
+    if (!paciente) throw new Error('Paciente não encontrado para desativação');
+    return paciente;
+  }
+
+  async verifyCredentials(email, senha) {
+  const usuario = await this.findByEmail(email);
+  if (!usuario) throw new Error('Credenciais inválidas');
+
+  const senhaMatch = await bcrypt.compare(senha, usuario.senha);
+  if (!senhaMatch) throw new Error('Credenciais inválidas');
+
+  if (usuario.ativo === false) {
+    await repository.reativar(usuario.id);
+  }
+
+  return new Paciente({
+    id: usuario.id,
+    cpf: usuario.cpf,
+    nome: usuario.nome,
+    email: usuario.email,
+    data_nascimento: usuario.data_nascimento,
+    peso_kg: usuario.peso_kg,
+    genero: usuario.genero,
+    aceite_termos: usuario.aceite_termos,
+    data_cadastro: usuario.data_cadastro,
+    ativo: true
+  }); 
+  }
+
   static async remove(id) {
     const usuarioRemovido = await repository.remove(id);
     return usuarioRemovido;  // Retorna um objeto Usuario ou null
