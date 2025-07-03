@@ -19,7 +19,7 @@ class AuthService {
 
       return {
         usuario: {
-          id: usuario.id_usuario,
+          id: usuario.id,
           nome: usuario.nome,
           email: usuario.email,
           idade: idade,
