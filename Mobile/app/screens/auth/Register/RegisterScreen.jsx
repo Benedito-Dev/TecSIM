@@ -150,7 +150,9 @@ const handleRegister = async () => {
             >
               {checked && <Icon name="check" size={16} color="#fff" />}
             </Pressable>
-            <Text style={{ marginLeft: 8, fontWeight: 'bold' }}>Aceitar termos</Text>
+            <Text style={styles.termsText}>
+              Eu li e concordo com os <Text style={styles.termsLink}>Termos de Uso</Text>
+            </Text>
           </View>
         </View>
 
