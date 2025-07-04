@@ -43,7 +43,8 @@ class PacienteService {
 
   const senhaMatch = await bcrypt.compare(senha, usuario.senha);
   if (!senhaMatch) throw new Error('Credenciais inválidas');
-
+  
+  console.log(usuario.ativo)
   if (usuario.ativo === false) {
     await repository.reativar(usuario.id);
     usuario.ativo = true;
