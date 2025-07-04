@@ -15,14 +15,15 @@ class PacienteRepository {
 
   async findById(id) {
     const result = await db.query(`
-      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro 
+      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo
       FROM paciente WHERE id = $1
     `, [id]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
   async findByEmail(email) {
-    const result = await db.query('SELECT * FROM paciente WHERE email = $1', [email]);
+    const result = await db.query(`SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo
+    FROM paciente WHERE email = $1`, [email]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
@@ -86,9 +87,27 @@ class PacienteRepository {
       peso_kg: usuario.peso_kg,
       genero: usuario.genero,
       aceite_termos: usuario.aceite_termos,
-      data_cadastro: usuario.data_cadastro
+      data_cadastro: usuario.data_cadastro,
+      ativo: usuario.ativo
     });
   }
+
+  async desativar(id) {
+  const result = await db.query(
+    'UPDATE paciente SET ativo = FALSE WHERE id = $1 RETURNING *',
+    [id]
+    );
+  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
+  async reativar(id) {
+  const result = await db.query(
+    'UPDATE paciente SET ativo = TRUE WHERE id = $1 RETURNING *',
+    [id]
+  );
+  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
 
   async remove(id) {
     const result = await db.query(`

@@ -1,5 +1,5 @@
 class Paciente {
-  constructor({id, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro }) {
+  constructor({id, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo }) {
     this.id = id;
     this.nome = nome;
     this.email = email;
@@ -9,6 +9,7 @@ class Paciente {
     this.genero = genero
     this.aceite_termos = aceite_termos;
     this.data_cadastro = data_cadastro;
+    this.ativo = ativo;
   }
 
   // Método para serialização segura (exclui a senha)
@@ -21,7 +22,8 @@ class Paciente {
       peso_kg: this.peso_kg,
       genero: this.genero,
       aceite_termos: this.aceite_termos,
-      data_cadastro: this.data_cadastro
+      data_cadastro: this.data_cadastro,
+      ativo: this.ativo
     };
   }
 
