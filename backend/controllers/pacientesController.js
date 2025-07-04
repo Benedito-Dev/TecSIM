@@ -68,6 +68,20 @@ class PacienteController {
     }
   }
 
+  async uploadFoto(req, res) {
+    const userId = req.params.id;
+    const filePath = `/uploads/${req.file.filename}`;
+
+    try {
+      await PacienteService.atualizarFoto(userId, filePath);
+      res.status(200).json({ message: 'Foto atualizada com sucesso!', imageUrl: filePath });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Erro ao atualizar a foto de perfil.' });
+    }
+  }
+
+
   // Atualizar usuário
   async update(req, res) {
     try {

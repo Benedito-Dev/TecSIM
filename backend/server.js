@@ -28,6 +28,10 @@ class Server {
     this.app.use(cors());
     this.app.use(morgan('dev'));
 
+    // 🔓 Torna a pasta 'uploads' pública
+    this.app.use('/uploads', express.static('uploads'));
+
+
     // Documentação Swagger
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   }

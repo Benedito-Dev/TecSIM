@@ -15,15 +15,16 @@ class PacienteRepository {
 
   async findById(id) {
     const result = await db.query(`
-      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo
+      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
       FROM paciente WHERE id = $1
     `, [id]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
   async findByEmail(email) {
-    const result = await db.query(`SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo
-    FROM paciente WHERE email = $1`, [email]);
+    const result = await db.query(
+      `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
+      FROM paciente WHERE email = $1`, [email]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
@@ -38,6 +39,10 @@ class PacienteRepository {
     `, [cpf, nome, email, senhaHash, data_nascimento, peso_kg, genero, aceite_termos]);
 
     return new Paciente(result.rows[0]);
+  }
+
+  async atualizarFoto(id, caminho) {
+    await db.query('UPDATE paciente SET foto_perfil = $1 WHERE id = $2', [caminho, id]);
   }
 
   async update(id, {nome, email, data_nascimento, peso_kg, genero }) {

@@ -3,20 +3,19 @@ import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Ima
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft } from 'lucide-react-native';
+import * as ImagePicker from 'expo-image-picker';
+
 import { useAuth } from '../../../../context/AuthContext';
-import { updatePaciente } from '../../../../services/userService';
+import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../../services/userService';
 
 import InputField from '../../../../components/InputField';
 import { styles } from './styles';
 
-import { getPacienteById } from '../../../../services/userService';
-
 export default function EditProfileScreen() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
-  const { user, atualizarUsuario } = useAuth(); // Supondo que você tenha um contexto de autenticação
+  const { user, atualizarUsuario } = useAuth();
 
-  // 🔑 ID do usuário que será buscado (você pode passar via props, contexto ou rota)
   const userId = user.id;
 
   const [cpf, setCpf] = useState('');
@@ -26,6 +25,8 @@ export default function EditProfileScreen() {
   const [dataNascimento, setDataNascimento] = useState('');
   const [peso, setPeso] = useState('');
   const [genero, setGenero] = useState('');
+  const [fotoPerfil, setFotoPerfil] = useState(null);
+  const [novaImagem, setNovaImagem] = useState(null);
 
   useEffect(() => {
     const carregarPaciente = async () => {
@@ -36,6 +37,7 @@ export default function EditProfileScreen() {
         setDataNascimento(data.data_nascimento?.split('T')[0] || '');
         setPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
+        setFotoPerfil(data.foto_perfil ? `http://localhost:3000${data.foto_perfil}` : null);
         setLoading(false);
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);
@@ -47,6 +49,43 @@ export default function EditProfileScreen() {
     carregarPaciente();
   }, []);
 
+  const escolherImagem = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      Alert.alert("Permissão necessária", "Você precisa permitir acesso à galeria.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      const imagemSelecionada = result.assets[0];
+      setNovaImagem(imagemSelecionada.uri);
+
+      try {
+        const file = {
+          uri: imagemSelecionada.uri,
+          name: 'perfil.jpg',
+          type: 'image/jpeg',
+        };
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        await uploadFotoPaciente(userId, file);
+        setFotoPerfil(imagemSelecionada.uri);
+        Alert.alert('Sucesso', 'Foto de perfil atualizada!');
+      } catch (error) {
+        console.error('Erro ao fazer upload:', error);
+        Alert.alert('Erro', 'Não foi possível enviar a imagem.');
+      }
+    }
+  };
+
   const handleSalvar = async () => {
     try {
       const pacienteData = {
@@ -57,18 +96,13 @@ export default function EditProfileScreen() {
         peso_kg: parseFloat(peso),
         genero
       };
-  
-    if (senha.trim()) {
-      pacienteData.senha = senha;
-    }
 
-    if (cpf.trim()) {
-      pacienteData.cpf = cpf;
-    }
+      if (senha.trim()) pacienteData.senha = senha;
+      if (cpf.trim()) pacienteData.cpf = cpf;
 
       const resposta = await updatePaciente(userId, pacienteData);
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
-      // Dados filtrados que você quer salvar
+
       const dadosAtualizados = {
         id: resposta.data.id,
         nome: resposta.data.nome,
@@ -78,14 +112,12 @@ export default function EditProfileScreen() {
       };
 
       await atualizarUsuario(dadosAtualizados);
-
-      navigation.navigate('App', { screen: 'Profile' })
+      navigation.navigate('App', { screen: 'Profile' });
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
       Alert.alert('Erro', 'Não foi possível atualizar o perfil.');
     }
   };
-
 
   const getAvatarSource = (gender) => {
     switch (gender) {
@@ -93,24 +125,21 @@ export default function EditProfileScreen() {
         return require('../../../../assets/images/Profile/man.png');
       case 'woman':
         return require('../../../../assets/images/Profile/woman.png');
-      case 'neutral':
       default:
         return require('../../../../assets/images/Profile/neutral.png');
     }
   };
 
-    const calcularIdade = (dataNascimento) => {
-      const nascimento = new Date(dataNascimento);
-      const hoje = new Date();
-      let idade = hoje.getFullYear() - nascimento.getFullYear();
-      const m = hoje.getMonth() - nascimento.getMonth();
-
-      if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
-        idade--;
-      }
-
-      return idade;
+  const calcularIdade = (dataNascimento) => {
+    const nascimento = new Date(dataNascimento);
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    const m = hoje.getMonth() - nascimento.getMonth();
+    if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+      idade--;
     }
+    return idade;
+  };
 
   if (loading) {
     return (
@@ -132,14 +161,15 @@ export default function EditProfileScreen() {
         <View style={{ width: 24 }} />
       </View>
 
+      {/* Foto de perfil */}
       <View style={styles.profileSection}>
         <Image
-          source={getAvatarSource(genero)}
+          source={{ uri: novaImagem || fotoPerfil || Image.resolveAssetSource(getAvatarSource(genero)).uri }}
           style={styles.avatar}
         />
-      <TouchableOpacity style={[styles.configItem, { justifyContent: 'center' }]} onPress={handleSalvar}>
-        <Text style={[styles.configText, { color: '#0c87c4', fontWeight: 'bold' }]}>Alterar Foto do Perfil</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.botaoUpload} onPress={escolherImagem}>
+          <Text style={styles.botaoUploadTexto}>Alterar Foto do Perfil</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Campos do Formulário */}
@@ -150,7 +180,7 @@ export default function EditProfileScreen() {
         <InputField label="Nova Senha" value={senha} onChangeText={setSenha} placeholder="Digite sua nova senha" secureTextEntry={true} iconName="lock" />
         <InputField label="Data de Nascimento" value={dataNascimento} onChangeText={setDataNascimento} placeholder="YYYY-MM-DD" keyboardType="default" iconName="calendar" />
         <InputField label="Peso (kg)" value={peso} onChangeText={setPeso} placeholder="Ex: 70.5" keyboardType="numeric" iconName="activity" />
-        
+
         <View style={{ width: '85%', marginTop: 12 }}>
           <Text style={styles.label}>Gênero</Text>
           <View style={styles.pickerWrapper}>

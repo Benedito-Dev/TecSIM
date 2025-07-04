@@ -26,6 +26,20 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
   },
+  botaoUpload: {
+    marginTop: 10,
+    backgroundColor: '#0c87c4',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignSelf: 'center',
+  },
+
+  botaoUploadTexto: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
   section: {
     marginBottom: 0,
     alignItems: 'center', // Centraliza os campos do formulário

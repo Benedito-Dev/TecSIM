@@ -54,3 +54,22 @@ export const deletePaciente = async (id) => {
     throw error;
   }
 };
+
+// 🟣 [POST] Upload de foto de perfil do paciente
+export const uploadFotoPaciente = async (id, imagemFile) => {
+  try {
+    const formData = new FormData();
+    formData.append('image', imagemFile);
+
+    const response = await api.post(`/pacientes/${id}/foto`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(`Erro ao enviar imagem do paciente ID ${id}:`, error.message);
+    throw error;
+  }
+};

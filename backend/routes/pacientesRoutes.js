@@ -1,6 +1,7 @@
 const express = require('express');
 const controller = require('../controllers/pacientesController');
 const ValidatePaciente = require('../middleware/validatePaciente');
+const upload = require('../config/multer');
 
 class PacientesRoutes {
   constructor() {
@@ -137,6 +138,41 @@ class PacientesRoutes {
      *         description: Email já cadastrado
      */
     this.router.post('/', ValidatePaciente.validateCreate, controller.create);
+
+    /**
+     * @swagger
+     * /pacientes/{id}/foto:
+     *   post:
+     *     summary: Atualiza a foto de perfil do paciente
+     *     tags: [Pacientes]
+     *     security:
+     *       - bearerAuth: []
+     *     consumes:
+     *       - multipart/form-data
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: integer
+     *         description: ID do paciente
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               image:
+     *                 type: string
+     *                 format: binary
+     *                 description: Arquivo da imagem
+     *     responses:
+     *       200:
+     *         description: Foto atualizada com sucesso
+     */
+    this.router.post('/:id/foto', upload.single('image'), controller.uploadFoto);
+
 
     /**
      * @swagger

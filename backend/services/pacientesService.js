@@ -21,6 +21,16 @@ class PacienteService {
     return novoUsuario;  // Retorna um objeto Usuario
   }
 
+  static async atualizarFoto(id, caminhoImagem) {
+    const usuario = await repository.findById(id);
+
+    if (!usuario) {
+      throw new Error('Usuário não encontrado.');
+    }
+
+    await repository.atualizarFoto(id, caminhoImagem);
+  }
+
   static async update(id, dados) {
     const usuarioAtualizado = await repository.update(id, dados);
     return usuarioAtualizado;  // Retorna um objeto usuario
