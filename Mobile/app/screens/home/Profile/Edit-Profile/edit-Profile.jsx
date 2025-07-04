@@ -66,6 +66,8 @@ export default function EditProfileScreen() {
       pacienteData.cpf = cpf;
     }
 
+    console.log(pacienteData)
+
       await updatePaciente(userId, pacienteData);
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
       navigation.navigate('App', { screen: 'Profile' })
