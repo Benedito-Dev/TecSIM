@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft } from 'lucide-react-native';
 import { useAuth } from '../../../../context/AuthContext';
+import { updatePaciente } from '../../../../services/userService';
 
 import InputField from '../../../../components/InputField';
 import { styles } from './styles';
@@ -46,11 +47,34 @@ export default function EditProfileScreen() {
     carregarPaciente();
   }, []);
 
-  const handleSalvar = () => {
-    // Chamada para API de atualização (futuramente)
-    Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
-    navigation.goBack();
+  const handleSalvar = async () => {
+    try {
+      const pacienteData = {
+        nome,
+        email,
+        senha,
+        data_nascimento: dataNascimento,
+        peso_kg: parseFloat(peso),
+        genero
+      };
+  
+    if (senha.trim()) {
+      pacienteData.senha = senha;
+    }
+
+    if (cpf.trim()) {
+      pacienteData.cpf = cpf;
+    }
+
+      await updatePaciente(userId, pacienteData);
+      Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
+      navigation.navigate('App', { screen: 'Profile' })
+    } catch (error) {
+      console.error('Erro ao atualizar perfil:', error);
+      Alert.alert('Erro', 'Não foi possível atualizar o perfil.');
+    }
   };
+
 
   const getAvatarSource = (gender) => {
     switch (gender) {
