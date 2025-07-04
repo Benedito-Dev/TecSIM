@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const pacientesRoutes = require('./routes/pacientesRoutes');
 const medicosRoutes = require('./routes/medicoRoutes')
 const authRoutes = require('./routes/authRoutes')
+const precricoes = require('./routes/prescricaoRoutes');
 const dbInit = require('./db/dbinit');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig'); // <- import Swagger config
@@ -37,8 +38,9 @@ class Server {
     this.app.use('/auth', authRoutes);
     this.app.use('/medicamentos', medicamentoRoutes);
     this.app.use('/bulas', bulaRoutes);
+    this.app.use('/prescricoes', precricoes);
     this.app.get('/', (req, res) => {
-      res.send('API de Usuarios está funcionando!');
+      res.send('API backend Tecsim de Pé!');
     });
 
     this.app.use((err, req, res, next) => {

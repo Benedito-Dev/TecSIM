@@ -14,7 +14,7 @@ import { getPacienteById } from '../../../../services/userService';
 export default function EditProfileScreen() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth(); // Supondo que você tenha um contexto de autenticação
+  const { user, atualizarUsuario } = useAuth(); // Supondo que você tenha um contexto de autenticação
 
   // 🔑 ID do usuário que será buscado (você pode passar via props, contexto ou rota)
   const userId = user.id;
@@ -66,10 +66,19 @@ export default function EditProfileScreen() {
       pacienteData.cpf = cpf;
     }
 
-    console.log(pacienteData)
-
-      await updatePaciente(userId, pacienteData);
+      const resposta = await updatePaciente(userId, pacienteData);
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
+      // Dados filtrados que você quer salvar
+      const dadosAtualizados = {
+        id: resposta.data.id,
+        nome: resposta.data.nome,
+        email: resposta.data.email,
+        genero: resposta.data.genero,
+        idade: calcularIdade(resposta.data.data_nascimento)
+      };
+
+      await atualizarUsuario(dadosAtualizados);
+
       navigation.navigate('App', { screen: 'Profile' })
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
@@ -89,6 +98,19 @@ export default function EditProfileScreen() {
         return require('../../../../assets/images/Profile/neutral.png');
     }
   };
+
+    const calcularIdade = (dataNascimento) => {
+      const nascimento = new Date(dataNascimento);
+      const hoje = new Date();
+      let idade = hoje.getFullYear() - nascimento.getFullYear();
+      const m = hoje.getMonth() - nascimento.getMonth();
+
+      if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+        idade--;
+      }
+
+      return idade;
+    }
 
   if (loading) {
     return (

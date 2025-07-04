@@ -39,13 +39,13 @@ class PacienteRepository {
     return new Paciente(result.rows[0]);
   }
 
-  async update(id, { cpf, nome, email, data_nascimento, peso_kg, genero }) {
+  async update(id, {nome, email, data_nascimento, peso_kg, genero }) {
     const result = await db.query(`
       UPDATE paciente 
-      SET cpf = $1, nome = $2, email = $3, data_nascimento = $4, peso_kg = $5, genero = $6
-      WHERE id = $7 
+      SET nome = $1, email = $2, data_nascimento = $3, peso_kg = $4, genero = $5
+      WHERE id = $6 
       RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro
-    `, [cpf, nome, email, data_nascimento, peso_kg, genero, id]);
+    `, [nome, email, data_nascimento, peso_kg, genero, id]);
 
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
