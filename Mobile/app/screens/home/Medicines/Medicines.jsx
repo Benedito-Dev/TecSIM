@@ -4,7 +4,7 @@ import {
   Modal, ScrollView, Keyboard, ActivityIndicator
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getMedicametos } from '../../../services/medicamentosService';
+import { getMedicamentos } from '../../../services/medicamentosService';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -32,7 +32,7 @@ export default function MedicineScreen() {
     async function fetchMedicamentos() {
       setIsLoading(true);
       try {
-        const response = await getMedicametos();
+        const response = await getMedicamentos();
         if (Array.isArray(response)) {
           setMedicines(response);
         } else {
@@ -148,7 +148,7 @@ export default function MedicineScreen() {
       ) : (
         <FlatList
           data={filtered}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.medItem} onPress={() => navigation.navigate('Bula', { idMedicamento: item.id, 

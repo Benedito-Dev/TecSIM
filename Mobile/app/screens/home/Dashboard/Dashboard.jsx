@@ -45,7 +45,7 @@ export default function DashboardScreen() {
         {/* Cartão de Chat com o Assistente */}
         <TouchableOpacity
           style={styles.chatCard}
-          onPress={() => navigation.navigate('SymptomReport')}
+          onPress={() => navigation.navigate('Chat')}
         >
           <MessageSquare color="#fff" size={32} />
           <Text style={styles.chatCardTitle}>Iniciar Conversar com Assistente</Text>
