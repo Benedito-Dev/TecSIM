@@ -5,7 +5,7 @@ FROM node:18
 WORKDIR /app
 
 # Copia os arquivos de dependência
-COPY package*.json ./
+COPY package.json package-lock.json* ./
 
 # Instala dependências (incluindo dev)
 RUN npm install
