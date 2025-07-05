@@ -9,6 +9,7 @@ import { useAuth } from '../../../../context/AuthContext';
 import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../../services/userService';
 
 import InputField from '../../../../components/InputField';
+import GenderInput from '../../../../components/InputGender'
 import { styles } from './styles';
 
 export default function EditProfileScreen() {
@@ -37,7 +38,7 @@ export default function EditProfileScreen() {
         setDataNascimento(data.data_nascimento?.split('T')[0] || '');
         setPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
-        setFotoPerfil(data.foto_perfil ? `http://localhost:3000${data.foto_perfil}` : null);
+        setFotoPerfil(data.foto_perfil ? `http://192.168.1.110:3000${data.foto_perfil}` : null);
         setLoading(false);
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);
@@ -163,8 +164,12 @@ export default function EditProfileScreen() {
 
       {/* Foto de perfil */}
       <View style={styles.profileSection}>
-        <Image
-          source={{ uri: novaImagem || fotoPerfil || Image.resolveAssetSource(getAvatarSource(genero)).uri }}
+        <Image source={ novaImagem
+              ? { uri: novaImagem }
+              : fotoPerfil
+              ? { uri: fotoPerfil }
+              : getAvatarSource(genero)
+          }
           style={styles.avatar}
         />
         <TouchableOpacity style={styles.botaoUpload} onPress={escolherImagem}>
@@ -180,22 +185,7 @@ export default function EditProfileScreen() {
         <InputField label="Nova Senha" value={senha} onChangeText={setSenha} placeholder="Digite sua nova senha" secureTextEntry={true} iconName="lock" />
         <InputField label="Data de Nascimento" value={dataNascimento} onChangeText={setDataNascimento} placeholder="YYYY-MM-DD" keyboardType="default" iconName="calendar" />
         <InputField label="Peso (kg)" value={peso} onChangeText={setPeso} placeholder="Ex: 70.5" keyboardType="numeric" iconName="activity" />
-
-        <View style={{ width: '85%', marginTop: 12 }}>
-          <Text style={styles.label}>Gênero</Text>
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={genero}
-              onValueChange={(itemValue) => setGenero(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Selecione o gênero" value="" enabled={false} />
-              <Picker.Item label="Masculino" value="man" />
-              <Picker.Item label="Feminino" value="woman" />
-              <Picker.Item label="Prefiro não dizer" value="neutral" />
-            </Picker>
-          </View>
-        </View>
+        <GenderInput value={genero} onChange={setGenero} />
       </View>
 
       {/* Botão Salvar */}

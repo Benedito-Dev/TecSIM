@@ -56,6 +56,19 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  button: {
+    backgroundColor: '#0097b2',
+    width: "85%",
+    paddingVertical: 12,
+    paddingHorizontal: 80,
+    borderRadius: 12,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 18,
+  },
   pickerWrapper: {
     height: 45,
     borderColor: '#ccc',
