@@ -27,7 +27,7 @@ class MedicamentoRepository {
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING 
-        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+        id, nome, tipo, descricao, faixa_etaria_minima, 
         faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
         composicao, dosagem_padrao, bula_detalhada
     `, [
@@ -41,7 +41,7 @@ class MedicamentoRepository {
   async findAll() {
     const result = await db.query(`
       SELECT 
-        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+        id, nome, tipo, descricao, faixa_etaria_minima, 
         faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
         composicao, dosagem_padrao, bula_detalhada
       FROM ${this.tableName}
@@ -54,11 +54,11 @@ class MedicamentoRepository {
   async findById(id) {
     const result = await db.query(`
       SELECT 
-        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+        id, nome, tipo, descricao, faixa_etaria_minima, 
         faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
         composicao, dosagem_padrao, bula_detalhada
       FROM ${this.tableName} 
-      WHERE id_medicamento = $1
+      WHERE id = $1
     `, [id]);
     
     console.log('Medicamento buscado por ID:', result.rows[0]);
@@ -92,9 +92,9 @@ class MedicamentoRepository {
         composicao = $8,
         dosagem_padrao = $9,
         bula_detalhada = $10
-      WHERE id_medicamento = $11
+      WHERE id = $11
       RETURNING 
-        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+        id, nome, tipo, descricao, faixa_etaria_minima, 
         faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
         composicao, dosagem_padrao, bula_detalhada
     `, [
@@ -112,18 +112,18 @@ class MedicamentoRepository {
     
     const result = await db.query(`
       DELETE FROM ${this.tableName} 
-      WHERE id_medicamento = $1
-      RETURNING id_medicamento
+      WHERE id = $1
+      RETURNING id
     `, [id]);
     
-    return { id_medicamento: result.rows[0]?.id_medicamento };
+    return { id: result.rows[0]?.id };
   }
 
   // Métodos adicionais específicos para medicamentos
   async findByNome(nome) {
     const result = await db.query(`
       SELECT 
-        id_medicamento, nome, tipo, descricao
+        id, nome, tipo, descricao
       FROM ${this.tableName} 
       WHERE nome ILIKE $1
     `, [`%${nome}%`]);
@@ -134,7 +134,7 @@ class MedicamentoRepository {
   async findByTipo(tipo) {
     const result = await db.query(`
       SELECT 
-        id_medicamento, nome, tipo, descricao
+        id, nome, tipo, descricao
       FROM ${this.tableName} 
       WHERE tipo = $1
     `, [tipo]);
@@ -145,7 +145,7 @@ class MedicamentoRepository {
   async findByFaixaEtaria(idade) {
     const result = await db.query(`
       SELECT 
-        id_medicamento, nome, tipo, 
+        id, nome, tipo, 
         faixa_etaria_minima, faixa_etaria_maxima
       FROM ${this.tableName} 
       WHERE faixa_etaria_minima <= $1 
@@ -158,7 +158,7 @@ class MedicamentoRepository {
   async searchByComposicao(termo) {
     const result = await db.query(`
       SELECT 
-        id_medicamento, nome, tipo, composicao
+        id, nome, tipo, composicao
       FROM ${this.tableName} 
       WHERE composicao ILIKE $1
     `, [`%${termo}%`]);

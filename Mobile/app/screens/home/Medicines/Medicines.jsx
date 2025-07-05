@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, Modal, ScrollView, Keyboard } from 'react-native';
+import {
+  View, Text, TextInput, FlatList, TouchableOpacity,
+  Modal, ScrollView, Keyboard, ActivityIndicator
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getMedicametos } from '../../../services/medicamentosService';
 
@@ -15,6 +18,7 @@ export default function MedicineScreen() {
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState([]);
   const [medicines, setMedicines] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Novo estado para o loading
 
   const filterOptions = [
     { id: 'analgesico', label: 'Analgésico', icon: 'emoticon-happy' },
@@ -24,9 +28,9 @@ export default function MedicineScreen() {
     { id: 'gastro', label: 'Gastroprotetor', icon: 'stomach' },
   ];
 
-  // Buscar medicamentos ao montar o componente
   useEffect(() => {
     async function fetchMedicamentos() {
+      setIsLoading(true);
       try {
         const response = await getMedicametos();
         if (Array.isArray(response)) {
@@ -36,6 +40,8 @@ export default function MedicineScreen() {
         }
       } catch (error) {
         console.error("Erro ao buscar medicamentos:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -65,6 +71,16 @@ export default function MedicineScreen() {
   const handleSearchSubmit = () => {
     Keyboard.dismiss();
   };
+
+  // Loading screen
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#2563EB" />
+        <Text style={{ marginTop: 10, color: '#2563EB', fontSize: 16 }}>Carregando medicamentos...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -135,7 +151,10 @@ export default function MedicineScreen() {
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.medItem}>
+            <TouchableOpacity style={styles.medItem} onPress={() => navigation.navigate('Bula', { idMedicamento: item.id, 
+                                                                                                  nomeMedicamento: item.nome, 
+                                                                                                  tipoMedicamento: item.tipo, 
+                                                                                                  dosagemMedicamento: item.dosagem_padrao })}>
               <View style={styles.medIcon}>
                 <MaterialCommunityIcons name="pill" size={24} color="#2563EB" />
               </View>

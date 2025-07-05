@@ -82,6 +82,44 @@ const options = {
             email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' },
             otp: { type: 'string', example: '483920' },
           }
+        },
+        Bula: {
+          type: 'object',
+          required: ['id_medicamento'],
+          properties: {
+            id: { type: 'integer', example: 1 },
+            id_medicamento: { type: 'integer', example: 101 },
+            dosagem_e_administracao: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Tomar 1 comprimido a cada 8h', 'Administrar via oral com água']
+            },
+            indicacoes: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Dor de cabeça', 'Febre']
+            },
+            contraindicacoes: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Alergia à dipirona', 'Insuficiência hepática grave']
+            },
+            advertencias: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Evitar uso com bebidas alcoólicas', 'Não dirigir após o uso']
+            },
+            interacoes_medicamentosas: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Interage com anticoagulantes', 'Potencializa efeito de sedativos']
+            },
+            armazenamento_e_validade: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Conservar em temperatura ambiente', 'Validade de 2 anos']
+            }
+          }
         }
       }
     }

@@ -1,6 +1,6 @@
 class Paciente {
-  constructor({ id_usuario, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro }) {
-    this.id_usuario = id_usuario;
+  constructor({id, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro }) {
+    this.id = id;
     this.nome = nome;
     this.email = email;
     this.senha = senha; // Nota: Em operações normais, evite expor a senha
@@ -14,7 +14,7 @@ class Paciente {
   // Método para serialização segura (exclui a senha)
   toJSON() {
     return {
-      id_usuario: this.id_usuario,
+      id: this.id,
       nome: this.nome,
       email: this.email,
       data_nascimento: this.data_nascimento,
@@ -28,7 +28,7 @@ class Paciente {
   // Método para serialização com dados básicos (útil para JWT)
   toAuthJSON() {
     return {
-      id_usuario: this.id_usuario,
+      id: this.id,
       nome: this.nome,
       email: this.email
     };

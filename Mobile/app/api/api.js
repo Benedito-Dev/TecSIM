@@ -2,7 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Para desenvolvimento com backend local
-const API_URL = 'http://192.168.100.176:3000'; // Utilizar IP da Maquina ao inves de localhost
+// const API_URL = 'http://192.168.1.110:3000'; // Utilizar IP da Maquina ao inves de localhost
+const API_URL = 'https://tec-sim-git-main-benedito-devs-projects.vercel.app';
 
 // Para Android emulador, use:
 // const API_URL = 'http://10.0.2.2:3000';
