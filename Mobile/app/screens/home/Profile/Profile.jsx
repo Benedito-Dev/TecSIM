@@ -84,7 +84,7 @@ export default function ProfileScreen() {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate('App', { screen: 'Dashboard' })}>
           <ArrowLeft size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>TecSIM</Text>
@@ -148,7 +148,7 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Configurações</Text>
 
-        <TouchableOpacity style={styles.configItem} onPress={() => navigation.replace("Edit-Profile")}>
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })} >
           <Edit3 size={20} color="#0c87c4" />
           <Text style={styles.configText}>Editar Perfil</Text>
         </TouchableOpacity>

@@ -155,7 +155,7 @@ export default function EditProfileScreen() {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('App', { screen: 'Profile' })}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>Editar Perfil</Text>
