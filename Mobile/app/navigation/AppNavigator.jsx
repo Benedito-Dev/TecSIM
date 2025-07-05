@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator();
 export default function AppNavigator() {
   return (
     <Stack.Navigator 
-      initialRouteName="Prescricao" 
+      initialRouteName="App" 
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Welcome" component={WelcomeScreen} />

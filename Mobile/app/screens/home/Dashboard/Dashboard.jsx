@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import NotificationIcon from '../../../components/Notification';
-import { MessageSquare, Pill, Clock } from 'lucide-react-native'; // Ou Feather
+import { MessageSquare, Pill, Clock, FileText } from 'lucide-react-native'; // Adicionei FileText para o ícone de prescrições
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
@@ -73,6 +73,16 @@ export default function DashboardScreen() {
             <Clock color="#0c87c4" size={28} />
             <Text style={styles.toolCardTitle}>Lembretes</Text>
             <Text style={styles.toolCardDescription}>Nunca esqueça de tomar seus remédios</Text>
+          </TouchableOpacity>
+
+          {/* Novo card para Prescrições */}
+          <TouchableOpacity
+            style={styles.toolCard}
+            onPress={() => navigation.navigate('Prescricao')}
+          >
+            <FileText color="#0c87c4" size={28} />
+            <Text style={styles.toolCardTitle}>Minhas Prescrições</Text>
+            <Text style={styles.toolCardDescription}>Acesse suas receitas médicas</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
