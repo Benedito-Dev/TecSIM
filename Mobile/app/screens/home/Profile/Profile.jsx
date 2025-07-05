@@ -1,16 +1,42 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
 import { styles } from './styles';
 
 import { useAuth } from '../../../context/AuthContext';
 import { logout as logoutService } from '../../../services/auth/authService';
+import { getPacienteById } from '../../../services/userService';
 import { useNavigation } from '@react-navigation/native';
 
-import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut  } from 'lucide-react-native';
+import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut } from 'lucide-react-native';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-  const { user, loading, Logout } = useAuth();
+  const { user, Logout } = useAuth();
+
+  const [paciente, setPaciente] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [fotoPerfil, setFotoPerfil] = useState(null);
+
+  useEffect(() => {
+    const carregarPaciente = async () => {
+      try {
+        const data = await getPacienteById(user.id);
+        setPaciente(data);
+
+        if (data.foto_perfil) {
+          setFotoPerfil(`http://192.168.1.110:3000${data.foto_perfil}`);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar paciente:', error);
+        Alert.alert('Erro', 'Não foi possível carregar os dados do perfil.');
+        setLoading(false);
+      }
+    };
+
+    carregarPaciente();
+  }, []);
 
   const handleLogout = () => {
     Alert.alert(
@@ -40,33 +66,45 @@ export default function ProfileScreen() {
         return require('../../../assets/images/Profile/man.png');
       case 'woman':
         return require('../../../assets/images/Profile/woman.png');
-      case 'neutral':
       default:
         return require('../../../assets/images/Profile/neutral.png');
     }
   };
 
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#0c87c4" />
+        <Text style={{ marginTop: 10 }}>Carregando perfil...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate('App', { screen: 'Dashboard' })}>
           <ArrowLeft size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>TecSIM</Text>
-        <View style={{ width: 24 }} /> {/* placeholder para centralizar o título */}
+        <View style={{ width: 24 }} />
       </View>
 
       {/* Avatar */}
       <View style={styles.profileSection}>
         <Image
-          source={getAvatarSource(user.genero)}
+          source={
+            fotoPerfil
+              ? { uri: fotoPerfil }
+              : getAvatarSource(paciente?.genero)
+          }
           style={styles.avatar}
+          onError={() => console.warn('Erro ao carregar imagem de perfil')}
         />
-        <Text style={styles.name}>{user.nome}</Text>
-        <Text style={styles.age}>{user.idade} anos</Text>
-        <Text style={styles.email}>{user.email}</Text>
+        <Text style={styles.name}>{paciente?.nome}</Text>
+        <Text style={styles.age}>{calcularIdade(paciente?.data_nascimento)} anos</Text>
+        <Text style={styles.email}>{paciente?.email}</Text>
       </View>
 
       {/* Resumo de Saúde */}
@@ -110,7 +148,7 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Configurações</Text>
 
-        <TouchableOpacity style={styles.configItem}>
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })} >
           <Edit3 size={20} color="#0c87c4" />
           <Text style={styles.configText}>Editar Perfil</Text>
         </TouchableOpacity>
@@ -131,10 +169,22 @@ export default function ProfileScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.configItem} onPress={handleLogout}>
-          <LogOut  size={20} color="red" />
+          <LogOut size={20} color="red" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
   );
+}
+
+function calcularIdade(dataNascimento) {
+  if (!dataNascimento) return '';
+  const nascimento = new Date(dataNascimento);
+  const hoje = new Date();
+  let idade = hoje.getFullYear() - nascimento.getFullYear();
+  const m = hoje.getMonth() - nascimento.getMonth();
+  if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+    idade--;
+  }
+  return idade;
 }

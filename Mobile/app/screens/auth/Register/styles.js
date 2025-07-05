@@ -100,4 +100,13 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
   },
+  termsText: {
+    marginLeft: 8,
+    fontSize: 14,
+  },
+  termsLink: {
+    color: '#0097b2',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
 });

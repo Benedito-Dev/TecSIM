@@ -15,14 +15,16 @@ class PacienteRepository {
 
   async findById(id) {
     const result = await db.query(`
-      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro 
+      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
       FROM paciente WHERE id = $1
     `, [id]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
   async findByEmail(email) {
-    const result = await db.query('SELECT * FROM paciente WHERE email = $1', [email]);
+    const result = await db.query(
+      `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
+      FROM paciente WHERE email = $1`, [email]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
@@ -39,13 +41,17 @@ class PacienteRepository {
     return new Paciente(result.rows[0]);
   }
 
-  async update(id, { cpf, nome, email, data_nascimento, peso_kg, genero }) {
+  async atualizarFoto(id, caminho) {
+    await db.query('UPDATE paciente SET foto_perfil = $1 WHERE id = $2', [caminho, id]);
+  }
+
+  async update(id, {nome, email, data_nascimento, peso_kg, genero }) {
     const result = await db.query(`
       UPDATE paciente 
-      SET cpf = $1, nome = $2, email = $3, data_nascimento = $4, peso_kg = $5, genero = $6
-      WHERE id = $7 
+      SET nome = $1, email = $2, data_nascimento = $3, peso_kg = $4, genero = $5
+      WHERE id = $6 
       RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro
-    `, [cpf, nome, email, data_nascimento, peso_kg, genero, id]);
+    `, [nome, email, data_nascimento, peso_kg, genero, id]);
 
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
@@ -86,9 +92,27 @@ class PacienteRepository {
       peso_kg: usuario.peso_kg,
       genero: usuario.genero,
       aceite_termos: usuario.aceite_termos,
-      data_cadastro: usuario.data_cadastro
+      data_cadastro: usuario.data_cadastro,
+      ativo: usuario.ativo
     });
   }
+
+  async desativar(id) {
+  const result = await db.query(
+    'UPDATE paciente SET ativo = FALSE WHERE id = $1 RETURNING *',
+    [id]
+    );
+  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
+  async reativar(id) {
+  const result = await db.query(
+    'UPDATE paciente SET ativo = TRUE WHERE id = $1 RETURNING *',
+    [id]
+  );
+  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
 
   async remove(id) {
     const result = await db.query(`

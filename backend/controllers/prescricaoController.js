@@ -54,7 +54,7 @@ class PrescricaoController {
 
   async create(req, res) {
     try {
-      const prescricao = await service.create(req.body);
+      const prescricao = await service.create(req.body); // req.body precisa conter: id_paciente, id_medico, crm, diagnostico, data_prescricao, validade
       res.status(201).json({
         message: 'Prescrição criada com sucesso',
         data: prescricao
@@ -67,7 +67,7 @@ class PrescricaoController {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const prescricao = await service.update(id, req.body);
+      const prescricao = await service.update(id, req.body); // req.body também deve conter crm
       res.status(200).json({
         message: 'Prescrição atualizada com sucesso',
         data: prescricao

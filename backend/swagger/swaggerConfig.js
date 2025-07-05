@@ -24,7 +24,7 @@ const options = {
             senha: { type: 'string', example: 'senha123', writeOnly: true },
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
-            genero: { type: 'string', example: 'man'  },
+            genero: { type: 'string', example: 'man' },
             aceite_termos: { type: 'boolean', example: true }
           }
         },
@@ -58,6 +58,20 @@ const options = {
             ativo: { type: 'boolean', example: true }
           }
         },
+        Prescricao: {
+          type: 'object',
+          required: ['id_paciente', 'id_medico', 'crm', 'diagnostico', 'data_prescricao'],
+          properties: {
+            id: { type: 'integer', example: 1 },
+            id_paciente: { type: 'integer', example: 101 },
+            id_medico: { type: 'integer', example: 201 },
+            crm: { type: 'string', example: 'CRM/SP 987654' },
+            diagnostico: { type: 'string', example: 'Infecção urinária' },
+            data_prescricao: { type: 'string', format: 'date', example: '2025-06-30' },
+            validade: { type: 'string', format: 'date', example: '2025-07-15' },
+            data_cadastro: { type: 'string', format: 'date-time', example: '2025-06-30T12:34:56Z' }
+          }
+        },
         InteracoesMedicamentos: {
           type: 'object',
           required: ['medicamento_id', 'medicamento_interagente_id', 'descricao'],
@@ -72,7 +86,7 @@ const options = {
           type: 'object',
           required: ['email'],
           properties: {
-            email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' },
+            email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' }
           }
         },
         OTPVerifyRequest: {
@@ -80,7 +94,7 @@ const options = {
           required: ['email', 'otp'],
           properties: {
             email: { type: 'string', format: 'email', example: 'usuario@exemplo.com' },
-            otp: { type: 'string', example: '483920' },
+            otp: { type: 'string', example: '483920' }
           }
         },
         Bula: {
@@ -124,7 +138,7 @@ const options = {
       }
     }
   },
-  apis: ['./routes/*.js'],
+  apis: ['./routes/*.js']
 };
 
 const swaggerSpec = swaggerJSDoc(options);
