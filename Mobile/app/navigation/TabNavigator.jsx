@@ -6,6 +6,7 @@ import { StyleSheet, View } from 'react-native';
 // Import stacks
 import DashboardStack from './DashboardStack';
 import ProfileStack from './ProfileStack';
+import PrescricaoStack from './PrescricaoStack';
 import ChatScreen from '../screens/home/Chat/Chat';
 
 const Tab = createBottomTabNavigator();

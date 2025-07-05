@@ -25,16 +25,17 @@ class PrescricaoRepository {
   async create({
     id_paciente,
     id_medico,
+    crm,
     diagnostico,
     data_prescricao,
     validade
   }) {
     const result = await db.query(
       `INSERT INTO prescricoes 
-       (id_paciente, id_medico, diagnostico, data_prescricao, validade)
-       VALUES ($1, $2, $3, $4, $5)
+       (id_paciente, id_medico, crm, diagnostico, data_prescricao, validade)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [id_paciente, id_medico, diagnostico, data_prescricao, validade]
+      [id_paciente, id_medico, crm, diagnostico, data_prescricao, validade]
     );
     return new Prescricao(result.rows[0]);
   }
@@ -42,6 +43,7 @@ class PrescricaoRepository {
   async update(id, {
     id_paciente,
     id_medico,
+    crm,
     diagnostico,
     data_prescricao,
     validade
@@ -50,12 +52,13 @@ class PrescricaoRepository {
       `UPDATE prescricoes SET
        id_paciente = $1,
        id_medico = $2,
-       diagnostico = $3,
-       data_prescricao = $4,
-       validade = $5
-       WHERE id = $6
+       crm = $3,
+       diagnostico = $4,
+       data_prescricao = $5,
+       validade = $6
+       WHERE id = $7
        RETURNING *`,
-      [id_paciente, id_medico, diagnostico, data_prescricao, validade, id]
+      [id_paciente, id_medico, crm, diagnostico, data_prescricao, validade, id]
     );
     return result.rows[0] ? new Prescricao(result.rows[0]) : null;
   }

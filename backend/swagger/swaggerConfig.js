@@ -60,14 +60,16 @@ const options = {
         },
         Prescricao: {
           type: 'object',
+          required: ['id_paciente', 'id_medico', 'crm', 'diagnostico', 'data_prescricao'],
           properties: {
-            id: { type: 'integer', format: 'int32', example: 1 },
+            id: { type: 'integer', example: 1 },
             id_paciente: { type: 'integer', example: 101 },
-            id_medico: { type: 'integer', example: 202 },
-            diagnostico: { type: 'string', example: 'Hipertensão arterial' },
-            data_prescricao: { type: 'string', format: 'date', example: '2025-07-01' },
-            validade: { type: 'string', format: 'date', example: '2025-07-30' },
-            data_cadastro: { type: 'string', format: 'date-time', example: '2025-07-01T14:30:00Z' }
+            id_medico: { type: 'integer', example: 201 },
+            crm: { type: 'string', example: 'CRM/SP 987654' },
+            diagnostico: { type: 'string', example: 'Infecção urinária' },
+            data_prescricao: { type: 'string', format: 'date', example: '2025-06-30' },
+            validade: { type: 'string', format: 'date', example: '2025-07-15' },
+            data_cadastro: { type: 'string', format: 'date-time', example: '2025-06-30T12:34:56Z' }
           }
         },
         InteracoesMedicamentos: {

@@ -12,6 +12,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig'); // <- import Swagger config
 const connectMongo = require('./db/mongo');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
+const prescricaoRoutes = require('./routes/prescricaoRoutes')
 const bulaRoutes = require('./routes/bulaRoutes');
 
 
@@ -43,7 +44,7 @@ class Server {
     this.app.use('/auth', authRoutes);
     this.app.use('/medicamentos', medicamentoRoutes);
     this.app.use('/bulas', bulaRoutes);
-    this.app.use('/prescricoes', precricoes);
+    this.app.use('/prescricoes', prescricaoRoutes)
     this.app.get('/', (req, res) => {
       res.send('API backend Tecsim de Pé!');
     });

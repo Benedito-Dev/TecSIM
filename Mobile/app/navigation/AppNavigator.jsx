@@ -9,7 +9,6 @@ import MainTabNavigator from './TabNavigator';
 
 import CodeScreen from '../screens/auth/code/code';
 
-
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {

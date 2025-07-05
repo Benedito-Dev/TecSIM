@@ -2,7 +2,6 @@ const express = require('express');
 const controller = require('../controllers/prescricaoController.js');
 const ValidatePrescricao = require('../middleware/validatePrescricao');
 
-
 class PrescricoesRoutes {
   constructor() {
     this.router = express.Router();
@@ -16,7 +15,7 @@ class PrescricoesRoutes {
      *   - name: Prescricoes
      *     description: Gestão de prescrições médicas
      */
-
+    
     /**
      * @swagger
      * /prescricoes:
@@ -40,7 +39,7 @@ class PrescricoesRoutes {
      *         description: Erro interno
      */
     this.router.get('/', controller.findAll);
-
+   
     /**
      * @swagger
      * /prescricoes/{id}:
@@ -68,6 +67,7 @@ class PrescricoesRoutes {
      *       401:
      *         description: Não autorizado
      */
+
     this.router.get('/:id', controller.findById);
 
     /**
@@ -145,14 +145,32 @@ class PrescricoesRoutes {
      *       content:
      *         application/json:
      *           schema:
-     *             $ref: '#/components/schemas/Prescricao'
+     *             type: object
+     *             required:
+     *               - id_paciente
+     *               - id_medico
+     *               - crm
+     *               - diagnostico
+     *               - data_prescricao
+     *             properties:
+     *               id_paciente:
+     *                 type: integer
+     *               id_medico:
+     *                 type: integer
+     *               crm:
+     *                 type: string
+     *                 example: "CRM-SP-123456"
+     *               diagnostico:
+     *                 type: string
+     *               data_prescricao:
+     *                 type: string
+     *                 format: date
+     *               validade:
+     *                 type: string
+     *                 format: date
      *     responses:
      *       201:
      *         description: Prescrição criada com sucesso
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/Prescricao'
      *       400:
      *         description: Dados inválidos
      *       401:
@@ -180,14 +198,32 @@ class PrescricoesRoutes {
      *       content:
      *         application/json:
      *           schema:
-     *             $ref: '#/components/schemas/Prescricao'
+     *             type: object
+     *             required:
+     *               - id_paciente
+     *               - id_medico
+     *               - crm
+     *               - diagnostico
+     *               - data_prescricao
+     *             properties:
+     *               id_paciente:
+     *                 type: integer
+     *               id_medico:
+     *                 type: integer
+     *               crm:
+     *                 type: string
+     *                 example: "CRM-SP-654321"
+     *               diagnostico:
+     *                 type: string
+     *               data_prescricao:
+     *                 type: string
+     *                 format: date
+     *               validade:
+     *                 type: string
+     *                 format: date
      *     responses:
      *       200:
      *         description: Prescrição atualizada
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/Prescricao'
      *       400:
      *         description: Dados inválidos
      *       401:
@@ -197,29 +233,6 @@ class PrescricoesRoutes {
      */
     this.router.put('/:id', ValidatePrescricao.validateUpdate, controller.update);
 
-    /**
-     * @swagger
-     * /prescricoes/{id}:
-     *   delete:
-     *     summary: Remove uma prescrição
-     *     tags: [Prescricoes]
-     *     security:
-     *       - bearerAuth: []
-     *     parameters:
-     *       - in: path
-     *         name: id
-     *         schema:
-     *           type: integer
-     *         required: true
-     *         description: ID da prescrição
-     *     responses:
-     *       200:
-     *         description: Prescrição removida com sucesso
-     *       401:
-     *         description: Não autorizado
-     *       404:
-     *         description: Prescrição não encontrada
-     */
     this.router.delete('/:id', controller.remove);
   }
 
