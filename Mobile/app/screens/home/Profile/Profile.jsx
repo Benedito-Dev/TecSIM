@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 
 import { useAuth } from '../../../context/AuthContext';
 import { logout as logoutService } from '../../../services/auth/authService';
 import { getPacienteById } from '../../../services/userService';
-import { useNavigation } from '@react-navigation/native';
 
 import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut } from 'lucide-react-native';
 
@@ -17,26 +17,31 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [fotoPerfil, setFotoPerfil] = useState(null);
 
-  useEffect(() => {
-    const carregarPaciente = async () => {
-      try {
-        const data = await getPacienteById(user.id);
-        setPaciente(data);
+  useFocusEffect(
+    useCallback(() => {
+      const carregarPaciente = async () => {
+        try {
+          const data = await getPacienteById(user.id);
+          setPaciente(data);
 
-        if (data.foto_perfil) {
-          setFotoPerfil(`http://192.168.1.110:3000${data.foto_perfil}`);
+          if (data.foto_perfil) {
+            // Cache busting para forçar atualização
+            setFotoPerfil(`http://192.168.1.110:3000${data.foto_perfil}?t=${Date.now()}`);
+          } else {
+            setFotoPerfil(null);
+          }
+
+          setLoading(false);
+        } catch (error) {
+          console.error('Erro ao carregar paciente:', error);
+          Alert.alert('Erro', 'Não foi possível carregar os dados do perfil.');
+          setLoading(false);
         }
+      };
 
-        setLoading(false);
-      } catch (error) {
-        console.error('Erro ao carregar paciente:', error);
-        Alert.alert('Erro', 'Não foi possível carregar os dados do perfil.');
-        setLoading(false);
-      }
-    };
-
-    carregarPaciente();
-  }, []);
+      carregarPaciente();
+    }, [user.id])
+  );
 
   const handleLogout = () => {
     Alert.alert(
@@ -94,11 +99,7 @@ export default function ProfileScreen() {
       {/* Avatar */}
       <View style={styles.profileSection}>
         <Image
-          source={
-            fotoPerfil
-              ? { uri: fotoPerfil }
-              : getAvatarSource(paciente?.genero)
-          }
+          source={fotoPerfil ? { uri: fotoPerfil } : getAvatarSource(paciente?.genero)}
           style={styles.avatar}
           onError={() => console.warn('Erro ao carregar imagem de perfil')}
         />
@@ -148,7 +149,7 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Configurações</Text>
 
-        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })} >
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}>
           <Edit3 size={20} color="#0c87c4" />
           <Text style={styles.configText}>Editar Perfil</Text>
         </TouchableOpacity>
@@ -158,7 +159,7 @@ export default function ProfileScreen() {
           <Text style={styles.configText}>Notificações</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.configItem}>
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'Privacy' })} >
           <Shield size={20} color="#0c87c4" />
           <Text style={styles.configText}>Privacidade</Text>
         </TouchableOpacity>

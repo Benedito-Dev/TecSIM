@@ -10,15 +10,6 @@ export default function DashboardScreen() {
   const navigation = useNavigation();
   const { user, loading } = useAuth();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
-    }
-  }, [loading, user]);
-
   if (loading || !user) {
     return (
       <View style={styles.loadingContainer}>
@@ -33,7 +24,7 @@ export default function DashboardScreen() {
       {/* Cabeçalho fixo sem padding lateral */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
-        <NotificationIcon initialCount={10} />
+        <NotificationIcon initialCount={3} />
       </View>
 
       {/* Conteúdo rolável com padding */}

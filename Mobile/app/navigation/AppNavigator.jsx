@@ -20,7 +20,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="App" component={MainTabNavigator} />
+      <Stack.Screen name="App" component={MainTabNavigator} options={{ gestureEnabled: false} }/>
       <Stack.Screen name="Code" component={CodeScreen} />
     </Stack.Navigator>
   );

@@ -113,7 +113,6 @@ class PacienteRepository {
   return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
-
   async remove(id) {
     const result = await db.query(`
       DELETE FROM paciente 
@@ -122,6 +121,7 @@ class PacienteRepository {
     `, [id]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
+  
 }
 
 module.exports = new PacienteRepository();
