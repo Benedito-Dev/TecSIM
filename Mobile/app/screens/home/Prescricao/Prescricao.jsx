@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-<<<<<<< HEAD
-import { FileText, Plus, Search, Filter, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
-=======
 import { FileText, ArrowLeft, Plus, Filter, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
 import { styles } from './styles';
 
 // Função para formatar a data no padrão dd/mm/aaaa
@@ -14,19 +10,11 @@ const formatarData = (dataString) => {
   const dia = String(data.getDate()).padStart(2, '0');
   const mes = String(data.getMonth() + 1).padStart(2, '0');
   const ano = data.getFullYear();
-<<<<<<< HEAD
-  return `${dia}/${mes}/${ano}`;
-};
-
-// Dados mockados atualizados com a nova estrutura
-const mockPrescricoes = [
-=======
   return `${dia}-${mes}-${ano}`;
 };
 
 // Dados mockados atualizados com a nova estrutura
 const initialMockPrescricoes = [
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
   {
     id: '1',
     id_paciente: '123',
@@ -43,10 +31,6 @@ const initialMockPrescricoes = [
         dosagem: '50mg',
         frequencia: '1x ao dia',
         duracao_dias: '30',
-<<<<<<< HEAD
-        via: 'Oral'
-=======
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
       }
     ]
   },
@@ -66,10 +50,6 @@ const initialMockPrescricoes = [
         dosagem: '850mg',
         frequencia: '2x ao dia',
         duracao_dias: '60',
-<<<<<<< HEAD
-        via: 'Oral'
-=======
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
       },
       {
         id_medicamento_prescrito: '3',
@@ -77,10 +57,6 @@ const initialMockPrescricoes = [
         dosagem: '20UI',
         frequencia: '1x ao dia',
         duracao_dias: '30',
-<<<<<<< HEAD
-        via: 'Subcutânea'
-=======
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
       }
     ]
   }
@@ -88,11 +64,7 @@ const initialMockPrescricoes = [
 
 export default function PrescricaoScreen() {
   const navigation = useNavigation();
-<<<<<<< HEAD
-  const [prescricoes] = useState(mockPrescricoes);
-=======
   const [prescricoes, setPrescricoes] = useState(initialMockPrescricoes);
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
   const [expandedPrescricao, setExpandedPrescricao] = useState(null);
 
   const togglePrescricao = (id) => {
@@ -100,36 +72,19 @@ export default function PrescricaoScreen() {
   };
 
   const handleAddPrescricao = () => {
-<<<<<<< HEAD
-    navigation.navigate('RegistroPrescricao');
-  };
-
-  const handleSearch = () => {
-    navigation.navigate('BuscarPrescricao');
-  };
-
-=======
     navigation.navigate('NovaPrescricao');
   };
 
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
   const handleFilter = () => {
     console.log('Filtrar prescrições');
   };
 
-<<<<<<< HEAD
-  const handleDeleteMedicamento = (idMedicamento) => {
-=======
   const handleDeleteMedicamento = (prescricaoId, medicamentoId) => {
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
     Alert.alert(
       "Remover medicamento",
       "Tem certeza que deseja remover este medicamento da prescrição?",
       [
         { text: "Cancelar", style: "cancel" },
-<<<<<<< HEAD
-        { text: "Remover", onPress: () => console.log("Medicamento removido:", idMedicamento) }
-=======
         { 
           text: "Remover", 
           onPress: () => {
@@ -147,28 +102,18 @@ export default function PrescricaoScreen() {
             setPrescricoes(updatedPrescricoes);
           }
         }
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
       ]
     );
   };
 
-<<<<<<< HEAD
-  const renderMedicamento = ({ item }) => (
-=======
   const renderMedicamento = ({ item, prescricaoId }) => (
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
     <View style={styles.medicineItem}>
       <View style={styles.medicineHeader}>
         <Text style={styles.medicineName}>{item.nome}</Text>
         <Text style={styles.medicineDose}>{item.dosagem}</Text>
         <TouchableOpacity 
           style={styles.deleteButton}
-<<<<<<< HEAD
-          onPress={() => handleDeleteMedicamento(item.id_medicamento_prescrito)}
-        >
-=======
           onPress={() => handleDeleteMedicamento(prescricaoId, item.id_medicamento_prescrito)}>
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
           <Trash2 size={18} color="#EF4444" />
         </TouchableOpacity>
       </View>
@@ -210,11 +155,7 @@ export default function PrescricaoScreen() {
           </View>
           
           <Text style={styles.prescricaoDate}>
-<<<<<<< HEAD
-            {formatarData(item.data_prescricao)} • Validade: {formatarData(item.validade)}
-=======
             • Cadastro:{formatarData(item.data_prescricao)}
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
           </Text>
           <Text style={styles.prescricaoDate}>• Validade: {formatarData(item.validade)}</Text>
         </View>
@@ -230,11 +171,7 @@ export default function PrescricaoScreen() {
           {item.medicamentos.length > 0 ? (
             <FlatList
               data={item.medicamentos}
-<<<<<<< HEAD
-              renderItem={renderMedicamento}
-=======
               renderItem={({ item: medItem }) => renderMedicamento({ item: medItem, prescricaoId: item.id })}
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
               keyExtractor={med => med.id_medicamento_prescrito.toString()}
               scrollEnabled={false}
             />
@@ -250,38 +187,6 @@ export default function PrescricaoScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-<<<<<<< HEAD
-        <Text style={styles.headerTitle}>Minhas Prescrições</Text>
-      </View>
-
-      {/* Barra de ações */}
-      <View style={styles.actionsBar}>
-        <View style={styles.searchFilterContainer}>
-          <TouchableOpacity 
-            style={styles.iconButton}
-            onPress={handleSearch}
-          >
-            <Search size={22} color="#0c87c4" />
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.iconButton}
-            onPress={handleFilter}
-          >
-            <Filter size={22} color="#0c87c4" />
-          </TouchableOpacity>
-        </View>
-        
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={handleAddPrescricao}
-        >
-          <Plus size={20} color="#fff" />
-          <Text style={styles.addButtonText}>Nova</Text>
-        </TouchableOpacity>
-      </View>
-
-=======
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft size={24} color="#2563EB" />
         </TouchableOpacity>
@@ -289,7 +194,6 @@ export default function PrescricaoScreen() {
         <View style={{ width: 24 }} />
       </View>
 
->>>>>>> 3d12a93034122dd47626d38175654c7dddc000c4
       {/* Lista de prescrições */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {prescricoes.length > 0 ? (
