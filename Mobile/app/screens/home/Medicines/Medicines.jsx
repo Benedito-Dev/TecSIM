@@ -148,10 +148,10 @@ export default function MedicineScreen() {
       ) : (
         <FlatList
           data={filtered}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id_medicamento}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.medItem} onPress={() => navigation.navigate('Bula', { idMedicamento: item.id, 
+            <TouchableOpacity style={styles.medItem} onPress={() => navigation.navigate('Bula', { idMedicamento: item.id_medicamento, 
                                                                                                   nomeMedicamento: item.nome, 
                                                                                                   tipoMedicamento: item.tipo, 
                                                                                                   dosagemMedicamento: item.dosagem_padrao })}>

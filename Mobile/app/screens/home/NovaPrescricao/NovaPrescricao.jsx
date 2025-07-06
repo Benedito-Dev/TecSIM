@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import FeatherIcon from "react-native-vector-icons/Feather";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { ArrowLeft, Camera, Edit3 } from "lucide-react-native"; // Lucide ícones
 import styles from "./styles";
 
 export default function NovaPrescricaoScreen() {
@@ -12,7 +11,7 @@ export default function NovaPrescricaoScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FeatherIcon name="arrow-left" size={24} color="#2563EB" />
+          <ArrowLeft size={24} color="#2563EB" />
         </TouchableOpacity>
         <Text style={styles.title}>Registrar Minha Prescrição</Text>
         <View style={styles.headerRight} />
@@ -33,7 +32,7 @@ export default function NovaPrescricaoScreen() {
           </View>
           
           <View style={styles.optionContent}>
-            <MaterialCommunityIcons name="camera" size={32} color="#2563EB" />
+            <Camera size={32} color="#2563EB" />
             <Text style={styles.optionTitle}>Tirar uma foto</Text>
             <Text style={styles.optionDescription}>
               Use a câmera do seu telefone para capturar sua prescrição.
@@ -47,7 +46,7 @@ export default function NovaPrescricaoScreen() {
           onPress={() => navigation.navigate("PrescricaoManual")}
         >
           <View style={styles.optionContent}>
-            <FeatherIcon name="edit-3" size={32} color="#2563EB" />
+            <Edit3 size={32} color="#2563EB" />
             <Text style={styles.optionTitle}>Preencher manualmente</Text>
             <Text style={styles.optionDescription}>
               Insira os detalhes da sua prescrição manualmente.

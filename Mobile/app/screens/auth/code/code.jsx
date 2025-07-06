@@ -63,6 +63,7 @@ export default function CodeScreen({ route }) {
       if (!verified) throw new Error('Código inválido');
 
       const {
+        cpf,
         nome,
         password: senha,
         dataNascimento: data_nascimento,
@@ -72,6 +73,7 @@ export default function CodeScreen({ route }) {
       } = registrationData;
 
       const pacienteData = {
+        cpf,
         nome,
         email,
         senha,
@@ -83,7 +85,7 @@ export default function CodeScreen({ route }) {
 
       const result = await createPaciente(pacienteData);
 
-      if (result?.id) {
+      if (result?.data.id) {
         Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
         navigation.replace('Login');
       } else {

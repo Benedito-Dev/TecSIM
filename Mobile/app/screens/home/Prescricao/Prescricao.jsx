@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { FileText, Plus, Filter, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
+import { FileText, ArrowLeft, Plus, Filter, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
 import { styles } from './styles';
 
 // Função para formatar a data no padrão dd/mm/aaaa
@@ -188,7 +188,7 @@ export default function PrescricaoScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FeatherIcon name="arrow-left" size={24} color="#2563EB" />
+          <ArrowLeft size={24} color="#2563EB" />
         </TouchableOpacity>
         <Text style={styles.title}>Minhas Prescrições</Text>
         <View style={{ width: 24 }} />

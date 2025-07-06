@@ -8,6 +8,7 @@ import TermsModal from '../../../components/TermsModal'; // Importe o componente
 import InputField from '../../../components/InputField';
 import DateInput from '../../../components/DataInput';
 import GenderInput from '../../../components/InputGender';
+import CpfInput from '../../../components/CpfInput';
 
 import { styles } from './styles';
 
@@ -50,6 +51,7 @@ export default function RegisterScreen({ navigation }) {
         Alert.alert('Verificação', 'Enviamos um código para seu e-mail');
 
         navigation.navigate('Code', {
+          cpf,
           nome,
           email,
           password,
@@ -91,12 +93,10 @@ export default function RegisterScreen({ navigation }) {
           iconName="user"
         />
 
-        <InputField
+        <CpfInput
           label="CPF"
-          placeholder="000.000.000-00"
           value={cpf}
           onChangeText={setCpf}
-          iconName="user"
         />
 
         <InputField
