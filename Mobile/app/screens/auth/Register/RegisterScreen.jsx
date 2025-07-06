@@ -16,6 +16,7 @@ export default function RegisterScreen({ navigation }) {
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [nome, setNome] = useState('');
+  const [cpf, setCpf] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -87,6 +88,14 @@ export default function RegisterScreen({ navigation }) {
           placeholder="Ex: Antonio Nascimento Barros"
           value={nome}
           onChangeText={setNome}
+          iconName="user"
+        />
+
+        <InputField
+          label="CPF"
+          placeholder="000.000.000-00"
+          value={cpf}
+          onChangeText={setCpf}
           iconName="user"
         />
 

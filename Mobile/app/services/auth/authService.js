@@ -35,29 +35,6 @@ export const login = async (email, senha) => {
   }
 };
 
-export const register = async (nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos) => {
-  try {
-    const response = await api.post('/usuarios', { nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos });
-    mensagem = response.data.message
-
-    // Se o status 201 for retornado corretamente
-    if (response.status === 201) {
-      return { success: true, message: 'Usuário cadastrado com sucesso!' };
-    }
-
-    // Se retornar qualquer outro status
-    return { success: false, message: 'Erro desconhecido ao cadastrar usuário.' };
-  } catch (error) {
-    console.error('Erro ao registrar usuário:', error);
-
-    // Se o back-end retornar uma mensagem de erro
-    if (error.response && error.response.data?.error) {
-      return { success: false, message: error.response.data.error };
-    }
-
-    return { success: false, message: 'Erro ao registrar usuário. Verifique os dados e tente novamente.' };
-}};
-
 export const getCurrentUser = async () => {
   try {
     const user = await AsyncStorage.getItem('@Auth:user');
