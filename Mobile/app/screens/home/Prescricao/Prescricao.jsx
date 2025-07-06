@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { FileText, ArrowLeft, Plus, Filter, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
+import { FileText, ArrowLeft, Plus, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
 import { styles } from './styles';
 
-// Função para formatar a data no padrão dd/mm/aaaa
 const formatarData = (dataString) => {
   const data = new Date(dataString);
   const dia = String(data.getDate()).padStart(2, '0');
@@ -13,7 +12,6 @@ const formatarData = (dataString) => {
   return `${dia}-${mes}-${ano}`;
 };
 
-// Dados mockados atualizados com a nova estrutura
 const initialMockPrescricoes = [
   {
     id: '1',
@@ -31,6 +29,7 @@ const initialMockPrescricoes = [
         dosagem: '50mg',
         frequencia: '1x ao dia',
         duracao_dias: '30',
+        via: 'Oral'
       }
     ]
   },
@@ -50,6 +49,7 @@ const initialMockPrescricoes = [
         dosagem: '850mg',
         frequencia: '2x ao dia',
         duracao_dias: '60',
+        via: 'Oral'
       },
       {
         id_medicamento_prescrito: '3',
@@ -57,6 +57,7 @@ const initialMockPrescricoes = [
         dosagem: '20UI',
         frequencia: '1x ao dia',
         duracao_dias: '30',
+        via: 'Subcutânea'
       }
     ]
   }
@@ -73,10 +74,6 @@ export default function PrescricaoScreen() {
 
   const handleAddPrescricao = () => {
     navigation.navigate('NovaPrescricao');
-  };
-
-  const handleFilter = () => {
-    console.log('Filtrar prescrições');
   };
 
   const handleDeleteMedicamento = (prescricaoId, medicamentoId) => {
@@ -195,7 +192,10 @@ export default function PrescricaoScreen() {
       </View>
 
       {/* Lista de prescrições */}
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer}
+        style={{ flex: 1 }}
+      >
         {prescricoes.length > 0 ? (
           <FlatList
             data={prescricoes}
@@ -208,15 +208,18 @@ export default function PrescricaoScreen() {
             <FileText size={48} color="#ccc" />
             <Text style={styles.emptyText}>Nenhuma prescrição cadastrada</Text>
             <Text style={styles.emptySubtext}>Adicione uma nova prescrição para começar</Text>
-            <TouchableOpacity 
-              style={styles.emptyButton}
-              onPress={handleAddPrescricao}
-            >
-              <Text style={styles.emptyButtonText}>Adicionar Prescrição</Text>
-            </TouchableOpacity>
           </View>
         )}
       </ScrollView>
+
+      {/* Botão Adicionar Prescrição */}
+      <TouchableOpacity
+        style={styles.addPrescButton}
+        onPress={handleAddPrescricao}
+      >
+        <Plus size={24} color="#fff" />
+        <Text style={styles.addPrescButtonText}>Nova Prescrição</Text>
+      </TouchableOpacity>
     </View>
   );
 }
