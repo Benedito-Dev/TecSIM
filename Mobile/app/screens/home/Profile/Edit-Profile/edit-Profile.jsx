@@ -113,7 +113,7 @@ export default function EditProfileScreen() {
       };
 
       await atualizarUsuario(dadosAtualizados);
-      navigation.navigate('App', { screen: 'Profile' });
+      navigation.goBack();
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
       Alert.alert('Erro', 'Não foi possível atualizar o perfil.');

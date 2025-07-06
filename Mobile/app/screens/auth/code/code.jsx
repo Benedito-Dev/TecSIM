@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { register } from '../../../services/auth/authService';
 import { verifyOtp } from '../../../services/auth/otpService';
+import { createPaciente } from '../../../services/userService'; // ✅ Import da função nova
 import styles from './styles';
 
 const CODE_LENGTH = 6;
@@ -24,14 +24,13 @@ export default function CodeScreen({ route }) {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(30);
   const codeInputs = useRef(Array(CODE_LENGTH).fill().map(() => React.createRef()));
-  
-  // Extrai o email corretamente da rota
+
   const { email: routeEmail = 'seu@email.com', ...registrationData } = route.params;
-  const email = routeEmail || 'seu@email.com'; // Garante que sempre terá um valor
+  const email = routeEmail || 'seu@email.com';
 
   useEffect(() => {
     if (countdown <= 0) return;
-    
+
     const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     return () => clearTimeout(timer);
   }, [countdown]);
@@ -40,11 +39,11 @@ export default function CodeScreen({ route }) {
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
-    
+
     if (text && index < CODE_LENGTH - 1) {
       codeInputs.current[index + 1].focus();
     }
-    
+
     if (index === CODE_LENGTH - 1 && text) {
       verifyCode(newCode.join(''));
     }
@@ -63,33 +62,36 @@ export default function CodeScreen({ route }) {
       const verified = await verifyOtp(email, fullCode);
       if (!verified) throw new Error('Código inválido');
 
-      // Extrai os dados de registro corretamente
       const {
+        cpf,
         nome,
         password: senha,
         dataNascimento: data_nascimento,
         peso_kg,
         genero,
-        checked: aceite_termos
+        termsAccepted: aceite_termos
       } = registrationData;
 
-      // Usa o email que já temos (routeEmail) em vez de tentar extrair novamente
-      const { success, message } = await register(
+      const pacienteData = {
+        cpf,
         nome,
-        email, // Usando o email da rota que já extraímos
+        email,
         senha,
         data_nascimento,
         peso_kg,
         genero,
         aceite_termos
-      );
+      };
 
-      if (success) {
+      const result = await createPaciente(pacienteData);
+
+      if (result?.data.id) {
         Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
         navigation.replace('Login');
       } else {
-        throw new Error(message || 'Tente novamente mais tarde.');
+        throw new Error('Erro inesperado ao criar paciente. Tente novamente.');
       }
+
     } catch (error) {
       Alert.alert('Erro', error.message || 'Ocorreu um erro. Tente novamente.');
       resetCode();
@@ -115,7 +117,7 @@ export default function CodeScreen({ route }) {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>TecSIM</Text>
           <Text style={styles.headerSubtitle}>Assistente de saúde inteligente</Text>
-          
+
           <View style={styles.userGreeting}>
             <Text style={styles.greetingText}>Olá, Usuário</Text>
             <Text style={styles.helpText}>Insira o código de verificação enviado para:</Text>
@@ -125,10 +127,10 @@ export default function CodeScreen({ route }) {
 
         <View style={styles.codeSection}>
           <Text style={styles.sectionTitle}>Código de Verificação</Text>
-          
+
           <View style={styles.codeContainer}>
             {code.map((digit, index) => (
-              <View 
+              <View
                 key={`code-input-${index}`}
                 style={[styles.codeInputWrapper, digit && styles.codeInputFilled]}
               >
@@ -159,7 +161,7 @@ export default function CodeScreen({ route }) {
           </View>
         </View>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.verifyButton}
           onPress={() => verifyCode(code.join(''))}
           disabled={loading || !isCodeComplete}

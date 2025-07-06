@@ -1,4 +1,3 @@
-// db/dbInit.js
 const db = require('./db');
 
 const tables = [
@@ -23,7 +22,7 @@ const tables = [
     name: 'medicos',
     createQuery: `
       CREATE TABLE medicos (
-        id_medico SERIAL PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         nome VARCHAR(100) NOT NULL,
         crm VARCHAR(20) UNIQUE NOT NULL,
         especialidade VARCHAR(100),
@@ -73,20 +72,19 @@ const tables = [
     createQuery: `
       CREATE TABLE prescricoes (
         id_prescricao SERIAL PRIMARY KEY,
-        id_usuario INT NOT NULL,
-        id_medico INT NOT NULL,
+        id_paciente INT NOT NULL,
+        id INT NOT NULL,
         crm VARCHAR(20),
         diagnostico TEXT NOT NULL,
         data_prescricao DATE NOT NULL,
         validade DATE,
         data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-        FOREIGN KEY (id_medico) REFERENCES medicos(id_medico),
+        FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE,
+        FOREIGN KEY (id) REFERENCES medicos(id),
         FOREIGN KEY (crm) REFERENCES medicos(crm)
       );
     `
-},
-
+  },
   {
     name: 'medicamentos_prescritos',
     createQuery: `
@@ -99,7 +97,7 @@ const tables = [
         duracao_dias INT,
         horarios VARCHAR(255),
         via VARCHAR(50),
-        FOREIGN KEY (id_prescricao) REFERENCES prescricoes(id_prescricao),
+        FOREIGN KEY (id_prescricao) REFERENCES prescricoes(id_prescricao) ON DELETE CASCADE,
         FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento)
       );
     `
@@ -109,7 +107,7 @@ const tables = [
     createQuery: `
       CREATE TABLE lembretes (
         id_lembrete SERIAL PRIMARY KEY,
-        id_usuario INT NOT NULL,
+        id_paciente INT NOT NULL,
         id_prescricao INT NOT NULL,
         id_medicamento INT NOT NULL,
         horario TIME NOT NULL,
@@ -117,7 +115,7 @@ const tables = [
         data_fim DATE NOT NULL,
         canal_envio VARCHAR(20) CHECK (canal_envio IN ('App', 'WhatsApp', 'Email')),
         enviado BOOLEAN DEFAULT FALSE,
-        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+        FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE,
         FOREIGN KEY (id_prescricao) REFERENCES prescricoes(id_prescricao),
         FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento)
       );
@@ -128,11 +126,11 @@ const tables = [
     createQuery: `
       CREATE TABLE favoritos (
         id_favorito SERIAL PRIMARY KEY,
-        id_usuario INT NOT NULL,
+        id_paciente INT NOT NULL,
         tipo VARCHAR(20) CHECK (tipo IN ('medicamento', 'sintoma')),
         referencia_id INT NOT NULL,
         data_favoritado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+        FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
       );
     `
   },
@@ -141,11 +139,11 @@ const tables = [
     createQuery: `
       CREATE TABLE historico_interacoes (
         id_historico SERIAL PRIMARY KEY,
-        id_usuario INT NOT NULL,
+        id_paciente INT NOT NULL,
         tipo VARCHAR(30) CHECK (tipo IN ('busca', 'dosagem', 'interacao', 'simulacao')),
         descricao TEXT,
         data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+        FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
       );
     `
   },

@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: height * 0.20, // Ocupa 45% da tela
+    height: height * 0.20,
     backgroundColor: '#5f65d9',
   },
   logo: {
@@ -40,6 +40,7 @@ export const styles = StyleSheet.create({
     display: "flex",
     alignItems: 'center',
     flexDirection: "column",
+    paddingBottom: 20,
   },
   label: {
     fontSize: 16,
@@ -65,13 +66,14 @@ export const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     flexDirection: "row",
-    width: "80%",
-    marginTop: 20
+    width: "85%",
+    marginTop: 20,
+    marginBottom: 10,
   },
   Remenber: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     flexDirection: "row",
   },
   EsqueciSenha: {
@@ -84,15 +86,21 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 80,
     borderRadius: 12,
-    marginTop: 40,
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  disabledButton: {
+    backgroundColor: '#0097b2',
+    opacity: 0.6,
   },
   subButton: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-around",
     flexDirection: "row",
-    marginTop: 20,
-    width: "80%"
+    marginTop: 10,
+    width: "80%",
+    marginBottom: 20,
   },
   buttonText: {
     color: '#fff',
@@ -103,10 +111,117 @@ export const styles = StyleSheet.create({
   termsText: {
     marginLeft: 8,
     fontSize: 14,
+    color: '#333',
   },
   termsLink: {
     color: '#0097b2',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+  },
+  // Estilos para o Modal de Termos
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    width: '90%',
+    maxHeight: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalHeader: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    paddingBottom: 15,
+    marginBottom: 15,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#0097b2',
+    textAlign: 'center',
+  },
+  modalSubtitle: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  scrollContainer: {
+    maxHeight: '70%',
+    marginBottom: 15,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0097b2',
+    marginTop: 15,
+    marginBottom: 5,
+  },
+  paragraph: {
+    fontSize: 14,
+    color: '#333',
+    lineHeight: 20,
+    marginBottom: 10,
+  },
+  listItem: {
+    flexDirection: 'row',
+    marginBottom: 4,
+    alignItems: 'flex-start',
+  },
+  bullet: {
+    fontSize: 14,
+    color: '#374151',
+    marginRight: 8,
+  },
+  listText: {
+    fontSize: 14,
+    color: '#374151',
+    flex: 1,
+    lineHeight: 20,
+  },
+  warning: {
+    color: '#dc2626',
+    fontWeight: 'bold',
+    marginTop: 12,
+  },
+  underline: {
+    textDecorationLine: 'underline',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+    backgroundColor: '#f8fafc',
+    padding: 10,
+    borderRadius: 8,
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    color: '#333',
+    flex: 1,
+  },
+  modalFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    paddingTop: 15,
+  },
+  modalButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    minWidth: '45%',
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#e0e0e0',
+  },
+  acceptButton: {
+    backgroundColor: '#0097b2',
   },
 });
