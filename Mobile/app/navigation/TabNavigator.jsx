@@ -26,14 +26,13 @@ export default function MainTabNavigator() {
           return (
             <View style={focused ? styles.iconContainerFocused : styles.iconContainer}>
               <Icon name={iconName} size={iconSize} color={color} />
-              {focused && <View style={styles.activeIndicator} />}
             </View>
           );
         },
         tabBarActiveTintColor: '#0c87c4',
         tabBarInactiveTintColor: '#95a5a6',
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarStyle: {
           backgroundColor: '#ffffff',
           borderTopWidth: 0,
@@ -58,12 +57,10 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 8,
   },
   iconContainerFocused: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 8,
   },
   activeIndicator: {
     width: 6,

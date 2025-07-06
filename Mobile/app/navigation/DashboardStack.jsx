@@ -7,6 +7,7 @@ import BulaScreen from '../screens/home/Medicines/Bula/Bula';
 import PrescricaoScreen from '../screens/home/Prescricao/Prescricao';
 import NovaPrescricaoScreen from '../screens/home/NovaPrescricao/NovaPrescricao';
 import PrescricaoManualScreen from '../screens/home/PrescricaoManual/PrescricaoManual';
+import LembretesScreen from '../screens/home/Lembretes/LembreteScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ export default function DashboardStack() {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="DashboardMain" component={DashboardScreen} />
+      <Stack.Screen name="Lembretes" component={LembretesScreen} />
       <Stack.Screen name="Medicamentos" component={MedicineScreen} />
       <Stack.Screen name="Bula" component={BulaScreen} />
       <Stack.Screen name="Prescricao" component={PrescricaoScreen} />
