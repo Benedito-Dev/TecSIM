@@ -2,14 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const path = require('path');
 const pacientesRoutes = require('./routes/pacientesRoutes');
 const medicosRoutes = require('./routes/medicoRoutes')
 const authRoutes = require('./routes/authRoutes')
 const dbInit = require('./db/dbinit');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig'); // <- import Swagger config
-const connectMongo = require('./db/mongo');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
+const prescricaoRoutes = require('./routes/prescricaoRoutes')
 const bulaRoutes = require('./routes/bulaRoutes');
 
 
@@ -27,6 +28,10 @@ class Server {
     this.app.use(cors());
     this.app.use(morgan('dev'));
 
+    // 🔓 Torna a pasta 'uploads' pública
+    this.app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
     // Documentação Swagger
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   }
@@ -37,8 +42,9 @@ class Server {
     this.app.use('/auth', authRoutes);
     this.app.use('/medicamentos', medicamentoRoutes);
     this.app.use('/bulas', bulaRoutes);
+    this.app.use('/prescricoes', prescricaoRoutes)
     this.app.get('/', (req, res) => {
-      res.send('API de Usuarios está funcionando!');
+      res.send('API backend Tecsim de Pé!');
     });
 
     this.app.use((err, req, res, next) => {

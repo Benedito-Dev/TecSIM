@@ -24,7 +24,7 @@ class PrescricaoService {
   }
 
   async create(data) {
-    return await repository.create(data);
+    return await repository.create(data); // data inclui: id_paciente, id_medico, crm, diagnostico, data_prescricao, validade
   }
 
   async update(id, data) {

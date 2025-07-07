@@ -1,4 +1,6 @@
 const PacienteService = require('../services/pacientesService');
+const path = require('path');
+const fs = require('fs');
 
 class PacienteController {
   // Buscar todos os usuários (sem senhas)
@@ -68,6 +70,35 @@ class PacienteController {
     }
   }
 
+  async uploadFoto(req, res) {
+    try {
+      const { id } = req.params;
+      const paciente = await PacienteService.getById(id);
+
+      if (!paciente) {
+        return res.status(404).json({ error: 'Paciente não encontrado' });
+      }
+
+      // 🧹 Apagar imagem anterior se existir
+      if (paciente.foto_perfil) {
+        const caminhoAntigo = path.join(__dirname, '..', paciente.foto_perfil);
+        if (fs.existsSync(caminhoAntigo)) {
+          fs.unlinkSync(caminhoAntigo);
+        }
+      }
+
+      // 🔄 Atualiza a imagem
+      const novoCaminho = `/uploads/${req.file.filename}`;
+      await PacienteService.atualizarFoto(id, novoCaminho);
+
+      res.status(200).json({ message: 'Foto atualizada com sucesso', foto: novoCaminho });
+    } catch (error) {
+      console.error('Erro ao fazer upload da imagem:', error);
+      res.status(500).json({ error: 'Erro ao fazer upload da imagem' });
+    }
+  };
+
+
   // Atualizar usuário
   async update(req, res) {
     try {
@@ -111,6 +142,20 @@ class PacienteController {
     } catch (error) {
       console.error('Erro ao atualizar senha:', error);
       res.status(500).json({ error: 'Erro ao atualizar senha.' });
+    }
+  }
+
+  async desativar(req, res) {
+  try {
+    const { id } = req.params;
+    const paciente = await PacienteService.desativar(id);
+    if (!paciente) {
+      return res.status(404).json({ error: 'Paciente não encontrado' });
+    }
+    res.status(200).json({ message: 'Paciente desativado com sucesso', data: paciente });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao desativar paciente' });
     }
   }
 

@@ -9,7 +9,7 @@ export default function GenderInput({ value, onChange }) {
   ];
 
   return (
-    <View style={{ width: '85%', marginTop: 12 }}>
+    <View style={{ width: '85%', marginTop: 12, marginBottom: 12 }}>
       <Text style={{ fontSize: 16, fontWeight: '500', color: '#333', marginBottom: 8 }}>Gênero</Text>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap' }}>
         {options.map((option) => (

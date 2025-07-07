@@ -1,6 +1,7 @@
 const express = require('express');
 const controller = require('../controllers/pacientesController');
 const ValidatePaciente = require('../middleware/validatePaciente');
+const upload = require('../config/multer');
 
 class PacientesRoutes {
   constructor() {
@@ -140,6 +141,41 @@ class PacientesRoutes {
 
     /**
      * @swagger
+     * /pacientes/{id}/foto:
+     *   post:
+     *     summary: Atualiza a foto de perfil do paciente
+     *     tags: [Pacientes]
+     *     security:
+     *       - bearerAuth: []
+     *     consumes:
+     *       - multipart/form-data
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: integer
+     *         description: ID do paciente
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               image:
+     *                 type: string
+     *                 format: binary
+     *                 description: Arquivo da imagem
+     *     responses:
+     *       200:
+     *         description: Foto atualizada com sucesso
+     */
+    this.router.post('/:id/foto', upload.single('image'), controller.uploadFoto);
+
+
+    /**
+     * @swagger
      * /pacientes/{id}:
      *   put:
      *     summary: Atualiza todos os dados do paciente
@@ -243,6 +279,44 @@ class PacientesRoutes {
      *         description: paciente não encontrado
      */
     this.router.delete('/:id', controller.remove);
+    
+    /**
+     * @swagger
+     * /pacientes/{id}/inativar:
+     *   patch:
+     *     summary: Desativa (inativa) um paciente
+     *     tags: [Pacientes]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID do paciente a ser inativado
+     *     responses:
+     *       200:
+     *         description: Paciente inativado com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   example: Paciente desativado com sucesso
+     *                 data:
+     *                   $ref: '#/components/schemas/Paciente'
+     *       404:
+     *         description: Paciente não encontrado
+     *       401:
+     *         description: Não autorizado
+     *       500:
+     *         description: Erro ao desativar paciente
+     */
+    this.router.patch('/:id/inativar', controller.desativar);
+
   }
 
   getRouter() {

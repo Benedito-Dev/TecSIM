@@ -9,6 +9,10 @@ class AuthService {
       const usuario = await pacienteRepository.verifyCredentials(email, senha);
 
       const idade = this.calcularIdade(usuario.data_nascimento);
+
+      if (usuario.ativo === false) {
+      await pacienteRepository.reativar(usuario.id); // reativa no banco
+      }
       
       // Gera o token JWT
       const token = jwt.sign(
@@ -19,7 +23,7 @@ class AuthService {
 
       return {
         usuario: {
-          id: usuario.id_usuario,
+          id: usuario.id,
           nome: usuario.nome,
           email: usuario.email,
           idade: idade,
@@ -27,6 +31,8 @@ class AuthService {
         },
         token
       };
+
+      
     } catch (error) {
       throw new Error('Falha na autenticação: ' + error.message);
     }

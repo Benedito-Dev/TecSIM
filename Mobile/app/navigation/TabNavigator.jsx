@@ -3,9 +3,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 import { StyleSheet, View } from 'react-native';
 
-// Importando telas
-import DashboardScreen from '../screens/home/Dashboard/Dashboard';
-import ProfileScreen from '../screens/home/Profile/Profile';
+// Import stacks
+import DashboardStack from './DashboardStack';
+import ProfileStack from './ProfileStack';
+import PrescricaoStack from './PrescricaoStack';
 import ChatScreen from '../screens/home/Chat/Chat';
 
 const Tab = createBottomTabNavigator();
@@ -16,25 +17,22 @@ export default function MainTabNavigator() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          
           if (route.name === 'Dashboard') iconName = 'home';
           if (route.name === 'Chat') iconName = 'message-square';
           if (route.name === 'Profile') iconName = 'user';
-          
-          // Aumenta o ícone quando está ativo
+
           const iconSize = focused ? size + 2 : size;
-          
+
           return (
             <View style={focused ? styles.iconContainerFocused : styles.iconContainer}>
               <Icon name={iconName} size={iconSize} color={color} />
-              {focused && <View style={styles.activeIndicator} />}
             </View>
           );
         },
         tabBarActiveTintColor: '#0c87c4',
         tabBarInactiveTintColor: '#95a5a6',
         headerShown: false,
-        tabBarShowLabel: false, // Remove os labels para um visual mais limpo
+        tabBarShowLabel: true,
         tabBarStyle: {
           backgroundColor: '#ffffff',
           borderTopWidth: 0,
@@ -48,25 +46,9 @@ export default function MainTabNavigator() {
         },
       })}
     >
-      <Tab.Screen 
-        name="Dashboard" 
-        component={DashboardScreen} 
-        options={{ title: 'Início' }} 
-      />
-      <Tab.Screen 
-        name="Chat" 
-        component={ChatScreen} 
-        options={{ 
-          title: 'Assistente IA',
-          // Adiciona um badge para indicar novas mensagens (opcional)
-          // tabBarBadge: hasNewMessages ? '' : null 
-        }} 
-      />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
-        options={{ title: 'Perfil' }} 
-      />
+      <Tab.Screen name="Dashboard" component={DashboardStack} options={{ title: 'Home' }}  />
+      <Tab.Screen name="Chat" component={ChatScreen} options={{ title: 'Chatbot' }}  />
+      <Tab.Screen name="Profile" component={ProfileStack} options={{ title: 'Perfil' }}  />
     </Tab.Navigator>
   );
 }
@@ -75,12 +57,10 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 8,
   },
   iconContainerFocused: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 8,
   },
   activeIndicator: {
     width: 6,

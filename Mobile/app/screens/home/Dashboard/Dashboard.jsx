@@ -4,20 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import NotificationIcon from '../../../components/Notification';
-import { MessageSquare, Pill, Clock } from 'lucide-react-native'; // Ou Feather
+import { MessageSquare, Pill, Clock, FileText } from 'lucide-react-native'; // Adicionei FileText para o ícone de prescrições
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
   const { user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
-    }
-  }, [loading, user]);
 
   if (loading || !user) {
     return (
@@ -33,7 +24,7 @@ export default function DashboardScreen() {
       {/* Cabeçalho fixo sem padding lateral */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
-        <NotificationIcon initialCount={10} />
+        <NotificationIcon initialCount={3} />
       </View>
 
       {/* Conteúdo rolável com padding */}
@@ -45,7 +36,7 @@ export default function DashboardScreen() {
         {/* Cartão de Chat com o Assistente */}
         <TouchableOpacity
           style={styles.chatCard}
-          onPress={() => navigation.navigate('SymptomReport')}
+          onPress={() => navigation.navigate('Chat')}
         >
           <MessageSquare color="#fff" size={32} />
           <Text style={styles.chatCardTitle}>Iniciar Conversar com Assistente</Text>
@@ -73,6 +64,16 @@ export default function DashboardScreen() {
             <Clock color="#0c87c4" size={28} />
             <Text style={styles.toolCardTitle}>Lembretes</Text>
             <Text style={styles.toolCardDescription}>Nunca esqueça de tomar seus remédios</Text>
+          </TouchableOpacity>
+
+          {/* Novo card para Prescrições */}
+          <TouchableOpacity
+            style={styles.toolCard}
+            onPress={() => navigation.navigate('Prescricao')}
+          >
+            <FileText color="#0c87c4" size={28} />
+            <Text style={styles.toolCardTitle}>Minhas Prescrições</Text>
+            <Text style={styles.toolCardDescription}>Acesse suas receitas médicas</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
