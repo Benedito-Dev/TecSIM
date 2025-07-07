@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { useAuth } from '../../../../context/AuthContext';
-import { deletePaciente } from '../../../../services/userService'
+import { deletePaciente, inativarPaciente } from '../../../../services/userService'
 
 import { styles } from './styles';
 import { ArrowLeft } from 'lucide-react-native';
@@ -11,6 +11,19 @@ import { ArrowLeft } from 'lucide-react-native';
 export default function PrivacyScreen() {
   const navigation = useNavigation();
   const { user } = useAuth();
+
+  const handleInactiveAccount = () => {
+    Alert.alert(
+      'Conta Inativa',
+      'Sua conta foi desativada. Você poderá reativá-la ao fazer login novamente.',
+      [
+        { text: 'OK', onPress: () => {
+          inativarPaciente(user.id)
+          navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] });
+        } }
+      ]
+    );
+  }
 
   const handleDeleteAccount = () => {
     Alert.alert(
@@ -69,6 +82,10 @@ export default function PrivacyScreen() {
           <Text style={styles.cardText}>
             Ao excluir sua conta, todos os dados associados serão apagados permanentemente e você não poderá recuperá-los.
           </Text>
+
+          <TouchableOpacity style={styles.deactivateButton} onPress={handleInactiveAccount}>
+            <Text style={styles.deactivateButtonText}>Desativar minha conta</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
             <Text style={styles.deleteButtonText}>Excluir minha conta</Text>

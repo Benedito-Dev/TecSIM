@@ -44,6 +44,17 @@ export const updatePaciente = async (id, pacienteData) => {
   }
 };
 
+// 🟠 [Inative] Inativar um paciente
+export const inativarPaciente = async (id) => {
+  try {
+    const response = await api.patch(`/pacientes/${id}/inativar`);
+    return response.data;
+  } catch (error) {
+    console.error(`Erro ao inativar paciente ID ${id}:`, error.message);
+    throw error;
+  }
+}
+
 // 🔴 [DELETE] Remove um paciente
 export const deletePaciente = async (id) => {
   try {

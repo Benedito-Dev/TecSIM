@@ -23,6 +23,7 @@ export default function ChatScreen() {
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollViewRef = useRef();
+  const inputRef = useRef(null);
 
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString('pt-BR', { 
@@ -99,6 +100,7 @@ export default function ChatScreen() {
       }
     } finally {
       setIsLoading(false);
+      inputRef.current?.focus();
     }
   };
 
@@ -165,6 +167,7 @@ export default function ChatScreen() {
         keyboardVerticalOffset={Platform.select({ ios: 90, android: 0 })}
       >
         <TextInput
+          ref={inputRef}
           style={styles.input}
           value={newMessage}
           onChangeText={setNewMessage}

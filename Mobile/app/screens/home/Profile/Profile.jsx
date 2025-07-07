@@ -126,6 +126,7 @@ export default function ProfileScreen() {
       </View>
 
       {/* Interações com o Chatbot */}
+      <View style={styles.rowItem}></View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Interações com o Chatbot</Text>
         <TouchableOpacity style={styles.chatItem}>
@@ -147,6 +148,7 @@ export default function ProfileScreen() {
 
       {/* Configurações */}
       <View style={styles.section}>
+        <View style={styles.rowItem}></View>
         <Text style={styles.sectionTitle}>Configurações</Text>
 
         <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}>
