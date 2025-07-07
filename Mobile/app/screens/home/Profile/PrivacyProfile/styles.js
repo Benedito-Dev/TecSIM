@@ -46,6 +46,18 @@ export const styles = StyleSheet.create({
     color: '#444',
     lineHeight: 20,
   },
+  deactivateButton: {
+    marginTop: 16,
+    backgroundColor: '#FFA500', // laranja suave
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  deactivateButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
   deleteButton: {
     marginTop: 16,
     backgroundColor: '#ff4d4d',

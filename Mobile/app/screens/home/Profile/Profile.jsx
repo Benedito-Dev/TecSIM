@@ -26,7 +26,7 @@ export default function ProfileScreen() {
 
           if (data.foto_perfil) {
             // Cache busting para forçar atualização
-            setFotoPerfil(`http://192.168.1.110:3000${data.foto_perfil}?t=${Date.now()}`);
+            setFotoPerfil(`http://10.0.30.104:3000${data.foto_perfil}?t=${Date.now()}`);
           } else {
             setFotoPerfil(null);
           }
@@ -126,6 +126,7 @@ export default function ProfileScreen() {
       </View>
 
       {/* Interações com o Chatbot */}
+      <View style={styles.rowItem}></View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Interações com o Chatbot</Text>
         <TouchableOpacity style={styles.chatItem}>
@@ -147,6 +148,7 @@ export default function ProfileScreen() {
 
       {/* Configurações */}
       <View style={styles.section}>
+        <View style={styles.rowItem}></View>
         <Text style={styles.sectionTitle}>Configurações</Text>
 
         <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}>

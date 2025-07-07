@@ -53,7 +53,12 @@ export const styles = StyleSheet.create({
   row: {
     borderTopWidth: 1,
     borderColor: '#e0e0e0',
-    paddingVertical: 12,
+    paddingVertical: 5,
+  },
+  rowItem: {
+    borderTopWidth: 3,
+    borderColor: '#e0e0e0',
+    paddingVertical: 6,
   },
   label: {
     color: '#0c87c4',
