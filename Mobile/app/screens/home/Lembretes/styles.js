@@ -7,11 +7,16 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 30,
   },
-  header: {
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerText: {
     fontSize: 22,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 20,
+    marginLeft: 8,
   },
   list: {
     paddingBottom: 20,

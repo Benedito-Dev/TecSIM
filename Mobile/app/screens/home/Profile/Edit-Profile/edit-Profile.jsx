@@ -38,7 +38,7 @@ export default function EditProfileScreen() {
         setDataNascimento(data.data_nascimento?.split('T')[0] || '');
         setPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
-        setFotoPerfil(data.foto_perfil ? `http://10.0.30.145:3000${data.foto_perfil}` : null);
+        setFotoPerfil(data.foto_perfil ? `http://10.0.30.233:3000${data.foto_perfil}` : null);
         setLoading(false);
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);

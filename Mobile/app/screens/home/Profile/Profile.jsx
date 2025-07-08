@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator, Platform } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 
@@ -19,14 +19,15 @@ export default function ProfileScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      if (!user?.id) return; // Proteção contra user null/undefined
+
       const carregarPaciente = async () => {
         try {
           const data = await getPacienteById(user.id);
           setPaciente(data);
 
           if (data.foto_perfil) {
-            // Cache busting para forçar atualização
-            setFotoPerfil(`http://10.0.30.145:3000${data.foto_perfil}?t=${Date.now()}`);
+            setFotoPerfil(`http://10.0.30.233:3000${data.foto_perfil}?t=${Date.now()}`);
           } else {
             setFotoPerfil(null);
           }
@@ -40,29 +41,45 @@ export default function ProfileScreen() {
       };
 
       carregarPaciente();
-    }, [user.id])
+    }, [user?.id])
   );
 
   const handleLogout = () => {
-    Alert.alert(
-      "Sair",
-      "Você realmente deseja sair?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Sim", onPress: async () => {
-            try {
-              await logoutService();
-              await Logout();
-              navigation.replace('Welcome');
-            } catch (error) {
-              console.error("Erro ao fazer logout:", error);
-              Alert.alert("Erro", "Não foi possível sair.");
+    if (Platform.OS === 'web') {
+      const confirmLogout = window.confirm("Você realmente deseja sair?");
+      if (!confirmLogout) return;
+
+      (async () => {
+        try {
+          await logoutService();
+          await Logout();
+          navigation.replace('Welcome');
+        } catch (error) {
+          console.error("Erro ao fazer logout:", error);
+          alert("Erro: Não foi possível sair.");
+        }
+      })();
+    } else {
+      Alert.alert(
+        "Sair",
+        "Você realmente deseja sair?",
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Sim", onPress: async () => {
+              try {
+                await logoutService();
+                await Logout();
+                navigation.replace('Welcome');
+              } catch (error) {
+                console.error("Erro ao fazer logout:", error);
+                Alert.alert("Erro", "Não foi possível sair.");
+              }
             }
           }
-        }
-      ]
-    );
+        ]
+      );
+    }
   };
 
   const getAvatarSource = (gender) => {
@@ -126,7 +143,6 @@ export default function ProfileScreen() {
       </View>
 
       {/* Interações com o Chatbot */}
-      <View style={styles.rowItem}></View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Interações com o Chatbot</Text>
         <TouchableOpacity style={styles.chatItem}>
@@ -148,7 +164,6 @@ export default function ProfileScreen() {
 
       {/* Configurações */}
       <View style={styles.section}>
-        <View style={styles.rowItem}></View>
         <Text style={styles.sectionTitle}>Configurações</Text>
 
         <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}>
