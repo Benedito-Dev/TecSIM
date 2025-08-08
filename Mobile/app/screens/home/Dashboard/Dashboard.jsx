@@ -1,14 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { styles } from './styles';
+import { ThemeContext } from '../../../context/ThemeContext';
+import { getDashboardStyles } from './styles'
 import { useAuth } from '../../../context/AuthContext';
 import NotificationIcon from '../../../components/Notification';
-import { MessageSquare, Pill, Clock, FileText } from 'lucide-react-native'; // Adicionei FileText para o ícone de prescrições
+import { MessageSquare, Pill, Clock, FileText, Moon, Sun } from 'lucide-react-native'; // Adicionei FileText para o ícone de prescrições
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
   const { user, loading } = useAuth();
+
+  const { theme, toggleTheme, mode } = useContext(ThemeContext)
+  console.log(theme)
+  const styles = getDashboardStyles(theme)
 
   if (loading || !user) {
     return (
@@ -24,6 +29,9 @@ export default function DashboardScreen() {
       {/* Cabeçalho fixo sem padding lateral */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
+        <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 15 }}>
+            {mode === 'light' ? <Moon color={theme.text} size={24} /> : <Sun color={theme.text} size={24} />}
+          </TouchableOpacity>
         <NotificationIcon initialCount={3} />
       </View>
 

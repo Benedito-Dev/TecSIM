@@ -7,7 +7,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { logout as logoutService } from '../../../services/auth/authService';
 import { getPacienteById } from '../../../services/userService';
 
-import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut } from 'lucide-react-native';
+import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings } from 'lucide-react-native';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -165,6 +165,11 @@ export default function ProfileScreen() {
       {/* Configurações */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Configurações</Text>
+
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}>
+        <Settings size={20} color="#0c87c4"></Settings>
+          <Text style={styles.configText}>Ajustes</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}>
           <Edit3 size={20} color="#0c87c4" />

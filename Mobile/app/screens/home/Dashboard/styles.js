@@ -1,9 +1,11 @@
+// dashboardStyles.js
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+export const getDashboardStyles = (theme) =>
+  StyleSheet.create({
   scrollContent: {
     padding: 20,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: theme.background,
   },
   loadingContainer: {
     flex: 1,

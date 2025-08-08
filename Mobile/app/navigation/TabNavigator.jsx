@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 import { StyleSheet, View } from 'react-native';
+import { ThemeContext } from '../context/ThemeContext';
+import { lightTheme, darkTheme } from '../constants/temas';
 
 // Import stacks
 import DashboardStack from './DashboardStack';
 import ProfileStack from './ProfileStack';
-import PrescricaoStack from './PrescricaoStack';
 import ChatScreen from '../screens/home/Chat/Chat';
 
 const Tab = createBottomTabNavigator();
 
 export default function MainTabNavigator() {
+  const { theme } = useContext(ThemeContext);
+
+  const colors = theme === "light" ? darkTheme : lightTheme;
+  console.log(colors)
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -24,21 +30,21 @@ export default function MainTabNavigator() {
           const iconSize = focused ? size + 2 : size;
 
           return (
-            <View style={focused ? styles.iconContainerFocused : styles.iconContainer}>
+            <View style={styles.iconContainer}>
               <Icon name={iconName} size={iconSize} color={color} />
             </View>
           );
         },
-        tabBarActiveTintColor: '#0c87c4',
-        tabBarInactiveTintColor: '#95a5a6',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
         headerShown: false,
         tabBarShowLabel: true,
         tabBarStyle: {
-          backgroundColor: '#ffffff',
+          backgroundColor: colors.backgroundCard,
           borderTopWidth: 0,
           height: 60,
           paddingBottom: 5,
-          shadowColor: '#000',
+          shadowColor: colors.shadowColor,
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.1,
           shadowRadius: 4,
@@ -46,9 +52,9 @@ export default function MainTabNavigator() {
         },
       })}
     >
-      <Tab.Screen name="Dashboard" component={DashboardStack} options={{ title: 'Home' }}  />
-      <Tab.Screen name="Chat" component={ChatScreen} options={{ title: 'Chatbot' }}  />
-      <Tab.Screen name="Profile" component={ProfileStack} options={{ title: 'Perfil' }}  />
+      <Tab.Screen name="Dashboard" component={DashboardStack} options={{ title: 'Home' }} />
+      <Tab.Screen name="Chat" component={ChatScreen} options={{ title: 'Chatbot' }} />
+      <Tab.Screen name="Profile" component={ProfileStack} options={{ title: 'Perfil' }} />
     </Tab.Navigator>
   );
 }
@@ -57,16 +63,5 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  iconContainerFocused: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  activeIndicator: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#0c87c4',
-    marginTop: 4,
-  },
+  }
 });
