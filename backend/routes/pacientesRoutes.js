@@ -63,8 +63,10 @@ class PacientesRoutes {
      *           application/json:
      *             schema:
      *               $ref: '#/components/schemas/Paciente'
+     *       400:
+     *         description: ID inválido. Formato incorreto.
      *       404:
-     *         description: paciente não encontrado
+     *         description: Paciente não encontrado
      *       401:
      *         description: Não autorizado
      */
@@ -94,7 +96,7 @@ class PacientesRoutes {
      *             schema:
      *               $ref: '#/components/schemas/Paciente'
      *       404:
-     *         description: paciente não encontrado
+     *         description: Paciente não encontrado
      *       401:
      *         description: Não autorizado
      */
@@ -127,7 +129,7 @@ class PacientesRoutes {
      *                     example: true
      *     responses:
      *       201:
-     *         description: paciente criado com sucesso
+     *         description: Paciente criado com sucesso
      *         content:
      *           application/json:
      *             schema:
@@ -170,9 +172,14 @@ class PacientesRoutes {
      *     responses:
      *       200:
      *         description: Foto atualizada com sucesso
+     *       400:
+     *         description: Dados inválidos
+     *       404:
+     *         description: Paciente não encontrado
+     *       500:
+     *         description: Erro ao atualizar foto
      */
     this.router.post('/:id/foto', upload.single('image'), controller.uploadFoto);
-
 
     /**
      * @swagger
@@ -197,7 +204,7 @@ class PacientesRoutes {
      *             $ref: '#/components/schemas/Paciente'
      *     responses:
      *       200:
-     *         description: paciente atualizado
+     *         description: Paciente atualizado
      *         content:
      *           application/json:
      *             schema:
@@ -207,7 +214,7 @@ class PacientesRoutes {
      *       401:
      *         description: Não autorizado
      *       404:
-     *         description: paciente não encontrado
+     *         description: Paciente não encontrado
      */
     this.router.put('/:id', ValidatePaciente.validateUpdate, controller.update);
 
@@ -251,7 +258,7 @@ class PacientesRoutes {
      *       401:
      *         description: Não autorizado/Senha atual incorreta
      *       404:
-     *         description: paciente não encontrado
+     *         description: Paciente não encontrado
      */
     this.router.patch('/:id/password', ValidatePaciente.validatePassword, controller.updatePassword);
 
@@ -272,11 +279,11 @@ class PacientesRoutes {
      *         description: ID do paciente
      *     responses:
      *       204:
-     *         description: paciente removido com sucesso
+     *         description: Paciente removido com sucesso
      *       401:
      *         description: Não autorizado
      *       404:
-     *         description: paciente não encontrado
+     *         description: Paciente não encontrado
      */
     this.router.delete('/:id', controller.remove);
     
@@ -316,7 +323,6 @@ class PacientesRoutes {
      *         description: Erro ao desativar paciente
      */
     this.router.patch('/:id/inativar', controller.desativar);
-
   }
 
   getRouter() {

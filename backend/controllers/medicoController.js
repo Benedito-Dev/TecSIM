@@ -16,6 +16,9 @@ class MedicoController {
   async getById(req, res) {
     try {
       const { id } = req.params;
+      if (isNaN(id)) {
+        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      }
       const medico = await MedicoService.getById(id);
 
       if (!medico) {
@@ -97,6 +100,10 @@ class MedicoController {
         return res.status(400).json({ error: 'CRM já cadastrado.' });
       }
       
+      if (error.message.includes('Email já cadastrado')) {
+        return res.status(400).json({ error: 'Email já cadastrado.' });
+      }
+      
       res.status(500).json({ error: 'Erro ao criar médico.' });
     }
   }
@@ -147,38 +154,22 @@ class MedicoController {
     }
   }
 
-//   // Autenticar médico
-//   async login(req, res) {
-//     try {
-//       const { email, senha } = req.body;
-//       const medico = await MedicoService.verifyCredentials(email, senha);
-      
-//       res.status(200).json({ 
-//         message: 'Login realizado com sucesso',
-//         data: medico.toAuthJSON() 
-//       });
-//     } catch (error) {
-//       console.error('Erro no login:', error);
-//       res.status(401).json({ error: 'Credenciais inválidas.' });
-//     }
-//   }
-
-   // Remover médico
+  // Remover médico
   async remove(req, res) {
-     try {
-       const { id } = req.params;
-       const resultado = await MedicoService.remove(id);
+    try {
+      const { id } = req.params;
+      const resultado = await MedicoService.remove(id);
 
-       if (!resultado) {
-         return res.status(404).json({ error: 'Médico não encontrado para remover.' });
-       }
+      if (!resultado) {
+        return res.status(404).json({ error: 'Médico não encontrado para remover.' });
+      }
 
-       res.status(200).json({ message: 'Médico removido com sucesso.' });
-     } catch (error) {
-       console.error('Erro ao remover médico:', error);
-       res.status(500).json({ error: 'Erro ao remover médico.' });
-     }
-   }
+      res.status(200).json({ message: 'Médico removido com sucesso.' });
+    } catch (error) {
+      console.error('Erro ao remover médico:', error);
+      res.status(500).json({ error: 'Erro ao remover médico.' });
+    }
+  }
 }
 
 module.exports = new MedicoController();

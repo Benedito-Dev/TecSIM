@@ -2,8 +2,15 @@ const repository = require('../repository/bulaRepository');
 
 class BulaService {
   async create(data) {
-    const bula = await repository.create(data);
-    return bula;
+    try {
+      const bula = await repository.create(data);
+      return bula;
+    } catch (err) {
+      if (err.code === '23505') { // Código de erro para violação de chave única
+        throw new Error('Bula já existe para este medicamento.');
+      }
+      throw new Error('Erro ao criar bula: ' + err.message);
+    }
   }
 
   async findAll() {

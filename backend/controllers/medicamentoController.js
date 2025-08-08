@@ -11,7 +11,10 @@ class MedicamentoController {
       });
     } catch (err) {
       console.error('Erro ao criar medicamento:', err);
-      res.status(400).json({ error: err.message });
+      if (err.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos: ' + err.message });
+      }
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 
@@ -29,6 +32,9 @@ class MedicamentoController {
     const { id } = req.params;
     
     try {
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      }
       const medicamento = await service.findById(id);
       if (!medicamento) {
         return res.status(404).json({ error: 'Medicamento não encontrado' });
@@ -36,7 +42,7 @@ class MedicamentoController {
       res.status(200).json(medicamento);
     } catch (err) {
       console.error('Erro ao buscar medicamento:', err);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 
@@ -44,8 +50,10 @@ class MedicamentoController {
     const { id } = req.params;
 
     try {
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      }
       const medicamento = await service.update(id, req.body);
-      console.log(id)
       if (!medicamento) {
         return res.status(404).json({ error: 'Medicamento não encontrado' });
       }
@@ -55,7 +63,7 @@ class MedicamentoController {
       });
     } catch (err) {
       console.error('Erro ao atualizar medicamento:', err);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 
@@ -63,6 +71,9 @@ class MedicamentoController {
     const { id } = req.params;
 
     try {
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      }
       const removed = await service.remove(id);
       if (!removed) {
         return res.status(404).json({ error: 'Medicamento não encontrado' });
@@ -73,7 +84,7 @@ class MedicamentoController {
       });
     } catch (err) {
       console.error('Erro ao remover medicamento:', err);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 }

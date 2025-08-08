@@ -10,7 +10,10 @@ class BulaController {
       });
     } catch (err) {
       console.error('Erro ao criar bula:', err);
-      res.status(400).json({ error: err.message });
+      if (err.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos: ' + err.message });
+      }
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 
@@ -35,7 +38,10 @@ class BulaController {
       res.status(200).json(bula);
     } catch (err) {
       console.error('Erro ao buscar bula:', err);
-      res.status(500).json({ error: err.message });
+      if (err.name === 'CastError') {
+        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      }
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 
@@ -50,7 +56,10 @@ class BulaController {
       res.status(200).json(bula);
     } catch (err) {
       console.error('Erro ao buscar bula por medicamento:', err);
-      res.status(500).json({ error: err.message });
+      if (err.name === 'CastError') {
+        return res.status(400).json({ error: 'ID do medicamento inválido. Formato incorreto.' });
+      }
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 
@@ -68,7 +77,13 @@ class BulaController {
       });
     } catch (err) {
       console.error('Erro ao atualizar bula:', err);
-      res.status(500).json({ error: err.message });
+      if (err.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos: ' + err.message });
+      }
+      if (err.name === 'CastError') {
+        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      }
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 
@@ -86,7 +101,10 @@ class BulaController {
       });
     } catch (err) {
       console.error('Erro ao remover bula:', err);
-      res.status(500).json({ error: err.message });
+      if (err.name === 'CastError') {
+        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      }
+      res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
 }

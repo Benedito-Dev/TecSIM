@@ -45,7 +45,7 @@ class PacienteRepository {
     await db.query('UPDATE paciente SET foto_perfil = $1 WHERE id = $2', [caminho, id]);
   }
 
-  async update(id, {nome, email, data_nascimento, peso_kg, genero }) {
+  async update(id, { nome, email, data_nascimento, peso_kg, genero }) {
     const result = await db.query(`
       UPDATE paciente 
       SET nome = $1, email = $2, data_nascimento = $3, peso_kg = $4, genero = $5
@@ -57,13 +57,13 @@ class PacienteRepository {
   }
 
   async updatePassword(id, senhaAtual, novaSenha) {
-    const usuario = await db.query('SELECT senha FROM paciente WHERE id = $1', [id]);
-    if (!usuario.rows[0]) throw new Error('Usuário não encontrado');
+    const paciente = await db.query('SELECT senha FROM paciente WHERE id = $1', [id]);
+    if (!paciente.rows[0]) throw new Error('Paciente não encontrado.');
 
-    const senhaMatch = await bcrypt.compare(senhaAtual, usuario.rows[0].senha);
-    if (!senhaMatch) throw new Error('Senha atual incorreta');
+    const senhaMatch = await bcrypt.compare(senhaAtual, paciente.rows[0].senha);
+    if (!senhaMatch) throw new Error('Senha atual incorreta.');
 
-    if (senhaAtual === novaSenha) throw new Error('A nova senha deve ser diferente da senha atual');
+    if (senhaAtual === novaSenha) throw new Error('A nova senha deve ser diferente da senha atual.');
 
     const novaSenhaHash = await bcrypt.hash(novaSenha, SALT_ROUNDS);
 
@@ -76,41 +76,20 @@ class PacienteRepository {
     return new Paciente(result.rows[0]);
   }
 
-  async verifyCredentials(email, senha) {
-    const usuario = await this.findByEmail(email);
-    if (!usuario) throw new Error('Credenciais inválidas');
-
-    const senhaMatch = await bcrypt.compare(senha, usuario.senha);
-    if (!senhaMatch) throw new Error('Credenciais inválidas');
-
-    return new Paciente({
-      id: usuario.id,
-      cpf: usuario.cpf,
-      nome: usuario.nome,
-      email: usuario.email,
-      data_nascimento: usuario.data_nascimento,
-      peso_kg: usuario.peso_kg,
-      genero: usuario.genero,
-      aceite_termos: usuario.aceite_termos,
-      data_cadastro: usuario.data_cadastro,
-      ativo: usuario.ativo
-    });
-  }
-
   async desativar(id) {
-  const result = await db.query(
-    'UPDATE paciente SET ativo = FALSE WHERE id = $1 RETURNING *',
-    [id]
+    const result = await db.query(
+      'UPDATE paciente SET ativo = FALSE WHERE id = $1 RETURNING *',
+      [id]
     );
-  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+    return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
   async reativar(id) {
-  const result = await db.query(
-    'UPDATE paciente SET ativo = TRUE WHERE id = $1 RETURNING *',
-    [id]
-  );
-  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+    const result = await db.query(
+      'UPDATE paciente SET ativo = TRUE WHERE id = $1 RETURNING *',
+      [id]
+    );
+    return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
   async remove(id) {
@@ -121,7 +100,6 @@ class PacienteRepository {
     `, [id]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
-  
 }
 
 module.exports = new PacienteRepository();

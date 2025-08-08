@@ -30,6 +30,14 @@ class MedicamentoRoutes {
      *     responses:
      *       201:
      *         description: Medicamento Criado
+     *       400:
+     *         description: |
+     *           Requisição inválida. Possíveis causas:
+     *           - Campos obrigatórios ausentes
+     *           - Formato de dados inválido
+     *           - Dados em formato incorreto
+     *       500:
+     *         description: Erro interno do servidor
      */
     this.router.post('/', controller.create);
 
@@ -42,6 +50,8 @@ class MedicamentoRoutes {
      *     responses:
      *       200:
      *         description: Dados dos Medicamentos
+     *       500:
+     *         description: Erro interno do servidor
      */
     this.router.get('/', controller.findAll);
 
@@ -59,8 +69,12 @@ class MedicamentoRoutes {
      *     responses:
      *       200:
      *         description: Medicamento encontrado
+     *       400:
+     *         description: ID inválido. Formato incorreto.
      *       404:
      *         description: Não encontrado
+     *       500:
+     *         description: Erro interno do servidor
      */
     this.router.get('/:id', controller.findById);
 
@@ -84,8 +98,15 @@ class MedicamentoRoutes {
      *     responses:
      *       200: 
      *         description: Medicamento Atualizado
+     *       400:
+     *         description: |
+     *           Requisição inválida. Possíveis causas:
+     *           - ID inválido
+     *           - Campos obrigatórios ausentes
      *       404:
      *         description: Não encontrado
+     *       500:
+     *         description: Erro interno do servidor
      */
     this.router.put('/:id', controller.update);
 
@@ -102,9 +123,13 @@ class MedicamentoRoutes {
      *         required: true
      *     responses:
      *       204: 
-     *         description: Remoção Bem Sucessida
+     *         description: Remoção Bem Sucedida
+     *       400:
+     *         description: ID inválido. Formato incorreto.
      *       404:
      *         description: Não encontrado
+     *       500:
+     *         description: Erro interno do servidor
      */
     this.router.delete('/:id', controller.remove);
   }

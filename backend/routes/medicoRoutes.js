@@ -1,6 +1,5 @@
 const express = require('express');
 const controller = require('../controllers/medicoController');
-// const ValidateMedico = require('../middleware/validateMedico');
 
 class MedicosRoutes {
   constructor() {
@@ -62,6 +61,8 @@ class MedicosRoutes {
      *           application/json:
      *             schema:
      *               $ref: '#/components/schemas/Medico'
+     *       400:
+     *         description: ID inválido. Formato incorreto.
      *       404:
      *         description: Médico não encontrado
      *       401:

@@ -2,81 +2,57 @@ const repository = require('../repository/pacientesRepository');
 
 class PacienteService {
   static async getAll() {
-    const usuarios = await repository.findAll();
-    return usuarios;  // Já é um array de objetos Usuario
+    const pacientes = await repository.findAll();
+    return pacientes;  // Já é um array de objetos Paciente
   }
 
   static async getById(id) {
-    const usuario = await repository.findById(id);
-    return usuario;  // Pode ser null ou um objeto Usuario
+    if (isNaN(id)) throw new Error('ID inválido.'); // Verificação de ID inválido
+    const paciente = await repository.findById(id);
+    if (!paciente) throw new Error('Paciente não encontrado.'); // Verificação se o paciente existe
+    return paciente;  // Pode ser null ou um objeto Paciente
   }
 
-  static async getbyEmail(email) {
-    const usuario = await repository.findByEmail(email);
-    return usuario;  // Pode ser null ou um objeto Usuario
+  static async getByEmail(email) {
+    const paciente = await repository.findByEmail(email);
+    if (!paciente) throw new Error('Paciente não encontrado.'); // Verificação se o paciente existe
+    return paciente;  // Pode ser null ou um objeto Paciente
   }
 
   static async create(dados) {
-    const novoUsuario = await repository.create(dados);
-    return novoUsuario;  // Retorna um objeto Usuario
+    const novoPaciente = await repository.create(dados);
+    return novoPaciente;  // Retorna um objeto Paciente
   }
 
   static async atualizarFoto(id, caminhoImagem) {
-    const usuario = await repository.findById(id);
-
-    if (!usuario) {
-      throw new Error('Usuário não encontrado.');
+    const paciente = await repository.findById(id);
+    if (!paciente) {
+      throw new Error('Paciente não encontrado.'); // Verificação se o paciente existe
     }
-
     await repository.atualizarFoto(id, caminhoImagem);
   }
 
   static async update(id, dados) {
-    const usuarioAtualizado = await repository.update(id, dados);
-    return usuarioAtualizado;  // Retorna um objeto usuario
+    const pacienteAtualizado = await repository.update(id, dados);
+    if (!pacienteAtualizado) throw new Error('Paciente não encontrado.'); // Verificação se o paciente existe
+    return pacienteAtualizado;  // Retorna um objeto Paciente
   }
 
   static async updatePassword(id, senhaAtual, novaSenha) {
-    const usuarioSenhaAtualizado = await repository.updatePassword(id, senhaAtual, novaSenha);
-    return usuarioSenhaAtualizado;  // Retorna um objeto Usuario
+    const pacienteSenhaAtualizado = await repository.updatePassword(id, senhaAtual, novaSenha);
+    return pacienteSenhaAtualizado;  // Retorna um objeto Paciente
   }
 
   static async desativar(id) {
     const paciente = await repository.desativar(id);
-    if (!paciente) throw new Error('Paciente não encontrado para desativação');
+    if (!paciente) throw new Error('Paciente não encontrado para desativação'); // Verificação se o paciente existe
     return paciente;
   }
 
-  async verifyCredentials(email, senha) {
-  const usuario = await repository.verifyCredentials(email);
-  if (!usuario) throw new Error('Credenciais inválidas');
-
-  const senhaMatch = await bcrypt.compare(senha, usuario.senha);
-  if (!senhaMatch) throw new Error('Credenciais inválidas');
-  
-  console.log(usuario.ativo)
-  if (usuario.ativo === false) {
-    await repository.reativar(usuario.id);
-    usuario.ativo = true;
-  }
-
-  return new Paciente({
-    id: usuario.id,
-    cpf: usuario.cpf,
-    nome: usuario.nome,
-    email: usuario.email,
-    data_nascimento: usuario.data_nascimento,
-    peso_kg: usuario.peso_kg,
-    genero: usuario.genero,
-    aceite_termos: usuario.aceite_termos,
-    data_cadastro: usuario.data_cadastro,
-    ativo: usuario.ativo
-  }); 
-  }
-
   static async remove(id) {
-    const usuarioRemovido = await repository.remove(id);
-    return usuarioRemovido;  // Retorna um objeto Usuario ou null
+    const pacienteRemovido = await repository.remove(id);
+    if (!pacienteRemovido) throw new Error('Paciente não encontrado para remoção.'); // Verificação se o paciente existe
+    return pacienteRemovido;  // Retorna um objeto Paciente ou null
   }
 }
 
