@@ -62,12 +62,13 @@ class PrescricoesRoutes {
      *           application/json:
      *             schema:
      *               $ref: '#/components/schemas/Prescricao'
+     *       400:
+     *         description: ID inválido. Formato incorreto.
      *       404:
      *         description: Prescrição não encontrada
      *       401:
      *         description: Não autorizado
      */
-
     this.router.get('/:id', controller.findById);
 
     /**

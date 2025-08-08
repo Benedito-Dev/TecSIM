@@ -24,7 +24,7 @@ const options = {
             senha: { type: 'string', example: 'senha123', writeOnly: true },
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
-            genero: { type: 'string', example: 'man' },
+            genero: { type: 'string', example: 'masculino' },
             aceite_termos: { type: 'boolean', example: true }
           }
         },

@@ -14,6 +14,9 @@ class PrescricaoController {
     try {
       const { id } = req.params;
       const prescricao = await service.findById(id);
+      if (!prescricao) {
+        return res.status(404).json({ error: 'Prescrição não encontrada.' });
+      }
       res.status(200).json(prescricao);
     } catch (error) {
       if (error.message.includes('não encontrada')) {
@@ -68,6 +71,9 @@ class PrescricaoController {
     try {
       const { id } = req.params;
       const prescricao = await service.update(id, req.body); // req.body também deve conter crm
+      if (!prescricao) {
+        return res.status(404).json({ error: 'Prescrição não encontrada.' });
+      }
       res.status(200).json({
         message: 'Prescrição atualizada com sucesso',
         data: prescricao
@@ -85,6 +91,9 @@ class PrescricaoController {
     try {
       const { id } = req.params;
       const prescricao = await service.remove(id);
+      if (!prescricao) {
+        return res.status(404).json({ error: 'Prescrição não encontrada.' });
+      }
       res.status(200).json({
         message: 'Prescrição removida com sucesso',
         data: prescricao
