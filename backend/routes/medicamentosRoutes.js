@@ -24,18 +24,20 @@ class MedicamentoRoutes {
      *     requestBody:
      *       required: true
      *       content:
-     *           application/json:
-     *             schema:
-     *                 $ref: '#/components/schemas/Medicamento'
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/Medicamento'
      *     responses:
      *       201:
-     *         description: Medicamento Criado
+     *         description: Medicamento criado com sucesso
      *       400:
      *         description: |
      *           Requisição inválida. Possíveis causas:
      *           - Campos obrigatórios ausentes
      *           - Formato de dados inválido
      *           - Dados em formato incorreto
+     *       409:
+     *         description: Medicamento já cadastrado
      *       500:
      *         description: Erro interno do servidor
      */
@@ -49,7 +51,7 @@ class MedicamentoRoutes {
      *     tags: [Medicamentos]
      *     responses:
      *       200:
-     *         description: Dados dos Medicamentos
+     *         description: Lista de medicamentos
      *       500:
      *         description: Erro interno do servidor
      */
@@ -64,15 +66,17 @@ class MedicamentoRoutes {
      *     parameters:
      *       - in: path
      *         name: id
-     *         schema: { type: string }
+     *         schema:
+     *           type: string
      *         required: true
+     *         description: ID do medicamento
      *     responses:
      *       200:
      *         description: Medicamento encontrado
      *       400:
-     *         description: ID inválido. Formato incorreto.
+     *         description: ID inválido. Formato incorreto
      *       404:
-     *         description: Não encontrado
+     *         description: Medicamento não encontrado
      *       500:
      *         description: Erro interno do servidor
      */
@@ -87,24 +91,26 @@ class MedicamentoRoutes {
      *     parameters:
      *       - in: path
      *         name: id
-     *         schema: { type: string }
+     *         schema:
+     *           type: string
      *         required: true
+     *         description: ID do medicamento
      *     requestBody:
      *       required: true
      *       content:
-     *           application/json:
-     *             schema:
-     *                 $ref: '#/components/schemas/Medicamento'
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/Medicamento'
      *     responses:
-     *       200: 
-     *         description: Medicamento Atualizado
+     *       200:
+     *         description: Medicamento atualizado com sucesso
      *       400:
      *         description: |
      *           Requisição inválida. Possíveis causas:
      *           - ID inválido
      *           - Campos obrigatórios ausentes
      *       404:
-     *         description: Não encontrado
+     *         description: Medicamento não encontrado
      *       500:
      *         description: Erro interno do servidor
      */
@@ -119,15 +125,17 @@ class MedicamentoRoutes {
      *     parameters:
      *       - in: path
      *         name: id
-     *         schema: { type: string }
+     *         schema:
+     *           type: string
      *         required: true
+     *         description: ID do medicamento
      *     responses:
-     *       204: 
-     *         description: Remoção Bem Sucedida
+     *       200:
+     *         description: Medicamento removido com sucesso
      *       400:
-     *         description: ID inválido. Formato incorreto.
+     *         description: ID inválido. Formato incorreto
      *       404:
-     *         description: Não encontrado
+     *         description: Medicamento não encontrado
      *       500:
      *         description: Erro interno do servidor
      */

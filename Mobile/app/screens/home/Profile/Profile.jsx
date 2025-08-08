@@ -27,7 +27,7 @@ export default function ProfileScreen() {
           setPaciente(data);
 
           if (data.foto_perfil) {
-            setFotoPerfil(`http://10.0.30.233:3000${data.foto_perfil}?t=${Date.now()}`);
+            setFotoPerfil(`http://10.0.30.101:3000${data.foto_perfil}?t=${Date.now()}`);
           } else {
             setFotoPerfil(null);
           }

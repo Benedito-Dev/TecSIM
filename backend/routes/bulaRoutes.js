@@ -31,26 +31,15 @@ class BulaRoutes {
      *       201:
      *         description: Bula criada com sucesso
      *       400:
-     *         description: |
-     *           Requisição inválida. Possíveis causas:
-     *           - Campos obrigatórios ausentes
-     *           - Formato de dados inválido
-     *           - Dados em formato incorreto (ex: string onde deveria ser número)
-     *           - Valores fora do intervalo permitido
+     *         description: Requisição inválida (campos ausentes ou formato incorreto)
      *       401:
-     *         description: Não autorizado (token inválido ou ausente)
+     *         description: Não autorizado
      *       403:
-     *         description: Proibido (usuário não tem permissão)
+     *         description: Proibido (sem permissão)
      *       409:
-     *         description: Conflito (bula já existe para este medicamento)
-     *       413:
-     *         description: Payload muito grande
+     *         description: Conflito (bula já cadastrada)
      *       415:
      *         description: Tipo de mídia não suportado
-     *       422:
-     *         description: Entidade não processável (semântica inválida)
-     *       429:
-     *         description: Muitas requisições (rate limiting)
      *       500:
      *         description: Erro interno do servidor
      */
@@ -60,7 +49,7 @@ class BulaRoutes {
      * @swagger
      * /bulas:
      *   get:
-     *     summary: Retorna todas as bulas
+     *     summary: Lista todas as bulas
      *     tags: [Bulas]
      *     parameters:
      *       - in: query
@@ -75,17 +64,12 @@ class BulaRoutes {
      *           type: integer
      *           minimum: 1
      *           maximum: 100
-     *         description: Limite de itens por página
+     *         description: Limite de registros por página
      *     responses:
      *       200:
-     *         description: Lista de bulas
+     *         description: Lista de bulas retornada com sucesso
      *       400:
-     *         description: |
-     *           Requisição inválida. Possíveis causas:
-     *           - Parâmetros de paginação inválidos
-     *           - Valores fora dos limites (ex: limit > 100)
-     *       401:
-     *         description: Não autorizado
+     *         description: Parâmetros de paginação inválidos
      *       500:
      *         description: Erro interno do servidor
      */
@@ -95,30 +79,23 @@ class BulaRoutes {
      * @swagger
      * /bulas/{id}:
      *   get:
-     *     summary: Obtém uma bula por ID
+     *     summary: Busca uma bula pelo ID
      *     tags: [Bulas]
      *     parameters:
      *       - in: path
      *         name: id
-     *         schema: 
+     *         schema:
      *           type: string
-     *           pattern: '^[a-f\d]{24}$'
+     *           pattern: '^[a-fA-F0-9]{24}$'
      *         required: true
-     *         description: ID da bula no formato ObjectId
+     *         description: ID da bula (ObjectId)
      *     responses:
      *       200:
      *         description: Bula encontrada
      *       400:
-     *         description: |
-     *           ID inválido. Motivos:
-     *           - Formato incorreto (não é ObjectId válido)
-     *           - Tamanho inválido
-     *       401:
-     *         description: Não autorizado
+     *         description: ID inválido
      *       404:
      *         description: Bula não encontrada
-     *       410:
-     *         description: Bula removida permanentemente
      *       500:
      *         description: Erro interno do servidor
      */
@@ -128,29 +105,23 @@ class BulaRoutes {
      * @swagger
      * /bulas/medicamento/{id_medicamento}:
      *   get:
-     *     summary: Obtém a bula associada a um medicamento
+     *     summary: Busca a bula pelo ID do medicamento
      *     tags: [Bulas]
      *     parameters:
      *       - in: path
      *         name: id_medicamento
-     *         schema: 
+     *         schema:
      *           type: string
-     *           pattern: '^[a-f\d]{24}$'
+     *           pattern: '^[a-fA-F0-9]{24}$'
      *         required: true
-     *         description: ID do medicamento no formato ObjectId
+     *         description: ID do medicamento
      *     responses:
      *       200:
      *         description: Bula encontrada
      *       400:
-     *         description: |
-     *           ID do medicamento inválido. Motivos:
-     *           - Formato incorreto
-     *           - Tamanho inválido
+     *         description: ID do medicamento inválido
      *       404:
-     *         description: |
-     *           Não encontrada. Possíveis causas:
-     *           - Medicamento não existe
-     *           - Medicamento existe mas não tem bula associada
+     *         description: Nenhuma bula associada ao medicamento
      *       500:
      *         description: Erro interno do servidor
      */
@@ -165,10 +136,11 @@ class BulaRoutes {
      *     parameters:
      *       - in: path
      *         name: id
-     *         schema: 
+     *         schema:
      *           type: string
-     *           pattern: '^[a-f\d]{24}$'
+     *           pattern: '^[a-fA-F0-9]{24}$'
      *         required: true
+     *         description: ID da bula
      *     requestBody:
      *       required: true
      *       content:
@@ -177,22 +149,11 @@ class BulaRoutes {
      *             $ref: '#/components/schemas/Bula'
      *     responses:
      *       200:
-     *         description: Bula atualizada
+     *         description: Bula atualizada com sucesso
      *       400:
-     *         description: |
-     *           Requisição inválida. Possíveis causas:
-     *           - ID inválido
-     *           - Campos obrigatórios ausentes
-     *           - Validação de dados falhou
-     *           - Tentativa de modificar campos imutáveis
-     *       401:
-     *         description: Não autorizado
-     *       403:
-     *         description: Proibido (não é dono da bula)
+     *         description: Dados inválidos ou ID incorreto
      *       404:
      *         description: Bula não encontrada
-     *       412:
-     *         description: Pré-condição falhou (versionamento)
      *       500:
      *         description: Erro interno do servidor
      */
@@ -207,26 +168,18 @@ class BulaRoutes {
      *     parameters:
      *       - in: path
      *         name: id
-     *         schema: 
+     *         schema:
      *           type: string
-     *           pattern: '^[a-f\d]{24}$'
+     *           pattern: '^[a-fA-F0-9]{24}$'
      *         required: true
+     *         description: ID da bula
      *     responses:
      *       200:
-     *         description: Remoção bem-sucedida
+     *         description: Bula removida com sucesso
      *       400:
-     *         description: |
-     *           ID inválido. Motivos:
-     *           - Formato incorreto
-     *           - Já está removido
-     *       401:
-     *         description: Não autorizado
-     *       403:
-     *         description: Proibido (não é dono ou admin)
+     *         description: ID inválido
      *       404:
      *         description: Bula não encontrada
-     *       423:
-     *         description: Bloqueado (bula em processo de remoção)
      *       500:
      *         description: Erro interno do servidor
      */

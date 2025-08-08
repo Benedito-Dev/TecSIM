@@ -6,9 +6,10 @@ class MedicamentoService {
       const medicamento = await repository.create(data);
       return medicamento;
     } catch (err) {
-      if (err.code === '23505') { // Código de erro para violação de chave única
-        throw new Error('Medicamento já existe.');
+      if (err.code === '23505') {
+        throw err; // ou throw um erro customizado mantendo err.code
       }
+
       throw new Error('Erro ao criar medicamento: ' + err.message);
     }
   }
