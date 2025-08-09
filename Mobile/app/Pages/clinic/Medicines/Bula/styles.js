@@ -1,18 +1,18 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+export const getBulaStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: theme.background,
   },
   header: {
-    backgroundColor: '#3498db',
+    backgroundColor: theme.primary,
     paddingBottom: 15,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
     marginBottom: 10,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -23,7 +23,7 @@ export default StyleSheet.create({
   },
   headerDecoration: {
     height: 6,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: theme.textOnPrimary + '30', // Adds 30% opacity
     width: '40%',
     alignSelf: 'center',
     borderRadius: 3,
@@ -31,14 +31,14 @@ export default StyleSheet.create({
   medicineName: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#fff',
+    color: theme.textOnPrimary,
     textAlign: 'center',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   medicineDetails: {
     fontSize: 16,
-    color: 'rgba(255,255,255,0.9)',
+    color: theme.textOnPrimary + 'E6', // 90% opacity (E6 in hex)
     textAlign: 'center',
     marginTop: 8,
     fontWeight: '500',
@@ -49,11 +49,11 @@ export default StyleSheet.create({
     paddingTop: 8,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 12,
     marginBottom: 16,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
@@ -61,7 +61,7 @@ export default StyleSheet.create({
   },
   importantCard: {
     borderLeftWidth: 4,
-    borderLeftColor: '#e74c3c',
+    borderLeftColor: theme.error, // Assuming your theme has an error color
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -69,7 +69,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 18,
-    backgroundColor: '#fff',
+    backgroundColor: theme.backgroundCard,
   },
   sectionTitle: {
     flexDirection: 'row',
@@ -79,10 +79,10 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     marginLeft: 12,
-    color: '#2c3e50',
+    color: theme.textPrimary,
   },
   importantText: {
-    color: '#e74c3c',
+    color: theme.error,
   },
   sectionContent: {
     paddingHorizontal: 18,
@@ -90,30 +90,30 @@ export default StyleSheet.create({
   },
   noteText: {
     fontSize: 13,
-    color: '#7f8c8d',
+    color: theme.textMuted,
     marginTop: 12,
     fontStyle: 'italic',
   },
   footerCard: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 12,
     padding: 20,
     marginBottom: 24,
     alignItems: 'center',
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
   },
   footerText: {
-    color: '#7f8c8d',
+    color: theme.textMuted,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 16,
   },
   button: {
-    backgroundColor: '#3498db',
+    backgroundColor: theme.primary,
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 8,
@@ -121,7 +121,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: theme.textOnPrimary,
     fontWeight: '700',
     fontSize: 14,
   },
@@ -134,9 +134,10 @@ export default StyleSheet.create({
   infoIcon: {
     marginRight: 10,
     marginTop: 2,
+    color: theme.textSecondary,
   },
   infoText: {
-    color: '#2c3e50',
+    color: theme.textPrimary,
     flex: 1,
     lineHeight: 22,
   },
@@ -148,16 +149,16 @@ export default StyleSheet.create({
   },
   infoLabel: {
     fontWeight: '600',
-    color: '#34495e',
+    color: theme.textSecondary,
     width: '40%',
   },
   infoValue: {
-    color: '#2c3e50',
+    color: theme.textPrimary,
     width: '58%',
     fontWeight: '500',
   },
   infoHighlight: {
-    color: '#e74c3c',
+    color: theme.error,
     fontWeight: '700',
   },
 });

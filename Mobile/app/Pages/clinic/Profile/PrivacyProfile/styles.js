@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+export const getPrivacyStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: theme.background,
   },
   header: {
     flexDirection: 'row',
@@ -12,25 +12,25 @@ export const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 20,
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    backgroundColor: theme.backgroundCard,
     borderBottomWidth: 0.3,
-    borderBottomColor: '#ccc',
+    borderBottomColor: theme.border,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: theme.textPrimary,
   },
   content: {
     padding: 20,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 16,
     padding: 16,
     marginBottom: 20,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: theme.shadowColor,
     shadowOpacity: 0.06,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
@@ -38,35 +38,35 @@ export const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000',
+    color: theme.textPrimary,
     marginBottom: 8,
   },
   cardText: {
     fontSize: 14,
-    color: '#444',
+    color: theme.textSecondary,
     lineHeight: 20,
   },
   deactivateButton: {
     marginTop: 16,
-    backgroundColor: '#FFA500', // laranja suave
+    backgroundColor: theme.warning, // Using theme warning color
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
   },
   deactivateButtonText: {
-    color: '#fff',
+    color: theme.textOnPrimary,
     fontWeight: 'bold',
     fontSize: 14,
   },
   deleteButton: {
     marginTop: 16,
-    backgroundColor: '#ff4d4d',
+    backgroundColor: theme.error, // Using theme error color
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
   },
   deleteButtonText: {
-    color: '#fff',
+    color: theme.textOnPrimary,
     fontWeight: 'bold',
     fontSize: 14,
   },

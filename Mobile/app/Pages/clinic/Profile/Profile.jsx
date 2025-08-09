@@ -2,7 +2,7 @@ import React, { useState, useCallback, useContext } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator, Platform } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../../context/ThemeContext';
-import { styles } from './styles';
+import { getProfileStyles } from './styles';
 
 import { useAuth } from '../../../context/AuthContext';
 import { logout as logoutService } from '../../../services/auth/authService';
@@ -19,6 +19,8 @@ export default function ProfileScreen() {
   const [fotoPerfil, setFotoPerfil] = useState(null);
 
   const { theme, toggleTheme, mode } = useContext(ThemeContext)
+
+  const styles = getProfileStyles(theme)
 
   useFocusEffect(
     useCallback(() => {
@@ -110,7 +112,7 @@ export default function ProfileScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('App', { screen: 'Dashboard' })}>
-          <ArrowLeft size={24} color="#000" />
+          <ArrowLeft size={24} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>TecSIM</Text>
         <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 15 }}>

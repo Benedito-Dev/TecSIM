@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Image } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import { useAuth } from '../../../../context/AuthContext';
+import { ThemeContext } from '../../../../context/ThemeContext';
 import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../../services/userService';
 
 import InputField from '../../../../components/Register/InputField';
 import GenderInput from '../../../../components/Register/InputGender';
 import CpfInput from '../../../../components/Register/CpfInput';
-import { styles } from './styles';
+import { getProfileEditStyles } from './styles';
 
 export default function EditProfileScreen() {
   const navigation = useNavigation();
@@ -29,6 +29,9 @@ export default function EditProfileScreen() {
   const [genero, setGenero] = useState('');
   const [fotoPerfil, setFotoPerfil] = useState(null);
   const [novaImagem, setNovaImagem] = useState(null);
+
+  const { theme } = useContext(ThemeContext)
+  const styles = getProfileEditStyles(theme)
 
   useEffect(() => {
     const carregarPaciente = async () => {

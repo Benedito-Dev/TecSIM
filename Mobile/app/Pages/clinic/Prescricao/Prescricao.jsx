@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Alert, ScrollView } from 'react-native';
+import { ThemeContext } from '../../../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { FileText, ArrowLeft, Plus, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
-import { styles } from './styles';
+import { getPrescriptionStyles } from './styles';
 
 const formatarData = (dataString) => {
   const data = new Date(dataString);
@@ -67,6 +68,9 @@ export default function PrescricaoScreen() {
   const navigation = useNavigation();
   const [prescricoes, setPrescricoes] = useState(initialMockPrescricoes);
   const [expandedPrescricao, setExpandedPrescricao] = useState(null);
+
+  const { theme } = useContext(ThemeContext)
+  const styles = getPrescriptionStyles(theme)
 
   const togglePrescricao = (id) => {
     setExpandedPrescricao(expandedPrescricao === id ? null : id);

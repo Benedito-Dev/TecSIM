@@ -11,7 +11,7 @@ export default function DashboardScreen() {
   const navigation = useNavigation();
   const { user, loading } = useAuth();
 
-  const { theme, toggleTheme, mode } = useContext(ThemeContext)
+  const { theme } = useContext(ThemeContext)
   const styles = getDashboardStyles(theme)
 
   if (loading || !user) {

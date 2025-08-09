@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+export const getProfileStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fbfd',
+    backgroundColor: theme.background,
     paddingHorizontal: 20,
   },
   header: {
@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: theme.textPrimary,
   },
   profileSection: {
     alignItems: 'center',
@@ -26,19 +26,20 @@ export const styles = StyleSheet.create({
     height: 96,
     borderRadius: 48,
     marginBottom: 12,
+    backgroundColor: theme.primaryLight,
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: theme.textPrimary,
   },
   age: {
     fontSize: 14,
-    color: '#555',
+    color: theme.textSecondary,
   },
   email: {
     fontSize: 14,
-    color: '#0c87c4',
+    color: theme.primary,
     marginTop: 4,
   },
   section: {
@@ -47,26 +48,26 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000',
+    color: theme.textPrimary,
     marginBottom: 12,
   },
   row: {
     borderTopWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: theme.border,
     paddingVertical: 5,
   },
   rowItem: {
     borderTopWidth: 3,
-    borderColor: '#e0e0e0',
+    borderColor: theme.border,
     paddingVertical: 6,
   },
   label: {
-    color: '#0c87c4',
+    color: theme.primary,
     fontWeight: '600',
     marginBottom: 4,
   },
   value: {
-    color: '#333',
+    color: theme.textPrimary,
     fontSize: 14,
   },
   chatItem: {
@@ -80,11 +81,11 @@ export const styles = StyleSheet.create({
   chatTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#000',
+    color: theme.textPrimary,
   },
   chatDate: {
     fontSize: 12,
-    color: '#666',
+    color: theme.textMuted,
   },
   configItem: {
     flexDirection: 'row',
@@ -94,14 +95,15 @@ export const styles = StyleSheet.create({
   configText: {
     marginLeft: 12,
     fontSize: 14,
-    color: '#333',
+    color: theme.textPrimary,
   },
   logoutIcon: {
     transform: [{ rotate: '180deg' }],
+    color: theme.error,
   },
   logoutText: {
     marginLeft: 12,
     fontSize: 16,
-    color: 'red',
+    color: theme.error,
   }
 });

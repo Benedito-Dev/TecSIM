@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+export const getMedicationStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.background,
     paddingHorizontal: 20,
   },
   header: {
@@ -16,24 +16,24 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#111827',
+    color: theme.textPrimary,
   },
   addButton: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: theme.primaryLight,
     borderRadius: 12,
     padding: 8,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 12,
     paddingHorizontal: 16,
     height: 50,
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
+    borderColor: theme.border,
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
@@ -41,11 +41,12 @@ export const styles = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 10,
+    color: theme.textSecondary,
   },
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#111827',
+    color: theme.textPrimary,
     height: '100%',
   },
   clearButton: {
@@ -60,7 +61,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.textPrimary,
   },
   resultsControls: {
     flexDirection: 'row',
@@ -68,18 +69,18 @@ export const styles = StyleSheet.create({
   },
   resultsCount: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.textMuted,
     marginRight: 12,
   },
   filterButton: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 8,
     padding: 8,
   },
   filterButtonActive: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: theme.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: theme.primary,
   },
   listContent: {
     paddingBottom: 20,
@@ -87,18 +88,18 @@ export const styles = StyleSheet.create({
   medItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
   medIcon: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: theme.primaryLight,
     borderRadius: 10,
     width: 44,
     height: 44,
@@ -112,7 +113,7 @@ export const styles = StyleSheet.create({
   medName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.textPrimary,
     marginBottom: 4,
   },
   medDetails: {
@@ -121,23 +122,23 @@ export const styles = StyleSheet.create({
   },
   medDose: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.textSecondary,
     marginRight: 12,
   },
   medType: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.background,
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
   medTypeText: {
     fontSize: 12,
-    color: '#4B5563',
+    color: theme.textSecondary,
     fontWeight: '500',
   },
   separator: {
     height: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.border,
     marginVertical: 8,
   },
   emptyState: {
@@ -149,13 +150,13 @@ export const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#6B7280',
+    color: theme.textMuted,
     marginTop: 16,
     textAlign: 'center',
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: theme.textMuted,
     marginTop: 8,
     textAlign: 'center',
   },
@@ -165,7 +166,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.backgroundCard,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
@@ -180,7 +181,7 @@ export const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.textPrimary,
   },
   filtersContainer: {
     marginBottom: 24,
@@ -192,47 +193,48 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     marginBottom: 8,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.background,
   },
   filterOptionActive: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: theme.primaryLight,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: theme.primary,
   },
   filterOptionText: {
     marginLeft: 12,
     fontSize: 16,
-    color: '#6B7280',
+    color: theme.textSecondary,
   },
   filterOptionTextActive: {
-    color: '#2563EB',
+    color: theme.primary,
     fontWeight: '500',
   },
   filterCheckIcon: {
     marginLeft: 'auto',
+    color: theme.primary,
   },
   modalFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
+    borderTopColor: theme.border,
     paddingTop: 16,
   },
   clearFiltersButton: {
     padding: 12,
   },
   clearFiltersText: {
-    color: '#6B7280',
+    color: theme.textMuted,
     fontWeight: '500',
   },
   applyFiltersButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: theme.primary,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   applyFiltersText: {
-    color: '#FFFFFF',
+    color: theme.textOnPrimary,
     fontWeight: '500',
   },
 });

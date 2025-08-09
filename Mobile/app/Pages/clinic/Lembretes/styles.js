@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+export const getLembretesStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FB',
+    backgroundColor: theme.background,
     paddingHorizontal: 20,
     paddingTop: 30,
   },
@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   headerText: {
     fontSize: 22,
     fontWeight: '600',
-    color: '#333',
+    color: theme.textPrimary,
     marginLeft: 8,
   },
   list: {
@@ -23,12 +23,12 @@ export const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 14,
     padding: 16,
     marginBottom: 16,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: theme.shadowColor,
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
@@ -38,19 +38,20 @@ export const styles = StyleSheet.create({
     width: 32,
     height: 32,
     marginRight: 16,
-    tintColor: '#0c87c4',
+    tintColor: theme.primary,
   },
   textContainer: {
     flex: 1,
+    marginLeft: 10
   },
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#0c87c4',
+    color: theme.primary,
   },
   subtitle: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: theme.textMuted,
     marginTop: 4,
   },
 });

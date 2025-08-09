@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+export const getProfileEditStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fbfd',
+    backgroundColor: theme.background,
     paddingHorizontal: 20,
   },
   header: {
@@ -17,78 +17,88 @@ export const styles = StyleSheet.create({
     height: 96,
     borderRadius: 48,
     marginBottom: 12,
-    alignSelf: 'center', // Centraliza a imagem do avatar
+    alignSelf: 'center',
+    backgroundColor: theme.primaryLight, // Added for better visibility
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: theme.textPrimary,
     textAlign: 'center',
     flex: 1,
   },
   botaoUpload: {
     marginTop: 10,
-    backgroundColor: '#0c87c4',
+    backgroundColor: theme.primary,
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 12,
     alignSelf: 'center',
   },
-
   botaoUploadTexto: {
-    color: '#fff',
+    color: theme.textOnPrimary,
     fontWeight: 'bold',
     fontSize: 16,
   },
   section: {
     marginBottom: 0,
-    alignItems: 'center', // Centraliza os campos do formulário
+    alignItems: 'center',
   },
   configItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // Centraliza o botão de salvar
+    justifyContent: 'center',
     paddingVertical: 12,
     marginBottom: 30,
   },
   configText: {
     marginLeft: 12,
     fontSize: 14,
-    color: '#333',
+    color: theme.textPrimary,
   },
   button: {
-    backgroundColor: '#0097b2',
+    backgroundColor: theme.primary,
     width: "85%",
     paddingVertical: 12,
     paddingHorizontal: 80,
     borderRadius: 12,
   },
   buttonText: {
-    color: '#fff',
+    color: theme.textOnPrimary,
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 18,
   },
   pickerWrapper: {
     height: 45,
-    borderColor: '#ccc',
+    borderColor: theme.border,
     borderWidth: 1,
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: theme.backgroundCard,
     justifyContent: 'center',
   },
   picker: {
     height: 45,
     width: '100%',
+    color: theme.textPrimary, // Added text color for picker
   },
   profileSection: {
-    alignItems: 'center', // Adicionado para centralizar o avatar
+    alignItems: 'center',
     marginBottom: 0,
   },
   label: {
     marginBottom: 6,
     fontSize: 14,
     fontWeight: '500',
-    color: '#333',
+    color: theme.textPrimary,
+  },
+  input: { // Added input style for text inputs
+    borderColor: theme.border,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: theme.backgroundCard,
+    color: theme.textPrimary,
+    marginBottom: 16,
   },
 });

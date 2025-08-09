@@ -1,14 +1,15 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
+export const getChatStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: theme.background,
   },
   TopContainer: {
     paddingTop: 50,
     paddingBottom: 20,
     paddingHorizontal: 20,
+    backgroundColor: theme.primary,
   },
   headerContent: {
     display: "flex",
@@ -17,13 +18,14 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   usernameText: {
-    color: '#fff',
+    color: theme.textOnPrimary,
     fontSize: 20,
     fontWeight: 'bold',
   },
   content: {
     flex: 1,
     padding: 20,
+    backgroundColor: theme.background,
   },
   messageBubble: {
     maxWidth: '80%',
@@ -33,12 +35,12 @@ export const styles = StyleSheet.create({
   },
   botMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: theme.backgroundCard,
     borderBottomLeftRadius: 5,
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#00c4cd',
+    backgroundColor: theme.primary,
     borderBottomRightRadius: 5,
   },
   timeText: {
@@ -47,11 +49,11 @@ export const styles = StyleSheet.create({
     textAlign: 'right',
   },
   botTime: {
-    color: '#666',
+    color: theme.textMuted,
   },
   botName: {
     fontWeight: 'bold',
-    color: '#333',
+    color: theme.textPrimary,
     marginBottom: 4,
     fontSize: 12,
   },
@@ -64,55 +66,50 @@ export const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     marginRight: 6,
+    backgroundColor: theme.textOnPrimary,
   },
   statusText: {
-    color: '#fff',
+    color: theme.textOnPrimary,
     fontSize: 12,
   },
   disabledButton: {
     opacity: 0.6,
   },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    marginRight: 10,
-    maxHeight: 120,
-  },
-  userTime: {
-    color: 'rgba(255, 255, 255, 0.7)',
-  },
   messageText: {
     fontSize: 16,
-    color: '#333',
+    color: theme.textPrimary,
   },
   userMessageText: {
-    color: '#fff',
+    color: theme.textOnPrimary,
   },
   inputContainer: {
     flexDirection: 'row',
     padding: 10,
     borderTopWidth: 1,
-    borderTopColor: '#eee',
-    backgroundColor: '#fff',
+    borderTopColor: theme.border,
+    backgroundColor: theme.backgroundCard,
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: theme.border,
     borderRadius: 25,
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginRight: 10,
+    backgroundColor: theme.backgroundCard,
+    color: theme.textPrimary,
   },
   sendButton: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#00c4cd',
+    backgroundColor: theme.primary,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  userTime: {
+    color: theme.textOnPrimary,
+    opacity: 0.7,
   },
 });

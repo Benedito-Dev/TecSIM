@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { 
   View, 
   Text, 
@@ -13,8 +13,9 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../../context/AuthContext';
+import { ThemeContext } from '../../../context/ThemeContext';
 import { getAIResponse, listAvailableModels } from '../../../services/aiService';
-import { styles } from './styles';
+import { getChatStyles } from './styles';
 
 
 export default function ChatScreen() {
@@ -32,6 +33,9 @@ export default function ChatScreen() {
       hour12: false 
     });
   };
+
+  const { theme } = useContext(ThemeContext)
+  const styles = getChatStyles(theme)
 
   useEffect(() => {
     const initialMessages = [

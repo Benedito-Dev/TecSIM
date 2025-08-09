@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { ThemeContext } from '../../context/ThemeContext'; // Adjust the import path as needed
 
 export default function InputField({
   label,
@@ -14,16 +15,19 @@ export default function InputField({
   onIconPress = null,
   showPasswordToggle = false,
 }) {
+  const { theme } = useContext(ThemeContext);
+  const styles = createStyles(theme);
+
   return (
     <>
       <Text style={styles.label}>{label}</Text>
-      <View style={[styles.input, { flexDirection: 'row', alignItems: 'center' }]}>
+      <View style={[styles.inputContainer, { flexDirection: 'row', alignItems: 'center' }]}>
         <TextInput
-          style={{ flex: 1 }}
+          style={styles.textInput}
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}
-          placeholderTextColor="gray"
+          placeholderTextColor={theme.textMuted}
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}
         />
@@ -32,7 +36,7 @@ export default function InputField({
             <Icon
               name={iconName}
               size={20}
-              color="gray"
+              color={theme.textMuted}
               style={{ marginRight: 10 }}
             />
           </TouchableOpacity>
@@ -42,23 +46,27 @@ export default function InputField({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#333',
+    color: theme.textPrimary, // Uses theme color
     marginTop: 12,
     marginBottom: 4,
     alignItems: "flex-start",
     width: "85%",
   },
-  input: {
+  inputContainer: {
     height: 45,
     width: '85%',
-    borderColor: '#ccc',
+    borderColor: theme.border,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: theme.backgroundCard,
+  },
+  textInput: {
+    flex: 1,
+    color: theme.textPrimary, // Text color adapts to theme
   },
 });

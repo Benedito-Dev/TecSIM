@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
+import { ThemeContext } from '../../../context/ThemeContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { styles } from './styles';
+import { getLembretesStyles } from './styles';
 
 const lembretes = [
   { id: '1', titulo: 'Paracetamol 500mg', horario: '08:00 - Após o café da manhã' },
@@ -20,9 +21,13 @@ const lembretes = [
 ];
 
 export default function LembretesScreen({ navigation }) {
+
+  const { theme } = useContext(ThemeContext)
+  const styles = getLembretesStyles(theme)
+
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <MaterialCommunityIcons name="pill" size={24} color="#2563EB" />
+      <MaterialCommunityIcons name="pill" size={24} color={theme.primary} />
       <View style={styles.textContainer}>
         <Text style={styles.title}>{item.titulo}</Text>
         <Text style={styles.subtitle}>{item.horario}</Text>
@@ -35,7 +40,7 @@ export default function LembretesScreen({ navigation }) {
       {/* Header com seta de voltar */}
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={10}>
-          <ArrowLeft size={24} color="#2563EB" />
+          <ArrowLeft size={24} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Seus Lembretes</Text>
       </View>

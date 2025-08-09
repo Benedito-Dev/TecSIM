@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View, Text, TextInput, FlatList, TouchableOpacity,
   Modal, ScrollView, Keyboard, ActivityIndicator
@@ -6,10 +6,12 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { getMedicamentos } from '../../../services/medicamentosService';
 
+import { ThemeContext } from '../../../context/ThemeContext';
+
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ArrowLeft } from 'lucide-react-native';
-import { styles } from './styles';
+import { getMedicationStyles } from './styles';
 
 export default function MedicineScreen() {
   const navigation = useNavigation();
@@ -19,6 +21,9 @@ export default function MedicineScreen() {
   const [activeFilters, setActiveFilters] = useState([]);
   const [medicines, setMedicines] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Novo estado para o loading
+
+  const { theme } = useContext(ThemeContext)
+  const styles = getMedicationStyles(theme)
 
   const filterOptions = [
     { id: 'analgesico', label: 'Analgésico', icon: 'emoticon-happy' },
@@ -88,7 +93,7 @@ export default function MedicineScreen() {
       <View style={styles.header}>
         <View style={{ display: "flex", alignItems: "center", flexDirection: "row", gap: 20 }} >
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <ArrowLeft size={24} color="#000" />
+            <ArrowLeft size={24} color={theme.primary} />
           </TouchableOpacity>
           <Text style={styles.title}>Medicamentos</Text>
         </View>
@@ -156,7 +161,7 @@ export default function MedicineScreen() {
                                                                                                   tipoMedicamento: item.tipo, 
                                                                                                   dosagemMedicamento: item.dosagem_padrao })}>
               <View style={styles.medIcon}>
-                <MaterialCommunityIcons name="pill" size={24} color="#2563EB" />
+                <MaterialCommunityIcons name="pill" size={24} color={theme.primary} />
               </View>
               <View style={styles.medInfo}>
                 <Text style={styles.medName}>{item.nome}</Text>

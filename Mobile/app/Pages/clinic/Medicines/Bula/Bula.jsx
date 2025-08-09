@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useRoute } from '@react-navigation/native';
-import {
-  View, Text, ScrollView, TouchableOpacity,
-  Linking, ActivityIndicator
-} from 'react-native';
-import {
-  MaterialIcons, FontAwesome,
-  MaterialCommunityIcons
-} from '@expo/vector-icons';
+import { View, Text, ScrollView, TouchableOpacity, Linking, ActivityIndicator } from 'react-native';
+import { MaterialIcons, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { ThemeContext } from '../../../../context/ThemeContext';
 import { getBulaPorMedicamento } from '../../../../services/bulaService';
 
-import styles from './styles';
+import { getBulaStyles } from './styles';
 
 export default function BulaScreen() {
   const route = useRoute();
   const { idMedicamento, nomeMedicamento, tipoMedicamento, dosagemMedicamento } = route.params;
-
 
   const [bula, setBula] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,6 +21,9 @@ export default function BulaScreen() {
     interactions: false,
     storage: false,
   });
+
+  const { theme } = useContext(ThemeContext);
+  const styles = getBulaStyles(theme);
 
   useEffect(() => {
     const fetchBula = async () => {
@@ -50,19 +47,79 @@ export default function BulaScreen() {
     }));
   };
 
+  // Componente reutilizável para seções (moved inside BulaScreen)
+  const ExpandableSection = ({ title, icon, expanded, onToggle, items, important = false }) => (
+    <View style={[styles.card, important && styles.importantCard]}>
+      <TouchableOpacity style={styles.sectionHeader} onPress={onToggle} activeOpacity={0.7}>
+        <View style={styles.sectionTitle}>
+          {icon}
+          <Text style={[styles.sectionHeaderText, important && styles.importantText]}>{title}</Text>
+        </View>
+        <MaterialIcons
+          name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+          size={24}
+          color={important ? theme.error : theme.textMuted}
+        />
+      </TouchableOpacity>
+      {expanded && (
+        <View style={styles.sectionContent}>
+          {items && items.length > 0 ? (
+            items.map((text, index) => (
+              <InfoItem
+                key={index}
+                icon={getIconForSection(title)}
+                text={text}
+                styles={styles}
+              />
+            ))
+          ) : (
+            <Text style={styles.infoText}>Nenhuma informação disponível.</Text>
+          )}
+        </View>
+      )}
+    </View>
+  );
+
+  // Componente de linha com ícone (moved inside BulaScreen)
+  const InfoItem = ({ icon, text, styles }) => (
+    <View style={styles.infoItem}>
+      <Text style={styles.infoIcon}>{icon}</Text>
+      <Text style={styles.infoText}>{text}</Text>
+    </View>
+  );
+
+  const getIconForSection = (sectionTitle) => {
+    switch (sectionTitle) {
+      case 'CONTRAINDICAÇÕES':
+        return '❌';
+      case 'INTERAÇÕES MEDICAMENTOSAS':
+        return '💊';
+      case 'PRECAUÇÕES E ADVERTÊNCIAS':
+        return '⚠️';
+      case 'INDICAÇÕES':
+        return '✅';
+      case 'ARMAZENAMENTO E VALIDADE':
+        return '📦';
+      case 'DOSAGEM E ADMINISTRAÇÃO':
+        return '🕒';
+      default:
+        return '•';
+    }
+  };
+
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color="#3498db" />
-        <Text style={{ marginTop: 10, color: '#3498db' }}>Carregando bula...</Text>
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color={theme.primary} />
+        <Text style={[styles.loadingText, { color: theme.primary }]}>Carregando bula...</Text>
       </View>
     );
   }
 
   if (!bula) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Text style={{ color: 'red', fontSize: 16 }}>Bula não encontrada.</Text>
+      <View style={[styles.container, styles.errorContainer]}>
+        <Text style={styles.errorText}>Bula não encontrada.</Text>
       </View>
     );
   }
@@ -84,7 +141,7 @@ export default function BulaScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <ExpandableSection
           title="DOSAGEM E ADMINISTRAÇÃO"
-          icon={<MaterialIcons name="medication" size={22} color="#3498db" />}
+          icon={<MaterialIcons name="medication" size={22} color={theme.primary} />}
           expanded={expandedSections.dosage}
           onToggle={() => toggleSection('dosage')}
           items={bula.dosagem_e_administracao}
@@ -92,7 +149,7 @@ export default function BulaScreen() {
 
         <ExpandableSection
           title="CONTRAINDICAÇÕES"
-          icon={<MaterialIcons name="warning" size={22} color="#e74c3c" />}
+          icon={<MaterialIcons name="warning" size={22} color={theme.error} />}
           expanded={expandedSections.contraindications}
           onToggle={() => toggleSection('contraindications')}
           items={bula.contraindicacoes}
@@ -101,7 +158,7 @@ export default function BulaScreen() {
 
         <ExpandableSection
           title="INDICAÇÕES"
-          icon={<FontAwesome name="heart" size={20} color="#3498db" />}
+          icon={<FontAwesome name="heart" size={20} color={theme.primary} />}
           expanded={expandedSections.indications}
           onToggle={() => toggleSection('indications')}
           items={bula.indicacoes}
@@ -109,7 +166,7 @@ export default function BulaScreen() {
 
         <ExpandableSection
           title="PRECAUÇÕES E ADVERTÊNCIAS"
-          icon={<MaterialCommunityIcons name="alert-circle" size={20} color="#f39c12" />}
+          icon={<MaterialCommunityIcons name="alert-circle" size={20} color={theme.warning} />}
           expanded={expandedSections.precautions}
           onToggle={() => toggleSection('precautions')}
           items={bula.advertencias}
@@ -117,7 +174,7 @@ export default function BulaScreen() {
 
         <ExpandableSection
           title="INTERAÇÕES MEDICAMENTOSAS"
-          icon={<MaterialCommunityIcons name="alert-octagon" size={20} color="#f39c12" />}
+          icon={<MaterialCommunityIcons name="alert-octagon" size={20} color={theme.warning} />}
           expanded={expandedSections.interactions}
           onToggle={() => toggleSection('interactions')}
           items={bula.interacoes_medicamentosas}
@@ -125,7 +182,7 @@ export default function BulaScreen() {
 
         <ExpandableSection
           title="ARMAZENAMENTO E VALIDADE"
-          icon={<MaterialIcons name="inventory" size={20} color="#3498db" />}
+          icon={<MaterialIcons name="inventory" size={20} color={theme.primary} />}
           expanded={expandedSections.storage}
           onToggle={() => toggleSection('storage')}
           items={bula.armazenamento_e_validade}
@@ -147,62 +204,3 @@ export default function BulaScreen() {
     </View>
   );
 }
-
-// Componente reutilizável para seções
-const ExpandableSection = ({ title, icon, expanded, onToggle, items, important = false }) => (
-  <View style={[styles.card, important && styles.importantCard]}>
-    <TouchableOpacity style={styles.sectionHeader} onPress={onToggle} activeOpacity={0.7}>
-      <View style={styles.sectionTitle}>
-        {icon}
-        <Text style={[styles.sectionHeaderText, important && styles.importantText]}>{title}</Text>
-      </View>
-      <MaterialIcons
-        name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-        size={24}
-        color={important ? '#e74c3c' : '#7f8c8d'}
-      />
-    </TouchableOpacity>
-    {expanded && (
-      <View style={styles.sectionContent}>
-        {items && items.length > 0 ? (
-          items.map((text, index) => (
-              <InfoItem
-                key={index}
-                icon={getIconForSection(title)}
-                text={text}
-            />
-            ))
-        ) : (
-          <Text style={styles.infoText}>Nenhuma informação disponível.</Text>
-        )}
-      </View>
-    )}
-  </View>
-);
-
-// Componente de linha com ícone
-const InfoItem = ({ icon, text }) => (
-  <View style={styles.infoItem}>
-    <Text style={styles.infoIcon}>{icon}</Text>
-    <Text style={styles.infoText}>{text}</Text>
-  </View>
-);
-
-const getIconForSection = (sectionTitle) => {
-  switch (sectionTitle) {
-    case 'CONTRAINDICAÇÕES':
-      return '❌';
-    case 'INTERAÇÕES MEDICAMENTOSAS':
-      return '💊';
-    case 'PRECAUÇÕES E ADVERTÊNCIAS':
-      return '⚠️';
-    case 'INDICAÇÕES':
-      return '✅';
-    case 'ARMAZENAMENTO E VALIDADE':
-      return '📦';
-    case 'DOSAGEM E ADMINISTRAÇÃO':
-      return '🕒';
-    default:
-      return '•';
-  }
-};
