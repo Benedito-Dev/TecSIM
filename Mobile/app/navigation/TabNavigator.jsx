@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 import { StyleSheet, View } from 'react-native';
@@ -15,8 +15,24 @@ const Tab = createBottomTabNavigator();
 export default function MainTabNavigator() {
   const { theme } = useContext(ThemeContext);
 
-  const colors = theme === "light" ? darkTheme : lightTheme;
-  console.log(colors)
+  // Usamos useMemo para otimizar a recriação das opções
+  const tabBarOptions = useMemo(() => ({
+    tabBarActiveTintColor: theme.primary,
+    tabBarInactiveTintColor: theme.textMuted,
+    headerShown: false,
+    tabBarShowLabel: true,
+    tabBarStyle: {
+      backgroundColor: theme.backgroundCard,
+      borderTopWidth: 0,
+      height: 60,
+      paddingBottom: 5,
+      shadowColor: theme.shadowColor,
+      shadowOffset: { width: 0, height: -2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 10,
+    },
+  }), [theme]); // Recria quando colors muda
 
   return (
     <Tab.Navigator
@@ -35,21 +51,7 @@ export default function MainTabNavigator() {
             </View>
           );
         },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
-        headerShown: false,
-        tabBarShowLabel: true,
-        tabBarStyle: {
-          backgroundColor: colors.backgroundCard,
-          borderTopWidth: 0,
-          height: 60,
-          paddingBottom: 5,
-          shadowColor: colors.shadowColor,
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          elevation: 10,
-        },
+        ...tabBarOptions, // Spread das opções memorizadas
       })}
     >
       <Tab.Screen name="Dashboard" component={DashboardStack} options={{ title: 'Home' }} />

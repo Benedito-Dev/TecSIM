@@ -12,7 +12,6 @@ export default function DashboardScreen() {
   const { user, loading } = useAuth();
 
   const { theme, toggleTheme, mode } = useContext(ThemeContext)
-  console.log(theme)
   const styles = getDashboardStyles(theme)
 
   if (loading || !user) {
@@ -24,14 +23,11 @@ export default function DashboardScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
+    <View style={styles.background}>
       
       {/* Cabeçalho fixo sem padding lateral */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
-        <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 15 }}>
-            {mode === 'light' ? <Moon color={theme.text} size={24} /> : <Sun color={theme.text} size={24} />}
-          </TouchableOpacity>
         <NotificationIcon initialCount={3} />
       </View>
 

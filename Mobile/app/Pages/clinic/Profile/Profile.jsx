@@ -1,13 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator, Platform } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { ThemeContext } from '../../../context/ThemeContext';
 import { styles } from './styles';
 
 import { useAuth } from '../../../context/AuthContext';
 import { logout as logoutService } from '../../../services/auth/authService';
 import { getPacienteById } from '../../../services/userService';
 
-import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings } from 'lucide-react-native';
+import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings, Moon, Sun } from 'lucide-react-native';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -16,6 +17,8 @@ export default function ProfileScreen() {
   const [paciente, setPaciente] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fotoPerfil, setFotoPerfil] = useState(null);
+
+  const { theme, toggleTheme, mode } = useContext(ThemeContext)
 
   useFocusEffect(
     useCallback(() => {
@@ -110,7 +113,9 @@ export default function ProfileScreen() {
           <ArrowLeft size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>TecSIM</Text>
-        <View style={{ width: 24 }} />
+        <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 15 }}>
+          {mode === 'light' ? <Moon color={theme.text} size={24} /> : <Sun color={theme.text} size={24} />}
+        </TouchableOpacity>
       </View>
 
       {/* Avatar */}
