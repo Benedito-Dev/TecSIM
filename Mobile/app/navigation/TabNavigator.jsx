@@ -8,7 +8,7 @@ import { lightTheme, darkTheme } from '../constants/temas';
 // Import stacks
 import DashboardStack from './DashboardStack';
 import ProfileStack from './ProfileStack';
-import ChatScreen from '../screens/home/Chat/Chat';
+import ChatScreen from '../Pages/clinic/Chat/Chat';
 
 const Tab = createBottomTabNavigator();
 

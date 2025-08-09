@@ -14,7 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { login as loginService, getCurrentUser } from '../../../services/auth/authService';
 import { useAuth } from '../../../context/AuthContext';
 
-import InputField from '../../../components/InputField'; // 👈 usa o mesmo InputField da tela Register
+import InputField from '../../../components/Register/InputField'; // 👈 usa o mesmo InputField da tela Register
 import { styles } from './styles';
 
 export default function LoginScreen() {

@@ -5,10 +5,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { requestOtp } from '../../../services/auth/otpService';
 import TermsModal from '../../../components/TermsModal'; // Importe o componente
 
-import InputField from '../../../components/InputField';
-import DateInput from '../../../components/DataInput';
-import GenderInput from '../../../components/InputGender';
-import CpfInput from '../../../components/CpfInput';
+import InputField from '../../../components/Register/InputField';
+import DateInput from '../../../components/Register/DataInput';
+import GenderInput from '../../../components/Register/InputGender';
+import CpfInput from '../../../components/Register/CpfInput';
 
 import { styles } from './styles';
 

@@ -8,8 +8,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../../../context/AuthContext';
 import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../../services/userService';
 
-import InputField from '../../../../components/InputField';
-import GenderInput from '../../../../components/InputGender'
+import InputField from '../../../../components/Register/InputField';
+import GenderInput from '../../../../components/Register/InputGender';
+import CpfInput from '../../../../components/Register/CpfInput';
 import { styles } from './styles';
 
 export default function EditProfileScreen() {
@@ -38,7 +39,7 @@ export default function EditProfileScreen() {
         setDataNascimento(data.data_nascimento?.split('T')[0] || '');
         setPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
-        setFotoPerfil(data.foto_perfil ? `http://10.0.30.233:3000${data.foto_perfil}` : null);
+        setFotoPerfil(data.foto_perfil ? `http://192.168.1.110:3000${data.foto_perfil}` : null);
         setLoading(false);
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);
