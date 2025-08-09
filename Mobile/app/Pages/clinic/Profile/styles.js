@@ -16,6 +16,7 @@ export const getProfileStyles = (theme) => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: theme.textPrimary,
+    marginLeft: 30,
   },
   profileSection: {
     alignItems: 'center',

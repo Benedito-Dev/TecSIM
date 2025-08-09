@@ -9,6 +9,7 @@ import { logout as logoutService } from '../../../services/auth/authService';
 import { getPacienteById } from '../../../services/userService';
 
 import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings, Moon, Sun } from 'lucide-react-native';
+import SwitchTheme from '../../../components/SwitchTeme';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -115,9 +116,12 @@ export default function ProfileScreen() {
           <ArrowLeft size={24} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>TecSIM</Text>
-        <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 15 }}>
-          {mode === 'light' ? <Moon color={theme.text} size={24} /> : <Sun color={theme.text} size={24} />}
-        </TouchableOpacity>
+        <SwitchTheme 
+          onToggle={(isDark) => {
+            // 'isDark' do SwitchTheme corresponde ao 'mode' do seu código atual
+            toggleTheme(); // Chama a função que já existe para alternar o tema
+          }}
+        />
       </View>
 
       {/* Avatar */}
