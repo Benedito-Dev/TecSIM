@@ -1,3 +1,4 @@
+// Contexto do tema claro e escuro
 import React, { createContext, useState, useMemo } from 'react';
 import { lightTheme, darkTheme } from '../constants/temas';
 
