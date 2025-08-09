@@ -9,6 +9,7 @@ import InputField from '../../../components/InputField';
 import DateInput from '../../../components/DataInput';
 import GenderInput from '../../../components/InputGender';
 import CpfInput from '../../../components/CpfInput';
+import PasswordInput from '../../../components/PasswordInput';
 
 import { styles } from './styles';
 
@@ -108,7 +109,12 @@ export default function RegisterScreen({ navigation }) {
           iconName="mail"
         />
 
-        <InputField
+        <PasswordInput 
+          label="Senha"
+          onChangeText={setPassword} 
+        />
+
+        {/* <InputField
           label="Senha"
           placeholder="Digite sua senha"
           value={password}
@@ -116,7 +122,7 @@ export default function RegisterScreen({ navigation }) {
           secureTextEntry={!showPassword}
           iconName={showPassword ? 'eye' : 'eye-off'}
           onIconPress={() => setShowPassword(!showPassword)}
-        />
+        /> */}
 
         <InputField
           label="Confirmar senha"
