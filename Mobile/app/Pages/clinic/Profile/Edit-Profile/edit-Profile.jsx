@@ -160,7 +160,7 @@ export default function EditProfileScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color="#000" />
+          <ArrowLeft size={24} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>Editar Perfil</Text>
         <View style={{ width: 24 }} />

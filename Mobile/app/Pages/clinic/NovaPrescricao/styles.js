@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
 
-export default StyleSheet.create({
+export const getSubscriptionStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.background,
   },
   header: {
     flexDirection: 'row',
@@ -11,8 +11,8 @@ export default StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-    backgroundColor: '#FFFFFF',
+    borderBottomColor: theme.border,
+    backgroundColor: theme.backgroundCard,
   },
   backButton: {
     padding: 8,
@@ -23,7 +23,7 @@ export default StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.textPrimary,
     textAlign: 'center',
   },
   content: {
@@ -32,25 +32,25 @@ export default StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
+    color: theme.textSecondary,
     marginBottom: 24,
     textAlign: 'center',
   },
   optionCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 12,
     padding: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
+    borderColor: theme.border,
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
   },
   recommendedOption: {
-    borderColor: '#2563EB',
+    borderColor: theme.primary,
     borderWidth: 1.5,
   },
   optionHeader: {
@@ -59,13 +59,13 @@ export default StyleSheet.create({
     marginBottom: 12,
   },
   recommendedBadge: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: theme.primaryLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
   },
   recommendedText: {
-    color: '#2563EB',
+    color: theme.primary,
     fontSize: 12,
     fontWeight: '500',
   },
@@ -75,13 +75,13 @@ export default StyleSheet.create({
   optionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.textPrimary,
     marginTop: 12,
     marginBottom: 4,
   },
   optionDescription: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.textSecondary,
     textAlign: 'center',
     marginTop: 4,
   },

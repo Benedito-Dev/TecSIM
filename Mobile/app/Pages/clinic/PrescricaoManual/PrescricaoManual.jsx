@@ -1,32 +1,20 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import React, { useState, useContext } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { ThemeContext } from '../../../context/ThemeContext';
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { styles } from "./styles";
+import { getPrescriptionFormStyles } from "./styles";
 
 // Lucide ícones
-import {
-  ArrowLeft,
-  Calendar,
-  Plus,
-  Trash2,
-  Pill,
-  ChevronDown,
-} from "lucide-react-native";
+import { ArrowLeft, Calendar, Plus, Trash2, Pill, ChevronDown, } from "lucide-react-native";
 
 export default function PrescricaoManualScreen() {
   const navigation = useNavigation();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showValidadePicker, setShowValidadePicker] = useState(false);
+
+  const { theme } = useContext(ThemeContext)
+  const styles = getPrescriptionFormStyles(theme)
 
   const [form, setForm] = useState({
     diagnostico: "",

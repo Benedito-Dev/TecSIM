@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, TouchableOpacity, Image} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { ThemeContext } from '../../../context/ThemeContext';
 import { ArrowLeft, Camera, Edit3 } from "lucide-react-native"; // Lucide ícones
-import styles from "./styles";
+import { getSubscriptionStyles } from "./styles";
 
 export default function NovaPrescricaoScreen() {
   const navigation = useNavigation();
+
+  const { theme } = useContext(ThemeContext)
+  const styles = getSubscriptionStyles(theme)
 
   return (
     <View style={styles.container}>

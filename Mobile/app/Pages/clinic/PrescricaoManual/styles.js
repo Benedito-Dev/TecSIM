@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.background,
   },
   header: {
     flexDirection: 'row',
@@ -13,8 +13,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-    backgroundColor: '#FFFFFF',
+    borderBottomColor: theme.border,
+    backgroundColor: theme.backgroundCard,
   },
   backButton: {
     padding: 8,
@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.textPrimary,
     textAlign: 'center',
   },
   scrollContainer: {
@@ -33,17 +33,17 @@ export const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   formSection: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.backgroundCard,
     borderRadius: 12,
     padding: 16,
     marginTop: 16,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.border,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.textPrimary,
     marginBottom: 16,
   },
   sectionHeader: {
@@ -55,13 +55,13 @@ export const styles = StyleSheet.create({
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2563EB',
+    backgroundColor: theme.primary,
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
   },
   addButtonText: {
-    color: '#FFFFFF',
+    color: theme.textOnPrimary,
     fontSize: 14,
     fontWeight: '500',
     marginLeft: 6,
@@ -72,17 +72,17 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#374151',
+    color: theme.textSecondary,
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.backgroundCard,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 15,
-    color: '#111827',
+    color: theme.textPrimary,
   },
   dateRow: {
     flexDirection: 'row',
@@ -92,23 +92,23 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.backgroundCard,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.border,
     borderRadius: 8,
     padding: 12,
   },
   dateText: {
     fontSize: 15,
-    color: '#111827',
+    color: theme.textPrimary,
   },
   medicamentoCard: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: theme.backgroundSecondary,
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.border,
   },
   medicamentoHeader: {
     flexDirection: 'row',
@@ -116,7 +116,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   medNumber: {
-    backgroundColor: '#2563EB',
+    backgroundColor: theme.primary,
     width: 24,
     height: 24,
     borderRadius: 12,
@@ -125,14 +125,14 @@ export const styles = StyleSheet.create({
     marginRight: 12,
   },
   medNumberText: {
-    color: '#FFFFFF',
+    color: theme.textOnPrimary,
     fontSize: 12,
     fontWeight: '600',
   },
   medicamentoTitle: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#111827',
+    color: theme.textPrimary,
     flex: 1,
   },
   deleteButton: {
@@ -146,15 +146,15 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.backgroundCard,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: theme.border,
     borderRadius: 8,
     padding: 12,
   },
   pickerText: {
     fontSize: 15,
-    color: '#111827',
+    color: theme.textPrimary,
   },
   emptyState: {
     alignItems: 'center',
@@ -163,17 +163,17 @@ export const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: theme.textMuted,
     marginTop: 8,
   },
   submitButton: {
-    backgroundColor: '#10B981',
+    backgroundColor: theme.success,
     padding: 16,
     borderRadius: 12,
     margin: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -184,7 +184,7 @@ export const styles = StyleSheet.create({
     right: 16,
   },
   submitButtonText: {
-    color: '#FFFFFF',
+    color: theme.textOnPrimary,
     fontSize: 16,
     fontWeight: '600',
   },
