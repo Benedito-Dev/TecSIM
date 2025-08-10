@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 export default function PesoInput({
@@ -8,22 +8,20 @@ export default function PesoInput({
   placeholder = 'Ex: 70',
   minWeight = 30,
   maxWeight = 300,
+  onValidityChange,
 }) {
   const [isValid, setIsValid] = useState(null); // null: sem digitação ainda
 
   const handleChange = (text) => {
-    // Remove tudo que não é número e ponto
+    // Remove tudo que não é número
     const onlyNumbers = text.replace(/[^0-9]/g, '');
 
-    // Converte para número inteiro
     const numericValue = Number(onlyNumbers);
 
-    // Atualiza valor formatado (sem pontos ou vírgulas)
     onChangeText(onlyNumbers);
 
-    // Valida se está dentro do intervalo
     if (onlyNumbers.length === 0) {
-      setIsValid(null); // nada digitado
+      setIsValid(null);
     } else if (numericValue >= minWeight && numericValue <= maxWeight) {
       setIsValid(true);
     } else {
@@ -31,10 +29,22 @@ export default function PesoInput({
     }
   };
 
+  // Notifica componente pai sobre validade
+  useEffect(() => {
+    if (onValidityChange) {
+      onValidityChange(isValid === true);
+    }
+  }, [isValid]);
+
   return (
     <>
       <Text style={styles.label}>{label}</Text>
-      <View style={[styles.inputContainer, { borderColor: isValid === null ? '#ccc' : isValid ? 'green' : 'red' }]}>
+      <View
+        style={[
+          styles.inputContainer,
+          { borderColor: isValid === null ? '#ccc' : isValid ? 'green' : 'red' },
+        ]}
+      >
         <TextInput
           style={styles.input}
           placeholder={placeholder}

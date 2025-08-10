@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,25 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Feather';
 
-export default function DateInput({ label, value, onChange, placeholder = 'Selecione uma data' }) {
+export default function DateInput({ label, value, onChange, placeholder = 'Selecione uma data', onValidityChange }) {
   const [showPicker, setShowPicker] = useState(false);
   const [tempDate, setTempDate] = useState(new Date());
+  const [isValid, setIsValid] = useState(false);
+
+  // Verifica validade da data (campo não vazio e formato YYYY-MM-DD)
+  useEffect(() => {
+    if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (onValidityChange) {
+      onValidityChange(isValid);
+    }
+  }, [isValid]);
 
   const handleChange = (event, selectedDate) => {
     if (Platform.OS === 'android') {

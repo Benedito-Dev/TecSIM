@@ -1,58 +1,79 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable, Alert, ScrollView, ActivityIndicator, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Pressable,
+  Alert,
+  ScrollView,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { requestOtp } from '../../../services/auth/otpService';
-import TermsModal from '../../../components/TermsModal';
+import TermsModal from '../../../components/Register/TermsModal';
 
-import InputField from '../../../components/InputField';
-import DateInput from '../../../components/DataInput';
-import GenderInput from '../../../components/InputGender';
-import PesoInput from '../../../components/PesoInput';
-import CpfInput from '../../../components/CpfInput';
-import EmailInput from '../../../components/EmailInput';
-import PasswordInput from '../../../components/PasswordInput';
+import InputField from '../../../components/Register/InputField';
+import DateInput from '../../../components/Register/DataInput';
+import GenderInput from '../../../components/Register/InputGender';
+import PesoInput from '../../../components/Register/PesoInput';
+import CpfInput from '../../../components/Register/CpfInput';
+import EmailInput from '../../../components/Register/EmailInput';
+import PasswordInput from '../../../components/Register/PasswordInput';
 
 import { styles } from './styles';
 
 export default function RegisterScreen({ navigation }) {
+  // Estados do formulário
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
+  const [cpfIsValid, setCpfIsValid] = useState(false);
   const [email, setEmail] = useState('');
+  const [emailIsValid, setEmailIsValid] = useState(false);
   const [password, setPassword] = useState('');
+  const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
+  const [dateIsValid, setDateIsValid] = useState(false);
   const [peso_kg, setPesoKg] = useState('');
+  const [pesoIsValid, setPesoIsValid] = useState(false);
   const [genero, setGenero] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Validação geral do formulário
+  const isFormValid =
+    nome.trim().length > 0 &&
+    cpfIsValid &&
+    emailIsValid &&
+    passwordIsValid &&
+    confirmPassword === password &&
+    dateIsValid &&
+    pesoIsValid &&
+    termsAccepted;
 
   const handleRegister = async () => {
     if (!termsAccepted) {
       Alert.alert('Atenção', 'Você precisa aceitar os termos de uso para se registrar');
       return;
     }
-
-    if (!email || !password || !confirmPassword) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      Alert.alert('Erro', 'As senhas não coincidem');
+    if (!isFormValid) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos corretamente.');
       return;
     }
 
     setLoading(true);
-
     try {
       const data = await requestOtp(email);
-
       if (data?.email && data?.expires_at) {
         Alert.alert('Verificação', 'Enviamos um código para seu e-mail');
-
         navigation.navigate('Code', {
           cpf,
           nome,
@@ -61,7 +82,7 @@ export default function RegisterScreen({ navigation }) {
           dataNascimento,
           peso_kg,
           genero,
-          termsAccepted
+          termsAccepted,
         });
       } else {
         Alert.alert('Erro ao enviar código', 'Tente novamente mais tarde.');
@@ -83,10 +104,7 @@ export default function RegisterScreen({ navigation }) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
-            <Image
-              source={require('../../../assets/images/logo_branca.png')}
-              style={styles.logo}
-            />
+            <Image source={require('../../../assets/images/logo_branca.png')} style={styles.logo} />
           </LinearGradient>
 
           <ScrollView
@@ -94,41 +112,13 @@ export default function RegisterScreen({ navigation }) {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <InputField
-              label="Nome Completo"
-              placeholder="Ex: Antonio Nascimento Barros"
-              value={nome}
-              onChangeText={setNome}
-              iconName="user"
-            />
+            <InputField label="Nome Completo" placeholder="Ex: Antonio Nascimento Barros" value={nome} onChangeText={setNome} iconName="user" />
 
-            <CpfInput
-              label="CPF"
-              value={cpf}
-              onChangeText={setCpf}
-            />
+            <CpfInput label="CPF" value={cpf} onChangeText={setCpf} onValidityChange={setCpfIsValid} />
 
-            <EmailInput 
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              iconName='mail'
-            />
+            <EmailInput label="Email" value={email} onChangeText={setEmail} onValidityChange={setEmailIsValid} keyboardType="email-address" iconName="mail" />
 
-            {/* <InputField
-              label="Email"
-              placeholder="Digite seu email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              iconName="mail"
-            /> */}
-
-            <PasswordInput
-              label="Senha"
-              onChangeText={setPassword}
-            />
+            <PasswordInput label="Senha" onChangeText={setPassword} onValidityChange={setPasswordIsValid} />
 
             <InputField
               label="Confirmar senha"
@@ -140,23 +130,11 @@ export default function RegisterScreen({ navigation }) {
               onIconPress={() => setShowPassword(!showPassword)}
             />
 
-            <DateInput
-              label="Data de Nascimento"
-              placeholder="Ex: 1990-08-15"
-              value={dataNascimento}
-              onChange={setDataNascimento}
-            />
+            <DateInput label="Data de Nascimento" placeholder="Ex: 1990-08-15" value={dataNascimento} onChange={setDataNascimento} onValidityChange={setDateIsValid} />
 
             <GenderInput value={genero} onChange={setGenero} />
 
-            <PesoInput
-              label="Peso (kg)"
-              value={peso_kg}
-              onChangeText={setPesoKg}
-              minWeight={30}    // mínimo permitido
-              maxWeight={300}   // máximo permitido
-            />
-
+            <PesoInput label="Peso (kg)" value={peso_kg} onChangeText={setPesoKg} onValidityChange={setPesoIsValid} minWeight={30} maxWeight={300} />
 
             <View style={styles.authExtras}>
               <View style={styles.Remenber}>
@@ -187,11 +165,7 @@ export default function RegisterScreen({ navigation }) {
             {loading ? (
               <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
             ) : (
-              <TouchableOpacity
-                style={[styles.button, !termsAccepted && styles.disabledButton]}
-                onPress={handleRegister}
-                disabled={!termsAccepted}
-              >
+              <TouchableOpacity style={[styles.button, !isFormValid && styles.disabledButton]} onPress={handleRegister} disabled={!isFormValid}>
                 <Text style={styles.buttonText}>Criar Conta</Text>
               </TouchableOpacity>
             )}

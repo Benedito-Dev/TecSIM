@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-export default function PasswordInput({ label, onChangeText }) {
+export default function PasswordInput({ label, onChangeText, onValidityChange }) {
   const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
 
@@ -18,6 +18,15 @@ export default function PasswordInput({ label, onChangeText }) {
   };
 
   const requirements = checkRequirements(password);
+
+  // Verifica se todos os requisitos são true
+  const isValid = Object.values(requirements).every(Boolean);
+
+  useEffect(() => {
+    if (onValidityChange) {
+      onValidityChange(isValid);
+    }
+  }, [isValid]);
 
   return (
     <View style={styles.container}>
@@ -47,19 +56,19 @@ export default function PasswordInput({ label, onChangeText }) {
       {/* Lista de requisitos */}
       <View style={styles.requirements}>
         <Text style={requirements.length ? styles.valid : styles.invalid}>
-          {requirements.length ? '•' : '•'} Pelo menos 8 caracteres
+          • Pelo menos 8 caracteres
         </Text>
         <Text style={requirements.upper ? styles.valid : styles.invalid}>
-          {requirements.upper ? '•' : '•'} Pelo menos 1 letra maiúscula
+          • Pelo menos 1 letra maiúscula
         </Text>
         <Text style={requirements.lower ? styles.valid : styles.invalid}>
-          {requirements.lower ? '•' : '•'} Pelo menos 1 letra minúscula
+          • Pelo menos 1 letra minúscula
         </Text>
         <Text style={requirements.number ? styles.valid : styles.invalid}>
-          {requirements.number ? '•' : '•'} Pelo menos 1 número
+          • Pelo menos 1 número
         </Text>
         <Text style={requirements.special ? styles.valid : styles.invalid}>
-          {requirements.special ? '•' : '•'} Pelo menos 1 caractere especial
+          • Pelo menos 1 caractere especial
         </Text>
       </View>
     </View>

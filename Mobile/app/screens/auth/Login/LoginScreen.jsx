@@ -14,32 +14,37 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { login as loginService, getCurrentUser } from '../../../services/auth/authService';
 import { useAuth } from '../../../context/AuthContext';
 
-import InputField from '../../../components/InputField'; // 👈 usa o mesmo InputField da tela Register
+import EmailInput from '../../../components/Register/EmailInput';
+import PasswordInput from '../../../components/Register/PasswordInput';
 import { styles } from './styles';
 
 export default function LoginScreen() {
   const [checked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
+  const [emailIsValid, setEmailIsValid] = useState(false);
   const [password, setPassword] = useState('');
+  const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
   const { setUser } = useAuth();
 
+  // Validação geral do formulário
+  const isFormValid = emailIsValid && passwordIsValid;
+  console.log(isFormValid)
+
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+    if (!isFormValid) {
+      Alert.alert('Erro', 'Por favor, preencha os campos corretamente');
       return;
     }
 
     setLoading(true);
     try {
       await loginService(email, password);
-
       const userData = await getCurrentUser();
       setUser(userData);
-
       navigation.replace('App');
     } catch (error) {
       Alert.alert('Erro', error.message || 'Falha no login. Verifique suas credenciais.');
@@ -51,33 +56,25 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
-        <Image
-          source={require('../../../assets/images/logo_branca.png')}
-          style={styles.logo}
-        />
+        <Image source={require('../../../assets/images/logo_branca.png')} style={styles.logo} />
         <Text style={styles.title}>Welcome Back</Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
       </LinearGradient>
 
       <View style={styles.content}>
-        <InputField
+        <EmailInput
           label="Email"
-          placeholder="Digite seu email"
           value={email}
           onChangeText={setEmail}
+          onValidityChange={setEmailIsValid}
           keyboardType="email-address"
-          autoCapitalize="none"
           iconName="mail"
         />
 
-        <InputField
+        <PasswordInput
           label="Senha"
-          placeholder="Digite sua senha"
-          value={password}
           onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          iconName={showPassword ? 'eye' : 'eye-off'}
-          onIconPress={() => setShowPassword(!showPassword)}
+          onValidityChange={setPasswordIsValid}
         />
 
         <View style={styles.authExtras}>
@@ -107,7 +104,11 @@ export default function LoginScreen() {
         {loading ? (
           <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
         ) : (
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <TouchableOpacity
+            style={[styles.button, !isFormValid && styles.disabledButton]}
+            onPress={handleLogin}
+            disabled={!isFormValid}
+          >
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
         )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -8,8 +8,9 @@ export default function EmailInput({
   onChangeText,
   placeholder = 'exemplo@gmail.com',
   iconName = 'mail',
+  onValidityChange, // prop nova para avisar validade
 }) {
-  const [isValid, setIsValid] = useState(null); // null = ainda não digitou
+  const [isValid, setIsValid] = useState(null); // null = vazio/sem digitação
 
   const validDomains = [
     'gmail.com',
@@ -31,13 +32,19 @@ export default function EmailInput({
   const handleChange = (text) => {
     onChangeText(text);
     if (text.trim() === '') {
-      setIsValid(null); // volta para cinza se apagar tudo
+      setIsValid(null); // volta para cinza quando apagar tudo
     } else {
       setIsValid(validateEmail(text));
     }
   };
 
-  // Define cor da borda conforme estado
+  useEffect(() => {
+    if (onValidityChange) {
+      // passar false quando null para evitar habilitar botão antes de digitar
+      onValidityChange(isValid === true);
+    }
+  }, [isValid]);
+
   const getBorderColor = () => {
     if (isValid === null) return 'gray'; // inicial / vazio
     return isValid ? 'green' : 'red';

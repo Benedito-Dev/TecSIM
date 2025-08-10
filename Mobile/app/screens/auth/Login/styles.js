@@ -88,6 +88,10 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 40,
   },
+  disabledButton: {
+    backgroundColor: '#0097b2',
+    opacity: 0.6,
+  },
   subButton: {
     display: "flex",
     alignItems: "center",

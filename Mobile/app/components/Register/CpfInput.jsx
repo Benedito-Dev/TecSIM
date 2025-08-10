@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -8,6 +8,7 @@ export default function CpfInput({
   onChangeText,
   placeholder = '000.000.000-00',
   iconName = 'user',
+  onValidityChange, // NOVO: callback para avisar validade
 }) {
   const [isValid, setIsValid] = useState(false);
 
@@ -32,7 +33,6 @@ export default function CpfInput({
     const cleanCpf = cpf.replace(/\D/g, '');
     if (cleanCpf.length !== 11) return false;
 
-    // impede CPFs como 111.111.111-11
     if (/^(\d)\1+$/.test(cleanCpf)) return false;
 
     let sum = 0;
@@ -55,8 +55,16 @@ export default function CpfInput({
   const handleChange = (text) => {
     const formatted = formatCpf(text);
     onChangeText(formatted);
-    setIsValid(validateCpf(formatted)); // só seta aqui
+    const valid = validateCpf(formatted);
+    setIsValid(valid);
   };
+
+  // Avisar o pai sempre que isValid mudar
+  useEffect(() => {
+    if (onValidityChange) {
+      onValidityChange(isValid);
+    }
+  }, [isValid]);
 
   return (
     <>

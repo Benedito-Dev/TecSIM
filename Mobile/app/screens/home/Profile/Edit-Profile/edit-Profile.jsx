@@ -8,8 +8,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../../../context/AuthContext';
 import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../../services/userService';
 
-import InputField from '../../../../components/InputField';
-import GenderInput from '../../../../components/InputGender'
+import InputField from '../../../../components/Register/InputField';
+import GenderInput from '../../../../components/Register/InputGender'
 import { styles } from './styles';
 
 export default function EditProfileScreen() {
