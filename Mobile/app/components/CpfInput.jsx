@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -9,6 +9,8 @@ export default function CpfInput({
   placeholder = '000.000.000-00',
   iconName = 'user',
 }) {
+  const [isValid, setIsValid] = useState(false);
+
   const formatCpf = (text) => {
     const digits = text.replace(/\D/g, '').slice(0, 11);
     let cpf = '';
@@ -26,15 +28,40 @@ export default function CpfInput({
     return cpf;
   };
 
+  const validateCpf = (cpf) => {
+    const cleanCpf = cpf.replace(/\D/g, '');
+    if (cleanCpf.length !== 11) return false;
+
+    // impede CPFs como 111.111.111-11
+    if (/^(\d)\1+$/.test(cleanCpf)) return false;
+
+    let sum = 0;
+    let rest;
+
+    for (let i = 1; i <= 9; i++) sum += parseInt(cleanCpf.substring(i - 1, i)) * (11 - i);
+    rest = (sum * 10) % 11;
+    if (rest === 10 || rest === 11) rest = 0;
+    if (rest !== parseInt(cleanCpf.substring(9, 10))) return false;
+
+    sum = 0;
+    for (let i = 1; i <= 10; i++) sum += parseInt(cleanCpf.substring(i - 1, i)) * (12 - i);
+    rest = (sum * 10) % 11;
+    if (rest === 10 || rest === 11) rest = 0;
+    if (rest !== parseInt(cleanCpf.substring(10, 11))) return false;
+
+    return true;
+  };
+
   const handleChange = (text) => {
     const formatted = formatCpf(text);
     onChangeText(formatted);
+    setIsValid(validateCpf(formatted)); // só seta aqui
   };
 
   return (
     <>
       <Text style={styles.label}>{label}</Text>
-      <View style={styles.input}>
+      <View style={[styles.input, { borderColor: value ? (isValid ? 'green' : 'red') : '#ccc' }]}>
         <TextInput
           style={{ flex: 1 }}
           placeholder={placeholder}
@@ -65,7 +92,6 @@ const styles = StyleSheet.create({
   input: {
     height: 45,
     width: '85%',
-    borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,

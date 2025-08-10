@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable, Alert, ScrollView, ActivityIndicator, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { requestOtp } from '../../../services/auth/otpService';
-import TermsModal from '../../../components/TermsModal'; // Importe o componente
+import TermsModal from '../../../components/TermsModal';
 
 import InputField from '../../../components/InputField';
 import DateInput from '../../../components/DataInput';
 import GenderInput from '../../../components/InputGender';
+import PesoInput from '../../../components/PesoInput';
 import CpfInput from '../../../components/CpfInput';
+import EmailInput from '../../../components/EmailInput';
 import PasswordInput from '../../../components/PasswordInput';
 
 import { styles } from './styles';
@@ -73,138 +75,143 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
-        <Image
-          source={require('../../../assets/images/logo_branca.png')}
-          style={styles.logo}
-        />
-      </LinearGradient>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
+            <Image
+              source={require('../../../assets/images/logo_branca.png')}
+              style={styles.logo}
+            />
+          </LinearGradient>
 
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <InputField
-          label="Nome Completo"
-          placeholder="Ex: Antonio Nascimento Barros"
-          value={nome}
-          onChangeText={setNome}
-          iconName="user"
-        />
-
-        <CpfInput
-          label="CPF"
-          value={cpf}
-          onChangeText={setCpf}
-        />
-
-        <InputField
-          label="Email"
-          placeholder="Digite seu email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          iconName="mail"
-        />
-
-        <PasswordInput 
-          label="Senha"
-          onChangeText={setPassword} 
-        />
-
-        {/* <InputField
-          label="Senha"
-          placeholder="Digite sua senha"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          iconName={showPassword ? 'eye' : 'eye-off'}
-          onIconPress={() => setShowPassword(!showPassword)}
-        /> */}
-
-        <InputField
-          label="Confirmar senha"
-          placeholder="Digite sua senha"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry={!showPassword}
-          iconName={showPassword ? 'eye' : 'eye-off'}
-          onIconPress={() => setShowPassword(!showPassword)}
-        />
-
-        <DateInput
-          label="Data de Nascimento"
-          placeholder="Ex: 1990-08-15"
-          value={dataNascimento}
-          onChange={setDataNascimento}
-        />
-
-        <GenderInput value={genero} onChange={setGenero} />
-
-        <InputField
-          label="Peso (kg)"
-          placeholder="Ex: 70"
-          value={peso_kg}
-          onChangeText={setPesoKg}
-          keyboardType="numeric"
-          iconName="activity"
-        />
-
-        <View style={styles.authExtras}>
-          <View style={styles.Remenber}>
-            <Pressable
-              onPress={() => setTermsAccepted(!termsAccepted)}
-              style={{
-                height: 24,
-                width: 24,
-                borderWidth: 2,
-                borderColor: '#0097b2',
-                borderRadius: 6,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: termsAccepted ? '#0097b2' : 'transparent',
-              }}
-            >
-              {termsAccepted && <Icon name="check" size={16} color="#fff" />}
-            </Pressable>
-            <Text style={styles.termsText}>
-              Eu li e concordo com os{' '}
-              <Text style={styles.termsLink} onPress={() => setShowTermsModal(true)}>
-                Termos de Uso
-              </Text>
-            </Text>
-          </View>
-        </View>
-
-        {loading ? (
-          <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
-        ) : (
-          <TouchableOpacity 
-            style={[styles.button, !termsAccepted && styles.disabledButton]} 
-            onPress={handleRegister}
-            disabled={!termsAccepted}
+          <ScrollView
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
-            <Text style={styles.buttonText}>Criar Conta</Text>
-          </TouchableOpacity>
-        )}
+            <InputField
+              label="Nome Completo"
+              placeholder="Ex: Antonio Nascimento Barros"
+              value={nome}
+              onChangeText={setNome}
+              iconName="user"
+            />
 
-        <TouchableOpacity style={styles.subButton} onPress={() => navigation.replace('Login')}>
-          <Text style={styles.text}>Já tem uma conta ?</Text>
-          <Text style={styles.EsqueciSenha}>Faça o login</Text>
-        </TouchableOpacity>
-      </ScrollView>
+            <CpfInput
+              label="CPF"
+              value={cpf}
+              onChangeText={setCpf}
+            />
 
-      {/* Modal de Termos de Uso */}
-      <TermsModal
-        visible={showTermsModal}
-        onAccept={() => {
-          setTermsAccepted(true);
-          setShowTermsModal(false);
-        }}
-        onClose={() => setShowTermsModal(false)}
-      />
-    </View>
+            <EmailInput 
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              iconName='mail'
+            />
+
+            {/* <InputField
+              label="Email"
+              placeholder="Digite seu email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              iconName="mail"
+            /> */}
+
+            <PasswordInput
+              label="Senha"
+              onChangeText={setPassword}
+            />
+
+            <InputField
+              label="Confirmar senha"
+              placeholder="Digite sua senha"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry={!showPassword}
+              iconName={showPassword ? 'eye' : 'eye-off'}
+              onIconPress={() => setShowPassword(!showPassword)}
+            />
+
+            <DateInput
+              label="Data de Nascimento"
+              placeholder="Ex: 1990-08-15"
+              value={dataNascimento}
+              onChange={setDataNascimento}
+            />
+
+            <GenderInput value={genero} onChange={setGenero} />
+
+            <PesoInput
+              label="Peso (kg)"
+              value={peso_kg}
+              onChangeText={setPesoKg}
+              minWeight={30}    // mínimo permitido
+              maxWeight={300}   // máximo permitido
+            />
+
+
+            <View style={styles.authExtras}>
+              <View style={styles.Remenber}>
+                <Pressable
+                  onPress={() => setTermsAccepted(!termsAccepted)}
+                  style={{
+                    height: 24,
+                    width: 24,
+                    borderWidth: 2,
+                    borderColor: '#0097b2',
+                    borderRadius: 6,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: termsAccepted ? '#0097b2' : 'transparent',
+                  }}
+                >
+                  {termsAccepted && <Icon name="check" size={16} color="#fff" />}
+                </Pressable>
+                <Text style={styles.termsText}>
+                  Eu li e concordo com os{' '}
+                  <Text style={styles.termsLink} onPress={() => setShowTermsModal(true)}>
+                    Termos de Uso
+                  </Text>
+                </Text>
+              </View>
+            </View>
+
+            {loading ? (
+              <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
+            ) : (
+              <TouchableOpacity
+                style={[styles.button, !termsAccepted && styles.disabledButton]}
+                onPress={handleRegister}
+                disabled={!termsAccepted}
+              >
+                <Text style={styles.buttonText}>Criar Conta</Text>
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity style={styles.subButton} onPress={() => navigation.replace('Login')}>
+              <Text style={styles.text}>Já tem uma conta ?</Text>
+              <Text style={styles.EsqueciSenha}>Faça o login</Text>
+            </TouchableOpacity>
+          </ScrollView>
+
+          <TermsModal
+            visible={showTermsModal}
+            onAccept={() => {
+              setTermsAccepted(true);
+              setShowTermsModal(false);
+            }}
+            onClose={() => setShowTermsModal(false)}
+          />
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

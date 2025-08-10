@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   invalid: {
-    color: 'gray',
+    color: 'red',
     fontSize: 14,
   },
 });

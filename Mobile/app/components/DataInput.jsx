@@ -40,6 +40,12 @@ export default function DateInput({ label, value, onChange, placeholder = 'Selec
       String(date.getDate()).padStart(2, '0');
   };
 
+  const formatDateToBrazilian = (dateStr) => {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   if (Platform.OS === 'web') {
     return (
       <View style={{ width: '85%' }}>
@@ -60,7 +66,7 @@ export default function DateInput({ label, value, onChange, placeholder = 'Selec
       <Text style={styles.label}>{label}</Text>
       <TouchableOpacity style={styles.inputContainer} onPress={() => setShowPicker(true)}>
         <Text style={[styles.inputText, !value && { color: 'gray' }]}>
-          {value || placeholder}
+          {value ? formatDateToBrazilian(value) : placeholder}
         </Text>
         <Icon name="calendar" size={20} color="#888" />
       </TouchableOpacity>
