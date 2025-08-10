@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { ThemeContext } from '../../context/ThemeContext'; // Adjust the import path as needed
+import { ThemeContext } from '../../context/ThemeContext';
 
-export default function GenderInput({ value, onChange }) {
-  const { theme } = useContext(ThemeContext);
+export default function GenderInput({ value, onChange, theme: propTheme }) {
+  const contextTheme = useContext(ThemeContext).theme;
+  const theme = propTheme || contextTheme; // usa propTheme se existir, senão contexto
   const styles = createStyles(theme);
 
   const options = [

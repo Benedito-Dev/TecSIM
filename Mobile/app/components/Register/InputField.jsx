@@ -13,9 +13,9 @@ export default function InputField({
   iconName,
   showIcon = true,
   onIconPress = null,
-  showPasswordToggle = false,
+  theme: propTheme
 }) {
-  const { theme } = useContext(ThemeContext);
+  const theme = propTheme || contextTheme; // usa propTheme se existir, senão contexto
   const styles = createStyles(theme);
 
   return (

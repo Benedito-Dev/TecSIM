@@ -27,6 +27,7 @@ import EmailInput from '../../../components/Register/EmailInput';
 import PasswordInput from '../../../components/Register/PasswordInput';
 
 import { styles } from './styles';
+import { lightTheme } from '../../../constants/temas';
 
 export default function RegisterScreen({ navigation }) {
   // Estados do formulário
@@ -112,7 +113,7 @@ export default function RegisterScreen({ navigation }) {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <InputField label="Nome Completo" placeholder="Ex: Antonio Nascimento Barros" value={nome} onChangeText={setNome} iconName="user" />
+            <InputField label="Nome Completo" placeholder="Ex: Antonio Nascimento Barros" value={nome} onChangeText={setNome} iconName="user" theme={lightTheme} />
 
             <CpfInput label="CPF" value={cpf} onChangeText={setCpf} onValidityChange={setCpfIsValid} />
 
@@ -128,11 +129,12 @@ export default function RegisterScreen({ navigation }) {
               secureTextEntry={!showPassword}
               iconName={showPassword ? 'eye' : 'eye-off'}
               onIconPress={() => setShowPassword(!showPassword)}
+              theme={lightTheme}
             />
 
             <DateInput label="Data de Nascimento" placeholder="Ex: 1990-08-15" value={dataNascimento} onChange={setDataNascimento} onValidityChange={setDateIsValid} />
 
-            <GenderInput value={genero} onChange={setGenero} />
+            <GenderInput value={genero} onChange={setGenero} theme={lightTheme} />
 
             <PesoInput label="Peso (kg)" value={peso_kg} onChangeText={setPesoKg} onValidityChange={setPesoIsValid} minWeight={30} maxWeight={300} />
 
