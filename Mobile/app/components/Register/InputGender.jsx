@@ -1,7 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ThemeContext } from '../../context/ThemeContext'; // Adjust the import path as needed
 
 export default function GenderInput({ value, onChange }) {
+  const { theme } = useContext(ThemeContext);
+  const styles = createStyles(theme);
+
   const options = [
     { label: 'Homem', value: 'man' },
     { label: 'Mulher', value: 'woman' },
@@ -9,17 +13,17 @@ export default function GenderInput({ value, onChange }) {
   ];
 
   return (
-    <View style={{ width: '85%', marginTop: 12, marginBottom: 12 }}>
-      <Text style={{ fontSize: 16, fontWeight: '500', color: '#333', marginBottom: 8 }}>Gênero</Text>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+    <View style={styles.container}>
+      <Text style={styles.label}>Gênero</Text>
+      <View style={styles.optionsContainer}>
         {options.map((option) => (
           <TouchableOpacity
             key={option.value}
             onPress={() => onChange(option.value)}
-            style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}
+            style={styles.option}
           >
-            <View style={radioStyle(value === option.value)} />
-            <Text style={{ marginLeft: 6 }}>{option.label}</Text>
+            <View style={radioStyle(theme, value === option.value)} />
+            <Text style={styles.optionText}>{option.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -27,11 +31,39 @@ export default function GenderInput({ value, onChange }) {
   );
 }
 
-const radioStyle = (selected) => ({
+const createStyles = (theme) => StyleSheet.create({
+  container: {
+    width: '85%',
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: theme.textPrimary,
+    marginBottom: 8,
+  },
+  optionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  optionText: {
+    marginLeft: 6,
+    color: theme.textPrimary,
+  },
+});
+
+const radioStyle = (theme, selected) => ({
   height: 20,
   width: 20,
   borderRadius: 10,
   borderWidth: 2,
-  borderColor: '#0097b2',
-  backgroundColor: selected ? '#0097b2' : 'transparent',
+  borderColor: theme.primary,
+  backgroundColor: selected ? theme.primary : 'transparent',
 });

@@ -1,0 +1,158 @@
+import { StyleSheet } from 'react-native';
+
+export const getPrescriptionStyles = (theme) => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.background,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: theme.backgroundCard,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.border,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: theme.textPrimary,
+  },
+  scrollContainer: {
+    padding: 16,
+    paddingBottom: 100,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: theme.textSecondary,
+    marginTop: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: theme.textMuted,
+    marginTop: 4,
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  prescricaoItem: {
+    backgroundColor: theme.backgroundCard,
+    borderRadius: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: theme.borderLight,
+    overflow: 'hidden',
+  },
+  prescricaoHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+  },
+  prescricaoInfo: {
+    flex: 1,
+  },
+  prescricaoHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    gap: 6,
+  },
+  prescricaoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.textPrimary,
+  },
+  prescricaoSubtitle: {
+    fontSize: 14,
+    color: theme.textSecondary,
+  },
+  prescricaoDate: {
+    fontSize: 13,
+    color: theme.textSecondary,
+    marginTop: 4,
+  },
+  prescricaoContent: {
+    padding: 14,
+    paddingTop: 0,
+    borderTopWidth: 1,
+    borderTopColor: theme.borderLight,
+  },
+  medicineItem: {
+    backgroundColor: theme.backgroundSecondary,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: theme.borderLight,
+  },
+  medicineHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  medicineName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: theme.textPrimary,
+    flex: 1,
+  },
+  medicineDose: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: theme.primary,
+    marginRight: 8,
+  },
+  medicineDetails: {
+    gap: 6,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  detailText: {
+    fontSize: 13,
+    color: theme.textSecondary,
+  },
+  deleteButton: {
+    padding: 4,
+  },
+  emptyMedicamentos: {
+    textAlign: 'center',
+    color: theme.textMuted,
+    fontSize: 14,
+    paddingVertical: 12,
+  },
+  addPrescButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: theme.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 50,
+    elevation: 3,
+    shadowColor: theme.shadowColor,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  addPrescButtonText: {
+    color: theme.textOnPrimary,
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+});

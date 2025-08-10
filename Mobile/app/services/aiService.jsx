@@ -116,7 +116,7 @@ export const getAIResponse = async (message, history = [], options = {}) => {
 
     const finalOptions = { ...defaultOptions, ...options };
 
-    console.log(`Usando modelo: ${finalOptions.modelName} com configurações:`, finalOptions);
+    // console.log(`Usando modelo: ${finalOptions.modelName} com configurações:`, finalOptions);
 
     const genAI = new GoogleGenerativeAI(API_KEY, {
       apiVersion: finalOptions.apiVersion
