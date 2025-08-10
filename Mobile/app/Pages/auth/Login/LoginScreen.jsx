@@ -32,7 +32,6 @@ export default function LoginScreen() {
 
   // Validação geral do formulário
   const isFormValid = emailIsValid && passwordIsValid;
-  console.log(isFormValid)
 
   const handleLogin = async () => {
     if (!isFormValid) {

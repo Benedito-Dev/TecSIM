@@ -60,6 +60,7 @@ export default function RegisterScreen({ navigation }) {
     pesoIsValid &&
     termsAccepted;
 
+
   const handleRegister = async () => {
     if (!termsAccepted) {
       Alert.alert('Atenção', 'Você precisa aceitar os termos de uso para se registrar');
