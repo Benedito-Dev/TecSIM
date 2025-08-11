@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { ThemeContext } from '../../context/ThemeContext';
 
 export default function PesoInput({
   label,
@@ -9,8 +10,13 @@ export default function PesoInput({
   minWeight = 30,
   maxWeight = 300,
   onValidityChange,
+  theme: propTheme
 }) {
   const [isValid, setIsValid] = useState(null); // null: sem digitação ainda
+
+  const contextTheme = useContext(ThemeContext).theme;
+  const theme = propTheme || contextTheme;
+  const styles = createStyles(theme);
 
   const handleChange = (text) => {
     // Remove tudo que não é número
@@ -59,33 +65,43 @@ export default function PesoInput({
   );
 }
 
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-    marginTop: 12,
-    marginBottom: 4,
-    width: '85%',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '85%',
-    height: 45,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: '#000',
-  },
-  kgText: {
-    fontSize: 16,
-    color: '#555',
-    marginLeft: 8,
-  },
-});
+const createStyles = (theme) =>
+  StyleSheet.create({
+    label: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: theme.textPrimary,
+      marginTop: 12,
+      marginBottom: 4,
+      width: '85%',
+    },
+    inputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '85%',
+      height: 45,
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      backgroundColor: theme.backgroundCard,
+    },
+    valid: {
+      color: theme.success,
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+    input: {
+      flex: 1,
+      fontSize: 16,
+      color: theme.textPrimary,
+    },
+    invalid: {
+      color: theme.error,
+      fontSize: 14,
+    },
+    kgText: {
+      fontSize: 16,
+      color: '#555',
+      marginLeft: 8,
+    },
+  });

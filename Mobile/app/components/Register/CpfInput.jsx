@@ -1,45 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { ThemeContext } from '../../context/ThemeContext';
 
 export default function CpfInput({
-  label,
+  label = 'CPF',
   value,
   onChangeText,
   placeholder = '000.000.000-00',
   iconName = 'user',
-  onValidityChange, // NOVO: callback para avisar validade
+  onValidityChange,
+  theme: propTheme,
 }) {
+  const contextTheme = useContext(ThemeContext).theme;
+  const theme = propTheme || contextTheme;
+  const styles = createStyles(theme);
+
   const [isValid, setIsValid] = useState(false);
 
   const formatCpf = (text) => {
     const digits = text.replace(/\D/g, '').slice(0, 11);
-    let cpf = '';
-
-    if (digits.length <= 3) {
-      cpf = digits;
-    } else if (digits.length <= 6) {
-      cpf = `${digits.slice(0, 3)}.${digits.slice(3)}`;
-    } else if (digits.length <= 9) {
-      cpf = `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
-    } else {
-      cpf = `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
-    }
-
-    return cpf;
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+    if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
   };
 
   const validateCpf = (cpf) => {
     const cleanCpf = cpf.replace(/\D/g, '');
     if (cleanCpf.length !== 11) return false;
-
     if (/^(\d)\1+$/.test(cleanCpf)) return false;
 
     let sum = 0;
-    let rest;
-
     for (let i = 1; i <= 9; i++) sum += parseInt(cleanCpf.substring(i - 1, i)) * (11 - i);
-    rest = (sum * 10) % 11;
+    let rest = (sum * 10) % 11;
     if (rest === 10 || rest === 11) rest = 0;
     if (rest !== parseInt(cleanCpf.substring(9, 10))) return false;
 
@@ -55,56 +49,64 @@ export default function CpfInput({
   const handleChange = (text) => {
     const formatted = formatCpf(text);
     onChangeText(formatted);
-    const valid = validateCpf(formatted);
-    setIsValid(valid);
+    setIsValid(validateCpf(formatted));
   };
 
-  // Avisar o pai sempre que isValid mudar
   useEffect(() => {
-    if (onValidityChange) {
-      onValidityChange(isValid);
-    }
+    if (onValidityChange) onValidityChange(isValid);
   }, [isValid]);
 
   return (
     <>
       <Text style={styles.label}>{label}</Text>
-      <View style={[styles.input, { borderColor: value ? (isValid ? 'green' : 'red') : '#ccc' }]}>
+      <View
+        style={[
+          styles.inputContainer,
+          { borderColor: value ? (isValid ? theme.success : theme.error) : theme.border },
+        ]}
+      >
         <TextInput
-          style={{ flex: 1 }}
+          style={styles.input}
           placeholder={placeholder}
+          placeholderTextColor={theme.placeholder}
           value={value}
           onChangeText={handleChange}
-          placeholderTextColor="gray"
           keyboardType="numeric"
           maxLength={14}
         />
         <TouchableOpacity disabled>
-          <Icon name={iconName} size={20} color="gray" style={{ marginRight: 10 }} />
+          <Icon name={iconName} size={20} color={theme.icon} style={styles.icon} />
         </TouchableOpacity>
       </View>
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-    marginTop: 12,
-    marginBottom: 4,
-    alignItems: 'flex-start',
-    width: '85%',
-  },
-  input: {
-    height: 45,
-    width: '85%',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-});
+const createStyles = (theme) =>
+  StyleSheet.create({
+    label: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: theme.textPrimary,
+      marginTop: 12,
+      marginBottom: 4,
+      width: '85%',
+    },
+    inputContainer: {
+      height: 45,
+      width: '85%',
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      backgroundColor: theme.backgroundCard,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    input: {
+      flex: 1,
+      color: theme.textPrimary,
+    },
+    icon: {
+      marginRight: 10,
+    },
+  });

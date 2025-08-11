@@ -9,7 +9,11 @@ import { ThemeContext } from '../../../../context/ThemeContext';
 import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../../services/userService';
 
 import InputField from '../../../../components/Register/InputField';
-import GenderInput from '../../../../components/Register/InputGender'
+import CpfInput from '../../../../components/Register/CpfInput';
+import DateInput from '../../../../components/Register/DataInput';
+import PasswordInput from '../../../../components/Register/PasswordInput';
+import PesoInput from '../../../../components/Register/PesoInput';
+import GenderInput from '../../../../components/Register/InputGender';
 import { getProfileEditStyles } from './styles';
 
 export default function EditProfileScreen() {
@@ -19,6 +23,7 @@ export default function EditProfileScreen() {
 
   const userId = user.id;
 
+  // Estados dos campos
   const [cpf, setCpf] = useState('');
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
@@ -26,11 +31,12 @@ export default function EditProfileScreen() {
   const [dataNascimento, setDataNascimento] = useState('');
   const [peso, setPeso] = useState('');
   const [genero, setGenero] = useState('');
+
   const [fotoPerfil, setFotoPerfil] = useState(null);
   const [novaImagem, setNovaImagem] = useState(null);
 
-  const { theme } = useContext(ThemeContext)
-  const styles = getProfileEditStyles(theme)
+  const { theme } = useContext(ThemeContext);
+  const styles = getProfileEditStyles(theme);
 
   useEffect(() => {
     const carregarPaciente = async () => {
@@ -42,10 +48,11 @@ export default function EditProfileScreen() {
         setPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
         setFotoPerfil(data.foto_perfil ? `http://192.168.1.110:3000${data.foto_perfil}` : null);
-        setLoading(false);
+        setCpf(data.cpf || '');
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);
         Alert.alert('Erro', 'Não foi possível carregar os dados do paciente.');
+      } finally {
         setLoading(false);
       }
     };
@@ -56,7 +63,7 @@ export default function EditProfileScreen() {
   const escolherImagem = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
-      Alert.alert("Permissão necessária", "Você precisa permitir acesso à galeria.");
+      Alert.alert('Permissão necessária', 'Você precisa permitir acesso à galeria.');
       return;
     }
 
@@ -77,9 +84,6 @@ export default function EditProfileScreen() {
           type: 'image/jpeg',
         };
 
-        const formData = new FormData();
-        formData.append('image', file);
-
         await uploadFotoPaciente(userId, file);
         setFotoPerfil(imagemSelecionada.uri);
         Alert.alert('Sucesso', 'Foto de perfil atualizada!');
@@ -95,14 +99,12 @@ export default function EditProfileScreen() {
       const pacienteData = {
         nome,
         email,
-        senha,
+        senha: senha.trim() ? senha : undefined,
         data_nascimento: dataNascimento,
         peso_kg: parseFloat(peso),
-        genero
+        genero,
+        cpf: cpf.trim() ? cpf : undefined,
       };
-
-      if (senha.trim()) pacienteData.senha = senha;
-      if (cpf.trim()) pacienteData.cpf = cpf;
 
       const resposta = await updatePaciente(userId, pacienteData);
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
@@ -112,7 +114,7 @@ export default function EditProfileScreen() {
         nome: resposta.data.nome,
         email: resposta.data.email,
         genero: resposta.data.genero,
-        idade: calcularIdade(resposta.data.data_nascimento)
+        idade: calcularIdade(resposta.data.data_nascimento),
       };
 
       await atualizarUsuario(dadosAtualizados);
@@ -155,7 +157,7 @@ export default function EditProfileScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -167,7 +169,9 @@ export default function EditProfileScreen() {
 
       {/* Foto de perfil */}
       <View style={styles.profileSection}>
-        <Image source={ novaImagem
+        <Image
+          source={
+            novaImagem
               ? { uri: novaImagem }
               : fotoPerfil
               ? { uri: fotoPerfil }
@@ -182,17 +186,20 @@ export default function EditProfileScreen() {
 
       {/* Campos do Formulário */}
       <View style={styles.section}>
-        <InputField label="CPF" value={cpf} onChangeText={setCpf} placeholder="000.000.000-00" keyboardType="numeric" iconName="user" />
+        <CpfInput value={cpf} onChangeText={setCpf} />
         <InputField label="Nome" value={nome} onChangeText={setNome} placeholder="Nome completo" iconName="user" />
         <InputField label="Email" value={email} onChangeText={setEmail} placeholder="exemplo@email.com" keyboardType="email-address" iconName="mail" />
-        <InputField label="Nova Senha" value={senha} onChangeText={setSenha} placeholder="Digite sua nova senha" secureTextEntry={true} iconName="lock" />
-        <InputField label="Data de Nascimento" value={dataNascimento} onChangeText={setDataNascimento} placeholder="YYYY-MM-DD" keyboardType="default" iconName="calendar" />
-        <InputField label="Peso (kg)" value={peso} onChangeText={setPeso} placeholder="Ex: 70.5" keyboardType="numeric" iconName="activity" />
+        <PasswordInput value={senha} onChangeText={setSenha} />
+        <DateInput value={dataNascimento} onChange={setDataNascimento} />
+        <PesoInput value={peso} onChangeText={setPeso} />
         <GenderInput value={genero} onChange={setGenero} />
       </View>
 
       {/* Botão Salvar */}
-      <TouchableOpacity style={[styles.configItem, { justifyContent: 'center' }]} onPress={handleSalvar}>
+      <TouchableOpacity
+        style={[styles.configItem, { justifyContent: 'center' }]}
+        onPress={handleSalvar}
+      >
         <Text style={[styles.configText, { color: '#0c87c4', fontWeight: 'bold' }]}>Salvar Alterações</Text>
       </TouchableOpacity>
     </ScrollView>

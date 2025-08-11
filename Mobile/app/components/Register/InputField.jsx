@@ -15,6 +15,7 @@ export default function InputField({
   onIconPress = null,
   theme: propTheme
 }) {
+  const contextTheme = useContext(ThemeContext).theme;
   const theme = propTheme || contextTheme; // usa propTheme se existir, senão contexto
   const styles = createStyles(theme);
 
