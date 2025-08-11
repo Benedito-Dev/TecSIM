@@ -23,6 +23,7 @@ export default function AppNavigator() {
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="App" component={MainTabNavigator} options={{ gestureEnabled: false }} />
           <Stack.Screen name="Code" component={CodeScreen} />
+          <Stack.Screen name="Password" component={PasswordScreen} />
         </Stack.Navigator>
     </ThemeProvider>
   );
