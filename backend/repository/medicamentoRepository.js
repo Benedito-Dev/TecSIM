@@ -38,7 +38,8 @@ class MedicamentoRepository {
 
       return result.rows[0];
     } catch (err) {
-      throw new Error('Erro ao criar medicamento: ' + err.message);
+      // NÃO criar novo Error, apenas relançar o erro original
+      throw err;
     }
   }
 

@@ -185,21 +185,34 @@ class PacientesRoutes {
 
     /**
      * @swagger
-     * /pacientes/{id}/password:
-     *   patch:
-     *     summary: Atualiza a senha do paciente
+     * /pacientes/{id}:
+     *   put:
+     *     summary: Atualiza todos os dados do paciente
      *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: integer
+     *         description: ID do paciente a ser atualizado
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/Paciente'  # ou defina o schema inline
      *     responses:
      *       200:
-     *         description: Senha atualizada com sucesso
+     *         description: Paciente atualizado com sucesso
      *       400:
-     *         description: Senha atual inválida ou nova senha fraca
+     *         description: Dados inválidos
      *       404:
      *         description: Paciente não encontrado
      *       500:
-     *         description: Erro interno ao atualizar senha
+     *         description: Erro interno ao atualizar paciente
      */
     this.router.patch('/:id/password', ValidatePaciente.validatePassword, controller.updatePassword);
 

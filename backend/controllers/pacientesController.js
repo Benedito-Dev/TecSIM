@@ -10,6 +10,10 @@ class PacienteController {
     } catch (error) {
       console.error(error);
 
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+
       if (error.code === 'ECONNREFUSED') {
         return res.status(503).json({ error: 'Serviço de banco de dados indisponível.' });
       }
@@ -33,6 +37,10 @@ class PacienteController {
       res.status(200).json(paciente);
     } catch (error) {
       console.error(error);
+
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
 
       if (error.code === 'ECONNREFUSED') {
         return res.status(503).json({ error: 'Serviço de banco de dados indisponível.' });
@@ -62,6 +70,10 @@ class PacienteController {
     } catch (error) {
       console.error(error);
 
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+
       if (error.code === 'ECONNREFUSED') {
         return res.status(503).json({ error: 'Serviço de banco de dados indisponível.' });
       }
@@ -82,8 +94,9 @@ class PacienteController {
     } catch (error) {
       console.error(error);
 
-      if (error.code === '23505') {
-        return res.status(409).json({ error: 'Email já cadastrado.' });
+      // Se o erro tiver statusCode (ex: 409), usa ele
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
       }
 
       if (error.name === 'ValidationError') {
@@ -93,6 +106,7 @@ class PacienteController {
       res.status(500).json({ error: 'Erro interno ao criar paciente.' });
     }
   }
+
 
   async uploadFoto(req, res) {
     try {
@@ -121,6 +135,11 @@ class PacienteController {
 
       res.status(200).json({ message: 'Foto atualizada com sucesso', foto: novoCaminho });
     } catch (error) {
+
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+
       console.error(error);
       res.status(500).json({ error: 'Erro ao fazer upload da imagem.' });
     }
@@ -146,6 +165,10 @@ class PacienteController {
       res.status(200).json({ message: 'Paciente atualizado com sucesso', data: pacienteAtualizado });
     } catch (error) {
       console.error(error);
+
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
 
       if (error.code === '23505') {
         return res.status(409).json({ error: 'Email já cadastrado.' });
@@ -177,6 +200,10 @@ class PacienteController {
     } catch (error) {
       console.error(error);
 
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+
       if (error.name === 'ValidationError') {
         return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
       }
@@ -201,6 +228,10 @@ class PacienteController {
     } catch (error) {
       console.error(error);
 
+     if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+
       if (error.name === 'ValidationError') {
         return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
       }
@@ -224,6 +255,10 @@ class PacienteController {
       res.status(200).json({ message: 'Paciente removido com sucesso.' });
     } catch (error) {
       console.error(error);
+
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
 
       if (error.name === 'ValidationError') {
         return res.status(400).json({ error: 'Dados inválidos.', details: error.message });

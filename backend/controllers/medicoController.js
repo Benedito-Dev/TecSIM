@@ -1,5 +1,6 @@
 const MedicoService = require('../services/medicoService');
 
+
 class MedicoController {
   // Buscar todos os médicos
   async getAll(req, res) {
@@ -72,33 +73,13 @@ class MedicoController {
     }
   }
 
-  // Buscar médicos por especialidade
-  async getByEspecialidade(req, res) {
-    try {
-      const { especialidade } = req.params;
-      if (!especialidade) {
-        return res.status(400).json({ message: 'Especialidade é obrigatória.' });
-      }
-
-      const medicos = await MedicoService.getByEspecialidade(especialidade);
-      if (!medicos || medicos.length === 0) {
-        return res.status(404).json({ message: 'Nenhum médico encontrado para esta especialidade.' });
-      }
-
-      return res.status(200).json(medicos);
-    } catch (error) {
-      console.error('Erro ao buscar médicos por especialidade:', error);
-      return res.status(500).json({ message: 'Erro interno ao buscar médicos.' });
-    }
-  }
-
   // Criar novo médico
   async create(req, res) {
     try {
       const { nome, email, crm, especialidade, senha } = req.body;
       if (!nome || !email || !crm || !especialidade || !senha) {
         return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
-      }
+      } 
 
       const novoMedico = await MedicoService.create(req.body);
       return res.status(201).json({
@@ -107,6 +88,10 @@ class MedicoController {
       });
     } catch (error) {
       console.error('Erro ao criar médico:', error);
+
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
 
       if (error.message.includes('CRM já cadastrado')) {
         return res.status(409).json({ message: 'CRM já cadastrado.' });
@@ -142,6 +127,9 @@ class MedicoController {
         data: medicoAtualizado
       });
     } catch (error) {
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
       console.error('Erro ao atualizar médico:', error);
       return res.status(500).json({ message: 'Erro interno ao atualizar médico.' });
     }
@@ -167,6 +155,12 @@ class MedicoController {
 
       return res.status(200).json({ message: 'Senha atualizada com sucesso.' });
     } catch (error) {
+
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+
+
       console.error('Erro ao atualizar senha:', error);
       return res.status(500).json({ message: 'Erro interno ao atualizar senha.' });
     }
@@ -187,6 +181,11 @@ class MedicoController {
 
       return res.status(200).json({ message: 'Médico removido com sucesso.' });
     } catch (error) {
+
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+      
       console.error('Erro ao remover médico:', error);
       return res.status(500).json({ message: 'Erro interno ao remover médico.' });
     }

@@ -7,6 +7,14 @@ class PrescricaoRepository {
     return result.rows.map(row => new Prescricao(row));
   }
 
+  async findDuplicate(pacienteId, medicamentoId, data) {
+    return await this.collection.findOne({
+      pacienteId: new ObjectId(pacienteId),
+      medicamentoId: new ObjectId(medicamentoId),
+      data: data
+    });
+  }
+
   async findById(id) {
     const result = await db.query('SELECT * FROM prescricoes WHERE id = $1', [id]);
     return result.rows[0] ? new Prescricao(result.rows[0]) : null;
@@ -17,14 +25,13 @@ class PrescricaoRepository {
     return result.rows.map(row => new Prescricao(row));
   }
 
-  async findByMedicoId(id_medico) {
-    const result = await db.query('SELECT * FROM prescricoes WHERE id_medico = $1', [id_medico]);
+  async findByMedicoId(crm) {
+    const result = await db.query('SELECT * FROM prescricoes WHERE crm = $1', [crm]);
     return result.rows.map(row => new Prescricao(row));
   }
 
   async create({
     id_paciente,
-    id_medico,
     crm,
     diagnostico,
     data_prescricao,
@@ -32,17 +39,16 @@ class PrescricaoRepository {
   }) {
     const result = await db.query(
       `INSERT INTO prescricoes 
-       (id_paciente, id_medico, crm, diagnostico, data_prescricao, validade)
-       VALUES ($1, $2, $3, $4, $5, $6)
+       (id_paciente, crm, diagnostico, data_prescricao, validade)
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
-      [id_paciente, id_medico, crm, diagnostico, data_prescricao, validade]
+      [id_paciente, crm, diagnostico, data_prescricao, validade]
     );
     return new Prescricao(result.rows[0]);
   }
 
   async update(id, {
     id_paciente,
-    id_medico,
     crm,
     diagnostico,
     data_prescricao,
@@ -51,14 +57,13 @@ class PrescricaoRepository {
     const result = await db.query(
       `UPDATE prescricoes SET
        id_paciente = $1,
-       id_medico = $2,
-       crm = $3,
-       diagnostico = $4,
-       data_prescricao = $5,
-       validade = $6
-       WHERE id = $7
+       crm = $2,
+       diagnostico = $3,
+       data_prescricao = $4,
+       validade = $5
+       WHERE id = $6
        RETURNING *`,
-      [id_paciente, id_medico, crm, diagnostico, data_prescricao, validade, id]
+      [id_paciente, crm, diagnostico, data_prescricao, validade, id]
     );
     return result.rows[0] ? new Prescricao(result.rows[0]) : null;
   }

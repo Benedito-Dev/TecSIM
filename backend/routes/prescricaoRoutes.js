@@ -94,24 +94,24 @@ class PrescricoesRoutes {
 
     /**
      * @swagger
-     * /prescricoes/medico/{id_medico}:
+     * /prescricoes/medico/{crm}:
      *   get:
-     *     summary: Busca prescrições por médico
+     *     summary: Busca prescrições por médico pelo CRM
      *     tags: [Prescricoes]
      *     security:
      *       - bearerAuth: []
      *     parameters:
      *       - in: path
-     *         name: id_medico
+     *         name: crm
      *         required: true
      *         schema:
-     *           type: integer
-     *         description: ID do médico
+     *           type: string
+     *         description: CRM do médico
      *     responses:
      *       200:
      *         description: Lista de prescrições
      *       400:
-     *         description: ID inválido
+     *         description: CRM inválido
      *       401:
      *         description: Não autorizado
      *       404:
@@ -119,7 +119,8 @@ class PrescricoesRoutes {
      *       500:
      *         description: Erro interno
      */
-    this.router.get('/medico/:id_medico', controller.findByMedicoId);
+    this.router.get('/medico/:crm', controller.findByMedicoId);
+
 
     /**
      * @swagger

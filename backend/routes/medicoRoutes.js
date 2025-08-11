@@ -119,33 +119,6 @@ class MedicosRoutes {
      */
     this.router.get('/crm/:crm', controller.getByCrm);
 
-    /**
-     * @swagger
-     * /medicos/especialidade/{especialidade}:
-     *   get:
-     *     summary: Lista médicos por especialidade
-     *     tags: [Médicos]
-     *     security:
-     *       - bearerAuth: []
-     *     parameters:
-     *       - in: path
-     *         name: especialidade
-     *         schema:
-     *           type: string
-     *         required: true
-     *     responses:
-     *       200:
-     *         description: Lista de médicos
-     *       400:
-     *         description: Especialidade inválida
-     *       401:
-     *         description: Não autorizado
-     *       404:
-     *         description: Nenhum médico encontrado
-     *       500:
-     *         description: Erro interno
-     */
-    this.router.get('/especialidade/:especialidade', controller.getByEspecialidade);
 
     /**
      * @swagger
