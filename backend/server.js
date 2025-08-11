@@ -14,6 +14,7 @@ const prescricaoRoutes = require('./routes/prescricaoRoutes')
 const bulaRoutes = require('./routes/bulaRoutes');
 
 
+
 class Server {
   constructor() {
     this.app = express();
@@ -46,6 +47,8 @@ class Server {
     this.app.get('/', (req, res) => {
       res.send('API backend Tecsim de Pé!');
     });
+
+    
 
     this.app.use((err, req, res, next) => {
       console.error(err.stack);
