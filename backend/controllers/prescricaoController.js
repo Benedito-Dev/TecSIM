@@ -122,4 +122,4 @@ class PrescricaoController {
   }
 }
 
-module.exports = new PrescricaoController();
+module.exports = new PrescricaoController(); 

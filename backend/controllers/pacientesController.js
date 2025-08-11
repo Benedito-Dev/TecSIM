@@ -9,6 +9,11 @@ class PacienteController {
       res.status(200).json(pacientes);
     } catch (error) {
       console.error(error);
+
+      if (error.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: 'Serviço de banco de dados indisponível.' });
+      }
+
       res.status(500).json({ error: 'Erro interno ao buscar pacientes.' });
     }
   }
@@ -28,6 +33,15 @@ class PacienteController {
       res.status(200).json(paciente);
     } catch (error) {
       console.error(error);
+
+      if (error.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: 'Serviço de banco de dados indisponível.' });
+      }
+
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
+      }
+
       res.status(500).json({ error: 'Erro interno ao buscar paciente.' });
     }
   }
@@ -47,6 +61,15 @@ class PacienteController {
       res.status(200).json(paciente);
     } catch (error) {
       console.error(error);
+
+      if (error.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: 'Serviço de banco de dados indisponível.' });
+      }
+
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
+      }
+
       res.status(500).json({ error: 'Erro interno ao buscar paciente.' });
     }
   }
@@ -123,6 +146,15 @@ class PacienteController {
       res.status(200).json({ message: 'Paciente atualizado com sucesso', data: pacienteAtualizado });
     } catch (error) {
       console.error(error);
+
+      if (error.code === '23505') {
+        return res.status(409).json({ error: 'Email já cadastrado.' });
+      }
+
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
+      }
+
       res.status(500).json({ error: 'Erro interno ao atualizar paciente.' });
     }
   }
@@ -144,6 +176,11 @@ class PacienteController {
       res.status(200).json({ message: 'Senha atualizada com sucesso.' });
     } catch (error) {
       console.error(error);
+
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
+      }
+
       res.status(500).json({ error: 'Erro interno ao atualizar senha.' });
     }
   }
@@ -163,6 +200,11 @@ class PacienteController {
       res.status(200).json({ message: 'Paciente desativado com sucesso', data: paciente });
     } catch (error) {
       console.error(error);
+
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
+      }
+
       res.status(500).json({ error: 'Erro interno ao desativar paciente.' });
     }
   }
@@ -182,6 +224,11 @@ class PacienteController {
       res.status(200).json({ message: 'Paciente removido com sucesso.' });
     } catch (error) {
       console.error(error);
+
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
+      }
+
       res.status(500).json({ error: 'Erro interno ao remover paciente.' });
     }
   }
