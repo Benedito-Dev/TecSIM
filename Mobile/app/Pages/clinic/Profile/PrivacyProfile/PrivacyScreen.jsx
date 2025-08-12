@@ -63,6 +63,10 @@ export default function PrivacyScreen() {
     }
   };
 
+  const handleChangePassword = () => {
+    navigation.navigate('ChangePassword');
+  };
+
   return (
     <View style={styles.container}>
       {/* Cabeçalho */}
@@ -75,6 +79,21 @@ export default function PrivacyScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
+        {/* Novo Card: Alterar Senha */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Alterar Senha</Text>
+          <Text style={styles.cardText}>
+            Para garantir a segurança da sua conta, recomendamos que você altere sua senha periodicamente.
+          </Text>
+          
+          <TouchableOpacity 
+            style={styles.changePasswordButton} 
+            onPress={handleChangePassword}
+          >
+            <Text style={styles.changePasswordButtonText}>Alterar minha senha</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Card: Informações de privacidade */}
         <View style={styles.card}>
           <TouchableOpacity>

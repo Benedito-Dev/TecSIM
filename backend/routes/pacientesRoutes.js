@@ -257,31 +257,6 @@ class PacientesRoutes {
 
     /**
      * @swagger
-     * /pacientes/{id}:
-     *   delete:
-     *     summary: Remove um paciente
-     *     tags: [Pacientes]
-     *     security:
-     *       - bearerAuth: []
-     *     parameters:
-     *       - in: path
-     *         name: id
-     *         schema:
-     *           type: integer
-     *         required: true
-     *         description: ID do paciente
-     *     responses:
-     *       204:
-     *         description: paciente removido com sucesso
-     *       401:
-     *         description: Não autorizado
-     *       404:
-     *         description: paciente não encontrado
-     */
-    this.router.delete('/:id', controller.remove);
-    
-    /**
-     * @swagger
      * /pacientes/{id}/inativar:
      *   patch:
      *     summary: Desativa (inativa) um paciente
@@ -316,6 +291,31 @@ class PacientesRoutes {
      *         description: Erro ao desativar paciente
      */
     this.router.patch('/:id/inativar', controller.desativar);
+
+    /**
+     * @swagger
+     * /pacientes/{id}:
+     *   delete:
+     *     summary: Remove um paciente
+     *     tags: [Pacientes]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID do paciente
+     *     responses:
+     *       204:
+     *         description: paciente removido com sucesso
+     *       401:
+     *         description: Não autorizado
+     *       404:
+     *         description: paciente não encontrado
+     */
+    this.router.delete('/:id', controller.remove);
 
   }
 

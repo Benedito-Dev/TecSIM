@@ -106,6 +106,8 @@ export default function EditProfileScreen() {
         cpf: cpf.trim() ? cpf : undefined,
       };
 
+      console.log(pacienteData)
+
       const resposta = await updatePaciente(userId, pacienteData);
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
 

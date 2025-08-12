@@ -46,6 +46,18 @@ export const getPrivacyStyles = (theme) => StyleSheet.create({
     color: theme.textSecondary,
     lineHeight: 20,
   },
+  changePasswordButton: {
+    marginTop: 16,
+    backgroundColor: theme.primary, // Using theme primary color
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  changePasswordButtonText: {
+    color: theme.textOnPrimary,
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
   deactivateButton: {
     marginTop: 16,
     backgroundColor: theme.warning, // Using theme warning color
