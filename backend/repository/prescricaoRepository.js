@@ -1,22 +1,20 @@
 const db = require('../db/db');
 const Prescricao = require('../models/prescricaoModel');
-const connectMongo = require('../db/mongo')
-const { ObjectId } = require('mongodb');
 const { NotFoundError, DatabaseError, ConflictError } = require('../utils/errors');
 
 class PrescricaoRepository {
   constructor() {
-    this.collection = null
+    this.collection = null;
   }
 
-  async findDuplicate(pacienteId, medicamentoId, data) {
+  async findDuplicate(pacienteId, crm, dataPrescricao) {
     try {
       const result = await db.query(
         `SELECT * FROM prescricoes 
          WHERE id_paciente = $1 
-         AND id_medicamento = $2 
+         AND crm = $2 
          AND data_prescricao = $3`,
-        [pacienteId, medicamentoId, data]
+        [pacienteId, crm, dataPrescricao]
       );
       return result.rows[0] || null;
     } catch (err) {
@@ -55,7 +53,7 @@ class PrescricaoRepository {
     }
   }
 
-  async findByMedicoId(crm) {
+  async findByMedicoCrm(crm) {
     try {
       const result = await db.query('SELECT * FROM prescricoes WHERE crm = $1', [crm]);
       if (!result.rows.length) throw new NotFoundError('Nenhuma prescrição encontrada para este médico');
@@ -68,10 +66,10 @@ class PrescricaoRepository {
 
   async create(data) {
     try {
-      // Primeiro verifica se já existe
+      // Verifica se já existe prescrição com os mesmos dados
       const existe = await this.findDuplicate(
         data.id_paciente, 
-        data.medicamento_id, 
+        data.crm, 
         data.data_prescricao
       );
       
@@ -81,15 +79,14 @@ class PrescricaoRepository {
 
       const result = await db.query(
         `INSERT INTO prescricoes 
-         (id_paciente, crm, diagnostico, data_prescricao, validade, id_medicamento)
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+         (id_paciente, crm, diagnostico, data_prescricao, validade)
+         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
         [
           data.id_paciente, 
           data.crm, 
           data.diagnostico, 
           data.data_prescricao, 
-          data.validade,
-          data.medicamento_id
+          data.validade
         ]
       );
       return new Prescricao(result.rows[0]);
@@ -108,8 +105,15 @@ class PrescricaoRepository {
           diagnostico = $3,
           data_prescricao = $4,
           validade = $5
-          WHERE id = $6 RETURNING *`,
-        [data.id_paciente, data.crm, data.diagnostico, data.data_prescricao, data.validade, id]
+         WHERE id = $6 RETURNING *`,
+        [
+          data.id_paciente, 
+          data.crm, 
+          data.diagnostico, 
+          data.data_prescricao, 
+          data.validade, 
+          id
+        ]
       );
       if (!result.rows[0]) throw new NotFoundError('Prescrição não encontrada para atualização');
       return new Prescricao(result.rows[0]);

@@ -41,15 +41,12 @@ class PrescricaoController {
     }
   }
 
-  async create(req, res) {
+  async create(req, res, next) {
     try {
-      const prescricao = await PrescricaoRepository.create(req.body);
+      const prescricao = await service.create(req.body); // usar service, não repository diretamente
       return res.status(201).json(prescricao);
     } catch (error) {
-      if (error instanceof ConflictError) {
-        return res.status(409).json({ message: error.message });
-      }
-      return res.status(500).json({ message: 'Erro interno do servidor' });
+      next(error); // delega ao middleware global
     }
   }
   
