@@ -12,6 +12,7 @@ const swaggerSpec = require('./swagger/swaggerConfig'); // <- import Swagger con
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
 const prescricaoRoutes = require('./routes/prescricaoRoutes')
 const bulaRoutes = require('./routes/bulaRoutes');
+const authMiddleware = require('./middleware/authMiddleware');
 
 
 class Server {
@@ -33,16 +34,19 @@ class Server {
 
 
     // Documentação Swagger
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { swaggerOptions: { persistAuthorization: true } }));
   }
 
   routes() {
-    this.app.use('/pacientes', pacientesRoutes);
-    this.app.use('/medicos', medicosRoutes)
+    //Rotas públicas(sem jwt)
     this.app.use('/auth', authRoutes);
-    this.app.use('/medicamentos', medicamentoRoutes);
-    this.app.use('/bulas', bulaRoutes);
-    this.app.use('/prescricoes', prescricaoRoutes)
+    
+    //Rotas com jwt
+    this.app.use('/pacientes', authMiddleware, pacientesRoutes);
+    this.app.use('/medicos', authMiddleware, medicosRoutes)
+    this.app.use('/medicamentos', authMiddleware, medicamentoRoutes);
+    this.app.use('/bulas', authMiddleware, bulaRoutes);
+    this.app.use('/prescricoes', authMiddleware, prescricaoRoutes)
     this.app.get('/', (req, res) => {
       res.send('API backend Tecsim de Pé!');
     });

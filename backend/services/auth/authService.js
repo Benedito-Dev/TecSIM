@@ -53,7 +53,9 @@ class AuthService {
 
   async verifyToken(token) {
     try {
+      console.log(token)
       const decoded = jwt.verify(token, authConfig.secret);
+      console.log(token)
       return await pacienteRepository.findById(decoded.id);
     } catch (error) {
       throw new Error('Token inválido: ' + error.message);

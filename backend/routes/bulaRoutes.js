@@ -1,5 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/bulaController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 class BulaRoutes {
   constructor() {
@@ -31,7 +32,7 @@ class BulaRoutes {
      *       201:
      *         description: Bula criada com sucesso
      */
-    this.router.post('/', controller.create);
+    this.router.post('/',  controller.create);
 
     /**
      * @swagger
@@ -62,7 +63,7 @@ class BulaRoutes {
      *       404:
      *         description: Não encontrada
      */
-    this.router.get('/:id', controller.findById);
+    this.router.get('/:id',  controller.findById);
 
     /**
      * @swagger
@@ -81,7 +82,7 @@ class BulaRoutes {
      *       404:
      *         description: Não encontrada
      */
-    this.router.get('/medicamento/:id_medicamento', controller.findByMedicamentoId);
+    this.router.get('/medicamento/:id_medicamento',  controller.findByMedicamentoId);
 
     /**
      * @swagger
