@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../.././../../context/AuthContext';
 import { updatePassword } from '../../../../../services/userService'
 
+import PasswordInput from '../../../../../components/Register/PasswordInput';
+import InputField from '../../../../../components/Register/InputField';
 import { ThemeContext } from '../../../../../context/ThemeContext';
 import { getChangePasswordStyles } from './styles';
 import { ArrowLeft } from 'lucide-react-native';
@@ -20,6 +22,18 @@ export default function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordIsValid, setPasswordIsValid] = useState(false);
+
+  // estados para controlar visibilidade
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const isFormValid =
+    passwordIsValid &&
+    newPassword === confirmPassword
+
+  console.log(isFormValid)
 
   const handleChangePassword = async () => {
     try {
@@ -33,7 +47,6 @@ export default function ChangePassword() {
         }
 
         const resposta = await updatePassword(userId, currentPassword, newPassword)
-        // Aqui você colocaria a lógica para alterar a senha (chamada API etc)
         Alert.alert('Sucesso', 'Senha alterada com sucesso!');
         navigation.goBack();
     } catch {
@@ -56,37 +69,47 @@ export default function ChangePassword() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Senha Atual</Text>
-          <TextInput
+          <InputField
             style={styles.input}
-            secureTextEntry
+            secureTextEntry={!showCurrentPassword}
             placeholder="Digite sua senha atual"
             placeholderTextColor={theme.textSecondary}
             value={currentPassword}
             onChangeText={setCurrentPassword}
+            iconName={showCurrentPassword ? 'eye-off' : 'eye'}
+            showIcon={true}
+            onIconPress={() => setShowCurrentPassword(!showCurrentPassword)}
           />
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Nova Senha</Text>
-          <TextInput
+          <PasswordInput
+            label="Nova Senha"
             style={styles.input}
-            secureTextEntry
+            secureTextEntry={!showNewPassword}
             placeholder="Digite a nova senha"
             placeholderTextColor={theme.textSecondary}
             value={newPassword}
             onChangeText={setNewPassword}
+            onValidityChange={setPasswordIsValid}
+            iconName={showNewPassword ? 'eye-off' : 'eye'}
+            showIcon={true}
+            onIconPress={() => setShowNewPassword(!showNewPassword)}
           />
         </View>
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Confirmar Nova Senha</Text>
-          <TextInput
+          <InputField
             style={styles.input}
-            secureTextEntry
+            secureTextEntry={!showConfirmPassword}
             placeholder="Confirme a nova senha"
             placeholderTextColor={theme.textSecondary}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
+            iconName={showConfirmPassword ? 'eye-off' : 'eye'}
+            showIcon={true}
+            onIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
           />
         </View>
 

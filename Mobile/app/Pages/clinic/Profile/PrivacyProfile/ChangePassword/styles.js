@@ -46,7 +46,7 @@ export const getChangePasswordStyles = (theme) => StyleSheet.create({
     backgroundColor: theme.inputBackground || '#fff',
     color: theme.textPrimary,
     borderRadius: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 12,
     fontSize: 14,
     borderWidth: 1,
