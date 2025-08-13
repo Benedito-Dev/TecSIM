@@ -104,15 +104,6 @@ export default function PrivacyScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Card: Transparência */}
-        <View style={styles.card}>
-          <TouchableOpacity>
-            <Text style={styles.cardTitle}>Transparência e Segurança</Text>
-            <Text style={styles.cardText}>
-                Seus dados são protegidos com criptografia e utilizados apenas para oferecer um serviço mais personalizado.
-            </Text>
-          </TouchableOpacity>
-        </View>
 
         {/* Card: Exclusão de Conta */}
         <View style={styles.card}>

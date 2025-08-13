@@ -11,7 +11,6 @@ import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../..
 import InputField from '../../../../components/Register/InputField';
 import CpfInput from '../../../../components/Register/CpfInput';
 import DateInput from '../../../../components/Register/DataInput';
-import PasswordInput from '../../../../components/Register/PasswordInput';
 import PesoInput from '../../../../components/Register/PesoInput';
 import GenderInput from '../../../../components/Register/InputGender';
 import { getProfileEditStyles } from './styles';
@@ -99,7 +98,6 @@ export default function EditProfileScreen() {
       const pacienteData = {
         nome,
         email,
-        senha: senha.trim() ? senha : undefined,
         data_nascimento: dataNascimento,
         peso_kg: parseFloat(peso),
         genero,
@@ -191,7 +189,6 @@ export default function EditProfileScreen() {
         <CpfInput value={cpf} onChangeText={setCpf} />
         <InputField label="Nome" value={nome} onChangeText={setNome} placeholder="Nome completo" iconName="user" />
         <InputField label="Email" value={email} onChangeText={setEmail} placeholder="exemplo@email.com" keyboardType="email-address" iconName="mail" />
-        <PasswordInput value={senha} onChangeText={setSenha} />
         <DateInput value={dataNascimento} onChange={setDataNascimento} />
         <PesoInput value={peso} onChangeText={setPeso} />
         <GenderInput value={genero} onChange={setGenero} />

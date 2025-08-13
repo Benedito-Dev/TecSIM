@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from '../Pages/clinic/Profile/Profile';
 import EditProfileScreen from '../Pages/clinic/Profile/Edit-Profile/edit-Profile';
 import PrivacyScreen from '../Pages/clinic/Profile/PrivacyProfile/PrivacyScreen';
+import ChangePassword from '../Pages/clinic/Profile/PrivacyProfile/ChangePassword/ChangePassword'
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ export default function ProfileStack() {
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="Privacy" component={PrivacyScreen} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
     </Stack.Navigator>
   );
 }

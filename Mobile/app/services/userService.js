@@ -44,6 +44,30 @@ export const updatePaciente = async (id, pacienteData) => {
   }
 };
 
+// 🔵 [PATCH] Atualiza a senha de um paciente existente
+export const updatePassword = async (id, senhaAtual, novaSenha) => {
+  try {
+    const response = await api.patch(`/pacientes/${id}/password`, {
+      senhaAtual,
+      novaSenha
+    });
+
+    return response.data;
+  } catch (error) {
+    // Melhor tratamento de erro com mensagens mais específicas
+    if (error.response) {
+      // Erro vindo do servidor
+      throw new Error(error.response.data.message || 'Falha ao atualizar senha');
+    } else if (error.request) {
+      // A requisição foi feita mas não houve resposta
+      throw new Error('Sem resposta do servidor');
+    } else {
+      // Erro ao configurar a requisição
+      throw new Error('Erro ao configurar a requisição');
+    }
+  }
+};
+
 // 🟠 [Inative] Inativar um paciente
 export const inativarPaciente = async (id) => {
   try {
