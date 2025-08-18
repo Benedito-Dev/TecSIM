@@ -28,6 +28,22 @@ const options = {
             aceite_termos: { type: 'boolean', example: true }
           }
         },
+        PacienteWithSenha: {
+          type: 'object',
+          properties: {
+            cpf: { type: 'string', example: '224.297.389-48' },
+            nome: { type: 'string', example: 'João Silva' },
+            email: { type: 'string', format: 'email', example: 'joao@example.com' },
+            senha: { type: 'string', example: 'd41d8cd98f00b204e9800998ecf8427e', readOnly: true, description: 'Senha criptografada (apenas neste endpoint)' },
+            data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
+            peso_kg: { type: 'number', example: 75.5 },
+            genero: { type: 'string', example: 'man' },
+            aceite_termos: { type: 'boolean', example: true },
+            data_cadastro: { type: 'string', format: 'date-time', example: '2025-06-30T12:34:56Z' },
+            ativo: { type: 'boolean', example: true },
+            foto_perfil: { type: 'string', example: 'http://localhost:3000/images/avatar.png' }
+          }
+        },
         Medicamento: {
           type: 'object',
           required: ['nome', 'dosagem_padrao'],

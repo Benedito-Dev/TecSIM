@@ -41,11 +41,12 @@ class PacientesRoutes {
      */
     this.router.get('/', controller.getAll);
 
+    // GET /pacientes/{id} (com senha criptografada)
     /**
      * @swagger
      * /pacientes/{id}:
      *   get:
-     *     summary: Obtém um paciente pelo ID
+     *     summary: Obtém um paciente pelo ID (com senha criptografada)
      *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
@@ -58,11 +59,11 @@ class PacientesRoutes {
      *         description: ID do paciente
      *     responses:
      *       200:
-     *         description: Dados do paciente
+     *         description: Dados do paciente (inclui senha criptografada)
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Paciente'
+     *               $ref: '#/components/schemas/PacienteWithSenha'
      *       404:
      *         description: paciente não encontrado
      *       401:
