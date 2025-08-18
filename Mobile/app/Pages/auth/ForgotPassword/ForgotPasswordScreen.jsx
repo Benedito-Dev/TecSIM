@@ -1,33 +1,69 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { getForgotPasswordStyles } from './styles';
-import { useTheme } from '@react-navigation/native'; // ou do seu gerenciador de temas
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Feather';
+import EmailInput from '../../../components/Register/EmailInput'; // Ajustado para pasta components
+import { styles } from './styles';
 
 export default function ForgotPasswordScreen() {
-  const theme = useTheme(); // obtém o tema atual
-  const styles = getForgotPasswordStyles(theme.colors); // usa o tema para gerar os estilos
+  const [email, setEmail] = useState('');
+  const [emailIsValid, setEmailIsValid] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
+
+  const handleSendResetEmail = async () => {
+    if (!emailIsValid) {
+      Alert.alert('Erro', 'Por favor, insira um email válido');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(email);
+      Alert.alert('Sucesso', 'Email de recuperação enviado! Verifique sua caixa de entrada.');
+      navigation.navigate('ResetPassword');
+    } catch (error) {
+      Alert.alert('Erro', error.message || 'Falha ao enviar email de recuperação.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>LOGO TECSIM</Text>
-      </View>
-      <View style={styles.content}>
+    <View style={styles.container}>
+      <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.topContainer}>
+        <Icon name="lock" size={80} color="#fff" />
         <Text style={styles.title}>Recuperar Senha</Text>
-        <Text style={styles.label}>Informe seu e-mail</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="exemplo@tecsim.com.br"
-          placeholderTextColor={theme.colors.textMuted}
+        <Text style={styles.subtitle}>Insira seu email para receber um link de recuperação</Text>
+      </LinearGradient>
+
+      <View style={styles.content}>
+        <EmailInput
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          onValidityChange={setEmailIsValid}
           keyboardType="email-address"
+          iconName="mail"
         />
-        <TouchableOpacity style={styles.button} onPress={() => {}}>
-          <Text style={styles.buttonText}>Enviar Instruções</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.backButton} onPress={() => {}}>
-          <Text style={styles.backText}>Voltar para Login</Text>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
+        ) : (
+          <TouchableOpacity
+            style={[styles.button, !emailIsValid && styles.disabledButton]}
+            onPress={handleSendResetEmail}
+            disabled={!emailIsValid}
+          >
+            <Text style={styles.buttonText}>Enviar Link de Recuperação</Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.backButtonText}>Voltar ao Login</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 }

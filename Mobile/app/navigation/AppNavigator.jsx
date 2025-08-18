@@ -7,6 +7,7 @@ import WelcomeScreen from '../Pages/auth/Welcome/WelcomeScreen';
 import LoginScreen from '../Pages/auth/Login/LoginScreen';
 import RegisterScreen from '../Pages/auth/Register/RegisterScreen';
 import ForgotPasswordScreen from '../Pages/auth/ForgotPassword/ForgotPasswordScreen';
+import ResetPasswordScreen from '../Pages/auth/ForgotPassword/ResetPassword/ResetPasswordScreen';
 import MainTabNavigator from './TabNavigator';
 import CodeScreen from '../Pages/auth/code/code';
 
@@ -18,13 +19,14 @@ const Stack = createNativeStackNavigator();
 export default function AppNavigator() {
   return (
     <ThemeProvider>
-        <Stack.Navigator initialRouteName="ForgotPassword" screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName="ResetPassword" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="App" component={MainTabNavigator} options={{ gestureEnabled: false }} />
           <Stack.Screen name="Code" component={CodeScreen} />
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         </Stack.Navigator>
     </ThemeProvider>
   );

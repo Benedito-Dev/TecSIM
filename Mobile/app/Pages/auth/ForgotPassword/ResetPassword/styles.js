@@ -1,62 +1,66 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+const { height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
   },
-  header: {
+  topContainer: {
+    display: 'flex',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    width: '100%',
+    height: height * 0.35,
+    backgroundColor: '#5f65d9',
   },
-  logo: {
-    fontSize: 24,
+  title: {
+    color: '#fff',
     fontWeight: 'bold',
+    fontSize: 25,
+    marginTop: 20,
+  },
+  subtitle: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginTop: 10,
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
   content: {
     flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  input: {
-    height: 40,
-    borderColor: '#000',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    paddingTop: 20,
   },
   button: {
-    backgroundColor: '#000',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 10,
+    backgroundColor: '#0097b2',
+    width: '85%',
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginTop: 40,
+  },
+  disabledButton: {
+    backgroundColor: '#0097b2',
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 18,
   },
   backButton: {
-    alignItems: 'center',
+    marginTop: 20,
   },
-  backText: {
-    color: '#000',
-    fontSize: 14,
+  backButtonText: {
+    color: '#0097b2',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
-  alertText: {
-    fontSize: 14,
-    marginBottom: 20,
-    textAlign: 'center',
+  loading: {
+    marginVertical: 20,
   },
 });

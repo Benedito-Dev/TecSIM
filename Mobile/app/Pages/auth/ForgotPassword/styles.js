@@ -1,74 +1,93 @@
-// styles.ts
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+const { height } = Dimensions.get('window');
 
-export const getForgotPasswordStyles = (theme) =>
-  StyleSheet.create({
-    container: {
-      flexGrow: 1,
-      backgroundColor: theme.background,
-      justifyContent: 'center',
-      padding: 20,
-    },
-    header: {
-      alignItems: 'center',
-      marginBottom: 24,
-    },
-    logo: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      color: theme.primary,
-    },
-    content: {
-      backgroundColor: theme.backgroundCard,
-      borderRadius: 12,
-      padding: 20,
-      elevation: 3,
-      shadowColor: theme.shadowColor,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    title: {
-      fontSize: 22,
-      fontWeight: 'bold',
-      color: theme.textPrimary,
-      marginBottom: 16,
-      textAlign: 'center',
-    },
-    label: {
-      fontSize: 14,
-      color: theme.textSecondary,
-      marginBottom: 8,
-    },
-    input: {
-      height: 48,
-      borderWidth: 1,
-      borderColor: theme.border,
-      borderRadius: 8,
-      paddingHorizontal: 12,
-      backgroundColor: theme.inputBackground,
-      color: theme.textPrimary,
-      marginBottom: 16,
-    },
-    button: {
-      backgroundColor: theme.primary,
-      paddingVertical: 14,
-      borderRadius: 8,
-      alignItems: 'center',
-      marginBottom: 12,
-    },
-    buttonText: {
-      color: theme.textOnPrimary,
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    backButton: {
-      alignItems: 'center',
-      paddingVertical: 10,
-    },
-    backText: {
-      color: theme.link,
-      fontSize: 14,
-      fontWeight: '600',
-    },
-  });
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  topContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: height * 0.35,
+    backgroundColor: '#5f65d9',
+  },
+  title: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 25,
+    marginTop: 20,
+  },
+  subtitle: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginTop: 10,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  content: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    paddingTop: 20,
+  },
+  button: {
+    backgroundColor: '#0097b2',
+    width: '85%',
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginTop: 40,
+  },
+  disabledButton: {
+    backgroundColor: '#0097b2',
+    opacity: 0.6,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 18,
+  },
+  backButton: {
+    marginTop: 20,
+  },
+  backButtonText: {
+    color: '#0097b2',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  loading: {
+    marginVertical: 20,
+  },
+  inputContainer: {
+    width: '85%',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 4,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  input: {
+    flex: 1,
+    height: 45,
+    paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  icon: {
+    marginLeft: 10,
+  },
+});
