@@ -1,20 +1,38 @@
+const rateLimiter = require('../../utils/rateLimiter');
 const jwt = require('jsonwebtoken');
 const authConfig = require('../../config/auth');
 const pacienteRepository = require('../../repository/pacientesRepository');
 
 class AuthService {
-  async login(email, senha) {
+  async login(email, senha, ip) {
+    console.log('Tentativa de login:', email, 'IP:', ip);
+    // 1️⃣ Verifica se o usuário está bloqueado
+    const { blocked, cooldown } = await rateLimiter.check(email, ip);
+    if (blocked) {
+      throw new Error(`Muitas tentativas. Aguarde ${cooldown} segundos.`);
+    }
+
     try {
-      // Usa o repository existente para verificar credenciais
+      // 2️⃣ Verifica credenciais
       const usuario = await pacienteRepository.verifyCredentials(email, senha);
 
+      if (!usuario) {
+        await rateLimiter.registerFailure(email, ip);
+        throw new Error('Credenciais inválidas');
+      }
+      
+      // 3️⃣ Login sucesso → resetar tentativas
+      await rateLimiter.reset(email);
+
+      // 4️⃣ Calcular idade
       const idade = this.calcularIdade(usuario.data_nascimento);
 
+      // 5️⃣ Reativar se necessário
       if (usuario.ativo === false) {
       await pacienteRepository.reativar(usuario.id); // reativa no banco
       }
       
-      // Gera o token JWT
+      // 6️⃣ Gerar JWT
       const token = jwt.sign(
         { id: usuario.id_usuario }, 
         authConfig.secret, 
@@ -34,6 +52,7 @@ class AuthService {
 
       
     } catch (error) {
+      await rateLimiter.registerFailure(email, ip);
       throw new Error('Falha na autenticação: ' + error.message);
     }
   }

@@ -19,6 +19,21 @@ const tables = [
     `
   },
   {
+    name: 'login_attempts',
+    createQuery: `
+      CREATE TABLE login_attempts (
+        id SERIAL PRIMARY KEY,           
+        email VARCHAR(255) NOT NULL,     
+        ip_address VARCHAR(45),          
+        attempts INT DEFAULT 0,          
+        blocked_until TIMESTAMP NULL,    
+        last_attempt TIMESTAMP DEFAULT NOW(),
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `
+  },
+  {
     name: 'medicos',
     createQuery: `
       CREATE TABLE medicos (

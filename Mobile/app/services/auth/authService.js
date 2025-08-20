@@ -2,7 +2,6 @@ import api from '../../api/api'; // Importa a instância configurada do axios
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const login = async (email, senha) => {
-  console.log(email, senha)
   try {
     const response = await api.post('/auth/login', { email, senha });
     
