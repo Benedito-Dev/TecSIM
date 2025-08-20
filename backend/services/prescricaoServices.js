@@ -1,4 +1,6 @@
 const repository = require('../repository/prescricaoRepository');
+const { ConflictError } = require('../utils/errors');
+
 
 class PrescricaoService {
   async findAll() {
@@ -6,37 +8,27 @@ class PrescricaoService {
   }
 
   async findById(id) {
-    const prescricao = await repository.findById(id);
-    if (!prescricao) throw new Error('Prescrição não encontrada');
-    return prescricao;
+    return await repository.findById(id);
   }
 
   async findByPacienteId(id_paciente) {
-    const prescricoes = await repository.findByPacienteId(id_paciente);
-    if (prescricoes.length === 0) throw new Error('Nenhuma prescrição encontrada para este paciente');
-    return prescricoes;
+    return await repository.findByPacienteId(id_paciente);
   }
 
-  async findByMedicoId(id_medico) {
-    const prescricoes = await repository.findByMedicoId(id_medico);
-    if (prescricoes.length === 0) throw new Error('Nenhuma prescrição encontrada para este médico');
-    return prescricoes;
+  async findByMedicoId(crm) {
+    return await repository.findByMedicoId(crm);
   }
 
   async create(data) {
-    return await repository.create(data); // data inclui: id_paciente, id_medico, crm, diagnostico, data_prescricao, validade
+    return await repository.create(data);
   }
 
   async update(id, data) {
-    const prescricao = await repository.update(id, data);
-    if (!prescricao) throw new Error('Prescrição não encontrada para atualização');
-    return prescricao;
+    return await repository.update(id, data);
   }
 
   async remove(id) {
-    const prescricao = await repository.remove(id);
-    if (!prescricao) throw new Error('Prescrição não encontrada para remoção');
-    return prescricao;
+    return await repository.remove(id);
   }
 }
 

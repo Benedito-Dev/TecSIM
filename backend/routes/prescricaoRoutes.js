@@ -15,7 +15,7 @@ class PrescricoesRoutes {
      *   - name: Prescricoes
      *     description: Gestão de prescrições médicas
      */
-    
+
     /**
      * @swagger
      * /prescricoes:
@@ -27,19 +27,13 @@ class PrescricoesRoutes {
      *     responses:
      *       200:
      *         description: Lista de prescrições
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/Prescricao'
      *       401:
      *         description: Não autorizado
      *       500:
-     *         description: Erro interno
+     *         description: Erro interno no servidor
      */
     this.router.get('/', controller.findAll);
-   
+
     /**
      * @swagger
      * /prescricoes/{id}:
@@ -51,23 +45,22 @@ class PrescricoesRoutes {
      *     parameters:
      *       - in: path
      *         name: id
+     *         required: true
      *         schema:
      *           type: integer
-     *         required: true
      *         description: ID da prescrição
      *     responses:
      *       200:
      *         description: Dados da prescrição
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/Prescricao'
-     *       404:
-     *         description: Prescrição não encontrada
+     *       400:
+     *         description: ID inválido
      *       401:
      *         description: Não autorizado
+     *       404:
+     *         description: Prescrição não encontrada
+     *       500:
+     *         description: Erro interno
      */
-
     this.router.get('/:id', controller.findById);
 
     /**
@@ -81,56 +74,53 @@ class PrescricoesRoutes {
      *     parameters:
      *       - in: path
      *         name: id_paciente
+     *         required: true
      *         schema:
      *           type: integer
-     *         required: true
      *         description: ID do paciente
      *     responses:
      *       200:
-     *         description: Lista de prescrições do paciente
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/Prescricao'
-     *       404:
-     *         description: Nenhuma prescrição encontrada para este paciente
+     *         description: Lista de prescrições
+     *       400:
+     *         description: ID inválido
      *       401:
      *         description: Não autorizado
+     *       404:
+     *         description: Nenhuma prescrição encontrada para este paciente
+     *       500:
+     *         description: Erro interno
      */
     this.router.get('/paciente/:id_paciente', controller.findByPacienteId);
 
     /**
      * @swagger
-     * /prescricoes/medico/{id_medico}:
+     * /prescricoes/medico/{crm}:
      *   get:
-     *     summary: Busca prescrições por médico
+     *     summary: Busca prescrições por médico pelo CRM
      *     tags: [Prescricoes]
      *     security:
      *       - bearerAuth: []
      *     parameters:
      *       - in: path
-     *         name: id_medico
-     *         schema:
-     *           type: integer
+     *         name: crm
      *         required: true
-     *         description: ID do médico
+     *         schema:
+     *           type: string
+     *         description: CRM do médico
      *     responses:
      *       200:
-     *         description: Lista de prescrições do médico
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/Prescricao'
-     *       404:
-     *         description: Nenhuma prescrição encontrada para este médico
+     *         description: Lista de prescrições
+     *       400:
+     *         description: CRM inválido
      *       401:
      *         description: Não autorizado
+     *       404:
+     *         description: Nenhuma prescrição encontrada para este médico
+     *       500:
+     *         description: Erro interno
      */
-    this.router.get('/medico/:id_medico', controller.findByMedicoId);
+    this.router.get('/medico/:crm', controller.findByMedicoId);
+
 
     /**
      * @swagger
@@ -145,29 +135,7 @@ class PrescricoesRoutes {
      *       content:
      *         application/json:
      *           schema:
-     *             type: object
-     *             required:
-     *               - id_paciente
-     *               - id_medico
-     *               - crm
-     *               - diagnostico
-     *               - data_prescricao
-     *             properties:
-     *               id_paciente:
-     *                 type: integer
-     *               id_medico:
-     *                 type: integer
-     *               crm:
-     *                 type: string
-     *                 example: "CRM-SP-123456"
-     *               diagnostico:
-     *                 type: string
-     *               data_prescricao:
-     *                 type: string
-     *                 format: date
-     *               validade:
-     *                 type: string
-     *                 format: date
+     *             $ref: '#/components/schemas/Prescricao'
      *     responses:
      *       201:
      *         description: Prescrição criada com sucesso
@@ -175,6 +143,10 @@ class PrescricoesRoutes {
      *         description: Dados inválidos
      *       401:
      *         description: Não autorizado
+     *       409:
+     *         description: Conflito - prescrição já existe
+     *       500:
+     *         description: Erro interno
      */
     this.router.post('/', ValidatePrescricao.validateCreate, controller.create);
 
@@ -189,38 +161,16 @@ class PrescricoesRoutes {
      *     parameters:
      *       - in: path
      *         name: id
+     *         required: true
      *         schema:
      *           type: integer
-     *         required: true
      *         description: ID da prescrição
      *     requestBody:
      *       required: true
      *       content:
      *         application/json:
      *           schema:
-     *             type: object
-     *             required:
-     *               - id_paciente
-     *               - id_medico
-     *               - crm
-     *               - diagnostico
-     *               - data_prescricao
-     *             properties:
-     *               id_paciente:
-     *                 type: integer
-     *               id_medico:
-     *                 type: integer
-     *               crm:
-     *                 type: string
-     *                 example: "CRM-SP-654321"
-     *               diagnostico:
-     *                 type: string
-     *               data_prescricao:
-     *                 type: string
-     *                 format: date
-     *               validade:
-     *                 type: string
-     *                 format: date
+     *             $ref: '#/components/schemas/Prescricao'
      *     responses:
      *       200:
      *         description: Prescrição atualizada
@@ -230,9 +180,38 @@ class PrescricoesRoutes {
      *         description: Não autorizado
      *       404:
      *         description: Prescrição não encontrada
+     *       500:
+     *         description: Erro interno
      */
     this.router.put('/:id', ValidatePrescricao.validateUpdate, controller.update);
 
+    /**
+     * @swagger
+     * /prescricoes/{id}:
+     *   delete:
+     *     summary: Remove uma prescrição
+     *     tags: [Prescricoes]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: integer
+     *         description: ID da prescrição
+     *     responses:
+     *       200:
+     *         description: Prescrição removida
+     *       400:
+     *         description: ID inválido
+     *       401:
+     *         description: Não autorizado
+     *       404:
+     *         description: Prescrição não encontrada
+     *       500:
+     *         description: Erro interno
+     */
     this.router.delete('/:id', controller.remove);
   }
 

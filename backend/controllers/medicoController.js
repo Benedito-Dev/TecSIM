@@ -1,14 +1,15 @@
 const MedicoService = require('../services/medicoService');
 
+
 class MedicoController {
   // Buscar todos os médicos
   async getAll(req, res) {
     try {
       const medicos = await MedicoService.getAll();
-      res.status(200).json(medicos);
+      return res.status(200).json(medicos);
     } catch (error) {
       console.error('Erro ao buscar médicos:', error);
-      res.status(500).json({ error: 'Erro ao buscar médicos.' });
+      return res.status(500).json({ message: 'Erro interno ao buscar médicos.' });
     }
   }
 
@@ -16,16 +17,19 @@ class MedicoController {
   async getById(req, res) {
     try {
       const { id } = req.params;
-      const medico = await MedicoService.getById(id);
-
-      if (!medico) {
-        return res.status(404).json({ error: 'Médico não encontrado.' });
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ message: 'ID inválido.' });
       }
 
-      res.status(200).json(medico);
+      const medico = await MedicoService.getById(id);
+      if (!medico) {
+        return res.status(404).json({ message: 'Médico não encontrado.' });
+      }
+
+      return res.status(200).json(medico);
     } catch (error) {
       console.error('Erro ao buscar médico por ID:', error);
-      res.status(500).json({ error: 'Erro ao buscar médico.' });
+      return res.status(500).json({ message: 'Erro interno ao buscar médico.' });
     }
   }
 
@@ -33,16 +37,19 @@ class MedicoController {
   async getByEmail(req, res) {
     try {
       const { email } = req.params;
-      const medico = await MedicoService.getByEmail(email);
-
-      if (!medico) {
-        return res.status(404).json({ error: 'Médico não encontrado.' });
+      if (!email || !email.includes('@')) {
+        return res.status(400).json({ message: 'E-mail inválido.' });
       }
 
-      res.status(200).json(medico);
+      const medico = await MedicoService.getByEmail(email);
+      if (!medico) {
+        return res.status(404).json({ message: 'Médico não encontrado.' });
+      }
+
+      return res.status(200).json(medico);
     } catch (error) {
       console.error('Erro ao buscar médico por email:', error);
-      res.status(500).json({ error: 'Erro ao buscar médico.' });
+      return res.status(500).json({ message: 'Erro interno ao buscar médico.' });
     }
   }
 
@@ -50,54 +57,50 @@ class MedicoController {
   async getByCrm(req, res) {
     try {
       const { crm } = req.params;
-      const medico = await MedicoService.getByCrm(crm);
-
-      if (!medico) {
-        return res.status(404).json({ error: 'Médico não encontrado.' });
+      if (!crm) {
+        return res.status(400).json({ message: 'CRM é obrigatório.' });
       }
 
-      res.status(200).json(medico);
+      const medico = await MedicoService.getByCrm(crm);
+      if (!medico) {
+        return res.status(404).json({ message: 'Médico não encontrado.' });
+      }
+
+      return res.status(200).json(medico);
     } catch (error) {
       console.error('Erro ao buscar médico por CRM:', error);
-      res.status(500).json({ error: 'Erro ao buscar médico.' });
-    }
-  }
-
-  // Buscar médicos por especialidade
-  async getByEspecialidade(req, res) {
-    try {
-      const { especialidade } = req.params;
-      const medicos = await MedicoService.getByEspecialidade(especialidade);
-
-      if (medicos.length === 0) {
-        return res.status(404).json({ error: 'Nenhum médico encontrado para esta especialidade.' });
-      }
-
-      res.status(200).json(medicos);
-    } catch (error) {
-      console.error('Erro ao buscar médicos por especialidade:', error);
-      res.status(500).json({ error: 'Erro ao buscar médicos.' });
+      return res.status(500).json({ message: 'Erro interno ao buscar médico.' });
     }
   }
 
   // Criar novo médico
   async create(req, res) {
     try {
-      const dadosMedico = req.body;
-      const novoMedico = await MedicoService.create(dadosMedico);
-      
-      res.status(201).json({ 
-        message: 'Médico criado com sucesso', 
-        data: novoMedico 
+      const { nome, email, crm, especialidade, senha } = req.body;
+      if (!nome || !email || !crm || !especialidade || !senha) {
+        return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+      } 
+
+      const novoMedico = await MedicoService.create(req.body);
+      return res.status(201).json({
+        message: 'Médico criado com sucesso.',
+        data: novoMedico
       });
     } catch (error) {
       console.error('Erro ao criar médico:', error);
-      
-      if (error.message.includes('CRM já cadastrado')) {
-        return res.status(400).json({ error: 'CRM já cadastrado.' });
+
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
       }
-      
-      res.status(500).json({ error: 'Erro ao criar médico.' });
+
+      if (error.message.includes('CRM já cadastrado')) {
+        return res.status(409).json({ message: 'CRM já cadastrado.' });
+      }
+      if (error.message.includes('Email já cadastrado')) {
+        return res.status(409).json({ message: 'E-mail já cadastrado.' });
+      }
+
+      return res.status(500).json({ message: 'Erro interno ao criar médico.' });
     }
   }
 
@@ -105,26 +108,30 @@ class MedicoController {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const dadosAtualizacao = req.body;
-      
-      // Remove campos que não devem ser atualizados
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ message: 'ID inválido.' });
+      }
+
+      const dadosAtualizacao = { ...req.body };
       delete dadosAtualizacao.senha;
       delete dadosAtualizacao.id_medico;
       delete dadosAtualizacao.data_cadastro;
 
       const medicoAtualizado = await MedicoService.update(id, dadosAtualizacao);
-
       if (!medicoAtualizado) {
-        return res.status(404).json({ error: 'Médico não encontrado para atualizar.' });
+        return res.status(404).json({ message: 'Médico não encontrado para atualização.' });
       }
 
-      res.status(200).json({ 
-        message: 'Médico atualizado com sucesso', 
-        data: medicoAtualizado 
+      return res.status(200).json({
+        message: 'Médico atualizado com sucesso.',
+        data: medicoAtualizado
       });
     } catch (error) {
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
       console.error('Erro ao atualizar médico:', error);
-      res.status(500).json({ error: 'Erro ao atualizar médico.' });
+      return res.status(500).json({ message: 'Erro interno ao atualizar médico.' });
     }
   }
 
@@ -134,51 +141,55 @@ class MedicoController {
       const { id } = req.params;
       const { senhaAtual, novaSenha } = req.body;
 
-      const resultado = await MedicoService.updatePassword(id, senhaAtual, novaSenha);
-
-      if (!resultado) {
-        return res.status(400).json({ error: 'Senha atual incorreta ou médico não encontrado.' });
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ message: 'ID inválido.' });
+      }
+      if (!senhaAtual || !novaSenha) {
+        return res.status(400).json({ message: 'Senha atual e nova senha são obrigatórias.' });
       }
 
-      res.status(200).json({ message: 'Senha atualizada com sucesso.' });
+      const resultado = await MedicoService.updatePassword(id, senhaAtual, novaSenha);
+      if (!resultado) {
+        return res.status(400).json({ message: 'Senha atual incorreta ou médico não encontrado.' });
+      }
+
+      return res.status(200).json({ message: 'Senha atualizada com sucesso.' });
     } catch (error) {
+
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+
+
       console.error('Erro ao atualizar senha:', error);
-      res.status(500).json({ error: 'Erro ao atualizar senha.' });
+      return res.status(500).json({ message: 'Erro interno ao atualizar senha.' });
     }
   }
 
-//   // Autenticar médico
-//   async login(req, res) {
-//     try {
-//       const { email, senha } = req.body;
-//       const medico = await MedicoService.verifyCredentials(email, senha);
-      
-//       res.status(200).json({ 
-//         message: 'Login realizado com sucesso',
-//         data: medico.toAuthJSON() 
-//       });
-//     } catch (error) {
-//       console.error('Erro no login:', error);
-//       res.status(401).json({ error: 'Credenciais inválidas.' });
-//     }
-//   }
-
-   // Remover médico
+  // Remover médico
   async remove(req, res) {
-     try {
-       const { id } = req.params;
-       const resultado = await MedicoService.remove(id);
+    try {
+      const { id } = req.params;
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ message: 'ID inválido.' });
+      }
 
-       if (!resultado) {
-         return res.status(404).json({ error: 'Médico não encontrado para remover.' });
-       }
+      const resultado = await MedicoService.remove(id);
+      if (!resultado) {
+        return res.status(404).json({ message: 'Médico não encontrado para remoção.' });
+      }
 
-       res.status(200).json({ message: 'Médico removido com sucesso.' });
-     } catch (error) {
-       console.error('Erro ao remover médico:', error);
-       res.status(500).json({ error: 'Erro ao remover médico.' });
-     }
-   }
+      return res.status(200).json({ message: 'Médico removido com sucesso.' });
+    } catch (error) {
+
+       if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+      
+      console.error('Erro ao remover médico:', error);
+      return res.status(500).json({ message: 'Erro interno ao remover médico.' });
+    }
+  }
 }
 
 module.exports = new MedicoController();

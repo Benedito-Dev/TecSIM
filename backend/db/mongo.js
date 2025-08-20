@@ -18,7 +18,6 @@ async function connectMongo() {
       await client.connect();
       console.log('✅ Conectado ao MongoDB');
       dbInstance = client.db(dbName);
-      console.log(`Banco de dados: ${dbName}`);
     }
     return dbInstance;
   } catch (error) {

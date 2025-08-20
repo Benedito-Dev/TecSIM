@@ -1,8 +1,12 @@
-class ErrorHandler {
-  static handle(err, req, res, next) {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Erro interno do servidor.' });
+const { AppError } = require('../utils/erros');
+
+function errorHandler(err, req, res, next) {
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({ error: err.message });
   }
+
+  console.error('Erro inesperado:', err);
+  return res.status(500).json({ error: 'Erro interno no servidor' });
 }
 
-module.exports = ErrorHandler;
+module.exports = errorHandler;

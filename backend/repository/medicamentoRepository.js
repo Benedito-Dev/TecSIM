@@ -18,24 +18,29 @@ class MedicamentoRepository {
       dosagem_padrao,
       bula_detalhada
     } = typeof data === 'string' ? JSON.parse(data) : data;
-    
-    const result = await db.query(`
-      INSERT INTO ${this.tableName} 
-      (
+
+    try {
+      const result = await db.query(`
+        INSERT INTO ${this.tableName} 
+        (
+          nome, tipo, descricao, faixa_etaria_minima, faixa_etaria_maxima,
+          contraindicacoes, interacoes_comuns, composicao, dosagem_padrao, bula_detalhada
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING 
+          id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+          faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
+          composicao, dosagem_padrao, bula_detalhada
+      `, [
         nome, tipo, descricao, faixa_etaria_minima, faixa_etaria_maxima,
         contraindicacoes, interacoes_comuns, composicao, dosagem_padrao, bula_detalhada
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING 
-        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
-        faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
-        composicao, dosagem_padrao, bula_detalhada
-    `, [
-      nome, tipo, descricao, faixa_etaria_minima, faixa_etaria_maxima,
-      contraindicacoes, interacoes_comuns, composicao, dosagem_padrao, bula_detalhada
-    ]);
+      ]);
 
-    return result.rows[0];
+      return result.rows[0];
+    } catch (err) {
+      // NÃO criar novo Error, apenas relançar o erro original
+      throw err;
+    }
   }
 
   async findAll() {
@@ -58,7 +63,7 @@ class MedicamentoRepository {
         faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
         composicao, dosagem_padrao, bula_detalhada
       FROM ${this.tableName} 
-      WHERE id = $1
+      WHERE id_medicamento = $1
     `, [id]);
     
     console.log('Medicamento buscado por ID:', result.rows[0]);
@@ -78,33 +83,37 @@ class MedicamentoRepository {
       dosagem_padrao,
       bula_detalhada
     } = typeof data === 'string' ? JSON.parse(data) : data;
-    
-    const result = await db.query(`
-      UPDATE ${this.tableName} 
-      SET 
-        nome = $1,
-        tipo = $2,
-        descricao = $3,
-        faixa_etaria_minima = $4,
-        faixa_etaria_maxima = $5,
-        contraindicacoes = $6,
-        interacoes_comuns = $7,
-        composicao = $8,
-        dosagem_padrao = $9,
-        bula_detalhada = $10
-      WHERE id_medicamento = $11
-      RETURNING 
-        id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
-        faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
-        composicao, dosagem_padrao, bula_detalhada
-    `, [
-      nome, tipo, descricao, faixa_etaria_minima, faixa_etaria_maxima,
-      contraindicacoes, interacoes_comuns, composicao, dosagem_padrao, bula_detalhada,
-      id
-    ]);
-    
-    console.log('Medicamento atualizado:', result.rows[0]);
-    return result.rows[0];
+
+    try {
+      const result = await db.query(`
+        UPDATE ${this.tableName} 
+        SET 
+          nome = $1,
+          tipo = $2,
+          descricao = $3,
+          faixa_etaria_minima = $4,
+          faixa_etaria_maxima = $5,
+          contraindicacoes = $6,
+          interacoes_comuns = $7,
+          composicao = $8,
+          dosagem_padrao = $9,
+          bula_detalhada = $10
+        WHERE id_medicamento = $11
+        RETURNING 
+          id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+          faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
+          composicao, dosagem_padrao, bula_detalhada
+      `, [
+        nome, tipo, descricao, faixa_etaria_minima, faixa_etaria_maxima,
+        contraindicacoes, interacoes_comuns, composicao, dosagem_padrao, bula_detalhada,
+        id
+      ]);
+
+      console.log('Medicamento atualizado:', result.rows[0]);
+      return result.rows[0];
+    } catch (err) {
+      throw new Error('Erro ao atualizar medicamento: ' + err.message);
+    }
   }
 
   async remove(id) {
@@ -113,10 +122,10 @@ class MedicamentoRepository {
     const result = await db.query(`
       DELETE FROM ${this.tableName} 
       WHERE id_medicamento = $1
-      RETURNING id
+      RETURNING id_medicamento
     `, [id]);
     
-    return { id: result.rows[0]?.id };
+    return { id: result.rows[0]?.id_medicamento };
   }
 
   // Métodos adicionais específicos para medicamentos

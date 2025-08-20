@@ -1,87 +1,70 @@
 const service = require('../services/prescricaoServices');
+const { NotFoundError, DatabaseError, ConflictError } = require('../utils/errors');
 
 class PrescricaoController {
-  async findAll(req, res) {
+  async findAll(req, res, next) {
     try {
       const prescricoes = await service.findAll();
       res.status(200).json(prescricoes);
     } catch (error) {
-      res.status(500).json({ error: 'Erro ao buscar prescrições' });
+      next(error);
     }
   }
 
-  async findById(req, res) {
+  async findById(req, res, next) {
     try {
       const { id } = req.params;
       const prescricao = await service.findById(id);
       res.status(200).json(prescricao);
     } catch (error) {
-      if (error.message.includes('não encontrada')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Erro ao buscar prescrição' });
-      }
+      next(error);
     }
   }
 
-  async findByPacienteId(req, res) {
+  async findByPacienteId(req, res, next) {
     try {
       const { id_paciente } = req.params;
       const prescricoes = await service.findByPacienteId(id_paciente);
       res.status(200).json(prescricoes);
     } catch (error) {
-      if (error.message.includes('Nenhuma prescrição')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Erro ao buscar prescrições' });
-      }
+      next(error);
     }
   }
 
-  async findByMedicoId(req, res) {
+  async findByMedicoId(req, res, next) {
     try {
-      const { id_medico } = req.params;
-      const prescricoes = await service.findByMedicoId(id_medico);
+      const { crm } = req.params;
+      const prescricoes = await service.findByMedicoId(crm);
       res.status(200).json(prescricoes);
     } catch (error) {
-      if (error.message.includes('Nenhuma prescrição')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Erro ao buscar prescrições' });
-      }
+      next(error);
     }
   }
 
-  async create(req, res) {
+  async create(req, res, next) {
     try {
-      const prescricao = await service.create(req.body); // req.body precisa conter: id_paciente, id_medico, crm, diagnostico, data_prescricao, validade
-      res.status(201).json({
-        message: 'Prescrição criada com sucesso',
-        data: prescricao
-      });
+      const prescricao = await service.create(req.body); // usar service, não repository diretamente
+      return res.status(201).json(prescricao);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      next(error); // delega ao middleware global
     }
   }
+  
 
-  async update(req, res) {
+  async update(req, res, next) {
     try {
       const { id } = req.params;
-      const prescricao = await service.update(id, req.body); // req.body também deve conter crm
+      const prescricao = await service.update(id, req.body);
       res.status(200).json({
         message: 'Prescrição atualizada com sucesso',
         data: prescricao
       });
     } catch (error) {
-      if (error.message.includes('não encontrada')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Erro ao atualizar prescrição' });
-      }
+      next(error);
     }
   }
 
-  async remove(req, res) {
+  async remove(req, res, next) {
     try {
       const { id } = req.params;
       const prescricao = await service.remove(id);
@@ -90,11 +73,7 @@ class PrescricaoController {
         data: prescricao
       });
     } catch (error) {
-      if (error.message.includes('não encontrada')) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Erro ao remover prescrição' });
-      }
+      next(error);
     }
   }
 }

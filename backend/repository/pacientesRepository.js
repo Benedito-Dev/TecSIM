@@ -23,6 +23,13 @@ class PacienteRepository {
   }
 
 
+  async findByCPF(CPF) {
+    const result = await db.query(
+      `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
+      FROM paciente WHERE CPF = $1`, [CPF]);
+    return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
   async findByEmail(email) {
     const result = await db.query(
       `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
@@ -47,7 +54,7 @@ class PacienteRepository {
     await db.query('UPDATE paciente SET foto_perfil = $1 WHERE id = $2', [caminho, id]);
   }
 
-  async update(id, {nome, email, data_nascimento, peso_kg, genero }) {
+  async update(id, { nome, email, data_nascimento, peso_kg, genero }) {
     const result = await db.query(`
       UPDATE paciente 
       SET nome = $1, email = $2, data_nascimento = $3, peso_kg = $4, genero = $5
@@ -59,13 +66,13 @@ class PacienteRepository {
   }
 
   async updatePassword(id, senhaAtual, novaSenha) {
-    const usuario = await db.query('SELECT senha FROM paciente WHERE id = $1', [id]);
-    if (!usuario.rows[0]) throw new Error('Usuário não encontrado');
+    const paciente = await db.query('SELECT senha FROM paciente WHERE id = $1', [id]);
+    if (!paciente.rows[0]) throw new Error('Paciente não encontrado.');
 
-    const senhaMatch = await bcrypt.compare(senhaAtual, usuario.rows[0].senha);
-    if (!senhaMatch) throw new Error('Senha atual incorreta');
+    const senhaMatch = await bcrypt.compare(senhaAtual, paciente.rows[0].senha);
+    if (!senhaMatch) throw new Error('Senha atual incorreta.');
 
-    if (senhaAtual === novaSenha) throw new Error('A nova senha deve ser diferente da senha atual');
+    if (senhaAtual === novaSenha) throw new Error('A nova senha deve ser diferente da senha atual.');
 
     const novaSenhaHash = await bcrypt.hash(novaSenha, SALT_ROUNDS);
 
@@ -100,19 +107,19 @@ class PacienteRepository {
   }
 
   async desativar(id) {
-  const result = await db.query(
-    'UPDATE paciente SET ativo = FALSE WHERE id = $1 RETURNING *',
-    [id]
+    const result = await db.query(
+      'UPDATE paciente SET ativo = FALSE WHERE id = $1 RETURNING *',
+      [id]
     );
-  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+    return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
   async reativar(id) {
-  const result = await db.query(
-    'UPDATE paciente SET ativo = TRUE WHERE id = $1 RETURNING *',
-    [id]
-  );
-  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+    const result = await db.query(
+      'UPDATE paciente SET ativo = TRUE WHERE id = $1 RETURNING *',
+      [id]
+    );
+    return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
   async remove(id) {
@@ -123,7 +130,6 @@ class PacienteRepository {
     `, [id]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
-  
 }
 
 module.exports = new PacienteRepository();

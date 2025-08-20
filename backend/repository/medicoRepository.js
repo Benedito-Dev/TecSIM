@@ -41,15 +41,6 @@ class MedicoRepository {
     return result.rows[0] ? new Medico(result.rows[0]) : null;
   }
 
-  async findByEspecialidade(especialidade, includeInactive = false) {
-    const query = includeInactive
-      ? `SELECT id, nome, crm, especialidade, email, telefone, ativo FROM medicos WHERE especialidade = $1`
-      : `SELECT id, nome, crm, especialidade, email, telefone, ativo FROM medicos WHERE especialidade = $1 AND ativo = true`;
-    
-    const result = await db.query(query, [especialidade]);
-    return result.rows.map(row => new Medico(row));
-  }
-
   async create({ nome, crm, especialidade, email, senha, telefone }) {
     // Verifica se CRM já existe (incluindo inativos)
     const existeCrm = await this.findByCrm(crm, true);
