@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export const getPrivacyStyles = (theme) => StyleSheet.create({
+export const getChangePasswordStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.background,
@@ -23,6 +23,7 @@ export const getPrivacyStyles = (theme) => StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 40,
   },
   card: {
     backgroundColor: theme.backgroundCard,
@@ -41,45 +42,26 @@ export const getPrivacyStyles = (theme) => StyleSheet.create({
     color: theme.textPrimary,
     marginBottom: 8,
   },
-  cardText: {
-    fontSize: 14,
-    color: theme.textSecondary,
-    lineHeight: 20,
-  },
-  changePasswordButton: {
-    marginTop: 16,
-    backgroundColor: theme.primary, // Using theme primary color
+  input: {
+    backgroundColor: theme.inputBackground || '#fff',
+    color: theme.textPrimary,
+    borderRadius: 10,
+    paddingHorizontal: 10,
     paddingVertical: 12,
+    fontSize: 14,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  saveButton: {
+    backgroundColor: theme.primary,
+    paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
+    marginTop: 10,
   },
-  changePasswordButtonText: {
+  saveButtonText: {
     color: theme.textOnPrimary,
     fontWeight: 'bold',
-    fontSize: 14,
-  },
-  deactivateButton: {
-    marginTop: 16,
-    backgroundColor: theme.warning, // Using theme warning color
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  deactivateButtonText: {
-    color: theme.textOnPrimary,
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  deleteButton: {
-    marginTop: 16,
-    backgroundColor: theme.error, // Using theme error color
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  deleteButtonText: {
-    color: theme.textOnPrimary,
-    fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 16,
   },
 });

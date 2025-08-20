@@ -41,11 +41,12 @@ class PacientesRoutes {
      */
     this.router.get('/', controller.getAll);
 
+    // GET /pacientes/{id} (com senha criptografada)
     /**
      * @swagger
      * /pacientes/{id}:
      *   get:
-     *     summary: Obtém um paciente pelo ID
+     *     summary: Obtém um paciente pelo ID (com senha criptografada)
      *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
@@ -58,11 +59,11 @@ class PacientesRoutes {
      *         description: ID do paciente
      *     responses:
      *       200:
-     *         description: Dados do paciente
+     *         description: Dados do paciente (inclui senha criptografada)
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Paciente'
+     *               $ref: '#/components/schemas/PacienteWithSenha'
      *       404:
      *         description: paciente não encontrado
      *       401:
@@ -257,31 +258,6 @@ class PacientesRoutes {
 
     /**
      * @swagger
-     * /pacientes/{id}:
-     *   delete:
-     *     summary: Remove um paciente
-     *     tags: [Pacientes]
-     *     security:
-     *       - bearerAuth: []
-     *     parameters:
-     *       - in: path
-     *         name: id
-     *         schema:
-     *           type: integer
-     *         required: true
-     *         description: ID do paciente
-     *     responses:
-     *       204:
-     *         description: paciente removido com sucesso
-     *       401:
-     *         description: Não autorizado
-     *       404:
-     *         description: paciente não encontrado
-     */
-    this.router.delete('/:id', controller.remove);
-    
-    /**
-     * @swagger
      * /pacientes/{id}/inativar:
      *   patch:
      *     summary: Desativa (inativa) um paciente
@@ -316,6 +292,31 @@ class PacientesRoutes {
      *         description: Erro ao desativar paciente
      */
     this.router.patch('/:id/inativar', controller.desativar);
+
+    /**
+     * @swagger
+     * /pacientes/{id}:
+     *   delete:
+     *     summary: Remove um paciente
+     *     tags: [Pacientes]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID do paciente
+     *     responses:
+     *       204:
+     *         description: paciente removido com sucesso
+     *       401:
+     *         description: Não autorizado
+     *       404:
+     *         description: paciente não encontrado
+     */
+    this.router.delete('/:id', controller.remove);
 
   }
 

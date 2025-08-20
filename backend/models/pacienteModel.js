@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 class Paciente {
   constructor({
     id,
@@ -51,6 +53,25 @@ class Paciente {
       nome: this.nome,
       email: this.email,
       foto_perfil: this.foto_perfil // Adicionado (opcional)
+    };
+  }
+
+  // Retorno especial para o GET /id -> inclui senha criptografada
+  toJSONWithEncryptedSenha(secret) {
+    const base = this.toJSON();
+    const key = secret || process.env.SHOW_PASS_SECRET || 'fallback-secret';
+
+    let senhaCriptografada = null;
+    if (this.senha) {
+      senhaCriptografada = crypto
+        .createHmac('sha256', key)
+        .update(String(this.senha))
+        .digest('hex');
+    }
+
+    return {
+      ...base,
+      senha: senhaCriptografada
     };
   }
 }

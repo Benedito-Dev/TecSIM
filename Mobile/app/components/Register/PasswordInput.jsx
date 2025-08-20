@@ -62,7 +62,7 @@ export default function PasswordInput({
           <Icon
             name={secureTextEntry ? 'eye-off' : 'eye'}
             size={20}
-            color={theme.icon}
+            color={theme.textSecondary}
             style={{ marginRight: 10 }}
           />
         </TouchableOpacity>

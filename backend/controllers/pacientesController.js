@@ -16,20 +16,23 @@ class PacienteController {
 
   // Buscar usuário por ID
   async getById(req, res) {
-    try {
-      const { id } = req.params;
-      const usuario = await PacienteService.getById(id);
+  try {
+    const { id } = req.params;
+    const usuario = await PacienteService.getById(id);
 
-      if (!usuario) {
-        return res.status(404).json({ error: 'Usuário não encontrado.' });
-      }
-
-      res.status(200).json(usuario);
-    } catch (error) {
-      console.error('Erro ao buscar usuário por ID:', error);
-      res.status(500).json({ error: 'Erro ao buscar usuário.' });
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
     }
+
+    // Retorna com senha criptografada SOMENTE nesse endpoint
+    const secret = process.env.SHOW_PASS_SECRET || 'fallback-secret';
+    return res.status(200).json(usuario.toJSONWithEncryptedSenha(secret));
+
+  } catch (error) {
+    console.error('Erro ao buscar usuário por ID:', error);
+    res.status(500).json({ error: 'Erro ao buscar usuário.' });
   }
+}
 
   // Buscar usuário por email (útil para login)
   async getByEmail(req, res) {

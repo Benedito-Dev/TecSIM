@@ -17,6 +17,7 @@ import { useAuth } from '../../../context/AuthContext';
 import EmailInput from '../../../components/Register/EmailInput';
 import PasswordInput from '../../../components/Register/PasswordInput';
 import { styles } from './styles';
+import { lightTheme } from '../../../constants/temas';
 
 export default function LoginScreen() {
   const [checked, setChecked] = useState(false);
@@ -74,6 +75,7 @@ export default function LoginScreen() {
           label="Senha"
           onChangeText={setPassword}
           onValidityChange={setPasswordIsValid}
+          theme={lightTheme}
         />
 
         <View style={styles.authExtras}>
