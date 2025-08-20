@@ -33,7 +33,7 @@ export default function ProfileScreen() {
           setPaciente(data);
 
           if (data.foto_perfil) {
-            setFotoPerfil(`http://192.168.1.110:3000${data.foto_perfil}?t=${Date.now()}`);
+            setFotoPerfil(`http://192.168.1.9:3000${data.foto_perfil}?t=${Date.now()}`);
           } else {
             setFotoPerfil(null);
           }
