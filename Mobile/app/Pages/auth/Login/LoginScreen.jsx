@@ -95,7 +95,7 @@ export default function LoginScreen() {
             </Pressable>
             <Text style={{ marginLeft: 8 }}>Lembrar-me</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('EmailRecovery')}>
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.EsqueciSenha}>Esqueci Minha Senha</Text>
           </TouchableOpacity>
         </View>

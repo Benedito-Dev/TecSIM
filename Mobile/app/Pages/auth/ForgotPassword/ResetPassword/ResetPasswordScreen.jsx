@@ -38,7 +38,7 @@ export default function ResetPasswordScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.topContainer}>
-        <Icon name="lock" size={80} color="#fff" />
+        <Icon name="key" size={80} color="#fff" />
         <Text style={styles.title}>Redefinir Senha</Text>
         <Text style={styles.subtitle}>Crie uma nova senha para sua conta</Text>
       </LinearGradient>
