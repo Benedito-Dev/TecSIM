@@ -13,6 +13,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { ArrowLeft } from 'lucide-react-native';
 import { getMedicationStyles } from './styles';
 
+import removeAccents from 'remove-accents'; // npm install remove-accents
+
 export default function MedicineScreen() {
   const navigation = useNavigation();
 
@@ -20,7 +22,7 @@ export default function MedicineScreen() {
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState([]);
   const [medicines, setMedicines] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Novo estado para o loading
+  const [isLoading, setIsLoading] = useState(true);
 
   const { theme } = useContext(ThemeContext)
   const styles = getMedicationStyles(theme)
@@ -61,14 +63,19 @@ export default function MedicineScreen() {
     );
   };
 
+  // FILTRO AJUSTADO
   const filtered = medicines.filter(item => {
+    const nomeLower = item.nome?.toLowerCase() || '';
+    const tipoNormalized = removeAccents(item.tipo?.toLowerCase() || '');
+    const searchLower = search.toLowerCase();
+
     const matchesSearch =
-      item.nome?.toLowerCase().includes(search.toLowerCase()) ||
-      item.tipo?.toLowerCase().includes(search.toLowerCase());
+      nomeLower.includes(searchLower) ||
+      tipoNormalized.includes(searchLower);
 
     const matchesFilter =
       activeFilters.length === 0 ||
-      activeFilters.includes(item.tipo);
+      activeFilters.some(filterId => filterId === tipoNormalized);
 
     return matchesSearch && matchesFilter;
   });
@@ -77,7 +84,6 @@ export default function MedicineScreen() {
     Keyboard.dismiss();
   };
 
-  // Loading screen
   if (isLoading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -153,7 +159,7 @@ export default function MedicineScreen() {
       ) : (
         <FlatList
           data={filtered}
-          keyExtractor={(item) => item.id_medicamento}
+          keyExtractor={(item) => item.id_medicamento.toString()}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.medItem} onPress={() => navigation.navigate('Bula', { idMedicamento: item.id_medicamento, 
@@ -166,10 +172,10 @@ export default function MedicineScreen() {
               <View style={styles.medInfo}>
                 <Text style={styles.medName}>{item.nome}</Text>
                 <View style={styles.medDetails}>
-                  <Text style={styles.medDose}>{item.dosagem}</Text>
+                  <Text style={styles.medDose}>{item.dosagem || item.dosagem_padrao}</Text>
                   <View style={styles.medType}>
                     <Text style={styles.medTypeText}>
-                      {filterOptions.find(f => f.id === item.tipo)?.label || item.tipo}
+                      {filterOptions.find(f => f.id === removeAccents(item.tipo?.toLowerCase()))?.label || item.tipo}
                     </Text>
                   </View>
                 </View>

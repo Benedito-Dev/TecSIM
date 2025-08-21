@@ -195,7 +195,7 @@ export default function BulaScreen() {
           </Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => Linking.openURL('https://www.anvisa.gov.br')}
+            onPress={() => Linking.openURL('https://consultas.anvisa.gov.br/')}
           >
             <Text style={styles.buttonText}>ACESSAR BULA COMPLETA</Text>
           </TouchableOpacity>

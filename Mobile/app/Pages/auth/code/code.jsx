@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { verifyOtp } from '../../../services/auth/otpService';
+import { verifyOtp, requestOtp} from '../../../services/auth/otpService';
 import { createPaciente } from '../../../services/userService'; // ✅ Import da função nova
 import styles from './styles';
 
@@ -49,10 +49,17 @@ export default function CodeScreen({ route }) {
     }
   }, [code]);
 
-  const resendCode = useCallback(() => {
-    setCountdown(30);
+  const resendCode = useCallback(async () => {
+  setCountdown(30);
+  try {
+    await requestOtp(email); // chama a função existente do serviço
     Alert.alert('Código reenviado', `Enviamos um novo código para ${email}`);
-  }, [email]);
+  } catch (error) {
+    Alert.alert('Erro', 'Não foi possível reenviar o código. Tente novamente.');
+    console.error(error);
+  }
+}, [email]);
+
 
   const verifyCode = async (fullCode) => {
     if (fullCode.length < CODE_LENGTH) return;
