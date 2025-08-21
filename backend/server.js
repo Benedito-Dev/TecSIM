@@ -12,6 +12,7 @@ const swaggerSpec = require('./swagger/swaggerConfig');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
 const prescricaoRoutes = require('./routes/prescricaoRoutes');
 const bulaRoutes = require('./routes/bulaRoutes');
+const authMiddleware = require('./middleware/authMiddleware');
 
 const errorHandler = require('./middleware/errorHandler'); // middleware global de erro
 
@@ -33,7 +34,7 @@ class Server {
     this.app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
     // Documentação Swagger
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { swaggerOptions: { persistAuthorization: true } }));
   }
 
   routes() {

@@ -1,5 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/bulaController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 class BulaRoutes {
   constructor() {
@@ -43,7 +44,7 @@ class BulaRoutes {
      *       500:
      *         description: Erro interno do servidor
      */
-    this.router.post('/', controller.create);
+    this.router.post('/',  controller.create);
 
     /**
      * @swagger
@@ -99,7 +100,7 @@ class BulaRoutes {
      *       500:
      *         description: Erro interno do servidor
      */
-    this.router.get('/:id', controller.findById);
+    this.router.get('/:id',  controller.findById);
 
     /**
      * @swagger
@@ -125,7 +126,7 @@ class BulaRoutes {
      *       500:
      *         description: Erro interno do servidor
      */
-    this.router.get('/medicamento/:id_medicamento', controller.findByMedicamentoId);
+    this.router.get('/medicamento/:id_medicamento',  controller.findByMedicamentoId);
 
     /**
      * @swagger

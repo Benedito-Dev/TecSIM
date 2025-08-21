@@ -14,6 +14,13 @@ const options = {
       },
     ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      },
       schemas: {
         Paciente: {
           type: 'object',
@@ -152,7 +159,10 @@ const options = {
           }
         }
       }
-    }
+    },
+    security: [
+      { bearerAuth: [] }
+    ]
   },
   apis: ['./routes/*.js']
 };
