@@ -1,20 +1,28 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  ScrollView, 
+  Alert, 
+  KeyboardAvoidingView, 
+  Platform 
+} from "react-native";
 import { ThemeContext } from '../../../context/ThemeContext';
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
 import { getPrescriptionFormStyles } from "./styles";
-
-// Lucide ícones
-import { ArrowLeft, Calendar, Plus, Trash2, Pill, ChevronDown, } from "lucide-react-native";
+import { ArrowLeft, Calendar, Plus, Trash2, Pill } from "lucide-react-native";
 
 export default function PrescricaoManualScreen() {
   const navigation = useNavigation();
+  const { theme } = useContext(ThemeContext);
+  const styles = getPrescriptionFormStyles(theme);
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showValidadePicker, setShowValidadePicker] = useState(false);
-
-  const { theme } = useContext(ThemeContext)
-  const styles = getPrescriptionFormStyles(theme)
 
   const [form, setForm] = useState({
     diagnostico: "",
@@ -30,34 +38,38 @@ export default function PrescricaoManualScreen() {
       dosagem: "",
       frequencia: "",
       duracao_dias: "",
-      via: "Oral",
+      via: "",
     };
 
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
       medicamentos: [...prev.medicamentos, novoMedicamento],
     }));
   };
 
   const handleRemoveMedicamento = (id) => {
-    Alert.alert("Remover medicamento", "Tem certeza que deseja remover este medicamento?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Remover",
-        onPress: () => {
-          setForm((prev) => ({
-            ...prev,
-            medicamentos: prev.medicamentos.filter((med) => med.id !== id),
-          }));
+    Alert.alert(
+      "Remover medicamento",
+      "Tem certeza que deseja remover este medicamento?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Remover",
+          onPress: () => {
+            setForm(prev => ({
+              ...prev,
+              medicamentos: prev.medicamentos.filter(med => med.id !== id),
+            }));
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   const handleMedicamentoChange = (id, field, value) => {
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
-      medicamentos: prev.medicamentos.map((med) =>
+      medicamentos: prev.medicamentos.map(med =>
         med.id === id ? { ...med, [field]: value } : med
       ),
     }));
@@ -87,15 +99,14 @@ export default function PrescricaoManualScreen() {
     ]);
   };
 
-  const formatDate = (date) => {
-    return date.toLocaleDateString("pt-BR");
-  };
+  const formatDate = (date) => date.toLocaleDateString("pt-BR");
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <ArrowLeft size={24} color="#2563EB" />
@@ -108,6 +119,7 @@ export default function PrescricaoManualScreen() {
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Informações da prescrição */}
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Informações da Prescrição</Text>
 
@@ -122,6 +134,7 @@ export default function PrescricaoManualScreen() {
             />
           </View>
 
+          {/* Datas */}
           <View style={styles.dateRow}>
             <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
               <Text style={styles.label}>Data da Prescrição</Text>
@@ -171,6 +184,7 @@ export default function PrescricaoManualScreen() {
           )}
         </View>
 
+        {/* Medicamentos */}
         <View style={styles.formSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Medicamentos Prescritos</Text>
@@ -224,11 +238,19 @@ export default function PrescricaoManualScreen() {
                     />
                   </View>
 
-                  <View style={[styles.inputGroup, { flex: 1 }]}>
+                  <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
                     <Text style={styles.label}>Via de Administração</Text>
-                    <View style={styles.picker}>
-                      <Text style={styles.pickerText}>{med.via}</Text>
-                      <ChevronDown size={18} color="#6B7280" />
+                    <View style={styles.pickerWrapper}>
+                      <Picker
+                        selectedValue={med.via}
+                        onValueChange={(value) => handleMedicamentoChange(med.id, "via", value)}
+                        style={styles.picker}
+                      >
+                        <Picker.Item label="Oral" value="Oral" />
+                        <Picker.Item label="Tópica" value="Tópica" />
+                        <Picker.Item label="Inalatória" value="Inalatória" />
+                        <Picker.Item label="Subcutânea" value="Subcutânea" />
+                      </Picker>
                     </View>
                   </View>
                 </View>
@@ -263,6 +285,7 @@ export default function PrescricaoManualScreen() {
         </View>
       </ScrollView>
 
+      {/* Botão Final */}
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} activeOpacity={0.8}>
         <Text style={styles.submitButtonText}>Salvar Prescrição</Text>
       </TouchableOpacity>
