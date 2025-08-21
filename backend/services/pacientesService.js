@@ -1,6 +1,8 @@
 const repository = require('../repository/pacientesRepository');
 const { ValidationError, ConflictError, NotFoundError } = require('../utils/errors');
 const { isValidEmail, isValidCPF } = require('../utils/validationUtils');
+const bcrypt = require('bcrypt');
+const Paciente = require('../models/pacienteModel');
 
 class PacienteService {
   static async getAll() {
@@ -29,9 +31,8 @@ class PacienteService {
   }
 
   static async create(dados) {
-    const { email, cpf, nome, telefone } = dados;
+    const { email, cpf, nome } = dados;
 
-    // Validações básicas
     if (!email || !isValidEmail(email)) {
       throw new ValidationError('Email inválido ou não fornecido.');
     }
@@ -44,7 +45,6 @@ class PacienteService {
       throw new ValidationError('Nome deve ter pelo menos 3 caracteres.');
     }
 
-    // Verificar duplicatas
     const existingByEmail = await repository.findByEmail(email);
     if (existingByEmail) {
       throw new ConflictError('Email já cadastrado.');
@@ -62,16 +62,13 @@ class PacienteService {
   static async update(id, dados) {
     if (isNaN(id)) throw new ValidationError('ID inválido.');
 
-    // Remover campos que não devem ser atualizados
     delete dados.senha;
     delete dados.id_paciente;
     delete dados.data_cadastro;
 
-    // Verificar se paciente existe
     const existing = await repository.findById(id);
     if (!existing) throw new NotFoundError('Paciente não encontrado.');
 
-    // Verificar duplicatas se email ou CPF estão sendo alterados
     if (dados.email && dados.email !== existing.email) {
       const existingByEmail = await repository.findByEmail(dados.email);
       if (existingByEmail) {
@@ -142,6 +139,32 @@ class PacienteService {
 
     await repository.atualizarFoto(id, caminhoImagem);
     return { message: 'Foto atualizada com sucesso' };
+  }
+
+  static async verifyCredentials(email, senha) {
+    const usuario = await repository.verifyCredentials(email);
+    if (!usuario) throw new Error('Credenciais inválidas');
+
+    const senhaMatch = await bcrypt.compare(senha, usuario.senha);
+    if (!senhaMatch) throw new Error('Credenciais inválidas');
+
+    if (usuario.ativo === false) {
+      await repository.reativar(usuario.id);
+      usuario.ativo = true;
+    }
+
+    return new Paciente({
+      id: usuario.id,
+      cpf: usuario.cpf,
+      nome: usuario.nome,
+      email: usuario.email,
+      data_nascimento: usuario.data_nascimento,
+      peso_kg: usuario.peso_kg,
+      genero: usuario.genero,
+      aceite_termos: usuario.aceite_termos,
+      data_cadastro: usuario.data_cadastro,
+      ativo: usuario.ativo
+    });
   }
 }
 

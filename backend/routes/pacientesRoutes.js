@@ -2,6 +2,7 @@ const express = require('express');
 const controller = require('../controllers/pacientesController');
 const ValidatePaciente = require('../middleware/validatePaciente');
 const upload = require('../config/multer');
+const authMiddleware = require('../middleware/authMiddleware');
 
 class PacientesRoutes {
   constructor() {
@@ -27,20 +28,25 @@ class PacientesRoutes {
      *       - bearerAuth: []
      *     responses:
      *       200:
-     *         description: Lista de pacientes retornada com sucesso
+     *         description: Lista de pacientes
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Paciente'
      *       401:
      *         description: Não autorizado
      *       500:
-     *         description: Erro interno ao buscar pacientes
+     *         description: Erro interno
      */
-    this.router.get('/', controller.getAll);
+    this.router.get('/', authMiddleware, controller.getAll);
 
-    // GET /pacientes/{id} (com senha criptografada)
     /**
      * @swagger
      * /pacientes/{id}:
      *   get:
-     *     summary: Obtém um paciente pelo ID (com senha criptografada)
+     *     summary: Obtém um paciente pelo ID
      *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
@@ -53,19 +59,17 @@ class PacientesRoutes {
      *         description: ID do paciente
      *     responses:
      *       200:
-     *         description: Dados do paciente (inclui senha criptografada)
+     *         description: Dados do paciente
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/PacienteWithSenha'
+     *               $ref: '#/components/schemas/Paciente'
      *       404:
-     *         description: Paciente não encontrado
+     *         description: paciente não encontrado
      *       401:
      *         description: Não autorizado
-     *       500:
-     *         description: Erro interno ao buscar paciente
      */
-    this.router.get('/:id', controller.getById);
+    this.router.get('/:id', authMiddleware, controller.getById);
 
     /**
      * @swagger
@@ -85,17 +89,17 @@ class PacientesRoutes {
      *         description: Email do paciente
      *     responses:
      *       200:
-     *         description: Paciente encontrado com sucesso
-     *       400:
-     *         description: Email inválido
+     *         description: Dados do paciente
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Paciente'
      *       404:
-     *         description: Paciente não encontrado
+     *         description: paciente não encontrado
      *       401:
      *         description: Não autorizado
-     *       500:
-     *         description: Erro interno ao buscar paciente
      */
-    this.router.get('/email/:email', controller.getByEmail);
+    this.router.get('/email/:email', authMiddleware, controller.getByEmail);
 
     /**
      * @swagger
@@ -114,15 +118,25 @@ class PacientesRoutes {
      *                 required:
      *                   - senha
      *                   - aceite_termos
+     *                 properties:
+     *                   senha:
+     *                     type: string
+     *                     minLength: 8
+     *                     example: "Senha@123"
+     *                   aceite_termos:
+     *                     type: boolean
+     *                     example: true
      *     responses:
      *       201:
-     *         description: Paciente criado com sucesso
+     *         description: paciente criado com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Paciente'
      *       400:
      *         description: Dados inválidos
      *       409:
      *         description: Email já cadastrado
-     *       500:
-     *         description: Erro interno ao criar paciente
      */
     this.router.post('/', ValidatePaciente.validateCreate, controller.create);
 
@@ -142,6 +156,7 @@ class PacientesRoutes {
      *         required: true
      *         schema:
      *           type: integer
+     *         description: ID do paciente
      *     requestBody:
      *       required: true
      *       content:
@@ -152,39 +167,12 @@ class PacientesRoutes {
      *               image:
      *                 type: string
      *                 format: binary
+     *                 description: Arquivo da imagem
      *     responses:
      *       200:
      *         description: Foto atualizada com sucesso
-     *       400:
-     *         description: Dados inválidos ou arquivo ausente
-     *       404:
-     *         description: Paciente não encontrado
-     *       415:
-     *         description: Tipo de arquivo não suportado
-     *       500:
-     *         description: Erro ao atualizar foto
      */
-    this.router.post('/:id/foto', upload.single('image'), controller.uploadFoto);
-
-    /**
-     * @swagger
-     * /pacientes/{id}:
-     *   put:
-     *     summary: Atualiza todos os dados do paciente
-     *     tags: [Pacientes]
-     *     security:
-     *       - bearerAuth: []
-     *     responses:
-     *       200:
-     *         description: Paciente atualizado com sucesso
-     *       400:
-     *         description: Dados inválidos
-     *       404:
-     *         description: Paciente não encontrado
-     *       500:
-     *         description: Erro interno ao atualizar paciente
-     */
-    this.router.put('/:id', ValidatePaciente.validateUpdate, controller.update);
+    this.router.post('/:id/foto', authMiddleware, upload.single('image'), controller.uploadFoto);
 
     /**
      * @swagger
@@ -197,45 +185,75 @@ class PacientesRoutes {
      *     parameters:
      *       - in: path
      *         name: id
-     *         required: true
      *         schema:
      *           type: integer
-     *         description: ID do paciente a ser atualizado
+     *         required: true
+     *         description: ID do paciente
      *     requestBody:
      *       required: true
      *       content:
      *         application/json:
      *           schema:
-     *             $ref: '#/components/schemas/Paciente'  # ou defina o schema inline
+     *             $ref: '#/components/schemas/Paciente'
      *     responses:
      *       200:
-     *         description: Paciente atualizado com sucesso
+     *         description: paciente atualizado
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Paciente'
      *       400:
      *         description: Dados inválidos
+     *       401:
+     *         description: Não autorizado
      *       404:
-     *         description: Paciente não encontrado
-     *       500:
-     *         description: Erro interno ao atualizar paciente
+     *         description: paciente não encontrado
      */
-    this.router.patch('/:id/password', ValidatePaciente.validatePassword, controller.updatePassword);
+    this.router.put('/:id', authMiddleware, ValidatePaciente.validateUpdate, controller.update);
 
     /**
      * @swagger
-     * /pacientes/{id}/inativar:
+     * /pacientes/{id}/password:
      *   patch:
-     *     summary: Desativa (inativa) um paciente
+     *     summary: Atualiza a senha do paciente
      *     tags: [Pacientes]
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID do paciente
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - senhaAtual
+     *               - novaSenha
+     *             properties:
+     *               senhaAtual:
+     *                 type: string
+     *                 example: "SenhaAntiga@123"
+     *               novaSenha:
+     *                 type: string
+     *                 minLength: 8
+     *                 example: "NovaSenha@123"
      *     responses:
      *       200:
-     *         description: Paciente inativado com sucesso
+     *         description: Senha atualizada com sucesso
+     *       400:
+     *         description: Dados inválidos
+     *       401:
+     *         description: Não autorizado/Senha atual incorreta
      *       404:
-     *         description: Paciente não encontrado
-     *       500:
-     *         description: Erro interno ao desativar paciente
+     *         description: paciente não encontrado
      */
-    this.router.patch('/:id/inativar', controller.desativar);
+    this.router.patch('/:id/password', authMiddleware, ValidatePaciente.validatePassword, controller.updatePassword);
 
     /**
      * @swagger
@@ -260,8 +278,44 @@ class PacientesRoutes {
      *       404:
      *         description: paciente não encontrado
      */
-    this.router.delete('/:id', controller.remove);
+    this.router.delete('/:id', authMiddleware, controller.remove);
 
+    /**
+     * @swagger
+     * /pacientes/{id}/inativar:
+     *   patch:
+     *     summary: Desativa (inativa) um paciente
+     *     tags: [Pacientes]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID do paciente a ser inativado
+     *     responses:
+     *       200:
+     *         description: Paciente inativado com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   example: Paciente desativado com sucesso
+     *                 data:
+     *                   $ref: '#/components/schemas/Paciente'
+     *       404:
+     *         description: Paciente não encontrado
+     *       401:
+     *         description: Não autorizado
+     *       500:
+     *         description: Erro ao desativar paciente
+     */
+    this.router.patch('/:id/inativar', authMiddleware, controller.desativar);
   }
 
   getRouter() {

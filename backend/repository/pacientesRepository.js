@@ -22,7 +22,6 @@ class PacienteRepository {
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
-
   async findByCPF(CPF) {
     const result = await db.query(
       `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil

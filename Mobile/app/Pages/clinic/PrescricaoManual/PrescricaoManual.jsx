@@ -11,10 +11,11 @@ import {
 } from "react-native";
 import { ThemeContext } from '../../../context/ThemeContext';
 import { useNavigation } from "@react-navigation/native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateInput from '../../../components/Register/DataInput';
 import { Picker } from "@react-native-picker/picker";
+import DateTimePicker from "@react-native-community/datetimepicker"; // IMPORT CORRIGIDO ✅
 import { getPrescriptionFormStyles } from "./styles";
-import { ArrowLeft, Calendar, Plus, Trash2, Pill } from "lucide-react-native";
+import { ArrowLeft, Plus, Trash2, Pill } from "lucide-react-native";
 
 export default function PrescricaoManualScreen() {
   const navigation = useNavigation();
@@ -38,7 +39,7 @@ export default function PrescricaoManualScreen() {
       dosagem: "",
       frequencia: "",
       duracao_dias: "",
-      via: "",
+      via: "", // agora começa vazio para forçar seleção ✅
     };
 
     setForm(prev => ({
@@ -87,7 +88,13 @@ export default function PrescricaoManualScreen() {
     }
 
     for (const med of form.medicamentos) {
-      if (!med.nome.trim() || !med.dosagem.trim() || !med.frequencia.trim() || !med.duracao_dias.trim()) {
+      if (
+        !med.nome.trim() || 
+        !med.dosagem.trim() || 
+        !med.frequencia.trim() || 
+        !med.duracao_dias.trim() || 
+        !med.via.trim()
+      ) {
         Alert.alert("Dados incompletos", "Preencha todos os campos obrigatórios dos medicamentos");
         return;
       }
@@ -98,8 +105,6 @@ export default function PrescricaoManualScreen() {
       { text: "OK", onPress: () => navigation.navigate("Prescricao") },
     ]);
   };
-
-  const formatDate = (date) => date.toLocaleDateString("pt-BR");
 
   return (
     <KeyboardAvoidingView
@@ -136,26 +141,22 @@ export default function PrescricaoManualScreen() {
 
           {/* Datas */}
           <View style={styles.dateRow}>
-            <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-              <Text style={styles.label}>Data da Prescrição</Text>
-              <TouchableOpacity
-                style={styles.dateInput}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
-                <Calendar size={18} color="#6B7280" />
-              </TouchableOpacity>
+            <View style={[styles.inputGroup, { flex: 1, marginRight: 0 }]}>
+              <DateInput 
+                label="Data da Prescrição" 
+                placeholder="Ex: 1990-08-15" 
+                value={showDatePicker} 
+                onChange={setShowDatePicker} 
+              />
             </View>
 
-            <View style={[styles.inputGroup, { flex: 1 }]}>
-              <Text style={styles.label}>Validade</Text>
-              <TouchableOpacity
-                style={styles.dateInput}
-                onPress={() => setShowValidadePicker(true)}
-              >
-                <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
-                <Calendar size={18} color="#6B7280" />
-              </TouchableOpacity>
+            <View style={[styles.inputGroup, { flex: 1, marginRight: 0 }]}>
+              <DateInput 
+                label="Data da Validade" 
+                placeholder="Ex: 1990-08-15" 
+                value={showValidadePicker} 
+                onChange={setShowValidadePicker} 
+              />
             </View>
           </View>
 
@@ -239,13 +240,14 @@ export default function PrescricaoManualScreen() {
                   </View>
 
                   <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-                    <Text style={styles.label}>Via de Administração</Text>
+                    <Text style={styles.label}>Via de Administração*</Text>
                     <View style={styles.pickerWrapper}>
                       <Picker
                         selectedValue={med.via}
                         onValueChange={(value) => handleMedicamentoChange(med.id, "via", value)}
                         style={styles.picker}
                       >
+                        <Picker.Item label="Selecione a via" value="" /> 
                         <Picker.Item label="Oral" value="Oral" />
                         <Picker.Item label="Tópica" value="Tópica" />
                         <Picker.Item label="Inalatória" value="Inalatória" />

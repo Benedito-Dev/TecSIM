@@ -1,5 +1,7 @@
 const express = require('express');
 const controller = require('../controllers/medicoController');
+// const ValidateMedico = require('../middleware/validateMedico');
+const authMiddleware = require('../middleware/authMiddleware');
 
 class MedicosRoutes {
   constructor() {
@@ -26,12 +28,18 @@ class MedicosRoutes {
      *     responses:
      *       200:
      *         description: Lista de médicos
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Medico'
      *       401:
      *         description: Não autorizado
      *       500:
      *         description: Erro interno
      */
-    this.router.get('/', controller.getAll);
+    this.router.get('/', authMiddleware, controller.getAll);
 
     /**
      * @swagger
@@ -51,16 +59,16 @@ class MedicosRoutes {
      *     responses:
      *       200:
      *         description: Dados do médico
-     *       400:
-     *         description: ID inválido
-     *       401:
-     *         description: Não autorizado
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Medico'
      *       404:
      *         description: Médico não encontrado
-     *       500:
-     *         description: Erro interno
+     *       401:
+     *         description: Não autorizado
      */
-    this.router.get('/:id', controller.getById);
+    this.router.get('/:id', authMiddleware, controller.getById);
 
     /**
      * @swagger
@@ -77,19 +85,20 @@ class MedicosRoutes {
      *           type: string
      *           format: email
      *         required: true
+     *         description: Email do médico
      *     responses:
      *       200:
      *         description: Dados do médico
-     *       400:
-     *         description: Email inválido
-     *       401:
-     *         description: Não autorizado
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Medico'
      *       404:
      *         description: Médico não encontrado
-     *       500:
-     *         description: Erro interno
+     *       401:
+     *         description: Não autorizado
      */
-    this.router.get('/email/:email', controller.getByEmail);
+    this.router.get('/email/:email', authMiddleware, controller.getByEmail);
 
     /**
      * @swagger
@@ -105,20 +114,20 @@ class MedicosRoutes {
      *         schema:
      *           type: string
      *         required: true
+     *         description: CRM do médico
      *     responses:
      *       200:
      *         description: Dados do médico
-     *       400:
-     *         description: CRM inválido
-     *       401:
-     *         description: Não autorizado
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Medico'
      *       404:
      *         description: Médico não encontrado
-     *       500:
-     *         description: Erro interno
+     *       401:
+     *         description: Não autorizado
      */
-    this.router.get('/crm/:crm', controller.getByCrm);
-
+    this.router.get('/crm/:crm', authMiddleware, controller.getByCrm);
 
     /**
      * @swagger
@@ -131,24 +140,40 @@ class MedicosRoutes {
      *       content:
      *         application/json:
      *           schema:
-     *             $ref: '#/components/schemas/Medico'
+     *             allOf:
+     *               - $ref: '#/components/schemas/Medico'
+     *               - type: object
+     *                 required:
+     *                   - senha
+     *                   - crm
+     *                 properties:
+     *                   senha:
+     *                     type: string
+     *                     minLength: 8
+     *                     example: "Senha@123"
+     *                   crm:
+     *                     type: string
+     *                     description: Número do CRM
+     *                     example: "SP123456"
      *     responses:
      *       201:
-     *         description: Médico cadastrado
+     *         description: Médico cadastrado com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Medico'
      *       400:
      *         description: Dados inválidos
      *       409:
-     *         description: CRM ou email já cadastrados
-     *       500:
-     *         description: Erro interno
+     *         description: CRM ou email já cadastrado
      */
-    this.router.post('/', controller.create);
+    this.router.post('/', controller.create); // rota pública, sem auth
 
     /**
      * @swagger
      * /medicos/{id}:
      *   put:
-     *     summary: Atualiza dados do médico
+     *     summary: Atualiza os dados de um médico
      *     tags: [Médicos]
      *     security:
      *       - bearerAuth: []
@@ -158,9 +183,20 @@ class MedicosRoutes {
      *         schema:
      *           type: integer
      *         required: true
+     *         description: ID do médico
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/Medico'
      *     responses:
      *       200:
      *         description: Médico atualizado
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Medico'
      *       400:
      *         description: Dados inválidos
      *       401:
@@ -168,11 +204,9 @@ class MedicosRoutes {
      *       404:
      *         description: Médico não encontrado
      *       409:
-     *         description: CRM já em uso
-     *       500:
-     *         description: Erro interno
+     *         description: CRM já está em uso
      */
-    this.router.put('/:id', controller.update);
+    this.router.put('/:id', authMiddleware, controller.update);
 
     /**
      * @swagger
@@ -182,39 +216,66 @@ class MedicosRoutes {
      *     tags: [Médicos]
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID do médico
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - senhaAtual
+     *               - novaSenha
+     *             properties:
+     *               senhaAtual:
+     *                 type: string
+     *                 example: "SenhaAntiga@123"
+     *               novaSenha:
+     *                 type: string
+     *                 minLength: 8
+     *                 example: "NovaSenha@123"
      *     responses:
      *       200:
-     *         description: Senha atualizada
+     *         description: Senha atualizada com sucesso
      *       400:
      *         description: Dados inválidos
      *       401:
-     *         description: Não autorizado ou senha incorreta
+     *         description: Não autorizado/Senha atual incorreta
      *       404:
      *         description: Médico não encontrado
-     *       500:
-     *         description: Erro interno
      */
-    this.router.patch('/:id/password', controller.updatePassword);
+    this.router.patch('/:id/password', authMiddleware, controller.updatePassword);
 
     /**
      * @swagger
      * /medicos/{id}:
      *   delete:
-     *     summary: Remove um médico
+     *     summary: Remove um médico do sistema
      *     tags: [Médicos]
      *     security:
      *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID do médico
      *     responses:
      *       204:
-     *         description: Médico removido
+     *         description: Médico removido com sucesso
      *       401:
      *         description: Não autorizado
      *       404:
      *         description: Médico não encontrado
-     *       500:
-     *         description: Erro interno
      */
-    this.router.delete('/:id', controller.remove);
+    this.router.delete('/:id', authMiddleware, controller.remove);
   }
 
   getRouter() {
