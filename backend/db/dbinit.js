@@ -26,7 +26,7 @@ const tables = [
         email VARCHAR(255) NOT NULL,     
         ip_address VARCHAR(45),          
         attempts INT DEFAULT 0,          
-        blocked_until TIMESTAMP NULL,    
+        blocked_until BIGINT NULL,
         last_attempt TIMESTAMP DEFAULT NOW(),
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()

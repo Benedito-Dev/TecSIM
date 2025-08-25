@@ -5,33 +5,28 @@ export const login = async (email, senha) => {
   try {
     const response = await api.post('/auth/login', { email, senha });
     
-    // Armazena o token e os dados do usuário
     await AsyncStorage.setItem('@Auth:token', response.data.token);
     await AsyncStorage.setItem('@Auth:user', JSON.stringify(response.data.usuario));
     
     return response.data;
   } catch (error) {
-    console.error('Detalhes do erro:', {
-      message: error.message,
-      code: error.code,
-      config: error.config, // Mostra a configuração da requisição
-      stack: error.stack
-    });
-    // Tratamento de erro mais robusto
     let errorMessage = 'Erro ao fazer login';
-    
+    let cooldown = 0;
+    console.log(cooldown);
+
     if (error.response) {
-      // Erro retornado pelo servidor
       errorMessage = error.response.data?.message || errorMessage;
+      cooldown = error.response.data?.cooldown || 0;
     } else if (error.request) {
-      // A requisição foi feita mas não houve resposta
       errorMessage = 'Sem resposta do servidor';
     } else {
-      // Erro ao configurar a requisição
       errorMessage = error.message || errorMessage;
     }
-    
-    throw new Error(errorMessage);
+
+    // Lança um objeto com mensagem e cooldown
+    const err = new Error(errorMessage);
+    err.cooldown = cooldown;
+    throw err;
   }
 };
 

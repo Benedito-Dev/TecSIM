@@ -8,8 +8,14 @@ class AuthController {
       const result = await authService.login(email, senha, ip);
       return res.status(200).json(result);
     } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
+        if (error.message.includes('Aguarde') || error.message.includes('cooldown')) {
+          // Bloqueio de tentativas
+          const match = error.message.match(/(\d+)/);
+          const cooldown = match ? parseInt(match[1], 10) : 60; // default 60s
+          return res.status(429).json({ message: error.message, cooldown });
+        }
+        return res.status(400).json({ message: error.message });
+      }
   }
 
   async me(req, res) {

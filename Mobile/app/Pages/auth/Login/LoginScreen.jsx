@@ -37,15 +37,13 @@ export default function LoginScreen() {
 
   const navigation = useNavigation();
   const { setUser } = useAuth();
-
   const isFormValid = emailIsValid && passwordIsValid;
 
-  // Carregar cooldown persistido ao inicializar
   useEffect(() => {
     loadPersistedCooldown();
-    
+
     const subscription = AppState.addEventListener('change', handleAppStateChange);
-    
+
     return () => {
       subscription.remove();
       if (timerRef.current) {
@@ -57,13 +55,11 @@ export default function LoginScreen() {
 
   const handleAppStateChange = (nextAppState) => {
     if (appStateRef.current.match(/inactive|background/) && nextAppState === 'active') {
-      // App voltou para primeiro plano, verificar cooldown
       loadPersistedCooldown();
     }
     appStateRef.current = nextAppState;
   };
 
-  // Carregar cooldown do AsyncStorage
   const loadPersistedCooldown = async () => {
     try {
       const storedEndTime = await AsyncStorage.getItem(COOLDOWN_STORAGE_KEY);
@@ -71,7 +67,7 @@ export default function LoginScreen() {
         const endTime = parseInt(storedEndTime, 10);
         const now = Date.now();
         const remainingSeconds = Math.max(0, Math.ceil((endTime - now) / 1000));
-        
+
         if (remainingSeconds > 0) {
           setCooldown(remainingSeconds);
           startCooldownTimer(endTime);
@@ -85,18 +81,17 @@ export default function LoginScreen() {
     }
   };
 
-  // Iniciar timer de cooldown (usando setInterval normal)
   const startCooldownTimer = (endTime) => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
+      timerRef.current = null;
     }
 
     timerRef.current = setInterval(() => {
       const now = Date.now();
       const remainingSeconds = Math.max(0, Math.ceil((endTime - now) / 1000));
-      
       setCooldown(remainingSeconds);
-      
+
       if (remainingSeconds <= 0) {
         clearInterval(timerRef.current);
         timerRef.current = null;
@@ -105,10 +100,9 @@ export default function LoginScreen() {
     }, 1000);
   };
 
-  // Persistir cooldown
   const persistCooldown = async (seconds) => {
     try {
-      const endTime = Date.now() + (seconds * 1000);
+      const endTime = Date.now() + seconds * 1000;
       await AsyncStorage.setItem(COOLDOWN_STORAGE_KEY, endTime.toString());
       return endTime;
     } catch (error) {
@@ -124,53 +118,32 @@ export default function LoginScreen() {
 
     setLoading(true);
     try {
-      await loginService(email, password);
+      const response = await loginService(email, password);
       const userData = await getCurrentUser();
       setUser(userData);
-      
-      // Limpar qualquer cooldown existente no login bem-sucedido
+
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
       await AsyncStorage.removeItem(COOLDOWN_STORAGE_KEY);
       setCooldown(0);
-      
+
       navigation.replace('App');
     } catch (error) {
       let msg = error.message;
+      let seconds = 0;
 
-      // Verifica diferentes estruturas possíveis do erro
-      if (error.response && error.response.data) {
-        if (error.response.data.mensagem) {
-          msg = error.response.data.mensagem;
-        } else if (error.response.data.message) {
-          msg = error.response.data.message;
-        }
-      }
-
-      console.log('Mensagem de erro completa:', msg);
-
-      // Detecta cooldown - versão mais flexível
-      const match = msg.match(/(\d+)/);
-      if (match && (msg.toLowerCase().includes('aguarde') || msg.toLowerCase().includes('wait') || msg.toLowerCase().includes('segundo') || msg.toLowerCase().includes('second'))) {
-        let seconds = parseInt(match[1], 10);
-        // if (seconds > 86400) { // Mais de 24 horas em segundos
-        //   seconds = Math.floor(seconds / 1000); // Converte milissegundos para segundos
-        //   console.log('Convertendo milissegundos para segundos:', seconds);
-        // }
-        // if (seconds > 3600) {
-        //   seconds = 3600;
-        // }
-        seconds = 60;
-
-        console.log('Cooldown detectado:', seconds, 'segundos');
-        
+      // ✅ Detecta cooldown enviado pelo backend
+      if (error.cooldown || error.response?.data?.cooldown) {
+        seconds = error.cooldown || error.response.data.cooldown;
         setCooldown(seconds);
         const endTime = await persistCooldown(seconds);
         startCooldownTimer(endTime);
-        
         msg = `Muitas tentativas. Aguarde ${seconds} segundo${seconds > 1 ? 's' : ''}.`;
+      } else if (error.response && error.response.data) {
+        // Mensagens do backend sem cooldown
+        msg = error.response.data?.mensagem || error.response.data?.message || msg;
       }
 
       Alert.alert('Erro', msg);
@@ -228,7 +201,6 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Texto de cooldown */}
         {cooldown > 0 && (
           <Text style={{ color: 'red', textAlign: 'center', marginVertical: 10 }}>
             ⏰ Você deve aguardar {cooldown} segundo{cooldown > 1 ? 's' : ''} antes de tentar novamente
