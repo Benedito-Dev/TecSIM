@@ -1,18 +1,18 @@
 import React, { useState, useContext } from "react";
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  ScrollView, 
-  Alert, 
-  KeyboardAvoidingView, 
-  Platform 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import { ThemeContext } from '../../../context/ThemeContext';
+import { ThemeContext } from "../../../context/ThemeContext";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker";
 import { getPrescriptionFormStyles } from "./styles";
 import { ArrowLeft, Calendar, Plus, Trash2, Pill } from "lucide-react-native";
 
@@ -39,37 +39,34 @@ export default function PrescricaoManualScreen() {
       frequencia: "",
       duracao_dias: "",
       via: "",
+      openVia: false,
     };
 
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
       medicamentos: [...prev.medicamentos, novoMedicamento],
     }));
   };
 
   const handleRemoveMedicamento = (id) => {
-    Alert.alert(
-      "Remover medicamento",
-      "Tem certeza que deseja remover este medicamento?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Remover",
-          onPress: () => {
-            setForm(prev => ({
-              ...prev,
-              medicamentos: prev.medicamentos.filter(med => med.id !== id),
-            }));
-          },
+    Alert.alert("Remover medicamento", "Tem certeza que deseja remover este medicamento?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Remover",
+        onPress: () => {
+          setForm((prev) => ({
+            ...prev,
+            medicamentos: prev.medicamentos.filter((med) => med.id !== id),
+          }));
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleMedicamentoChange = (id, field, value) => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      medicamentos: prev.medicamentos.map(med =>
+      medicamentos: prev.medicamentos.map((med) =>
         med.id === id ? { ...med, [field]: value } : med
       ),
     }));
@@ -115,11 +112,7 @@ export default function PrescricaoManualScreen() {
         <View style={styles.headerRight} />
       </View>
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Informações da prescrição */}
+      <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Informações da Prescrição</Text>
 
@@ -134,14 +127,10 @@ export default function PrescricaoManualScreen() {
             />
           </View>
 
-          {/* Datas */}
           <View style={styles.dateRow}>
             <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
               <Text style={styles.label}>Data da Prescrição</Text>
-              <TouchableOpacity
-                style={styles.dateInput}
-                onPress={() => setShowDatePicker(true)}
-              >
+              <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
                 <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
                 <Calendar size={18} color="#6B7280" />
               </TouchableOpacity>
@@ -149,10 +138,7 @@ export default function PrescricaoManualScreen() {
 
             <View style={[styles.inputGroup, { flex: 1 }]}>
               <Text style={styles.label}>Validade</Text>
-              <TouchableOpacity
-                style={styles.dateInput}
-                onPress={() => setShowValidadePicker(true)}
-              >
+              <TouchableOpacity style={styles.dateInput} onPress={() => setShowValidadePicker(true)}>
                 <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
                 <Calendar size={18} color="#6B7280" />
               </TouchableOpacity>
@@ -184,7 +170,6 @@ export default function PrescricaoManualScreen() {
           )}
         </View>
 
-        {/* Medicamentos */}
         <View style={styles.formSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Medicamentos Prescritos</Text>
@@ -207,10 +192,7 @@ export default function PrescricaoManualScreen() {
                     <Text style={styles.medNumberText}>{index + 1}</Text>
                   </View>
                   <Text style={styles.medicamentoTitle}>Medicamento</Text>
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => handleRemoveMedicamento(med.id)}
-                  >
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleRemoveMedicamento(med.id)}>
                     <Trash2 size={20} color="#EF4444" />
                   </TouchableOpacity>
                 </View>
@@ -240,18 +222,26 @@ export default function PrescricaoManualScreen() {
 
                   <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
                     <Text style={styles.label}>Via de Administração</Text>
-                    <View style={styles.pickerWrapper}>
-                      <Picker
-                        selectedValue={med.via}
-                        onValueChange={(value) => handleMedicamentoChange(med.id, "via", value)}
-                        style={styles.picker}
-                      >
-                        <Picker.Item label="Oral" value="Oral" />
-                        <Picker.Item label="Tópica" value="Tópica" />
-                        <Picker.Item label="Inalatória" value="Inalatória" />
-                        <Picker.Item label="Subcutânea" value="Subcutânea" />
-                      </Picker>
-                    </View>
+                    <DropDownPicker
+                      open={med.openVia || false}
+                      value={med.via || null}
+                      items={[
+                        { label: "Oral", value: "Oral" },
+                        { label: "Tópica", value: "Tópica" },
+                        { label: "Inalatória", value: "Inalatória" },
+                        { label: "Subcutânea", value: "Subcutânea" },
+                      ]}
+                      setOpen={(open) => handleMedicamentoChange(med.id, "openVia", open)}
+                      setValue={(callback) => {
+                        const value = callback(med.via);
+                        handleMedicamentoChange(med.id, "via", value);
+                      }}
+                      placeholder="Selecione..."
+                      listMode="SCROLLVIEW"
+                      style={styles.ScrollView}
+                      dropDownContainerStyle={styles.dropDownContainer}
+                      textStyle={styles.input}
+                    />
                   </View>
                 </View>
 
