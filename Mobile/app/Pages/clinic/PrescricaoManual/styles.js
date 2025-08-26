@@ -63,7 +63,6 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.border,
     borderRadius: 8,
-    paddingHorizontal: 12,
     justifyContent: 'center',
     height: 48,
   },
@@ -71,7 +70,9 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     color: theme.textPrimary,
     fontSize: 15,
     height: '100%',
-    flex: 1, 
+    flex: 1,
+    border: 'none',
+    borderRadius: 8,
 
   },
   emptyState: { alignItems: 'center', justifyContent: 'center', paddingVertical: 24 },
