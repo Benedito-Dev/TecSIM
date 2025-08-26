@@ -25,6 +25,7 @@ export default function ProfileScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      console.log(user)
       if (!user?.id) return; // Proteção contra user null/undefined
 
       const carregarPaciente = async () => {
