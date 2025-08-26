@@ -66,12 +66,24 @@ class PacienteRepository {
 
   async updatePassword(id, senhaAtual, novaSenha) {
     const paciente = await db.query('SELECT senha FROM paciente WHERE id = $1', [id]);
-    if (!paciente.rows[0]) throw new Error('Paciente não encontrado.');
+    if (!paciente.rows[0]) {
+      const error = new Error('Paciente não encontrado.');
+      error.code = 404;
+      throw error;
+    }
 
     const senhaMatch = await bcrypt.compare(senhaAtual, paciente.rows[0].senha);
-    if (!senhaMatch) throw new Error('Senha atual incorreta.');
+    if (!senhaMatch) {
+      const error = new Error('Senha atual incorreta.');
+      error.code = 401;
+      throw error;
+    }
 
-    if (senhaAtual === novaSenha) throw new Error('A nova senha deve ser diferente da senha atual.');
+    if (senhaAtual === novaSenha) {
+      const error = new Error('A nova senha deve ser diferente da senha atual.');
+      error.code = 400;
+      throw error;
+    }
 
     const novaSenhaHash = await bcrypt.hash(novaSenha, SALT_ROUNDS);
 
@@ -86,10 +98,24 @@ class PacienteRepository {
 
   async verifyCredentials(email, senha) {
     const usuario = await this.findByEmail(email);
-    if (!usuario) throw new Error('Credenciais inválidas');
+    if (!usuario) {
+      const error = new Error('Credenciais inválidas');
+      error.code = 401;
+      throw error;
+    }
 
     const senhaMatch = await bcrypt.compare(senha, usuario.senha);
-    if (!senhaMatch) throw new Error('Credenciais inválidas');
+    if (!senhaMatch) {
+      const error = new Error('Credenciais inválidas');
+      error.code = 401;
+      throw error;
+    }
+
+    if (usuario.ativo === false) {
+      const error = new Error('Conta desativada');
+      error.code = 403;
+      throw error;
+    }
 
     return new Paciente({
       id: usuario.id,
