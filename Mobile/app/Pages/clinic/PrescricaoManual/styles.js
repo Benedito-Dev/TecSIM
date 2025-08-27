@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
   container: {
@@ -63,16 +63,8 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.border,
     borderRadius: 8,
-    paddingHorizontal: 12,
     justifyContent: 'center',
     height: 48,
-  },
-  picker: {
-    color: theme.textPrimary,
-    fontSize: 15,
-    height: '100%',
-    flex: 1, 
-
   },
   emptyState: { alignItems: 'center', justifyContent: 'center', paddingVertical: 24 },
   emptyText: { fontSize: 14, color: theme.textMuted, marginTop: 8 },
@@ -94,4 +86,23 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     right: 16,
   },
   submitButtonText: { color: theme.textOnPrimary, fontSize: 16, fontWeight: '600' },
+
+  ScrollView: {
+    backgroundColor: theme.backgroundCard,
+    borderColor: theme.border,
+    borderWidth: 1,
+    borderRadius: 8,
+    height: 48,
+  },
+
+  dropDownContainer: {
+    backgroundColor: theme.backgroundCard,
+    borderColor: theme.border,
+    borderWidth: 1,
+    borderRadius: 8,
+  },
+  textStyle: {
+    fontSize: 15,
+    color: theme.textPrimary,
+  },
 });
