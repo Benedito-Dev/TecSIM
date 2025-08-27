@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login as loginService, getCurrentUser } from '../../../services/auth/authService';
 import { useAuth } from '../../../context/AuthContext';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import EmailInput from '../../../components/Register/EmailInput';
 import PasswordInput from '../../../components/Register/PasswordInput';
@@ -34,6 +35,7 @@ export default function LoginScreen() {
   const [cooldown, setCooldown] = useState(0);
   const timerRef = useRef(null);
   const appStateRef = useRef(AppState.currentState);
+  const scrollViewRef = useRef(null);
 
   const navigation = useNavigation();
   const { setUser } = useAuth();
@@ -153,7 +155,16 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView
+      ref={scrollViewRef}
+      style={styles.container}
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+      enableOnAndroid={true}
+      enableAutomaticScroll={true}
+      extraScrollHeight={20} // Espaço extra acima do teclado
+      extraHeight={100} // Altura extra para garantir que tudo fique visível
+    >
       <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
         <Image source={require('../../../assets/images/logo_branca.png')} style={styles.logo} />
         <Text style={styles.title}>Welcome Back</Text>
@@ -224,6 +235,6 @@ export default function LoginScreen() {
           <Text style={styles.EsqueciSenha}>Crie sua Conta</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }

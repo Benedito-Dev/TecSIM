@@ -42,6 +42,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: "column",
     paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 30, // Adiciona espaço extra na parte inferior
   },
   label: {
     fontSize: 16,
