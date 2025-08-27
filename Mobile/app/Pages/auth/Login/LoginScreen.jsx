@@ -8,7 +8,6 @@ import {
   Alert,
   ActivityIndicator,
   AppState,
-  Keyboard, // 👈 import do teclado
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
@@ -37,7 +36,7 @@ export default function LoginScreen() {
   const timerRef = useRef(null);
   const appStateRef = useRef(AppState.currentState);
   const scrollViewRef = useRef(null);
-  const loginButtonRef = useRef(null); // 🔹 Referência para o botão de login
+  const loginButtonRef = useRef(null);
 
   const navigation = useNavigation();
   const { setUser } = useAuth();
@@ -48,18 +47,8 @@ export default function LoginScreen() {
 
     const subscription = AppState.addEventListener('change', handleAppStateChange);
 
-    // 👇 listener do teclado
-    const keyboardShowSub = Keyboard.addListener('keyboardDidShow', () => {
-      if (scrollViewRef.current) {
-        setTimeout(() => {
-          scrollViewRef.current.scrollToEnd({ animated: true });
-        }, 200);
-      }
-    });
-
     return () => {
       subscription.remove();
-      keyboardShowSub.remove();
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
@@ -148,7 +137,6 @@ export default function LoginScreen() {
       let msg = error.message;
       let seconds = 0;
 
-      // ✅ Detecta cooldown enviado pelo backend
       if (error.cooldown || error.response?.data?.cooldown) {
         seconds = error.cooldown || error.response.data.cooldown;
         setCooldown(seconds);
@@ -156,7 +144,6 @@ export default function LoginScreen() {
         startCooldownTimer(endTime);
         msg = `Muitas tentativas. Aguarde ${seconds} segundo${seconds > 1 ? 's' : ''}.`;
       } else if (error.response && error.response.data) {
-        // Mensagens do backend sem cooldown
         msg = error.response.data?.mensagem || error.response.data?.message || msg;
       }
 
@@ -174,8 +161,8 @@ export default function LoginScreen() {
       keyboardShouldPersistTaps="handled"
       enableOnAndroid={true}
       enableAutomaticScroll={true}
-      extraScrollHeight={20}
-      extraHeight={100}
+      extraScrollHeight={290} // ✅ Ajuste fino entre 30~50
+      keyboardOpeningTime={250} // ⏱️ tenta entre 200~300ms
     >
       <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
         <Image source={require('../../../assets/images/logo_branca.png')} style={styles.logo} />
@@ -234,7 +221,7 @@ export default function LoginScreen() {
           <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
         ) : (
           <TouchableOpacity
-            ref={loginButtonRef} // 🔹 Referência para o botão
+            ref={loginButtonRef}
             style={[styles.button, (!isFormValid || cooldown > 0) && styles.disabledButton]}
             onPress={handleLogin}
             disabled={!isFormValid || cooldown > 0}
