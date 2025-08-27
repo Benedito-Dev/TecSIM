@@ -120,7 +120,7 @@ export default function RegisterScreen({ navigation }) {
 
             <EmailInput label="Email" value={email} onChangeText={setEmail} onValidityChange={setEmailIsValid} keyboardType="email-address" iconName="mail" />
 
-            <PasswordInput label="Senha" onChangeText={setPassword} onValidityChange={setPasswordIsValid} />
+            <PasswordInput label="Senha" onChangeText={setPassword} onValidityChange={setPasswordIsValid} theme={lightTheme} />
 
             <InputField
               label="Confirmar senha"
@@ -137,7 +137,7 @@ export default function RegisterScreen({ navigation }) {
 
             <GenderInput value={genero} onChange={setGenero} theme={lightTheme} />
 
-            <PesoInput label="Peso (kg)" value={peso_kg} onChangeText={setPesoKg} onValidityChange={setPesoIsValid} minWeight={30} maxWeight={300} />
+            <PesoInput label="Peso (kg)" value={peso_kg} onChangeText={setPesoKg} onValidityChange={setPesoIsValid} minWeight={30} maxWeight={300} theme={lightTheme} />
 
             <View style={styles.authExtras}>
               <View style={styles.Remenber}>
