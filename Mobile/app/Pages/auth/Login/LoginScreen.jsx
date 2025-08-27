@@ -8,6 +8,7 @@ import {
   Alert,
   ActivityIndicator,
   AppState,
+  Keyboard, // 👈 import do teclado
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
@@ -47,8 +48,18 @@ export default function LoginScreen() {
 
     const subscription = AppState.addEventListener('change', handleAppStateChange);
 
+    // 👇 listener do teclado
+    const keyboardShowSub = Keyboard.addListener('keyboardDidShow', () => {
+      if (scrollViewRef.current) {
+        setTimeout(() => {
+          scrollViewRef.current.scrollToEnd({ animated: true });
+        }, 200);
+      }
+    });
+
     return () => {
       subscription.remove();
+      keyboardShowSub.remove();
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
@@ -187,14 +198,6 @@ export default function LoginScreen() {
           onChangeText={setPassword}
           onValidityChange={setPasswordIsValid}
           theme={lightTheme}
-          onFocus={() => {
-            // 🔹 Quando foca no campo de senha, rola até o botão de login
-            if (loginButtonRef.current && scrollViewRef.current) {
-              setTimeout(() => {
-                scrollViewRef.current.scrollToFocusedInput(loginButtonRef.current);
-              }, 300);
-            }
-          }}
         />
 
         <View style={styles.authExtras}>
