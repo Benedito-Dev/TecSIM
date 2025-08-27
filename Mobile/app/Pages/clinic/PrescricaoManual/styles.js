@@ -16,15 +16,27 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     borderBottomColor: theme.border,
     backgroundColor: theme.backgroundCard,
   },
-  backButton: { padding: 8 },
-  headerRight: { width: 40 },
+
+  backButton: {
+    padding: 8    
+  },
+
+  headerRight: {
+    width: 40    
+  },
+
   title: {
     fontSize: 20,
     fontWeight: '600',
     color: theme.textPrimary,
     textAlign: 'center',
   },
-  scrollContainer: { paddingHorizontal: 16, paddingBottom: 100 },
+
+  scrollContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 100
+  },
+
   formSection: {
     backgroundColor: theme.backgroundCard,
     borderRadius: 12,
@@ -33,12 +45,46 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.border,
   },
-  sectionTitle: { fontSize: 16, fontWeight: '600', color: theme.textPrimary, marginBottom: 16 },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  addButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.primary, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8 },
-  addButtonText: { color: theme.textOnPrimary, fontSize: 14, fontWeight: '500', marginLeft: 6 },
-  inputGroup: { marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '500', color: theme.textSecondary, marginBottom: 8 },
+
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.textPrimary,
+    marginBottom: 16
+  },
+
+  sectionHeader: { flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8
+  },
+
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8 },
+
+  addButtonText: {
+    color: theme.textOnPrimary,
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 6
+  },
+
+  inputGroup: {
+    marginBottom: 16 
+  },
+
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: theme.textSecondary,
+    marginBottom: 8
+  },
+
   input: {
     backgroundColor: theme.backgroundCard,
     borderWidth: 1,
@@ -48,16 +94,75 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     fontSize: 15,
     color: theme.textPrimary,
   },
-  dateRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  dateInput: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: theme.backgroundCard, borderWidth: 1, borderColor: theme.border, borderRadius: 8, padding: 12 },
-  dateText: { fontSize: 15, color: theme.textPrimary },
-  medicamentoCard: { backgroundColor: theme.backgroundSecondary, borderRadius: 8, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: theme.border },
-  medicamentoHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-  medNumber: { backgroundColor: theme.primary, width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  medNumberText: { color: theme.textOnPrimary, fontSize: 12, fontWeight: '600' },
-  medicamentoTitle: { fontSize: 15, fontWeight: '600', color: theme.textPrimary, flex: 1 },
-  deleteButton: { padding: 4 },
-  medRow: { flexDirection: 'row', justifyContent: 'space-between' },
+
+  dateRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between'
+  },
+
+  dateInput: { 
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.backgroundCard,
+    borderWidth: 1,
+    borderColor: theme.border,
+    borderRadius: 8,
+    padding: 12 
+  },
+
+  dateText: { 
+    fontSize: 15,
+    color: theme.textPrimary
+  },
+
+  medicamentoCard: {
+    backgroundColor: theme.backgroundSecondary,
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: theme.border
+  },
+
+  medicamentoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16
+  },
+
+  medNumber: {
+    backgroundColor: theme.primary,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12
+  },
+
+  medNumberText: {
+    color: theme.textOnPrimary,
+    fontSize: 12,
+    fontWeight: '600'
+  },
+
+  medicamentoTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: theme.textPrimary,
+    flex: 1
+  },
+
+  deleteButton: {
+    padding: 4
+  },
+
+  medRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
   pickerWrapper: {
     backgroundColor: theme.backgroundCard,
     borderWidth: 1,
@@ -66,8 +171,18 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     height: 48,
   },
-  emptyState: { alignItems: 'center', justifyContent: 'center', paddingVertical: 24 },
-  emptyText: { fontSize: 14, color: theme.textMuted, marginTop: 8 },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 24
+  },
+
+  emptyText: {
+    fontSize: 14,
+    color: theme.textMuted,
+    marginTop: 8
+  },
+
   submitButton: {
     backgroundColor: theme.success,
     padding: 16,
@@ -85,7 +200,11 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     left: 16,
     right: 16,
   },
-  submitButtonText: { color: theme.textOnPrimary, fontSize: 16, fontWeight: '600' },
+  submitButtonText: {
+    color: theme.textOnPrimary,
+    fontSize: 16,
+    fontWeight: '600'
+  },
 
   ScrollView: {
     backgroundColor: theme.backgroundCard,
@@ -105,4 +224,5 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     fontSize: 15,
     color: theme.textPrimary,
   },
+
 });
