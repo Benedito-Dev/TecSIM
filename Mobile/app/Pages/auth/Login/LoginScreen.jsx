@@ -36,6 +36,7 @@ export default function LoginScreen() {
   const timerRef = useRef(null);
   const appStateRef = useRef(AppState.currentState);
   const scrollViewRef = useRef(null);
+  const loginButtonRef = useRef(null); // 🔹 Referência para o botão de login
 
   const navigation = useNavigation();
   const { setUser } = useAuth();
@@ -162,8 +163,8 @@ export default function LoginScreen() {
       keyboardShouldPersistTaps="handled"
       enableOnAndroid={true}
       enableAutomaticScroll={true}
-      extraScrollHeight={20} // Espaço extra acima do teclado
-      extraHeight={100} // Altura extra para garantir que tudo fique visível
+      extraScrollHeight={20}
+      extraHeight={100}
     >
       <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
         <Image source={require('../../../assets/images/logo_branca.png')} style={styles.logo} />
@@ -186,6 +187,14 @@ export default function LoginScreen() {
           onChangeText={setPassword}
           onValidityChange={setPasswordIsValid}
           theme={lightTheme}
+          onFocus={() => {
+            // 🔹 Quando foca no campo de senha, rola até o botão de login
+            if (loginButtonRef.current && scrollViewRef.current) {
+              setTimeout(() => {
+                scrollViewRef.current.scrollToFocusedInput(loginButtonRef.current);
+              }, 300);
+            }
+          }}
         />
 
         <View style={styles.authExtras}>
@@ -222,6 +231,7 @@ export default function LoginScreen() {
           <ActivityIndicator size="large" color="#0097b2" style={styles.loading} />
         ) : (
           <TouchableOpacity
+            ref={loginButtonRef} // 🔹 Referência para o botão
             style={[styles.button, (!isFormValid || cooldown > 0) && styles.disabledButton]}
             onPress={handleLogin}
             disabled={!isFormValid || cooldown > 0}
