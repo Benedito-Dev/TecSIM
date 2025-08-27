@@ -16,7 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { requestOtp } from '../../../services/auth/otpService';
-import TermsModal from '../../../components/Register/TermsModal';
+import TermsModal from '../../../components/Register/TermsModal'
 
 import InputField from '../../../components/Register/InputField';
 import DateInput from '../../../components/Register/DataInput';
