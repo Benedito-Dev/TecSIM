@@ -18,8 +18,6 @@ class AuthController {
           cooldown: error.cooldown || cooldown 
         });
       }
-
-      console.log(error.code)
       
       if (error.code === 401) {
         return res.status(401).json({ message: error.message });
