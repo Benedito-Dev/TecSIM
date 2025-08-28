@@ -166,8 +166,8 @@ export default function LoginScreen() {
     >
       <LinearGradient colors={['#00c4cd', '#0c87c4']} style={styles.TopContainer}>
         <Image source={require('../../../assets/images/logo_branca.png')} style={styles.logo} />
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to continue</Text>
+        <Text style={styles.title}>Bem-vindo(a)</Text>
+        <Text style={styles.subtitle}>Faça login para continuar</Text>
       </LinearGradient>
 
       <View style={styles.content}>

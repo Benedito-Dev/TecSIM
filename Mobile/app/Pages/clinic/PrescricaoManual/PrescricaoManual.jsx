@@ -8,13 +8,14 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrescriptionFormStyles } from "./styles";
-import { ArrowLeft, Plus, Trash2, Pill, Calendar  } from "lucide-react-native";
+import { ArrowLeft, Plus, Trash2, Pill, Calendar } from "lucide-react-native";
 
 export default function PrescricaoManualScreen() {
   const navigation = useNavigation();
@@ -112,186 +113,190 @@ export default function PrescricaoManualScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <ArrowLeft size={24} color="#2563EB" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Nova Prescrição</Text>
-        <View style={styles.headerRight} />
-      </View>
-
-      <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-        <View style={styles.formSection}>
-          <Text style={styles.sectionTitle}>Informações da Prescrição</Text>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Diagnóstico Principal*</Text>
-            <TextInput
-              style={styles.input}
-              value={form.diagnostico}
-              onChangeText={(text) => setForm({ ...form, diagnostico: text })}
-              placeholder="Ex: Hipertensão arterial"
-              placeholderTextColor="#9CA3AF"
-            />
-          </View>
-
-          <View style={styles.dateRow}>
-            <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-              <Text style={styles.label}>Data da Prescrição</Text>
-              <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
-                <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
-                <Calendar size={18} color="#6B7280" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={[styles.inputGroup, { flex: 1 }]}>
-              <Text style={styles.label}>Validade</Text>
-              <TouchableOpacity style={styles.dateInput} onPress={() => setShowValidadePicker(true)}>
-                <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
-                <Calendar size={18} color="#6B7280" />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={form.data_prescricao}
-              mode="date"
-              display="default"
-              onChange={(_, date) => {
-                setShowDatePicker(false);
-                date && setForm({ ...form, data_prescricao: date });
-              }}
-            />
-          )}
-
-          {showValidadePicker && (
-            <DateTimePicker
-              value={form.validade}
-              mode="date"
-              display="default"
-              onChange={(_, date) => {
-                setShowValidadePicker(false);
-                date && setForm({ ...form, validade: date });
-              }}
-            />
-          )}
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <ArrowLeft size={24} color="#2563EB" />
+          </TouchableOpacity>
+          <Text style={styles.title}>Nova Prescrição</Text>
+          <View style={styles.headerRight} />
         </View>
 
-        <View style={styles.formSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Medicamentos Prescritos</Text>
-            <TouchableOpacity style={styles.addButton} onPress={handleAddMedicamento}>
-              <Plus size={20} color="#FFFFFF" />
-              <Text style={styles.addButtonText}>Adicionar</Text>
-            </TouchableOpacity>
-          </View>
+        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+          {/* Restante do formulário */}
+          <View style={styles.formSection}>
+            <Text style={styles.sectionTitle}>Informações da Prescrição</Text>
 
-          {form.medicamentos.length === 0 ? (
-            <View style={styles.emptyState}>
-              <Pill size={40} color="#E5E7EB" />
-              <Text style={styles.emptyText}>Nenhum medicamento adicionado</Text>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Diagnóstico Principal*</Text>
+              <TextInput
+                style={styles.input}
+                value={form.diagnostico}
+                onChangeText={(text) => setForm({ ...form, diagnostico: text })}
+                placeholder="Ex: Hipertensão arterial"
+                placeholderTextColor="#9CA3AF"
+              />
             </View>
-          ) : (
-            form.medicamentos.map((med, index) => (
-              <View key={med.id} style={styles.medicamentoCard}>
-                <View style={styles.medicamentoHeader}>
-                  <View style={styles.medNumber}>
-                    <Text style={styles.medNumberText}>{index + 1}</Text>
-                  </View>
-                  <Text style={styles.medicamentoTitle}>Medicamento</Text>
-                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleRemoveMedicamento(med.id)}>
-                    <Trash2 size={20} color="#EF4444" />
-                  </TouchableOpacity>
-                </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.label}>Nome do Medicamento*</Text>
-                  <TextInput
-                    style={styles.input}
-                    value={med.nome}
-                    onChangeText={(text) => handleMedicamentoChange(med.id, "nome", text)}
-                    placeholder="Ex: Losartana"
-                    placeholderTextColor="#9CA3AF"
-                  />
-                </View>
-
-                <View style={styles.medRow}>
-                  <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-                    <Text style={styles.label}>Dosagem*</Text>
-                    <TextInput
-                      style={styles.input}
-                      value={med.dosagem}
-                      onChangeText={(text) => handleMedicamentoChange(med.id, "dosagem", text)}
-                      placeholder="Ex: 50mg"
-                      placeholderTextColor="#9CA3AF"
-                    />
-                  </View>
-
-                  <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-                    <Text style={styles.label}>Via de Administração</Text>
-                    <DropDownPicker
-                      open={med.openVia || false}
-                      value={med.via || null}
-                      items={[
-                        { label: "Oral", value: "Oral" },
-                        { label: "Tópica", value: "Tópica" },
-                        { label: "Inalatória", value: "Inalatória" },
-                        { label: "Subcutânea", value: "Subcutânea" },
-                      ]}
-                      setOpen={(open) => handleMedicamentoChange(med.id, "openVia", open)}
-                      setValue={(callback) => {
-                        const value = callback(med.via);
-                        handleMedicamentoChange(med.id, "via", value);
-                      }}
-                      placeholder="Selecione..."
-                      listMode="SCROLLVIEW"
-                      style={styles.ScrollView}
-                      dropDownContainerStyle={styles.dropDownContainer}
-                      textStyle={styles.input}
-                    />
-                  </View>
-                </View>
-
-                <View style={styles.medRow}>
-                  <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-                    <Text style={styles.label}>Frequência*</Text>
-                    <TextInput
-                      style={styles.input}
-                      value={med.frequencia}
-                      onChangeText={(text) => handleMedicamentoChange(med.id, "frequencia", text)}
-                      placeholder="Ex: 1x ao dia"
-                      placeholderTextColor="#9CA3AF"
-                    />
-                  </View>
-
-                  <View style={[styles.inputGroup, { flex: 1 }]}>
-                    <Text style={styles.label}>Duração (dias)*</Text>
-                    <TextInput
-                      style={styles.input}
-                      value={med.duracao_dias}
-                      onChangeText={(text) => handleMedicamentoChange(med.id, "duracao_dias", text)}
-                      keyboardType="numeric"
-                      placeholder="Ex: 30"
-                      placeholderTextColor="#9CA3AF"
-                    />
-                  </View>
-                </View>
+            <View style={styles.dateRow}>
+              <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+                <Text style={styles.label}>Data da Prescrição</Text>
+                <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
+                  <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
+                  <Calendar size={18} color="#6B7280" />
+                </TouchableOpacity>
               </View>
-            ))
-          )}
-        </View>
-      </ScrollView>
 
-      {/* Botão Final */}
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} activeOpacity={0.8}>
-        <Text style={styles.submitButtonText}>Salvar Prescrição</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+              <View style={[styles.inputGroup, { flex: 1 }]}>
+                <Text style={styles.label}>Validade</Text>
+                <TouchableOpacity style={styles.dateInput} onPress={() => setShowValidadePicker(true)}>
+                  <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
+                  <Calendar size={18} color="#6B7280" />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={form.data_prescricao}
+                mode="date"
+                display="default"
+                onChange={(_, date) => {
+                  setShowDatePicker(false);
+                  date && setForm({ ...form, data_prescricao: date });
+                }}
+              />
+            )}
+
+            {showValidadePicker && (
+              <DateTimePicker
+                value={form.validade}
+                mode="date"
+                display="default"
+                onChange={(_, date) => {
+                  setShowValidadePicker(false);
+                  date && setForm({ ...form, validade: date });
+                }}
+              />
+            )}
+          </View>
+
+          {/* Medicamentos */}
+          <View style={styles.formSection}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Medicamentos Prescritos</Text>
+              <TouchableOpacity style={styles.addButton} onPress={handleAddMedicamento}>
+                <Plus size={20} color="#FFFFFF" />
+                <Text style={styles.addButtonText}>Adicionar</Text>
+              </TouchableOpacity>
+            </View>
+
+            {form.medicamentos.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Pill size={40} color="#E5E7EB" />
+                <Text style={styles.emptyText}>Nenhum medicamento adicionado</Text>
+              </View>
+            ) : (
+              form.medicamentos.map((med, index) => (
+                <View key={med.id} style={styles.medicamentoCard}>
+                  <View style={styles.medicamentoHeader}>
+                    <View style={styles.medNumber}>
+                      <Text style={styles.medNumberText}>{index + 1}</Text>
+                    </View>
+                    <Text style={styles.medicamentoTitle}>Medicamento</Text>
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => handleRemoveMedicamento(med.id)}>
+                      <Trash2 size={20} color="#EF4444" />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Nome do Medicamento*</Text>
+                    <TextInput
+                      style={styles.input}
+                      value={med.nome}
+                      onChangeText={(text) => handleMedicamentoChange(med.id, "nome", text)}
+                      placeholder="Ex: Losartana"
+                      placeholderTextColor="#9CA3AF"
+                    />
+                  </View>
+
+                  <View style={styles.medRow}>
+                    <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+                      <Text style={styles.label}>Dosagem*</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={med.dosagem}
+                        onChangeText={(text) => handleMedicamentoChange(med.id, "dosagem", text)}
+                        placeholder="Ex: 50mg"
+                        placeholderTextColor="#9CA3AF"
+                      />
+                    </View>
+
+                    <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+                      <Text style={styles.label}>Via de Administração</Text>
+                      <DropDownPicker
+                        open={med.openVia || false}
+                        value={med.via || null}
+                        items={[
+                          { label: "Oral", value: "Oral" },
+                          { label: "Tópica", value: "Tópica" },
+                          { label: "Inalatória", value: "Inalatória" },
+                          { label: "Subcutânea", value: "Subcutânea" },
+                        ]}
+                        setOpen={(open) => handleMedicamentoChange(med.id, "openVia", open)}
+                        setValue={(callback) => {
+                          const value = callback(med.via);
+                          handleMedicamentoChange(med.id, "via", value);
+                        }}
+                        placeholder="Selecione..."
+                        listMode="SCROLLVIEW"
+                        style={styles.ScrollView}
+                        dropDownContainerStyle={styles.dropDownContainer}
+                        textStyle={styles.input}
+                      />
+                    </View>
+                  </View>
+
+                  <View style={styles.medRow}>
+                    <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+                      <Text style={styles.label}>Frequência*</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={med.frequencia}
+                        onChangeText={(text) => handleMedicamentoChange(med.id, "frequencia", text)}
+                        placeholder="Ex: 1x ao dia"
+                        placeholderTextColor="#9CA3AF"
+                      />
+                    </View>
+
+                    <View style={[styles.inputGroup, { flex: 1 }]}>
+                      <Text style={styles.label}>Duração (dias)*</Text>
+                      <TextInput
+                        style={styles.input}
+                        value={med.duracao_dias}
+                        onChangeText={(text) => handleMedicamentoChange(med.id, "duracao_dias", text)}
+                        keyboardType="numeric"
+                        placeholder="Ex: 30"
+                        placeholderTextColor="#9CA3AF"
+                      />
+                    </View>
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+        </ScrollView>
+
+        {/* Botão Final */}
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} activeOpacity={0.8}>
+          <Text style={styles.submitButtonText}>Salvar Prescrição</Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

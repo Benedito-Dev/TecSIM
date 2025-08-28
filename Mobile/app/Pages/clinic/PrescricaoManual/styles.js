@@ -1,17 +1,18 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.background,
+    // SafeAreaView deve envolver este container no componente
   },
+
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 60,
     paddingHorizontal: 24,
-    paddingBottom: 16,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: theme.border,
     backgroundColor: theme.backgroundCard,
@@ -53,7 +54,8 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     marginBottom: 16
   },
 
-  sectionHeader: { flexDirection: 'row',
+  sectionHeader: { 
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8
@@ -65,7 +67,8 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     backgroundColor: theme.primary,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 8 },
+    borderRadius: 8 
+  },
 
   addButtonText: {
     color: theme.textOnPrimary,
