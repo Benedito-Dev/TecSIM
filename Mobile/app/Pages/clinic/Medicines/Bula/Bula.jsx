@@ -1,15 +1,33 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useRoute } from '@react-navigation/native';
-import { View, Text, ScrollView, TouchableOpacity, Linking, ActivityIndicator } from 'react-native';
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
-import { ThemeContext } from '../../../../context/ThemeContext';
-import { getBulaPorMedicamento } from '../../../../services/bulaService';
+import React, { useEffect, useState, useContext } from "react";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Linking,
+  ActivityIndicator,
+} from "react-native";
+import {
+  MaterialIcons,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import { ArrowLeft } from "lucide-react-native"; // seta padrão
+import { ThemeContext } from "../../../../context/ThemeContext";
+import { getBulaPorMedicamento } from "../../../../services/bulaService";
 
-import { getBulaStyles } from './styles';
+import { getBulaStyles } from "./styles";
 
 export default function BulaScreen() {
   const route = useRoute();
-  const { idMedicamento, nomeMedicamento, tipoMedicamento, dosagemMedicamento } = route.params;
+  const navigation = useNavigation();
+  const {
+    idMedicamento,
+    nomeMedicamento,
+    tipoMedicamento,
+    dosagemMedicamento,
+  } = route.params;
 
   const [bula, setBula] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,7 +49,7 @@ export default function BulaScreen() {
         const data = await getBulaPorMedicamento(idMedicamento);
         setBula(data);
       } catch (error) {
-        console.error('Erro ao buscar bula:', error);
+        console.error("Erro ao buscar bula:", error);
       } finally {
         setLoading(false);
       }
@@ -43,20 +61,38 @@ export default function BulaScreen() {
   const toggleSection = (section) => {
     setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
-  // Componente reutilizável para seções (moved inside BulaScreen)
-  const ExpandableSection = ({ title, icon, expanded, onToggle, items, important = false }) => (
+  // Componente reutilizável para seções
+  const ExpandableSection = ({
+    title,
+    icon,
+    expanded,
+    onToggle,
+    items,
+    important = false,
+  }) => (
     <View style={[styles.card, important && styles.importantCard]}>
-      <TouchableOpacity style={styles.sectionHeader} onPress={onToggle} activeOpacity={0.7}>
+      <TouchableOpacity
+        style={styles.sectionHeader}
+        onPress={onToggle}
+        activeOpacity={0.7}
+      >
         <View style={styles.sectionTitle}>
           {icon}
-          <Text style={[styles.sectionHeaderText, important && styles.importantText]}>{title}</Text>
+          <Text
+            style={[
+              styles.sectionHeaderText,
+              important && styles.importantText,
+            ]}
+          >
+            {title}
+          </Text>
         </View>
         <MaterialIcons
-          name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+          name={expanded ? "keyboard-arrow-up" : "keyboard-arrow-down"}
           size={24}
           color={important ? theme.error : theme.textMuted}
         />
@@ -80,7 +116,7 @@ export default function BulaScreen() {
     </View>
   );
 
-  // Componente de linha com ícone (moved inside BulaScreen)
+  // Componente de linha com ícone
   const InfoItem = ({ icon, text, styles }) => (
     <View style={styles.infoItem}>
       <Text style={styles.infoIcon}>{icon}</Text>
@@ -90,20 +126,20 @@ export default function BulaScreen() {
 
   const getIconForSection = (sectionTitle) => {
     switch (sectionTitle) {
-      case 'CONTRAINDICAÇÕES':
-        return '❌';
-      case 'INTERAÇÕES MEDICAMENTOSAS':
-        return '💊';
-      case 'PRECAUÇÕES E ADVERTÊNCIAS':
-        return '⚠️';
-      case 'INDICAÇÕES':
-        return '✅';
-      case 'ARMAZENAMENTO E VALIDADE':
-        return '📦';
-      case 'DOSAGEM E ADMINISTRAÇÃO':
-        return '🕒';
+      case "CONTRAINDICAÇÕES":
+        return "❌";
+      case "INTERAÇÕES MEDICAMENTOSAS":
+        return "💊";
+      case "PRECAUÇÕES E ADVERTÊNCIAS":
+        return "⚠️";
+      case "INDICAÇÕES":
+        return "✅";
+      case "ARMAZENAMENTO E VALIDADE":
+        return "📦";
+      case "DOSAGEM E ADMINISTRAÇÃO":
+        return "🕒";
       default:
-        return '•';
+        return "•";
     }
   };
 
@@ -111,7 +147,9 @@ export default function BulaScreen() {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
         <ActivityIndicator size="large" color={theme.primary} />
-        <Text style={[styles.loadingText, { color: theme.primary }]}>Carregando bula...</Text>
+        <Text style={[styles.loadingText, { color: theme.primary }]}>
+          Carregando bula...
+        </Text>
       </View>
     );
   }
@@ -128,12 +166,22 @@ export default function BulaScreen() {
     <View style={styles.container}>
       {/* Cabeçalho */}
       <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ paddingLeft: 12, paddingTop: 15 }}
+        >
+          <ArrowLeft size={38} color={theme.textOnPrimary} />
+        </TouchableOpacity>
+
         <View style={styles.headerContent}>
-          <Text style={styles.medicineName}>{nomeMedicamento?.toUpperCase() || 'MEDICAMENTO'}</Text>
+          <Text style={styles.medicineName}>
+            {nomeMedicamento?.toUpperCase() || "MEDICAMENTO"}
+          </Text>
           <Text style={styles.medicineDetails}>
-            {tipoMedicamento || ''} • {dosagemMedicamento || ''}
+            {tipoMedicamento || ""} • {dosagemMedicamento || ""}
           </Text>
         </View>
+
         <View style={styles.headerDecoration}></View>
       </View>
 
@@ -141,9 +189,11 @@ export default function BulaScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <ExpandableSection
           title="DOSAGEM E ADMINISTRAÇÃO"
-          icon={<MaterialIcons name="medication" size={22} color={theme.primary} />}
+          icon={
+            <MaterialIcons name="medication" size={22} color={theme.primary} />
+          }
           expanded={expandedSections.dosage}
-          onToggle={() => toggleSection('dosage')}
+          onToggle={() => toggleSection("dosage")}
           items={bula.dosagem_e_administracao}
         />
 
@@ -151,7 +201,7 @@ export default function BulaScreen() {
           title="CONTRAINDICAÇÕES"
           icon={<MaterialIcons name="warning" size={22} color={theme.error} />}
           expanded={expandedSections.contraindications}
-          onToggle={() => toggleSection('contraindications')}
+          onToggle={() => toggleSection("contraindications")}
           items={bula.contraindicacoes}
           important
         />
@@ -160,42 +210,57 @@ export default function BulaScreen() {
           title="INDICAÇÕES"
           icon={<FontAwesome name="heart" size={20} color={theme.primary} />}
           expanded={expandedSections.indications}
-          onToggle={() => toggleSection('indications')}
+          onToggle={() => toggleSection("indications")}
           items={bula.indicacoes}
         />
 
         <ExpandableSection
           title="PRECAUÇÕES E ADVERTÊNCIAS"
-          icon={<MaterialCommunityIcons name="alert-circle" size={20} color={theme.warning} />}
+          icon={
+            <MaterialCommunityIcons
+              name="alert-circle"
+              size={20}
+              color={theme.warning}
+            />
+          }
           expanded={expandedSections.precautions}
-          onToggle={() => toggleSection('precautions')}
+          onToggle={() => toggleSection("precautions")}
           items={bula.advertencias}
         />
 
         <ExpandableSection
           title="INTERAÇÕES MEDICAMENTOSAS"
-          icon={<MaterialCommunityIcons name="alert-octagon" size={20} color={theme.warning} />}
+          icon={
+            <MaterialCommunityIcons
+              name="alert-octagon"
+              size={20}
+              color={theme.warning}
+            />
+          }
           expanded={expandedSections.interactions}
-          onToggle={() => toggleSection('interactions')}
+          onToggle={() => toggleSection("interactions")}
           items={bula.interacoes_medicamentosas}
         />
 
         <ExpandableSection
           title="ARMAZENAMENTO E VALIDADE"
-          icon={<MaterialIcons name="inventory" size={20} color={theme.primary} />}
+          icon={
+            <MaterialIcons name="inventory" size={20} color={theme.primary} />
+          }
           expanded={expandedSections.storage}
-          onToggle={() => toggleSection('storage')}
+          onToggle={() => toggleSection("storage")}
           items={bula.armazenamento_e_validade}
         />
 
         {/* Rodapé */}
         <View style={styles.footerCard}>
           <Text style={styles.footerText}>
-            Para informações completas, consulte a bula profissional no site da Anvisa
+            Para informações completas, consulte a bula profissional no site da
+            Anvisa
           </Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => Linking.openURL('https://consultas.anvisa.gov.br/')}
+            onPress={() => Linking.openURL("https://consultas.anvisa.gov.br/")}
           >
             <Text style={styles.buttonText}>ACESSAR BULA COMPLETA</Text>
           </TouchableOpacity>
