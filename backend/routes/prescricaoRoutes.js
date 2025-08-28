@@ -103,7 +103,7 @@ class PrescricoesRoutes {
 
     /**
      * @swagger
-     * /prescricoes/medico/{id_medico}:
+     * /prescricoes/medico/{crm_medico}:
      *   get:
      *     summary: Busca prescrições por médico
      *     tags: [Prescricoes]
@@ -130,7 +130,7 @@ class PrescricoesRoutes {
      *       401:
      *         description: Não autorizado
      */
-    this.router.get('/medico/:id_medico', authMiddleware, controller.findByMedicoId);
+    this.router.get('/medico/:crm_medico', authMiddleware, controller.findByMedicoCrm);
 
     /**
      * @swagger
