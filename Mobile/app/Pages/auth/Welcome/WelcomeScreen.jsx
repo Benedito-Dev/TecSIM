@@ -28,7 +28,7 @@ export default function WelcomeScreen({ navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.buttonSecondary} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.buttonText}>Criar conta</Text>
+          <Text style={styles.buttonTextSecondary}>Criar conta</Text>
         </TouchableOpacity>
       </View>
     </View>
