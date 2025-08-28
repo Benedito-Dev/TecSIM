@@ -29,12 +29,14 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 25,
     marginTop: 20,
+    textAlign: "center"
   },
   subtitle: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 14,
     marginTop: 10,
+    textAlign: "center"
   },
   content: {
     flex: 1,
