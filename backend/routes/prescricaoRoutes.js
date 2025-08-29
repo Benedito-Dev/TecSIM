@@ -111,11 +111,11 @@ class PrescricoesRoutes {
      *       - bearerAuth: []
      *     parameters:
      *       - in: path
-     *         name: id_medico
+     *         name: crm_medico
      *         schema:
      *           type: integer
      *         required: true
-     *         description: ID do médico
+     *         description: CRM do médico
      *     responses:
      *       200:
      *         description: Lista de prescrições do médico
@@ -145,29 +145,7 @@ class PrescricoesRoutes {
      *       content:
      *         application/json:
      *           schema:
-     *             type: object
-     *             required:
-     *               - id_paciente
-     *               - id_medico
-     *               - crm
-     *               - diagnostico
-     *               - data_prescricao
-     *             properties:
-     *               id_paciente:
-     *                 type: integer
-     *               id_medico:
-     *                 type: integer
-     *               crm:
-     *                 type: string
-     *                 example: "CRM-SP-123456"
-     *               diagnostico:
-     *                 type: string
-     *               data_prescricao:
-     *                 type: string
-     *                 format: date
-     *               validade:
-     *                 type: string
-     *                 format: date
+     *             $ref: '#/components/schemas/PrescricaoRequest'
      *     responses:
      *       201:
      *         description: Prescrição criada com sucesso
@@ -201,14 +179,11 @@ class PrescricoesRoutes {
      *             type: object
      *             required:
      *               - id_paciente
-     *               - id_medico
      *               - crm
      *               - diagnostico
      *               - data_prescricao
      *             properties:
      *               id_paciente:
-     *                 type: integer
-     *               id_medico:
      *                 type: integer
      *               crm:
      *                 type: string
