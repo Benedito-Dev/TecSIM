@@ -19,6 +19,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import EmailInput from '../../../components/Register/EmailInput';
 import PasswordInput from '../../../components/Register/PasswordInput';
+
 import { styles } from './styles';
 import { lightTheme } from '../../../constants/temas';
 

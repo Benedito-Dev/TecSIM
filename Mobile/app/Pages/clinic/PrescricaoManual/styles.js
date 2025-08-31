@@ -77,14 +77,15 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
   },
 
   inputGroup: {
-    marginBottom: 16 
+    marginBottom: 16,
+    position: 'relative' 
   },
 
   label: {
     fontSize: 14,
     fontWeight: '500',
     color: theme.textSecondary,
-    marginBottom: 8
+    marginBottom: 4
   },
 
   input: {
