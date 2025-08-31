@@ -1,17 +1,28 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { API_KEY } from '@env';
-import { verificarGatilhoCritico, detectarTemaForaDaSaude } from '../utils/filters';
+import { verificarGatilhoCritico, detectarTemaForaDaSaude, validarMencaoMedicamentos } from '../utils/filters';
 
 // Configuração segura da chave de API
 if (!API_KEY) {
   throw new Error("Chave de API não configurada. Configure a variável de ambiente REACT_APP_GOOGLE_API_KEY ou GOOGLE_API_KEY.");
 }
 
-const genAI = new GoogleGenerativeAI(API_KEY);
-
 // Cache para modelos disponíveis
 let cachedModels = null;
 const CACHE_EXPIRATION_MS = 3600000; // 1 hora
+
+// Função para sanitizar o histórico de conversa
+const sanitizarHistorico = (historico) => {
+  if (!Array.isArray(historico)) return [];
+  
+  return historico.filter(msg => {
+    if (msg.isBot) {
+      // Remove mensagens do bot que contenham temas proibidos
+      return !detectarTemaForaDaSaude(msg.text);
+    }
+    return true; // Mantém todas as mensagens do usuário
+  });
+};
 
 export const listAvailableModels = async () => {
   try {
@@ -63,6 +74,9 @@ export const listAvailableModels = async () => {
 };
 
 export const getAIResponse = async (message, history = [], options = {}) => {
+  // Log de auditoria para monitorar tentativas
+  console.log(`[AUDIT] Tentativa de mensagem: ${message.substring(0, 100)}${message.length > 100 ? '...' : ''}`);
+
   if (typeof message !== 'string' || message.trim() === '') {
     return {
       success: false,
@@ -72,6 +86,7 @@ export const getAIResponse = async (message, history = [], options = {}) => {
 
   // 🔒 Filtro de segurança — Gatilhos críticos
   if (verificarGatilhoCritico(message)) {
+    console.warn('[AUDIT] Gatilho crítico detectado');
     return {
       success: true,
       response: "⚠️ Com base no que você relatou, é muito importante que procure imediatamente um médico ou profissional de saúde qualificado."
@@ -80,9 +95,19 @@ export const getAIResponse = async (message, history = [], options = {}) => {
 
   // 🔒 Filtro de segurança — Temas fora da saúde
   if (detectarTemaForaDaSaude(message)) {
+    console.warn('[AUDIT] Tema proibido detectado:', message);
     return {
       success: true,
       response: "⚠️ Sou um assistente virtual de saúde e só posso responder perguntas relacionadas a cuidados médicos. Para outros temas, recomendo buscar fontes apropriadas."
+    };
+  }
+
+  // 🔒 Filtro de segurança — Medicamentos controlados
+  if (validarMencaoMedicamentos(message)) {
+    console.warn('[AUDIT] Menção a medicamento controlado detectada');
+    return {
+      success: true,
+      response: "⚠️ Não posso discutir medicamentos controlados ou que exigem prescrição médica. Consulte um profissional de saúde para orientações sobre medicamentos."
     };
   }
 
@@ -116,65 +141,67 @@ export const getAIResponse = async (message, history = [], options = {}) => {
 
     const finalOptions = { ...defaultOptions, ...options };
 
-    // console.log(`Usando modelo: ${finalOptions.modelName} com configurações:`, finalOptions);
-
-    const genAI = new GoogleGenerativeAI(API_KEY, {
-      apiVersion: finalOptions.apiVersion
-    });
-
+    // ✅ CORREÇÃO: Usar a instância única do GoogleGenerativeAI
+    const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({
       model: finalOptions.modelName,
       generationConfig: {
-        maxOutputTokens: finalOptions.maxOutputTokens,
-        temperature: finalOptions.temperature,
+        maxOutputTokens: 1000, // Reduzido para respostas mais objetivas
+        temperature: 0.3, // Reduzido para menos criatividade
         topP: finalOptions.topP,
         topK: finalOptions.topK,
       },
       safetySettings: finalOptions.safetySettings
     });
 
-    const systemRules = `Você é o TecSim, assistente virtual de saúde. Seu único objetivo é ajudar com informações médicas básicas de forma clara, segura e responsável. Siga rigorosamente estas diretrizes:
+    const systemRules = `Você é o TecSim, assistente virtual EXCLUSIVO para questões de saúde. 
+DIRETRIZES ABSOLUTAS:
 
-1. Nunca ofereça diagnósticos ou tratamentos.
-2. Sempre recomende que o usuário procure um médico ou profissional de saúde qualificado.
-3. Responda apenas dúvidas simples, comuns e leves, como por exemplo: dor de cabeça ocasional, gases, cólica leve, dor nas costas moderada ou uso básico de medicamentos populares (ex: paracetamol, dipirona, sal de frutas) — sempre com cautela.
-4. Caso perceba que:
-  - o sintoma é frequente, persistente ou intenso;
-  - existe uma combinação de sintomas;
-  - o usuário relata algo grave ou usa termos como "urgente", "desesperado", "não aguento", "muito forte";
-  - ou menciona situações específicas como gravidez, saúde mental, uso de substâncias legais, doenças crônicas ou qualquer condição de risco,
+⛔ NUNCA discuta: política, religião, esportes, entretenimento, economia ou qualquer tema fora da saúde
+⛔ NUNCA dê diagnósticos ou tratamentos específicos
+⛔ NUNCA mencione medicamentos controlados ou que exigem receita
+✅ SEMPRE recomende procurar um médico para questões sérias
+✅ Mantenha respostas objetivas e focadas apenas em saúde
 
-  então oriente de forma clara e direta: “Procure imediatamente um médico ou profissional de saúde qualificado.” Não continue a conversa além disso.
+RESPOSTAS PADRÃO PARA TEMA NÃO MÉDICO:
+Se o usuário mencionar qualquer tema fuera da saúde, responda APENAS e EXCLUSIVAMENTE:
+"Sou um assistente virtual especializado em saúde e só posso responder perguntas relacionadas a cuidados médicos. Para outros temas, recomendo buscar fontes apropriadas."
 
-5. É permitido mencionar medicamentos comuns e naturais, apenas como exemplo, e apenas se houver uso seguro e reconhecido para o sintoma relatado. Nunca mencione antibióticos, controlados ou qualquer substância que exija receita médica.
-6. Evite termos técnicos. Use linguagem intermediária, acessível ao público geral.
-7. Nunca incentive automedicação.
-8. Não forneça conselhos para uso prolongado ou repetido de medicamentos.
-9. Se o tema da conversa fugir da área médica (ex: política, esportes, religião, entretenimento, etc.), responda com respeito dizendo:
+Para questões de saúde:
+- Seja breve e objetivo
+- Sempre encerre recomendando consulta médica quando apropriado
+- Use linguagem acessível ao público geral
+- Nunca substitua orientação profissional`;
 
-“Sou um assistente virtual de saúde e só posso responder perguntas relacionadas a cuidados médicos. Para outros temas, recomendo buscar fontes apropriadas.”
-
-10. Seja sempre educado, direto, objetivo e responsável. Nunca use linguagem ambígua ou que possa ser interpretada como recomendação médica.
-
-Seu papel é informativo, nunca substitutivo à orientação profissional.`;
-
+    // Sanitizar o histórico antes de usar
+    const historicoSanitizado = sanitizarHistorico(history);
+    
     let chatHistory = [];
-    if (Array.isArray(history) && history.length > 0) {
-      chatHistory = history.map(msg => ({
+    if (Array.isArray(historicoSanitizado) && historicoSanitizado.length > 0) {
+      chatHistory = historicoSanitizado.map(msg => ({
         role: msg.isBot ? "model" : "user",
         parts: [{ text: msg.text }]
       }));
     }
 
-    const chat = model.startChat({ history: chatHistory });
+    const chat = model.startChat({ 
+      history: chatHistory
+    });
 
-    let userMessageContent = message.trim();
-    if (history.length === 0 && systemRules && !userMessageContent.startsWith(systemRules.trim())) {
-      userMessageContent = systemRules + userMessageContent;
-    }
+    // 🔥 MUDANÇA CRÍTICA: System rules SEMPRE incluído
+    const userMessageContent = systemRules + "\n\nMensagem do usuário: " + message.trim();
 
     const result = await chat.sendMessage(userMessageContent);
     const responseText = await result.response.text();
+
+    // 🔒 Verificação final da resposta do modelo
+    if (detectarTemaForaDaSaude(responseText) || validarMencaoMedicamentos(responseText)) {
+      console.warn('[AUDIT] Resposta do modelo contém conteúdo proibido');
+      return {
+        success: true,
+        response: "Sou um assistente virtual especializado em saúde e só posso responder perguntas relacionadas a cuidados médicos."
+      };
+    }
 
     return {
       success: true,
