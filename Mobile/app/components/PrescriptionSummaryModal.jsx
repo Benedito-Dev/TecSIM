@@ -224,7 +224,6 @@ const PrescriptionSummaryModal = ({ visible, onClose, onSave, prescription }) =>
                 ) : null}
               </ScrollView>
 
-              {/* Botões de ação */}
               <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -271,7 +270,7 @@ const PrescriptionSummaryModal = ({ visible, onClose, onSave, prescription }) =>
                     color: theme.textOnSuccess,
                     fontWeight: '600',
                     fontSize: 14,
-                  }}>Salvar Prescrição</Text>
+                  }}>Salvar</Text>
                 </TouchableOpacity>
               </View>
             </View>

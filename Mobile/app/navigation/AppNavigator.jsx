@@ -8,6 +8,7 @@ import LoginScreen from '../Pages/auth/Login/LoginScreen';
 import RegisterScreen from '../Pages/auth/Register/RegisterScreen';
 import ForgotPasswordScreen from '../Pages/auth/ForgotPassword/ForgotPasswordScreen';
 import ResetPasswordScreen from '../Pages/auth/ForgotPassword/ResetPassword/ResetPasswordScreen';
+
 import MainTabNavigator from './TabNavigator';
 import CodeScreen from '../Pages/auth/code/code';
 

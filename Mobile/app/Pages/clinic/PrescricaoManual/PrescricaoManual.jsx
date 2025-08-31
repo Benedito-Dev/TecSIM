@@ -23,8 +23,7 @@ export default function PrescricaoManualScreen() {
   const { theme } = useContext(ThemeContext);
   const styles = getPrescriptionFormStyles(theme);
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showValidadePicker, setShowValidadePicker] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(null);
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
 
@@ -179,7 +178,7 @@ export default function PrescricaoManualScreen() {
             <View style={styles.dateRow}>
               <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
                 <Text style={styles.label}>Data da Prescrição</Text>
-                <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
+                <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker('data')}>
                   <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
                   <Calendar size={18} color={theme.iconSecondary} />
                 </TouchableOpacity>
@@ -187,34 +186,57 @@ export default function PrescricaoManualScreen() {
 
               <View style={[styles.inputGroup, { flex: 1 }]}>
                 <Text style={styles.label}>Validade</Text>
-                <TouchableOpacity style={styles.dateInput} onPress={() => setShowValidadePicker(true)}>
+                <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker('validade')}>
                   <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
                   <Calendar size={18} color={theme.iconSecondary} />
                 </TouchableOpacity>
               </View>
             </View>
 
-            {showDatePicker && (
+            {(showDatePicker === 'data' || showDatePicker === 'validade') && (
               <DateTimePicker
-                value={form.data_prescricao}
+                value={showDatePicker === 'data' ? form.data_prescricao : form.validade}
                 mode="date"
-                display="default"
-                onChange={(_, date) => {
-                  setShowDatePicker(false);
-                  date && setForm({ ...form, data_prescricao: date });
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={(event, date) => {
+                  if (event.type === 'set' && date) {
+                    if (showDatePicker === 'data') {
+                      // Atualiza a data de prescrição
+                      setForm({ ...form, data_prescricao: date });
+                      
+                      // Se a data de validade for anterior à nova data de prescrição, ajusta automaticamente
+                      if (form.validade < date) {
+                        const novaValidade = new Date(date);
+                        novaValidade.setDate(date.getDate() + 1); // 1 ano após a prescrição
+                        setForm(prev => ({ ...prev, validade: novaValidade }));
+                        
+                        // Mostra alerta informativo
+                        setTimeout(() => {
+                          Alert.alert(
+                            "Validade ajustada",
+                            "A data de validade foi ajustada automaticamente para 1 dia após a data de prescrição.",
+                            [{ text: "OK" }]
+                          );
+                        }, 100);
+                      }
+                    } else if (showDatePicker === 'validade') {
+                      // Valida se a data de validade não é anterior à data de prescrição
+                      if (date < form.data_prescricao) {
+                        Alert.alert(
+                          "Data inválida",
+                          "A data de validade não pode ser anterior à data de prescrição.",
+                          [{ text: "OK" }]
+                        );
+                        return;
+                      }
+                      
+                      setForm({ ...form, validade: date });
+                    }
+                  }
+                  setShowDatePicker(null);
                 }}
-              />
-            )}
-
-            {showValidadePicker && (
-              <DateTimePicker
-                value={form.validade}
-                mode="date"
-                display="default"
-                onChange={(_, date) => {
-                  setShowValidadePicker(false);
-                  date && setForm({ ...form, validade: date });
-                }}
+                minimumDate={showDatePicker === 'validade' ? form.data_prescricao : new Date()}
+                maximumDate={showDatePicker === 'validade' ? new Date(new Date().setFullYear(new Date().getFullYear() + 5)) : undefined}
               />
             )}
           </View>
@@ -280,6 +302,8 @@ export default function PrescricaoManualScreen() {
                             { label: "Tópica", value: "Tópica" },
                             { label: "Inalatória", value: "Inalatória" },
                             { label: "Subcutánea", value: "Subcutánea" },
+                            { label: "Intravenosa", value: "Intravenosa" },
+                            { label: "Intramuscular", value: "Intramuscular" },
                           ]}
                           setOpen={(open) => {
                             if (open) {
