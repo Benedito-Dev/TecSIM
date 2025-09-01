@@ -180,12 +180,17 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 12, // 🔹 mais arredondado
     paddingHorizontal: 12,
-    height: 48,
+    height: 50,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    backgroundColor: '#fff',
   },
   searchIcon: {
     marginRight: 8,
+    opacity: 0.6,
   },
   input: {
     flex: 1,
@@ -193,55 +198,61 @@ const styles = {
     height: '100%',
   },
   clearButton: {
-    padding: 4,
+    padding: 6,
   },
   resultsContainer: {
     position: 'absolute',
     top: '100%',
     left: 0,
     right: 0,
+    marginTop: 6,
     borderWidth: 1,
-    borderRadius: 8,
-    marginTop: 4,
-    maxHeight: 200,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 20,   // 👈 Android: força sobreposição
-    zIndex: 9999,    // 👈 iOS: força sobreposição
+    borderColor: '#ddd',
+    borderRadius: 12,
     backgroundColor: '#fff',
-    overflow: 'visible',
+    maxHeight: 250,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 8, // Android
+    zIndex: 9999,
   },
   loadingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: 14,
+  },
+  loadingText: {
+    marginLeft: 8,
+    fontSize: 14,
+    opacity: 0.7,
   },
   resultsList: {
     flexGrow: 0,
   },
   resultItem: {
-    padding: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
   resultText: {
     fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 4,
+    fontWeight: '600',
+    marginBottom: 2,
   },
   resultType: {
-    fontSize: 14,
-  },
-  loadingText: {
-    marginLeft: 8,
-    fontSize: 14,
+    fontSize: 13,
+    opacity: 0.6,
   },
   noResultsText: {
     textAlign: 'center',
-    padding: 16,
+    padding: 18,
     fontSize: 14,
+    opacity: 0.6,
   },
 };
+
 
 export default MedicamentoAutocomplete;
