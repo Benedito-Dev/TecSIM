@@ -62,10 +62,15 @@ const MedicamentoAutocomplete = ({
   const handleSelect = (item) => {
     setQuery(item.nome);
     onSelect(item.id_medicamento, item.nome);
+
+    // 👇 Loga no console o id sempre que selecionar
+    console.log("Medicamento selecionado:", item.id_medicamento);
+
     setShowResults(false);
     setHasSearched(false);
     Keyboard.dismiss();
   };
+
 
   const clearSearch = () => {
     setQuery('');
