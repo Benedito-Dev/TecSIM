@@ -12,8 +12,25 @@ class PrescricaoService {
     return await prescricaoRepository.findById(id);
   }
 
-  async findByPacienteId(id_paciente) {
-    return await prescricaoRepository.findByPacienteId(id_paciente);
+  // async findByPacienteId(id_paciente) {
+  //   return await prescricaoRepository.findByPacienteId(id_paciente);
+  // }
+
+  async findByPacienteId(id) {
+    const prescricoes = await prescricaoRepository.findByPacienteId(id);
+
+    // Para cada prescrição, buscar os medicamentos associados
+    const prescricoesComMedicamentos = await Promise.all(
+      prescricoes.map(async (prescricao) => {
+        const medicamentos = await medicamentoPrescritoRepository.findByPrescricaoId(prescricao.id);
+        return {
+          ...prescricao,
+          medicamentos
+        };
+      })
+    );
+
+    return prescricoesComMedicamentos;
   }
 
   async findByMedicoCrm(crm) {
@@ -46,6 +63,7 @@ class PrescricaoService {
       return prescricao;
     } catch (err) {
       await client.query('ROLLBACK');
+      console.error("Erro real ao criar prescrição:", err); // 👈 log do erro original
       throw new DatabaseError('Erro ao criar prescrição com medicamentos');
     } finally {
       client.release();

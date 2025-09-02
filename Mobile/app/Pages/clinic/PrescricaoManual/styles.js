@@ -78,7 +78,8 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
 
   inputGroup: {
     marginBottom: 16,
-    position: 'relative' 
+    position: 'relative',
+    zIndex: 1000, 
   },
 
   label: {
@@ -164,7 +165,8 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
 
   medRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    zIndex: 1
   },
 
   dropdown: {
