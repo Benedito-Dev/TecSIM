@@ -46,6 +46,7 @@ class PrescricaoService {
       return prescricao;
     } catch (err) {
       await client.query('ROLLBACK');
+      console.error("Erro real ao criar prescrição:", err); // 👈 log do erro original
       throw new DatabaseError('Erro ao criar prescrição com medicamentos');
     } finally {
       client.release();

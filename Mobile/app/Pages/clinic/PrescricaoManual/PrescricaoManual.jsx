@@ -21,6 +21,8 @@ import { useAuth } from '../../../context/AuthContext';
 import PrescriptionSummaryModal from "../../../components/PrescriptionSummaryModal";
 import MedicamentoAutocomplete from "../../../components/MedicamentoAutocomplete"; // Importar o componente
 
+import { createPrescricao } from '../../../services/prescricaoService'
+
 export default function PrescricaoManualScreen() {
   const navigation = useNavigation();
   const { theme } = useContext(ThemeContext);
@@ -148,7 +150,7 @@ export default function PrescricaoManualScreen() {
   // Função para formatar dados para o backend
   const formatDataForBackend = (formData) => {
     return {
-      id_paciente: parseInt(formData.id_paciente),
+      id_paciente: user.id,
       crm: formData.crm,
       diagnostico: formData.diagnostico,
       observacoes: formData.observacoes,
@@ -164,12 +166,13 @@ export default function PrescricaoManualScreen() {
     };
   };
 
-  const handleSavePrescription = () => {
+  const handleSavePrescription = async () => {
     const formattedData = formatDataForBackend(form);
     console.log("Prescrição formatada:", formattedData);
     
-    // Aqui você faria a chamada para sua API
-    // await api.post('/prescricoes', formattedData);
+    const resultado = await createPrescricao(formattedData)
+
+    console.log(resultado)
     
     setShowSummary(false);
     Alert.alert("Sucesso", "Prescrição salva com sucesso", [

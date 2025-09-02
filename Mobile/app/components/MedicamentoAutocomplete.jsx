@@ -25,6 +25,7 @@ const MedicamentoAutocomplete = ({
   const [isFocused, setIsFocused] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [skipSearch, setSkipSearch] = useState(false); // 👈 flag para evitar busca duplicada
 
   // Buscar medicamentos na API
   const searchMedicamentosAPI = async (searchTerm) => {
@@ -52,6 +53,11 @@ const MedicamentoAutocomplete = ({
   };
 
   useEffect(() => {
+    if (skipSearch) {
+      setSkipSearch(false); // reseta flag
+      return; // 👈 não executa busca após selecionar item
+    }
+
     const delayDebounce = setTimeout(() => {
       searchMedicamentosAPI(query);
     }, 300);
@@ -62,6 +68,9 @@ const MedicamentoAutocomplete = ({
   const handleSelect = (item) => {
     setQuery(item.nome);
     onSelect(item.id_medicamento, item.nome);
+    console.log(item.id_medicamento);
+
+    setSkipSearch(true); // 👈 impede próxima busca automática
     setShowResults(false);
     setHasSearched(false);
     Keyboard.dismiss();
@@ -84,7 +93,7 @@ const MedicamentoAutocomplete = ({
 
   const handleBlur = () => {
     setIsFocused(false);
-    setTimeout(() => setShowResults(false), 200);
+    setTimeout(() => setShowResults(false), 100);
   };
 
   return (
