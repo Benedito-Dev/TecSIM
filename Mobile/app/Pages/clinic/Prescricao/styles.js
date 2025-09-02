@@ -52,13 +52,22 @@ export const getPrescriptionStyles = (theme) => StyleSheet.create({
     overflow: 'hidden',
   },
   prescricaoHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 16,
   },
   prescricaoInfo: {
     flex: 1,
+  },
+  prescricaoTitleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  prescricaoTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 6,
   },
   prescricaoHeaderRow: {
     flexDirection: 'row',
@@ -70,6 +79,7 @@ export const getPrescriptionStyles = (theme) => StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: theme.textPrimary,
+    flex: 1,
   },
   prescricaoSubtitle: {
     fontSize: 14,
@@ -154,5 +164,56 @@ export const getPrescriptionStyles = (theme) => StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     marginLeft: 8,
+  },
+  
+  // Estilos para o componente de ações
+  actionsContainer: {
+    position: 'relative',
+  },
+  actionsButton: {
+    padding: 4,
+  },
+  actionsMenu: {
+    position: 'absolute',
+    top: 28,
+    right: 0,
+    backgroundColor: theme.backgroundCard,
+    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    flexDirection: 'column', // vertical
+    minWidth: 140, // largura mínima para textos
+    zIndex: 999, // fica acima dos outros elementos
+
+    // Sombra iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+
+    // Sombra Android
+    elevation: 5,
+
+    borderWidth: 1,
+    borderColor: theme.borderLight,
+  },
+  actionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  actionText: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: theme.textSecondary,
+  },
+
+  chevronContainer: {
+    alignItems: 'center',
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: theme.borderLight,
   },
 });

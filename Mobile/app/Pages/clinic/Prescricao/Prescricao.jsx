@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Alert, ScrollView } from 'react-native';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
-import { FileText, ArrowLeft, Plus, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
+import { FileText, ArrowLeft, Plus, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard, Download, Edit, MoreHorizontal } from 'lucide-react-native';
 import { getPrescriptionStyles } from './styles';
 
 const formatarData = (dataString) => {
@@ -11,6 +11,64 @@ const formatarData = (dataString) => {
   const mes = String(data.getMonth() + 1).padStart(2, '0');
   const ano = data.getFullYear();
   return `${dia}-${mes}-${ano}`;
+};
+
+// Componente de Ações para cada prescrição
+const PrescricaoActions = ({ onDownload, /*onEdit,*/ onDelete }) => {
+  const { theme } = useContext(ThemeContext);
+  const styles = getPrescriptionStyles(theme);
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
+  };
+
+  return (
+    <View style={styles.actionsContainer}>
+      <TouchableOpacity onPress={toggleExpanded} style={styles.actionsButton}>
+        <MoreHorizontal size={20} color="#6B7280" />
+      </TouchableOpacity>
+      
+      {expanded && (
+        <View style={styles.actionsMenu}>
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => {
+              onDownload();
+              setExpanded(false);
+            }}
+          >
+            <Download size={16} color="#2563EB" />
+            <Text style={styles.actionText}>Download</Text>
+          </TouchableOpacity>
+          
+          {/* 
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => {
+              onEdit();
+              setExpanded(false);
+            }}
+          >
+            <Edit size={22} color="#2563EB" />
+            <Text style={styles.actionText}>Editar</Text>
+          </TouchableOpacity>
+          */}
+          
+          <TouchableOpacity 
+            style={styles.actionItem}
+            onPress={() => {
+              onDelete();
+              setExpanded(false);
+            }}
+          >
+            <Trash2 size={16} color="#EF4444" />
+            <Text style={[styles.actionText, { color: '#EF4444' }]}>Excluir</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </View>
+  );
 };
 
 const initialMockPrescricoes = [
@@ -80,26 +138,28 @@ export default function PrescricaoScreen() {
     navigation.navigate('NovaPrescricao');
   };
 
-  const handleDeleteMedicamento = (prescricaoId, medicamentoId) => {
+  const handleDownloadPrescricao = (prescricao) => {
+    // Lógica para gerar/download do PDF da prescrição
+    Alert.alert("Download", `Gerando PDF da prescrição: ${prescricao.diagnostico}`);
+    // Implementar lógica real de geração de PDF aqui
+  };
+
+  const handleEditPrescricao = (prescricao) => {
+    navigation.navigate('PrescricaoManualScreen', { prescricao });
+  };
+
+  const handleDeletePrescricao = (prescricaoId) => {
     Alert.alert(
-      "Remover medicamento",
-      "Tem certeza que deseja remover este medicamento da prescrição?",
+      "Excluir Prescrição",
+      "Tem certeza que deseja excluir esta prescrição?",
       [
         { text: "Cancelar", style: "cancel" },
         { 
-          text: "Remover", 
+          text: "Excluir", 
           onPress: () => {
-            const updatedPrescricoes = prescricoes.map(prescricao => {
-              if (prescricao.id === prescricaoId) {
-                return {
-                  ...prescricao,
-                  medicamentos: prescricao.medicamentos.filter(
-                    med => med.id_medicamento_prescrito !== medicamentoId
-                  )
-                };
-              }
-              return prescricao;
-            });
+            const updatedPrescricoes = prescricoes.filter(
+              prescricao => prescricao.id !== prescricaoId
+            );
             setPrescricoes(updatedPrescricoes);
           }
         }
@@ -112,11 +172,6 @@ export default function PrescricaoScreen() {
       <View style={styles.medicineHeader}>
         <Text style={styles.medicineName}>{item.nome}</Text>
         <Text style={styles.medicineDose}>{item.dosagem}</Text>
-        <TouchableOpacity 
-          style={styles.deleteButton}
-          onPress={() => handleDeleteMedicamento(prescricaoId, item.id_medicamento_prescrito)}>
-          <Trash2 size={18} color="#EF4444" />
-        </TouchableOpacity>
       </View>
       
       <View style={styles.medicineDetails}>
@@ -140,14 +195,18 @@ export default function PrescricaoScreen() {
 
   const renderPrescricao = ({ item }) => (
     <View style={styles.prescricaoItem}>
-      <TouchableOpacity 
-        style={styles.prescricaoHeader}
-        onPress={() => togglePrescricao(item.id)}
-      >
+      <View style={styles.prescricaoHeader}>
         <View style={styles.prescricaoInfo}>
-          <View style={styles.prescricaoHeaderRow}>
-            <Clipboard size={16} color="#2563EB" />
-            <Text style={styles.prescricaoTitle}>{item.diagnostico}</Text>
+          <View style={styles.prescricaoTitleRow}>
+            <View style={styles.prescricaoTitleContainer}>
+              <Clipboard size={16} color="#2563EB" />
+              <Text style={styles.prescricaoTitle}>{item.diagnostico}</Text>
+            </View>
+            <PrescricaoActions 
+              onDownload={() => handleDownloadPrescricao(item)}
+              // onEdit={() => handleEditPrescricao(item)} //
+              onDelete={() => handleDeletePrescricao(item.id)}
+            />
           </View>
           
           <View style={styles.prescricaoHeaderRow}>
@@ -156,16 +215,22 @@ export default function PrescricaoScreen() {
           </View>
           
           <Text style={styles.prescricaoDate}>
-            • Cadastro:{formatarData(item.data_prescricao)}
+            • Cadastro: {formatarData(item.data_prescricao)}
           </Text>
           <Text style={styles.prescricaoDate}>• Validade: {formatarData(item.validade)}</Text>
+          
+          <TouchableOpacity 
+            style={styles.chevronContainer}
+            onPress={() => togglePrescricao(item.id)}
+          >
+            {expandedPrescricao === item.id ? (
+              <ChevronUp size={20} color="#6B7280" />
+            ) : (
+              <ChevronDown size={20} color="#6B7280" />
+            )}
+          </TouchableOpacity>
         </View>
-        {expandedPrescricao === item.id ? (
-          <ChevronUp size={20} color="#6B7280" />
-        ) : (
-          <ChevronDown size={20} color="#6B7280" />
-        )}
-      </TouchableOpacity>
+      </View>
       
       {expandedPrescricao === item.id && (
         <View style={styles.prescricaoContent}>
