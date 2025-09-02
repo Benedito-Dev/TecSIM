@@ -1,9 +1,12 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Alert, ScrollView } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, TouchableOpacity, FlatList, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { FileText, ArrowLeft, Plus, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard } from 'lucide-react-native';
 import { getPrescriptionStyles } from './styles';
+
+import { useAuth } from '../../../context/AuthContext';
+import { getPrescricoesByPaciente } from '../../../services/prescricaoService';
 
 const formatarData = (dataString) => {
   const data = new Date(dataString);
@@ -13,71 +16,38 @@ const formatarData = (dataString) => {
   return `${dia}-${mes}-${ano}`;
 };
 
-const initialMockPrescricoes = [
-  {
-    id: '1',
-    id_paciente: '123',
-    id_medico: '456',
-    crm: '123456',
-    diagnostico: 'Hipertensão arterial',
-    data_prescricao: '2023-05-15',
-    validade: '2023-11-15',
-    data_cadastro: '2023-05-15',
-    medicamentos: [
-      {
-        id_medicamento_prescrito: '1',
-        nome: 'Losartana',
-        dosagem: '50mg',
-        frequencia: '1x ao dia',
-        duracao_dias: '30',
-        via: 'Oral'
-      }
-    ]
-  },
-  {
-    id: '2',
-    id_paciente: '123',
-    id_medico: '789',
-    crm: '654321',
-    diagnostico: 'Diabetes Mellitus Tipo 2',
-    data_prescricao: '2023-06-20',
-    validade: '2023-12-20',
-    data_cadastro: '2023-06-20',
-    medicamentos: [
-      {
-        id_medicamento_prescrito: '2',
-        nome: 'Metformina',
-        dosagem: '850mg',
-        frequencia: '2x ao dia',
-        duracao_dias: '60',
-        via: 'Oral'
-      },
-      {
-        id_medicamento_prescrito: '3',
-        nome: 'Insulina NPH',
-        dosagem: '20UI',
-        frequencia: '1x ao dia',
-        duracao_dias: '30',
-        via: 'Subcutânea'
-      }
-    ]
-  }
-];
-
 export default function PrescricaoScreen() {
   const navigation = useNavigation();
-  const [prescricoes, setPrescricoes] = useState(initialMockPrescricoes);
-  const [expandedPrescricao, setExpandedPrescricao] = useState(null);
+  const { theme } = useContext(ThemeContext);
+  const styles = getPrescriptionStyles(theme);
+  const { user } = useAuth();
 
-  const { theme } = useContext(ThemeContext)
-  const styles = getPrescriptionStyles(theme)
+  const [prescricoes, setPrescricoes] = useState([]);
+  const [expandedPrescricao, setExpandedPrescricao] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Buscar prescrições do backend
+  useEffect(() => {
+    const fetchPrescricoes = async () => {
+      try {
+        setLoading(true);
+        const response = await getPrescricoesByPaciente(user.id);
+        setPrescricoes(response);
+      } catch (error) {
+        console.error('Erro ao buscar prescrições:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPrescricoes();
+  }, [user.id]);
 
   const togglePrescricao = (id) => {
     setExpandedPrescricao(expandedPrescricao === id ? null : id);
   };
 
   const handleAddPrescricao = () => {
-    navigation.navigate('NovaPrescricao');
+    navigation.navigate('NovaPrescricao', { id_paciente: user.id });
   };
 
   const handleDeleteMedicamento = (prescricaoId, medicamentoId) => {
@@ -94,7 +64,7 @@ export default function PrescricaoScreen() {
                 return {
                   ...prescricao,
                   medicamentos: prescricao.medicamentos.filter(
-                    med => med.id_medicamento_prescrito !== medicamentoId
+                    med => med.id !== medicamentoId
                   )
                 };
               }
@@ -110,26 +80,27 @@ export default function PrescricaoScreen() {
   const renderMedicamento = ({ item, prescricaoId }) => (
     <View style={styles.medicineItem}>
       <View style={styles.medicineHeader}>
-        <Text style={styles.medicineName}>{item.nome}</Text>
-        <Text style={styles.medicineDose}>{item.dosagem}</Text>
+        <Text style={styles.medicineName}>{item.nome || `Medicamento ${item.id_medicamento}`}</Text>
+        <Text style={styles.medicineDose}>{item.dosagem}mg</Text>
         <TouchableOpacity 
           style={styles.deleteButton}
-          onPress={() => handleDeleteMedicamento(prescricaoId, item.id_medicamento_prescrito)}>
+          onPress={() => handleDeleteMedicamento(prescricaoId, item.id)}
+        >
           <Trash2 size={18} color="#EF4444" />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.medicineDetails}>
         <View style={styles.detailRow}>
           <Clock size={14} color="#6B7280" />
-          <Text style={styles.detailText}>{item.frequencia}</Text>
+          <Text style={styles.detailText}>{item.frequencia}x ao dia</Text>
         </View>
-        
+
         <View style={styles.detailRow}>
           <Calendar size={14} color="#6B7280" />
           <Text style={styles.detailText}>{item.duracao_dias} dias</Text>
         </View>
-        
+
         <View style={styles.detailRow}>
           <Syringe size={14} color="#6B7280" />
           <Text style={styles.detailText}>Via: {item.via}</Text>
@@ -156,9 +127,11 @@ export default function PrescricaoScreen() {
           </View>
           
           <Text style={styles.prescricaoDate}>
-            • Cadastro:{formatarData(item.data_prescricao)}
+            • Cadastro: {formatarData(item.data_prescricao)}
           </Text>
-          <Text style={styles.prescricaoDate}>• Validade: {formatarData(item.validade)}</Text>
+          <Text style={styles.prescricaoDate}>
+            • Validade: {item.validade ? formatarData(item.validade) : 'Indefinida'}
+          </Text>
         </View>
         {expandedPrescricao === item.id ? (
           <ChevronUp size={20} color="#6B7280" />
@@ -173,7 +146,7 @@ export default function PrescricaoScreen() {
             <FlatList
               data={item.medicamentos}
               renderItem={({ item: medItem }) => renderMedicamento({ item: medItem, prescricaoId: item.id })}
-              keyExtractor={med => med.id_medicamento_prescrito.toString()}
+              keyExtractor={med => med.id.toString()}
               scrollEnabled={false}
             />
           ) : (
@@ -200,7 +173,12 @@ export default function PrescricaoScreen() {
         contentContainerStyle={styles.scrollContainer}
         style={{ flex: 1 }}
       >
-        {prescricoes.length > 0 ? (
+        {loading ? (
+          <View style={styles.emptyContainer}>
+            <ActivityIndicator size="large" color="#2563EB" />
+            <Text style={{ marginTop: 10 }}>Carregando prescrições...</Text>
+          </View>
+        ) : prescricoes.length > 0 ? (
           <FlatList
             data={prescricoes}
             renderItem={renderPrescricao}
