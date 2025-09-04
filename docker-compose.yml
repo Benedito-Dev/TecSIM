@@ -1,12 +1,49 @@
-version: '3'
+version: "3.9"
 services:
   backend:
     build: ./backend
-    container_name: meu-backend
+    container_name: backend
     ports:
       - "3000:3000"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    env_file:
-      - .env
+    environment:
+      DATABASE_URL_POSTGRES: ${POSTGRES_URI}
+      DATABASE_URL_MONGO: ${MONGO_URI}
+      JWT_SECRET: ${JWT_SECRET}
+
+  frontend:
+    build: ./Mobile
+    container_name: frontend
+    ports:
+      - "8081:8081"
+    environment:
+      API_URL: ${API_URL}
+
+  db-init:
+    build: ./db-init
+    container_name: db-init
+    environment:
+      DATABASE_URL_POSTGRES: ${POSTGRES_URI}
+      DATABASE_URL_MONGO: ${MONGO_URI}
+    depends_on:
+      - backend
+    command: ["node", "init.js"]
+
+  db-seed:
+    build: ./db-seed
+    container_name: db-seed
+    environment:
+      DATABASE_URL_POSTGRES: ${POSTGRES_URI}
+      DATABASE_URL_MONGO: ${MONGO_URI}
+    depends_on:
+      - db-init
+    command: ["node", "seed.js"]
+
+  data-worker:
+    build: ./data-worker
+    container_name: data-worker
+    environment:
+      DATABASE_URL_POSTGRES: ${POSTGRES_URI}
+      DATABASE_URL_MONGO: ${MONGO_URI}
+    depends_on:
+      - backend
+    command: ["node", "worker.js"]
