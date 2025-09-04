@@ -13,4 +13,9 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
-module.exports = { query };
+// Adicione estas linhas para exportar os métodos necessários
+module.exports = {
+  query,
+  connect: () => pool.connect(), // Isso resolve o erro "db.connect is not a function"
+  pool // Exporta o pool completo se necessário
+};

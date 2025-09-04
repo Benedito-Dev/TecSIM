@@ -1,34 +1,81 @@
-const repository = require('../repository/prescricaoRepository');
-const { ConflictError } = require('../utils/errors');
-
+const prescricaoRepository = require('../repository/prescricaoRepository');
+const medicamentoPrescritoRepository = require('../repository/medicamentosPrescritosRepository');
+const db = require('../db/db');
+const { ConflictError, DatabaseError } = require('../utils/errors');
 
 class PrescricaoService {
   async findAll() {
-    return await repository.findAll();
+    return await prescricaoRepository.findAll();
   }
 
   async findById(id) {
-    return await repository.findById(id);
+    return await prescricaoRepository.findById(id);
   }
 
-  async findByPacienteId(id_paciente) {
-    return await repository.findByPacienteId(id_paciente);
+  // async findByPacienteId(id_paciente) {
+  //   return await prescricaoRepository.findByPacienteId(id_paciente);
+  // }
+
+  async findByPacienteId(id) {
+    const prescricoes = await prescricaoRepository.findByPacienteId(id);
+
+    // Para cada prescrição, buscar os medicamentos associados
+    const prescricoesComMedicamentos = await Promise.all(
+      prescricoes.map(async (prescricao) => {
+        const medicamentos = await medicamentoPrescritoRepository.findByPrescricaoId(prescricao.id);
+        return {
+          ...prescricao,
+          medicamentos
+        };
+      })
+    );
+
+    return prescricoesComMedicamentos;
   }
 
-  async findByMedicoId(crm) {
-    return await repository.findByMedicoId(crm);
+  async findByMedicoCrm(crm) {
+    return await prescricaoRepository.findByMedicoCrm(crm);
   }
 
+  /**
+   * Cria prescrição junto com medicamentos num único fluxo transacional
+   * @param {*} data - { paciente_id, medico_crm, observacoes, medicamentos: [ {...}, {...} ] }
+   */
   async create(data) {
-    return await repository.create(data);
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // 1. Cria a prescrição
+      const prescricao = await prescricaoRepository.create(data, client);
+
+      // 2. Cria os medicamentos vinculados
+      if (data.medicamentos && data.medicamentos.length > 0) {
+        const medicamentosComPrescricao = data.medicamentos.map(med => ({
+          ...med,
+          id_prescricao: prescricao.id
+        }));
+
+        await medicamentoPrescritoRepository.createMany(medicamentosComPrescricao, client);
+      }
+
+      await client.query('COMMIT');
+      return prescricao;
+    } catch (err) {
+      await client.query('ROLLBACK');
+      console.error("Erro real ao criar prescrição:", err); // 👈 log do erro original
+      throw new DatabaseError('Erro ao criar prescrição com medicamentos');
+    } finally {
+      client.release();
+    }
   }
 
   async update(id, data) {
-    return await repository.update(id, data);
+    return await prescricaoRepository.update(id, data);
   }
 
   async remove(id) {
-    return await repository.remove(id);
+    return await prescricaoRepository.remove(id);
   }
 }
 
