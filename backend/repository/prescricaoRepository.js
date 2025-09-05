@@ -109,7 +109,7 @@ class PrescricaoRepository {
   async remove(id_prescricao, client = db) {
     try {
       const result = await client.query(
-        'DELETE FROM prescricoes WHERE id_prescricao = $1 RETURNING *',
+        'DELETE FROM prescricoes WHERE id = $1 RETURNING *',
         [id_prescricao]
       );
       if (!result.rows[0]) throw new NotFoundError('Prescrição não encontrada para remoção');

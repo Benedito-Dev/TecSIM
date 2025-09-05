@@ -4,7 +4,11 @@ const { NotFoundError, DatabaseError } = require('../utils/errors');
 class MedicamentoPrescritoRepository {
   async findAll(client = db) {
     try {
-      const result = await client.query('SELECT * FROM medicamentos_prescritos');
+      const result = await client.query(`
+        SELECT mp.*, m.nome AS nome
+        FROM medicamentos_prescritos mp
+        JOIN medicamentos m ON mp.id_medicamento = m.id_medicamento
+      `);
       return result.rows;
     } catch (err) {
       throw new DatabaseError('Erro ao buscar medicamentos prescritos no banco');
@@ -14,7 +18,12 @@ class MedicamentoPrescritoRepository {
   async findById(id, client = db) {
     try {
       const result = await client.query(
-        'SELECT * FROM medicamentos_prescritos WHERE id = $1',
+        `
+        SELECT mp.*, m.nome AS nome
+        FROM medicamentos_prescritos mp
+        JOIN medicamentos m ON mp.id_medicamento = m.id_medicamento
+        WHERE mp.id = $1
+        `,
         [id]
       );
       if (!result.rows[0]) throw new NotFoundError('Medicamento prescrito não encontrado');
@@ -28,7 +37,12 @@ class MedicamentoPrescritoRepository {
   async findByPrescricaoId(id_prescricao, client = db) {
     try {
       const result = await client.query(
-        'SELECT * FROM medicamentos_prescritos WHERE id_prescricao = $1',
+        `
+        SELECT mp.*, m.nome AS nome
+        FROM medicamentos_prescritos mp
+        JOIN medicamentos m ON mp.id_medicamento = m.id_medicamento
+        WHERE mp.id_prescricao = $1
+        `,
         [id_prescricao]
       );
       if (!result.rows.length) throw new NotFoundError('Nenhum medicamento encontrado para esta prescrição');
@@ -44,7 +58,8 @@ class MedicamentoPrescritoRepository {
       const result = await client.query(
         `INSERT INTO medicamentos_prescritos
           (id_prescricao, id_medicamento, dosagem, frequencia, duracao_dias, horarios, via)
-         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING *`,
         [
           data.id_prescricao,
           data.id_medicamento,
@@ -55,7 +70,10 @@ class MedicamentoPrescritoRepository {
           data.via
         ]
       );
-      return result.rows[0];
+
+      // pega o nome junto do medicamento
+      const created = await this.findById(result.rows[0].id, client);
+      return created;
     } catch (err) {
       throw new DatabaseError('Erro ao criar medicamento prescrito no banco');
     }
@@ -68,7 +86,8 @@ class MedicamentoPrescritoRepository {
         const result = await client.query(
           `INSERT INTO medicamentos_prescritos
             (id_prescricao, id_medicamento, dosagem, frequencia, duracao_dias, horarios, via)
-           VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
+           RETURNING *`,
           [
             med.id_prescricao,
             med.id_medicamento,
@@ -79,7 +98,10 @@ class MedicamentoPrescritoRepository {
             med.via
           ]
         );
-        created.push(result.rows[0]);
+
+        // consulta novamente para trazer já com nome
+        const fullMed = await this.findById(result.rows[0].id, client);
+        created.push(fullMed);
       }
       return created;
     } catch (err) {
@@ -111,8 +133,12 @@ class MedicamentoPrescritoRepository {
           id
         ]
       );
+
       if (!result.rows[0]) throw new NotFoundError('Medicamento prescrito não encontrado para atualização');
-      return result.rows[0];
+
+      // retorna já com nome
+      const updated = await this.findById(result.rows[0].id, client);
+      return updated;
     } catch (err) {
       if (err instanceof NotFoundError) throw err;
       throw new DatabaseError('Erro ao atualizar medicamento prescrito');
