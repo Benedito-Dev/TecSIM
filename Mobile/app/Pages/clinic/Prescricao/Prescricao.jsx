@@ -8,6 +8,10 @@ import { getPrescriptionStyles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import { getPrescricoesByPaciente, deletePrescricao } from '../../../services/prescricaoService';
 
+// Funções para donwload
+import { generatePrescriptionPDF } from '../../../services/Prescription-Pdf'
+import { downloadPDF } from '../../../services/download-service'
+
 const formatarData = (dataString) => {
   const data = new Date(dataString);
   const dia = String(data.getDate()).padStart(2, '0');
@@ -99,9 +103,34 @@ export default function PrescricaoScreen() {
     navigation.navigate('NovaPrescricao', { id_paciente: user.id });
   };
 
-  const handleDownloadPrescricao = (prescricao) => {
-    Alert.alert("Download", `Gerando PDF da prescrição: ${prescricao.diagnostico}`);
-    // Aqui entraria a lógica real de geração/download de PDF
+  // const handleDownloadPrescricao = (prescricao) => {
+  //   console.log("Download")
+  //   Alert.alert("Download", `Gerando PDF da prescrição: ${prescricao.diagnostico}`);
+  //   // Aqui entraria a lógica real de geração/download de PDF
+  // };
+
+  const handleDownloadPrescricao = async (prescricao) => {
+    try {
+      // Mostra indicador de carregamento
+      Alert.alert("Gerando PDF", "Aguarde enquanto preparamos seu documento...");
+      
+      // Gera o PDF
+      const pdfDoc = generatePrescriptionPDF(prescricao);
+      const filename = `Prescricao_${prescricao.diagnostico}_${formatarData(prescricao.data_prescricao)}`;
+      
+      // Faz o download
+      const filePath = await downloadPDF(pdfDoc, filename);
+      
+      Alert.alert(
+        "Download Concluído", 
+        `PDF salvo em: ${filePath}`,
+        [{ text: "OK" }]
+      );
+      
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+      Alert.alert("Erro", "Não foi possível gerar o PDF da prescrição.");
+    }
   };
 
   const handleDeletePrescricao = async (prescricaoId) => {
