@@ -1,6 +1,7 @@
 import api from '../api/api';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import { Platform } from "react-native";
 
 // 🟢 [GET] Lista todas as prescrições
 export const getPrescricoes = async () => {
@@ -89,23 +90,39 @@ export const deletePrescricao = async (id) => {
 // 📄 [GET] Download do PDF da prescrição
 export const downloadPrescricao = async (id) => {
   try {
-    // Define o caminho onde o PDF será salvo localmente
-    const fileUri = `${FileSystem.documentDirectory}prescricao_${id}.pdf`;
+    // Versão Web
+    if (Platform.OS === "web") {
+      // 🌐 Web: cria um link temporário e dispara o download
+      const response = await fetch(`http://192.168.1.114:3000/prescricoes/${id}/download`);
+      const blob = await response.blob();
 
-    // Faz o download direto do backend
-    const downloadResult = await FileSystem.downloadAsync(
-      `http://192.168.1.114:3000/prescricoes/${id}/download`,
-      fileUri
-    );
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `prescricao_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
 
-    console.log('PDF salvo em:', downloadResult.uri);
+      console.log("PDF baixado no navegador");
+      return `prescricao_${id}.pdf`;
+    } else { // Versão mobile
+      // 📱 Mobile: usa FileSystem + Sharing
+      const fileUri = `${FileSystem.documentDirectory}prescricao_${id}.pdf`;
+      const downloadResult = await FileSystem.downloadAsync(
+        `http://192.168.1.114:3000/prescricoes/${id}/download`,
+        fileUri
+      );
 
-    // Abre a opção de compartilhamento
-    if (await Sharing.isAvailableAsync()) {
-      await Sharing.shareAsync(downloadResult.uri);
+      console.log("PDF salvo em:", downloadResult.uri);
+
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(downloadResult.uri);
+      }
+
+      return downloadResult.uri;
     }
-
-    return downloadResult.uri;
   } catch (error) {
     console.error(`Erro ao baixar PDF da prescrição ${id}:`, error);
     throw error;
