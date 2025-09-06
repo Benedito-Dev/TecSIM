@@ -199,7 +199,7 @@ export default function ProfileScreen() {
           <Text style={styles.configText}>Privacidade</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.configItem}>
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'Help' })}>
           <HelpCircle size={20} color="#0c87c4" />
           <Text style={styles.configText}>Ajuda</Text>
         </TouchableOpacity>
