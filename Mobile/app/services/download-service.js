@@ -5,7 +5,6 @@ export const downloadPDF = async (pdfBase64, filename) => {
   try {
     const path = `${FileSystem.documentDirectory}${filename}.pdf`;
 
-    // ⚡ Aqui precisa dizer explicitamente que é base64
     await FileSystem.writeAsStringAsync(path, pdfBase64, {
       encoding: FileSystem.EncodingType.Base64,
     });

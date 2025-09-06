@@ -19,7 +19,7 @@ class PrescricaoRepository {
   async findById(id_prescricao, client = db) {
     try {
       const result = await client.query(
-        'SELECT * FROM prescricoes WHERE id_prescricao = $1',
+        'SELECT * FROM prescricoes WHERE id = $1',
         [id_prescricao]
       );
       if (!result.rows[0]) throw new NotFoundError('Prescrição não encontrada');

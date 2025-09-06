@@ -6,10 +6,9 @@ import { FileText, ArrowLeft, Plus, ChevronDown, ChevronUp, Trash2, Clock, Calen
 import { getPrescriptionStyles } from './styles';
 
 import { useAuth } from '../../../context/AuthContext';
-import { getPrescricoesByPaciente, deletePrescricao } from '../../../services/prescricaoService';
+import { getPrescricoesByPaciente, deletePrescricao, downloadPrescricao } from '../../../services/prescricaoService';
 
 // Funções para donwload
-import { generatePrescriptionPDF } from '../../../services/Prescription-Pdf'
 import { downloadPDF } from '../../../services/download-service'
 
 const formatarData = (dataString) => {
@@ -111,22 +110,17 @@ export default function PrescricaoScreen() {
 
   const handleDownloadPrescricao = async (prescricao) => {
     try {
-      // Mostra indicador de carregamento
       Alert.alert("Gerando PDF", "Aguarde enquanto preparamos seu documento...");
-      
-      // Gera o PDF
-      const pdfDoc = generatePrescriptionPDF(prescricao);
-      const filename = `Prescricao_${prescricao.diagnostico}_${formatarData(prescricao.data_prescricao)}`;
-      
-      // Faz o download
-      const filePath = await downloadPDF(pdfDoc, filename);
-      
+
+      // Recebe o caminho do PDF gerado
+      const filePath = await downloadPrescricao(prescricao.id);
+
       Alert.alert(
-        "Download Concluído", 
-        `PDF salvo em: ${filePath}`,
+        "Download Concluído",
+        `PDF salvo com sucesso`,
         [{ text: "OK" }]
       );
-      
+
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
       Alert.alert("Erro", "Não foi possível gerar o PDF da prescrição.");
