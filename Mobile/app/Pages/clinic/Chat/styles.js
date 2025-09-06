@@ -112,4 +112,39 @@ export const getChatStyles = (theme) => StyleSheet.create({
     color: theme.textOnPrimary,
     opacity: 0.7,
   },
+  
+  // NOVOS ESTILOS PARA OS BOTÕES DE AÇÃO RÁPIDA
+  quickActionsContainer: {
+    borderTopWidth: 1,
+    borderTopColor: theme.border,
+    backgroundColor: theme.backgroundCard,
+    paddingVertical: 12,
+  },
+  quickActionsScroll: {
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+  },
+  quickActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.background,
+    borderWidth: 1,
+    borderColor: theme.border,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginRight: 10,
+    minHeight: 40,
+  },
+  quickActionButtonDisabled: {
+    opacity: 0.6,
+  },
+  quickActionIcon: {
+    marginRight: 5,
+  },
+  quickActionText: {
+    color: theme.textPrimary,
+    fontSize: 14,
+    fontWeight: '500',
+  },
 });

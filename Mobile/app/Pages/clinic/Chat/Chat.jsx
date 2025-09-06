@@ -17,6 +17,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { getAIResponse, listAvailableModels } from '../../../services/aiService';
 import { getChatStyles } from './styles';
+import QuickActionButtons from '../../../components/QuickActionButtons'; // Importação do novo componente
 
 // Componente para os pontos animados
 const BouncingDots = ({ color = '#00c4cd' }) => {
@@ -172,6 +173,15 @@ export default function ChatScreen() {
     }
   };
 
+  // Função para lidar com o pressionar dos botões de ação rápida
+  const handleQuickActionPress = (message) => {
+    setNewMessage(message);
+    // Dispara o envio da mensagem após um pequeno delay
+    setTimeout(() => {
+      handleSendMessage();
+    }, 100);
+  };
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -228,6 +238,12 @@ export default function ChatScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Adicione o componente de botões rápidos */}
+      <QuickActionButtons 
+        onButtonPress={handleQuickActionPress} 
+        isLoading={isLoading} 
+      />
 
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
