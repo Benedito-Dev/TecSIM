@@ -35,6 +35,7 @@ export default function ProfileScreen() {
 
           if (data.foto_perfil) {
             setFotoPerfil(`http://10.0.30.157:3000${data.foto_perfil}?t=${Date.now()}`);
+
           } else {
             setFotoPerfil(null);
           }

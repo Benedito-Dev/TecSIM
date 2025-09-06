@@ -4,7 +4,6 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.background,
-    // SafeAreaView deve envolver este container no componente
   },
 
   header: {
@@ -78,14 +77,16 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
   },
 
   inputGroup: {
-    marginBottom: 16 
+    marginBottom: 16,
+    position: 'relative',
+    zIndex: 1000, 
   },
 
   label: {
     fontSize: 14,
     fontWeight: '500',
     color: theme.textSecondary,
-    marginBottom: 8
+    marginBottom: 4
   },
 
   input: {
@@ -125,7 +126,8 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: theme.border
+    borderColor: theme.border,
+    position: 'relative',
   },
 
   medicamentoHeader: {
@@ -163,17 +165,42 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
 
   medRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    zIndex: 1
   },
 
-  pickerWrapper: {
+  dropdown: {
     backgroundColor: theme.backgroundCard,
-    borderWidth: 1,
     borderColor: theme.border,
+    borderWidth: 1,
     borderRadius: 8,
+    minHeight: 48,
     justifyContent: 'center',
-    height: 48,
   },
+
+  dropDownContainer: {
+    backgroundColor: theme.backgroundCard,
+    borderColor: theme.border,
+    borderWidth: 1,
+    borderRadius: 8,
+    marginTop: 2,
+    zIndex: 1000,
+    elevation: 5,
+  },
+
+  dropdownText: {
+    fontSize: 15,
+    color: theme.textPrimary,
+  },
+
+  listItemContainer: {
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    borderWidth: 0,
+    paddingVertical: 10,
+    backgroundColor: theme.backgroundCard,
+  },
+
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -203,29 +230,10 @@ export const getPrescriptionFormStyles = (theme) => StyleSheet.create({
     left: 16,
     right: 16,
   },
+
   submitButtonText: {
     color: theme.textOnPrimary,
     fontSize: 16,
     fontWeight: '600'
   },
-
-  ScrollView: {
-    backgroundColor: theme.backgroundCard,
-    borderColor: theme.border,
-    borderWidth: 1,
-    borderRadius: 8,
-    height: 48,
-  },
-
-  dropDownContainer: {
-    backgroundColor: theme.backgroundCard,
-    borderColor: theme.border,
-    borderWidth: 1,
-    borderRadius: 8,
-  },
-  textStyle: {
-    fontSize: 15,
-    color: theme.textPrimary,
-  },
-
 });

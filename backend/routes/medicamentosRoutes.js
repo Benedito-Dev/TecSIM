@@ -59,6 +59,35 @@ class MedicamentoRoutes {
 
     /**
      * @swagger
+     * /medicamentos/search:
+     *   get:
+     *     summary: Busca medicamentos por termo (alternativa à query principal)
+     *     tags: [Medicamentos]
+     *     parameters:
+     *       - in: query
+     *         name: q
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: Termo de busca para filtrar medicamentos por nome
+     *     responses:
+     *       200:
+     *         description: Lista de medicamentos filtrados
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Medicamento'
+     *       400:
+     *         description: Parâmetro de busca ausente ou inválido
+     *       500:
+     *         description: Erro interno do servidor
+     */
+    this.router.get('/search', controller.search);
+
+    /**
+     * @swagger
      * /medicamentos/{id}:
      *   get:
      *     summary: Obtém um medicamento por ID

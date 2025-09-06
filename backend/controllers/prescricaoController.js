@@ -31,10 +31,10 @@ class PrescricaoController {
     }
   }
 
-  async findByMedicoId(req, res, next) {
+  async findByMedicoCrm(req, res, next) {
     try {
       const { crm } = req.params;
-      const prescricoes = await service.findByMedicoId(crm);
+      const prescricoes = await service.findByMedicoCrm(crm);
       res.status(200).json(prescricoes);
     } catch (error) {
       next(error);

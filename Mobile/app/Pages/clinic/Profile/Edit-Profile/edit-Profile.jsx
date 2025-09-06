@@ -31,6 +31,14 @@ export default function EditProfileScreen() {
   const [peso, setPeso] = useState('');
   const [genero, setGenero] = useState('');
 
+  // Estados para os placeholders (valores atuais)
+  const [currentCpf, setCurrentCpf] = useState('');
+  const [currentNome, setCurrentNome] = useState('');
+  const [currentEmail, setCurrentEmail] = useState('');
+  const [currentDataNascimento, setCurrentDataNascimento] = useState('');
+  const [currentPeso, setCurrentPeso] = useState('');
+  const [currentGenero, setCurrentGenero] = useState('');
+
   const [fotoPerfil, setFotoPerfil] = useState(null);
   const [novaImagem, setNovaImagem] = useState(null);
 
@@ -41,13 +49,13 @@ export default function EditProfileScreen() {
     const carregarPaciente = async () => {
       try {
         const data = await getPacienteById(userId);
-        setNome(data.nome || '');
-        setEmail(data.email || '');
-        setDataNascimento(data.data_nascimento?.split('T')[0] || '');
-        setPeso(String(data.peso_kg || ''));
+        setCurrentNome(data.nome || '');
+        setCurrentEmail(data.email || '');
+        setCurrentDataNascimento(data.data_nascimento?.split('T')[0] || '');
+        setCurrentPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
-        setFotoPerfil(data.foto_perfil ? `http://10.0.30.110:3000${data.foto_perfil}` : null);
-        setCpf(data.cpf || '');
+        setFotoPerfil(data.foto_perfil ? `http://192.168.1.9:3000${data.foto_perfil}` : null);
+        setCurrentCpf(data.cpf || '');
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);
         Alert.alert('Erro', 'Não foi possível carregar os dados do paciente.');
@@ -95,13 +103,14 @@ export default function EditProfileScreen() {
 
   const handleSalvar = async () => {
     try {
+      // Usar valores dos estados se preenchidos, caso contrário usar os valores atuais
       const pacienteData = {
-        nome,
-        email,
-        data_nascimento: dataNascimento,
-        peso_kg: parseFloat(peso),
-        genero,
-        cpf: cpf.trim() ? cpf : undefined,
+        nome: nome || currentNome,
+        email: email || currentEmail,
+        data_nascimento: dataNascimento || currentDataNascimento,
+        peso_kg: parseFloat(peso || currentPeso),
+        genero: genero || currentGenero,
+        cpf: cpf.trim() ? cpf : currentCpf,
       };
 
       console.log(pacienteData)
@@ -175,7 +184,7 @@ export default function EditProfileScreen() {
               ? { uri: novaImagem }
               : fotoPerfil
               ? { uri: fotoPerfil }
-              : getAvatarSource(genero)
+              : getAvatarSource(genero || currentGenero)
           }
           style={styles.avatar}
         />
@@ -186,12 +195,40 @@ export default function EditProfileScreen() {
 
       {/* Campos do Formulário */}
       <View style={styles.section}>
-        <CpfInput value={cpf} onChangeText={setCpf} />
-        <InputField label="Nome" value={nome} onChangeText={setNome} placeholder="Nome completo" iconName="user" />
-        <InputField label="Email" value={email} onChangeText={setEmail} placeholder="exemplo@email.com" keyboardType="email-address" iconName="mail" />
-        <DateInput value={dataNascimento} onChange={setDataNascimento} />
-        <PesoInput value={peso} onChangeText={setPeso} />
-        <GenderInput value={genero} onChange={setGenero} />
+        <CpfInput 
+          value={cpf} 
+          onChangeText={setCpf} 
+          placeholder={currentCpf || "Digite seu CPF"} 
+        />
+        <InputField 
+          label="Nome" 
+          value={nome} 
+          onChangeText={setNome} 
+          placeholder={currentNome || "Digite seu nome"} 
+          iconName="user" 
+        />
+        <InputField 
+          label="Email" 
+          value={email} 
+          onChangeText={setEmail} 
+          placeholder={currentEmail || "Digite seu email"} 
+          keyboardType="email-address" 
+          iconName="mail" 
+        />
+        <DateInput 
+          value={dataNascimento} 
+          onChange={setDataNascimento} 
+          placeholder={currentDataNascimento || "Selecione a data de nascimento"} 
+        />
+        <PesoInput 
+          value={peso} 
+          onChangeText={setPeso} 
+          placeholder={currentPeso || "Digite seu peso"} 
+        />
+        <GenderInput 
+          value={genero} 
+          onChange={setGenero}
+        />
       </View>
 
       {/* Botão Salvar */}

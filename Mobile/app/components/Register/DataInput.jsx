@@ -112,6 +112,7 @@ export default function DateInput({
           mode="date"
           display="default"
           value={value ? new Date(value) : new Date()}
+          locale="pt-BR" // ← Adicione esta linha
           onChange={handleChange}
           themeVariant="light"
         />
@@ -126,6 +127,7 @@ export default function DateInput({
                 display="spinner"
                 value={value ? new Date(value) : tempDate}
                 onChange={handleChange}
+                locale="pt-BR" // ← Adicione esta linha
                 themeVariant="light"
                 style={{ backgroundColor: theme.backgroundCard }}
               />
