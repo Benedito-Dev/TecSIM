@@ -1,23 +1,17 @@
-# Usa Node.js
 FROM node:20
 
-# Define o diretório dentro do container
+# Criar diretório de trabalho
 WORKDIR /app
 
-# Copia arquivos de dependência
+# Copiar package.json e instalar dependências
 COPY package.json package-lock.json* ./
+RUN npm install -g expo-cli @expo/ngrok && npm install
 
-# Instala dependências
-RUN npm install
-
-# Instala Expo CLI globalmente
-RUN npm install -g expo-cli
-
-# Copia o restante do projeto
+# Copiar código do projeto
 COPY . .
 
-# Expõe a porta do Metro bundler (default Expo)
-EXPOSE 8081
+# Expor as portas usadas pelo Expo
+EXPOSE 8081 19000 19001 19002
 
-# Comando para rodar o Expo no modo dev
-CMD ["npx", "expo", "start", "--tunnel", "--port", "8081"]
+# Comando para iniciar o Expo
+CMD ["npx", "expo", "start", "--tunnel", "--non-interactive"]

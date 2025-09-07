@@ -22,7 +22,6 @@ class Server {
     this.port = process.env.PORT || 3000;
     this.configureMiddlewares();
     this.routes();
-    this.initDb();
   }
 
   configureMiddlewares() {

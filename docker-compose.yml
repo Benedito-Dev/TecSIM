@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   backend:
     build: ./backend
@@ -6,44 +5,37 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL_POSTGRES: ${POSTGRES_URI}
+      POSTGRES_URI: ${POSTGRES_URI}
       DATABASE_URL_MONGO: ${MONGO_URI}
       JWT_SECRET: ${JWT_SECRET}
 
   frontend:
-    build: ./Mobile
-    container_name: frontend
+    build: ./mobile
+    container_name: tecsim-frontend
     ports:
-      - "8081:8081"
+      - "8081:8081"   # Metro Bundler
+      - "19000:19000" # Expo Go (LAN)
+      - "19001:19001" # Debugger
+      - "19002:19002" # Expo DevTools (web)
+    volumes:
+      - ./mobile:/app
+      - /app/node_modules
     environment:
-      API_URL: ${API_URL}
+      API_URL: http://backend:3000
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
 
   db-init:
-    build: ./db-init
+    build: ./backend
     container_name: db-init
     environment:
-      DATABASE_URL_POSTGRES: ${POSTGRES_URI}
+      POSTGRES_URI: ${POSTGRES_URI}
       DATABASE_URL_MONGO: ${MONGO_URI}
     depends_on:
       - backend
-    command: ["node", "init.js"]
+    command: ["node", "db/dbinit.js"]
 
-  db-seed:
-    build: ./db-seed
-    container_name: db-seed
-    environment:
-      DATABASE_URL_POSTGRES: ${POSTGRES_URI}
-      DATABASE_URL_MONGO: ${MONGO_URI}
-    depends_on:
-      - db-init
-    command: ["node", "seed.js"]
-
-  data-worker:
-    build: ./data-worker
-    container_name: data-worker
-    environment:
-      DATABASE_URL_POSTGRES: ${POSTGRES_URI}
-      DATABASE_URL_MONGO: ${MONGO_URI}
-    depends_on:
-      - backend
-    command: ["node", "worker.js"]
+volumes:
+  postgres_data:

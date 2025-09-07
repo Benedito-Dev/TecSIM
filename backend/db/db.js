@@ -1,13 +1,11 @@
-// db/index.js
 require('dotenv').config();
-
 const { Pool } = require('pg');
 
-// Cria pool usando a DATABASE_URL inteira
+// Cria pool usando a variável correta do Neon
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.POSTGRES_URI,  // <- usar a variável correta
   ssl: {
-    rejectUnauthorized: false, // Necessário para conexões com SSL como na Neon
+    rejectUnauthorized: false, // necessário para Neon
   },
 });
 

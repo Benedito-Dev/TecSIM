@@ -1,10 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { API_KEY } from '@env';
+import { API_URL } from '@env';
 import { verificarGatilhoCritico, detectarTemaForaDaSaude, validarMencaoMedicamentos } from '../utils/filters';
 
 // Configuração segura da chave de API
-if (!API_KEY) {
-  throw new Error("Chave de API não configurada. Configure a variável de ambiente REACT_APP_GOOGLE_API_KEY ou GOOGLE_API_KEY.");
+if (!API_URL) {
+  throw new Error("Chave de API não configurada. Configure a variável de ambiente REACT_APP_GOOGLE_API_URL ou GOOGLE_API_URL.");
 }
 
 // Cache para modelos disponíveis
@@ -34,7 +34,7 @@ export const listAvailableModels = async () => {
       };
     }
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_URL}`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -142,7 +142,7 @@ export const getAIResponse = async (message, history = [], options = {}) => {
     const finalOptions = { ...defaultOptions, ...options };
 
     // ✅ CORREÇÃO: Usar a instância única do GoogleGenerativeAI
-    const genAI = new GoogleGenerativeAI(API_KEY);
+    const genAI = new GoogleGenerativeAI(API_URL);
     const model = genAI.getGenerativeModel({
       model: finalOptions.modelName,
       generationConfig: {
