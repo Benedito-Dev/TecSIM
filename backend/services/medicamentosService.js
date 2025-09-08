@@ -41,6 +41,44 @@ class MedicamentoService {
     return medicamento;
   }
 
+  async search(searchTerm) {
+    if (!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim().length < 2) {
+      throw new ValidationError('Termo de busca deve ter pelo menos 2 caracteres.');
+    }
+
+    try {
+      const medicamentos = await repository.search(searchTerm.trim());
+      
+      if (!Array.isArray(medicamentos) || medicamentos.length === 0) {
+        throw new NotFoundError('Nenhum medicamento encontrado para o termo de busca.');
+      }
+      
+      return medicamentos;
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw err;
+      }
+      throw new DatabaseError('Erro interno ao buscar medicamentos.');
+    }
+  }
+
+  async findById(id) {
+    if (!id || isNaN(Number(id))) {
+      throw new ValidationError('ID inválido.');
+    }
+    
+    try {
+      const medicamento = await repository.findById(id);
+      if (!medicamento) throw new NotFoundError('Medicamento não encontrado.');
+      return medicamento;
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw err;
+      }
+      throw new DatabaseError('Erro interno ao buscar medicamento.');
+    }
+  }
+
   async update(id, data) {
     if (!id || isNaN(Number(id))) {
       throw new ValidationError('ID inválido.');
@@ -48,18 +86,34 @@ class MedicamentoService {
     if (!data || typeof data !== 'object') {
       throw new ValidationError('Dados do medicamento inválidos.');
     }
-    const medicamentoUpdated = await repository.update(id, data);
-    if (!medicamentoUpdated) throw new NotFoundError('Medicamento não encontrado.');
-    return medicamentoUpdated;
+    
+    try {
+      const medicamentoUpdated = await repository.update(id, data);
+      if (!medicamentoUpdated) throw new NotFoundError('Medicamento não encontrado.');
+      return medicamentoUpdated;
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw err;
+      }
+      throw new DatabaseError('Erro interno ao atualizar medicamento.');
+    }
   }
 
   async remove(id) {
     if (!id || isNaN(Number(id))) {
       throw new ValidationError('ID inválido.');
     }
-    const medicamentoRemoved = await repository.remove(id);
-    if (!medicamentoRemoved) throw new NotFoundError('Medicamento não encontrado.');
-    return medicamentoRemoved;
+    
+    try {
+      const medicamentoRemoved = await repository.remove(id);
+      if (!medicamentoRemoved) throw new NotFoundError('Medicamento não encontrado.');
+      return medicamentoRemoved;
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw err;
+      }
+      throw new DatabaseError('Erro interno ao remover medicamento.');
+    }
   }
 }
 

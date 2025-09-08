@@ -1,7 +1,7 @@
 // filters.js
 
 // Lista extensa de gatilhos de sintomas graves, persistentes ou situações críticas
-export const gatilhosCriticos = [
+const gatilhosCriticos = [
   "urgente", "emergência", "emergencial", "não aguento mais", "grave", "gravíssimo",
   "sangramento", "vomitando sangue", "dor muito forte", "crise", "agonia", "desesperado",
   "inconsciente", "desmaiei", "perdi os sentidos", "pressão alta", "pressão baixa",
@@ -12,13 +12,13 @@ export const gatilhosCriticos = [
   "perda de movimento", "visão turva", "gravidez de risco", "aborto espontâneo",
   "doença crônica", "diabetes descontrolada", "asma grave", "câncer", "HIV",
   "uso de remédio controlado", "remédio tarja preta", "efeito colateral grave",
-  "pensamentos ruins", "vontade de morrer", "suicídio", "depressão profunda",
+  "pensamentos ruim", "vontade de morrer", "suicídio", "depressão profunda",
   "tristeza intensa", "não quero viver", "ansiedade severa", "ataque de pânico",
   "síndrome do pânico", "uso de substância", "alcoolismo", "overdose"
 ];
 
 // Lista extensa de temas fora da área médica (evitar respostas)
-export const palavrasProibidas = [
+const palavrasProibidas = [
   // Política e figuras públicas
   "bolsonaro", "lula", "presidente", "eleição", "política", "governo", "partido",
   "ministro", "congresso", "senado", "câmara", "ditadura", "democracia",
@@ -42,15 +42,78 @@ export const palavrasProibidas = [
   "signo", "horóscopo", "astrologia", "mapa astral"
 ];
 
+// Lista de medicamentos controlados e termos relacionados
+const medicamentosControlados = [
+  // Antibióticos e controlados
+  "antibiótico", "amoxicilina", "azitromicina", "cefalexina", "ciprofloxacino",
+  "claritromicina", "doxiciclina", "eritromicina", "metronidazol", "penicilina",
+  
+  // Psicotrópicos e tarja preta
+  "ansiolítico", "alprazolam", "diazepam", "clonazepam", "lorazepam", "rivotril",
+  "frontal", "lexotan", "antidepressivo", "fluoxetina", "sertralina", "paroxetina",
+  "citalopram", "escitalopram", "venlafaxina", "duloxetina", "amitriptilina",
+  "estabilizador de humor", "lítio", "carbamazepina", "ácido valproico", "lamotrigina",
+  
+  // Estimulantes e controlados
+  "metilfenidato", "ritalina", "venvanse", "concerta", "anfetamina", "modafinila",
+  
+  // Opioides e analgésicos controlados
+  "morfina", "codeína", "tramadol", "oxicodona", "hidrocodona", "fentanil", "metadona",
+  
+  // Outros controlados
+  "corticosteroide", "prednisona", "cortisona", "dexametasona", "hidrocortisona",
+  "anticoncepcional hormonal", "pílula do dia seguinte", "hormônio", "testosterona",
+  "esteroide anabolizante", "finasterida", "isotretinoína", "roacutan",
+  
+  // Termos gerais de controle
+  "tarja preta", "tarja vermelha", "controlado", "receita médica", "prescrição médica",
+  "remédio controlado", "medicamento controlado", "substância controlada"
+];
+
 // Função para verificar se contém algum gatilho crítico
-export const verificarGatilhoCritico = (mensagem) => {
+const verificarGatilhoCritico = (mensagem) => {
   const texto = mensagem.toLowerCase();
   return gatilhosCriticos.some(trigger => texto.includes(trigger));
 };
 
 // Função para verificar se contém tema proibido (fora da área médica)
-export const detectarTemaForaDaSaude = (mensagem) => {
+const detectarTemaForaDaSaude = (mensagem) => {
   const texto = mensagem.toLowerCase();
   return palavrasProibidas.some(palavra => texto.includes(palavra));
 };
-    
+
+// Função para validar menção a medicamentos controlados
+const validarMencaoMedicamentos = (mensagem) => {
+  const texto = mensagem.toLowerCase();
+  
+  // Verifica se há menção a medicamentos controlados
+  const contemControlado = medicamentosControlados.some(medicamento => 
+    texto.includes(medicamento)
+  );
+  
+  // Verifica contextos perigosos mesmo com medicamentos permitidos
+  const contextoPerigoso = (
+    texto.includes("dose") && texto.includes("aumentar") ||
+    texto.includes("quantos tomar") ||
+    texto.includes("misturar") && texto.includes("com ") ||
+    texto.includes("automedicação") ||
+    texto.includes("uso prolongado") ||
+    texto.includes("sem receita")
+  );
+  
+  return contemControlado || contextoPerigoso;
+};
+
+// Exportações nomeadas (CORRIGIDO)
+export {
+  verificarGatilhoCritico,
+  detectarTemaForaDaSaude,
+  validarMencaoMedicamentos
+};
+
+// Exportação padrão para compatibilidade com React Native
+export default {
+  verificarGatilhoCritico,
+  detectarTemaForaDaSaude,
+  validarMencaoMedicamentos
+};

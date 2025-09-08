@@ -1,39 +1,27 @@
 const db = require('../db/db');
 const Prescricao = require('../models/prescricaoModel');
-const { NotFoundError, DatabaseError, ConflictError } = require('../utils/errors');
+const { NotFoundError, DatabaseError } = require('../utils/errors');
 
 class PrescricaoRepository {
   constructor() {
     this.collection = null;
   }
 
-  async findDuplicate(pacienteId, crm, dataPrescricao) {
+  async findAll(client = db) {
     try {
-      const result = await db.query(
-        `SELECT * FROM prescricoes 
-         WHERE id_paciente = $1 
-         AND crm = $2 
-         AND data_prescricao = $3`,
-        [pacienteId, crm, dataPrescricao]
-      );
-      return result.rows[0] || null;
-    } catch (err) {
-      throw new DatabaseError('Erro ao buscar prescrição duplicada');
-    }
-  }
-  
-  async findAll() {
-    try {
-      const result = await db.query('SELECT * FROM prescricoes');
+      const result = await client.query('SELECT * FROM prescricoes');
       return result.rows.map(row => new Prescricao(row));
     } catch (err) {
       throw new DatabaseError('Erro ao buscar prescrições no banco');
     }
   }
 
-  async findById(id) {
+  async findById(id_prescricao, client = db) {
     try {
-      const result = await db.query('SELECT * FROM prescricoes WHERE id = $1', [id]);
+      const result = await client.query(
+        'SELECT * FROM prescricoes WHERE id_prescricao = $1',
+        [id_prescricao]
+      );
       if (!result.rows[0]) throw new NotFoundError('Prescrição não encontrada');
       return new Prescricao(result.rows[0]);
     } catch (err) {
@@ -42,9 +30,12 @@ class PrescricaoRepository {
     }
   }
 
-  async findByPacienteId(id_paciente) {
+  async findByPacienteId(id_paciente, client = db) {
     try {
-      const result = await db.query('SELECT * FROM prescricoes WHERE id_paciente = $1', [id_paciente]);
+      const result = await client.query(
+        'SELECT * FROM prescricoes WHERE id_paciente = $1',
+        [id_paciente]
+      );
       if (!result.rows.length) throw new NotFoundError('Nenhuma prescrição encontrada para este paciente');
       return result.rows.map(row => new Prescricao(row));
     } catch (err) {
@@ -53,9 +44,12 @@ class PrescricaoRepository {
     }
   }
 
-  async findByMedicoCrm(crm) {
+  async findByMedicoCrm(crm, client = db) {
     try {
-      const result = await db.query('SELECT * FROM prescricoes WHERE crm = $1', [crm]);
+      const result = await client.query(
+        'SELECT * FROM prescricoes WHERE crm = $1',
+        [crm]
+      );
       if (!result.rows.length) throw new NotFoundError('Nenhuma prescrição encontrada para este médico');
       return result.rows.map(row => new Prescricao(row));
     } catch (err) {
@@ -64,20 +58,9 @@ class PrescricaoRepository {
     }
   }
 
-  async create(data) {
+  async create(data, client = db) {
     try {
-      // Verifica se já existe prescrição com os mesmos dados
-      const existe = await this.findDuplicate(
-        data.id_paciente, 
-        data.crm, 
-        data.data_prescricao
-      );
-      
-      if (existe) {
-        throw new ConflictError('Prescrição já existe');
-      }
-
-      const result = await db.query(
+      const result = await client.query(
         `INSERT INTO prescricoes 
          (id_paciente, crm, diagnostico, data_prescricao, validade)
          VALUES ($1, $2, $3, $4, $5) RETURNING *`,
@@ -91,28 +74,28 @@ class PrescricaoRepository {
       );
       return new Prescricao(result.rows[0]);
     } catch (err) {
-      if (err instanceof ConflictError) throw err;
       throw new DatabaseError('Erro ao criar prescrição no banco');
     }
   }
 
-  async update(id, data) {
+  async update(id_prescricao, data, client = db) {
     try {
-      const result = await db.query(
+      const result = await client.query(
         `UPDATE prescricoes SET
-          id_paciente = $1,
-          crm = $2,
-          diagnostico = $3,
-          data_prescricao = $4,
-          validade = $5
-         WHERE id = $6 RETURNING *`,
+          id_paciente     = COALESCE($1, id_paciente),
+          crm             = COALESCE($2, crm),
+          diagnostico     = COALESCE($3, diagnostico),
+          data_prescricao = COALESCE($4, data_prescricao),
+          validade        = COALESCE($5, validade)
+         WHERE id_prescricao = $6 
+         RETURNING *`,
         [
-          data.id_paciente, 
-          data.crm, 
-          data.diagnostico, 
-          data.data_prescricao, 
-          data.validade, 
-          id
+          data.id_paciente || null, 
+          data.crm || null, 
+          data.diagnostico || null, 
+          data.data_prescricao || null, 
+          data.validade || null, 
+          id_prescricao
         ]
       );
       if (!result.rows[0]) throw new NotFoundError('Prescrição não encontrada para atualização');
@@ -123,9 +106,12 @@ class PrescricaoRepository {
     }
   }
 
-  async remove(id) {
+  async remove(id_prescricao, client = db) {
     try {
-      const result = await db.query('DELETE FROM prescricoes WHERE id = $1 RETURNING *', [id]);
+      const result = await client.query(
+        'DELETE FROM prescricoes WHERE id_prescricao = $1 RETURNING *',
+        [id_prescricao]
+      );
       if (!result.rows[0]) throw new NotFoundError('Prescrição não encontrada para remoção');
       return new Prescricao(result.rows[0]);
     } catch (err) {

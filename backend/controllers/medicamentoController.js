@@ -42,6 +42,29 @@ class MedicamentoController {
     }
   }
 
+  async search(req, res) {
+    try {
+      const { q } = req.query;
+      
+      if (!q || q.trim().length < 2) {
+        return res.status(400).json({ 
+          error: 'Parâmetro de busca (q) é obrigatório e deve ter pelo menos 2 caracteres.' 
+        });
+      }
+      
+      const medicamentos = await service.search(q.trim());
+      res.status(200).json(medicamentos);
+    } catch (err) {
+      console.error('Erro ao buscar medicamentos:', err);
+
+      if (err.statusCode) {
+        return res.status(err.statusCode).json({ error: err.message });
+      }
+
+      res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+  }
+
   async findById(req, res) {
     const { id } = req.params;
     try {

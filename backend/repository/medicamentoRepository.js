@@ -56,6 +56,27 @@ class MedicamentoRepository {
     return result.rows;
   }
 
+  async search(searchTerm) {
+    try {
+      const result = await db.query(`
+        SELECT 
+          id_medicamento, nome, tipo, descricao, faixa_etaria_minima, 
+          faixa_etaria_maxima, contraindicacoes, interacoes_comuns, 
+          composicao, dosagem_padrao, bula_detalhada
+        FROM ${this.tableName}
+        WHERE nome ILIKE $1
+        ORDER BY nome ASC
+        LIMIT 20
+      `, [`%${searchTerm}%`]);
+
+      console.log('Medicamentos encontrados na busca:', result.rows.length);
+      return result.rows;
+    } catch (err) {
+      console.error('Erro no search do repository:', err);
+      throw err;
+    }
+  }
+
   async findById(id) {
     const result = await db.query(`
       SELECT 

@@ -82,19 +82,44 @@ const options = {
           }
         },
         Prescricao: {
-            type: 'object',
-            required: ['id_paciente', 'crm', 'diagnostico', 'data_prescricao'], // id_medico removido daqui
-            properties: {
-              id: { type: 'integer', example: 1 },
-              id_paciente: { type: 'integer', example: 101 },
-              // id_medico removido daqui
-              crm: { type: 'string', example: 'CRM/SP 987654', description: 'CRM do médico responsável' },
-              diagnostico: { type: 'string', example: 'Infecção urinária' },
-              data_prescricao: { type: 'string', format: 'date', example: '2025-06-30' },
-              validade: { type: 'string', format: 'date', example: '2025-07-15' },
-              data_cadastro: { type: 'string', format: 'date-time', example: '2025-06-30T12:34:56Z' }
+          type: 'object',
+          required: ['id_paciente', 'crm', 'diagnostico', 'data_prescricao'],
+          properties: {
+            id: { type: 'integer', example: 1 },
+            id_paciente: { type: 'integer', example: 101 },
+            crm: { type: 'string', example: 'CRM/SP 987654', description: 'CRM do médico responsável' },
+            diagnostico: { type: 'string', example: 'Infecção urinária' },
+            data_prescricao: { type: 'string', format: 'date', example: '2025-06-30' },
+            validade: { type: 'string', format: 'date', example: '2025-07-15' },
+            data_cadastro: { type: 'string', format: 'date-time', example: '2025-06-30T12:34:56Z' }
+          }
+        },
+        PrescricaoRequest: {
+          type: 'object',
+          required: ['id_paciente', 'crm', 'diagnostico', 'data_prescricao', 'medicamentos'],
+          properties: {
+            id_paciente: { type: 'integer', example: 54 },
+            crm: { type: 'string', example: 'CE23299', description: 'CRM do médico responsável' },
+            diagnostico: { type: 'string', example: 'Paciente com infecção bacteriana' },
+            observacoes: { type: 'string', example: 'Tomar bastante água', nullable: true },
+            data_prescricao: { type: 'string', format: 'date', example: '2024-01-15' },
+            medicamentos: {
+              type: 'array',
+              items: {
+                type: 'object',
+                required: ['id_medicamento', 'dosagem', 'frequencia', 'duracao_dias', 'via'],
+                properties: {
+                  id_medicamento: { type: 'integer', example: 10 },
+                  dosagem: { type: 'string', example: '500mg' },
+                  frequencia: { type: 'string', example: '8/8h' },
+                  duracao_dias: { type: 'integer', example: 7 },
+                  via: { type: 'string', example: 'oral', enum: ['oral', 'intravenosa', 'intramuscular', 'subcutânea', 'tópica', 'inalatória'] },
+                  horarios: { type: 'string', example: '08h, 16h, 00h', nullable: true }
+                }
+              }
             }
-          },
+          }
+        },
         InteracoesMedicamentos: {
           type: 'object',
           required: ['medicamento_id', 'medicamento_interagente_id', 'descricao'],
