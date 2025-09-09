@@ -1,7 +1,7 @@
 const prescricaoRepository = require('../repository/prescricaoRepository');
 const medicamentoPrescritoRepository = require('../repository/medicamentosPrescritosRepository');
 const db = require('../db/db');
-const { ConflictError, DatabaseError } = require('../utils/errors');
+const { ConflictError, DatabaseError, NotFoundError } = require('../utils/errors');
 
 class PrescricaoService {
   async findAll() {
@@ -9,7 +9,20 @@ class PrescricaoService {
   }
 
   async findById(id) {
-    return await prescricaoRepository.findById(id);
+    const prescricao =  await prescricaoRepository.findById(id);
+
+    if (!prescricao) {
+      throw new NotFoundError('Prescrição não encontrada')
+    }
+
+  //Buscar Medicamentos
+  const medicamentos = await medicamentoPrescritoRepository.findByPrescricaoId(prescricao.id)
+
+  return {
+    ...prescricao,
+    medicamentos
+  };
+
   }
 
   // async findByPacienteId(id_paciente) {

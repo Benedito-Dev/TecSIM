@@ -6,7 +6,10 @@ import { FileText, ArrowLeft, Plus, ChevronDown, ChevronUp, Trash2, Clock, Calen
 import { getPrescriptionStyles } from './styles';
 
 import { useAuth } from '../../../context/AuthContext';
-import { getPrescricoesByPaciente, deletePrescricao } from '../../../services/prescricaoService';
+import { getPrescricoesByPaciente, deletePrescricao, downloadPrescricao } from '../../../services/prescricaoService';
+
+// Funções para donwload
+import { downloadPDF } from '../../../services/download-service'
 
 const formatarData = (dataString) => {
   const data = new Date(dataString);
@@ -99,9 +102,29 @@ export default function PrescricaoScreen() {
     navigation.navigate('NovaPrescricao', { id_paciente: user.id });
   };
 
-  const handleDownloadPrescricao = (prescricao) => {
-    Alert.alert("Download", `Gerando PDF da prescrição: ${prescricao.diagnostico}`);
-    // Aqui entraria a lógica real de geração/download de PDF
+  // const handleDownloadPrescricao = (prescricao) => {
+  //   console.log("Download")
+  //   Alert.alert("Download", `Gerando PDF da prescrição: ${prescricao.diagnostico}`);
+  //   // Aqui entraria a lógica real de geração/download de PDF
+  // };
+
+  const handleDownloadPrescricao = async (prescricao) => {
+    try {
+      Alert.alert("Gerando PDF", "Aguarde enquanto preparamos seu documento...");
+
+      // Recebe o caminho do PDF gerado
+      const filePath = await downloadPrescricao(prescricao.id);
+
+      Alert.alert(
+        "Download Concluído",
+        `PDF salvo com sucesso`,
+        [{ text: "OK" }]
+      );
+
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+      Alert.alert("Erro", "Não foi possível gerar o PDF da prescrição.");
+    }
   };
 
   const handleDeletePrescricao = async (prescricaoId) => {
