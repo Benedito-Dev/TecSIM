@@ -7,6 +7,7 @@ import { getProfileStyles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import { logout as logoutService } from '../../../services/auth/authService';
 import { getPacienteById } from '../../../services/userService';
+import { IP_HOST } from '@env';
 
 import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings, Moon, Sun } from 'lucide-react-native';
 import SwitchTheme from '../../../components/SwitchTeme';
@@ -34,7 +35,7 @@ export default function ProfileScreen() {
           setPaciente(data);
 
           if (data.foto_perfil) {
-            setFotoPerfil(`http://10.0.30.157:3000${data.foto_perfil}?t=${Date.now()}`);
+            setFotoPerfil(`http://${IP_HOST}:3000${data.foto_perfil}?t=${Date.now()}`);
 
           } else {
             setFotoPerfil(null);

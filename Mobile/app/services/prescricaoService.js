@@ -2,6 +2,7 @@ import api from '../api/api';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { Platform } from "react-native";
+import { IP_HOST } from '@env';
 
 // 🟢 [GET] Lista todas as prescrições
 export const getPrescricoes = async () => {
@@ -93,7 +94,7 @@ export const downloadPrescricao = async (id) => {
     // Versão Web
     if (Platform.OS === "web") {
       // 🌐 Web: cria um link temporário e dispara o download
-      const response = await fetch(`http://192.168.1.114:3000/prescricoes/${id}/download`);
+      const response = await fetch(`http://${IP_HOST}:3000/prescricoes/${id}/download`);
       const blob = await response.blob();
 
       const url = window.URL.createObjectURL(blob);
@@ -111,7 +112,7 @@ export const downloadPrescricao = async (id) => {
       // 📱 Mobile: usa FileSystem + Sharing
       const fileUri = `${FileSystem.documentDirectory}prescricao_${id}.pdf`;
       const downloadResult = await FileSystem.downloadAsync(
-        `http://192.168.1.114:3000/prescricoes/${id}/download`,
+        `http://${IP_HOST}:3000/prescricoes/${id}/download`,
         fileUri
       );
 
