@@ -34,8 +34,7 @@ export default function ProfileScreen() {
           setPaciente(data);
 
           if (data.foto_perfil) {
-            setFotoPerfil(`http://10.10.105.55:3000${data.foto_perfil}?t=${Date.now()}`);
-
+            setFotoPerfil(`http://10.0.30.116:3000${data.foto_perfil}?t=${Date.now()}`);
           } else {
             setFotoPerfil(null);
           }
@@ -199,7 +198,7 @@ export default function ProfileScreen() {
           <Text style={styles.configText}>Privacidade</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.configItem}>
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'Help' })}>
           <HelpCircle size={20} color="#0c87c4" />
           <Text style={styles.configText}>Ajuda</Text>
         </TouchableOpacity>

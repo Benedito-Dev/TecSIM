@@ -126,7 +126,7 @@ export const getMedicationStyles = (theme) => StyleSheet.create({
     marginRight: 12,
   },
   medType: {
-    backgroundColor: theme.background,
+    backgroundColor: theme.primary,
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 4,
