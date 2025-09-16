@@ -86,16 +86,14 @@ const tables = [
     name: 'prescricoes',
     createQuery: `
       CREATE TABLE prescricoes (
-        id_prescricao SERIAL PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         id_paciente INT NOT NULL,
-        id INT NOT NULL,
         crm VARCHAR(20),
         diagnostico TEXT NOT NULL,
         data_prescricao DATE NOT NULL,
         validade DATE,
         data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE,
-        FOREIGN KEY (id) REFERENCES medicos(id),
         FOREIGN KEY (crm) REFERENCES medicos(crm)
       );
     `

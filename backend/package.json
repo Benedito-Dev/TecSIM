@@ -6,6 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
     "start": "node server.js",
+    "db:seed": "node prisma/seed.js",
+    "db:migrate": "npx prisma migrate deploy",
     "vercel-build": "node ./db/dbinit.js"
   },
   "keywords": [],
@@ -13,6 +15,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "prisma": "^5.0.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -32,6 +36,9 @@
     "redis": "^5.8.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "description": ""
 }

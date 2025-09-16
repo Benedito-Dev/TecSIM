@@ -1,0 +1,16 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copiar arquivos necessários
+COPY package*.json ./
+COPY prisma ./prisma/
+
+# Instalar dependências
+RUN npm install
+
+# Gerar Prisma Client
+RUN npx prisma generate
+
+# Comando para executar migrações e seeds
+CMD npx prisma migrate deploy && npx prisma db seed
