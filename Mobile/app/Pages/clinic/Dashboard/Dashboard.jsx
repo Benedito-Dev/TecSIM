@@ -1,18 +1,21 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../../context/ThemeContext';
-import { getDashboardStyles } from './styles'
+import { getDashboardStyles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import NotificationIcon from '../../../components/Notification';
-import { MessageSquare, Pill, Clock, FileText, Moon, Sun } from 'lucide-react-native'; // Adicionei FileText para o ícone de prescrições
+import { useElderMode } from '../../../context/ElderModeContext';
+import { MessageSquare, Pill, Clock, FileText } from 'lucide-react-native';
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
   const { user, loading } = useAuth();
 
-  const { theme } = useContext(ThemeContext)
-  const styles = getDashboardStyles(theme)
+  const { theme } = useContext(ThemeContext);
+  const { elderMode } = useElderMode(); // pegando o estado do modo idoso
+
+  const styles = getDashboardStyles(theme, elderMode); // passando elderMode para o styles
 
   if (loading || !user) {
     return (
@@ -24,7 +27,6 @@ export default function DashboardScreen() {
 
   return (
     <View style={styles.background}>
-      
       {/* Cabeçalho fixo sem padding lateral */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
@@ -34,7 +36,9 @@ export default function DashboardScreen() {
       {/* Conteúdo rolável com padding */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Saudação */}
-        <Text style={styles.welcomeText}>Olá, <Text style={{color: '#0c87c4', fontWeight: 'bold'}} >{user.nome || 'Usuário'}</Text> 👋</Text>
+        <Text style={styles.welcomeText}>
+          Olá, <Text style={{ color: '#0c87c4', fontWeight: 'bold' }}>{user.nome || 'Usuário'}</Text> 👋
+        </Text>
         <Text style={styles.subWelcome}>Como podemos ajudar na sua saúde hoje?</Text>
 
         {/* Cartão de Chat com o Assistente */}
@@ -42,7 +46,7 @@ export default function DashboardScreen() {
           style={styles.chatCard}
           onPress={() => navigation.navigate('Chat')}
         >
-          <MessageSquare color="#fff" size={32} />
+          <MessageSquare color="#fff" size={elderMode ? 40 : 32} /> {/* aumenta o ícone no modo idoso */}
           <Text style={styles.chatCardTitle}>Iniciar Conversar com Assistente</Text>
           <Text style={styles.chatCardDescription}>
             Obtenha recomendações personalizadas para seus sintomas.
@@ -56,7 +60,7 @@ export default function DashboardScreen() {
             style={styles.toolCard}
             onPress={() => navigation.navigate('Medicamentos')}
           >
-            <Pill color="#0c87c4" size={28} />
+            <Pill color="#0c87c4" size={elderMode ? 36 : 28} />
             <Text style={styles.toolCardTitle}>Medicamentos</Text>
             <Text style={styles.toolCardDescription}>Informações gerais sobre medicamentos</Text>
           </TouchableOpacity>
@@ -65,7 +69,7 @@ export default function DashboardScreen() {
             style={styles.toolCard}
             onPress={() => navigation.navigate('Lembretes')}
           >
-            <Clock color="#0c87c4" size={28} />
+            <Clock color="#0c87c4" size={elderMode ? 36 : 28} />
             <Text style={styles.toolCardTitle}>Lembretes</Text>
             <Text style={styles.toolCardDescription}>Nunca esqueça de tomar seus remédios</Text>
           </TouchableOpacity>
@@ -75,7 +79,7 @@ export default function DashboardScreen() {
             style={styles.toolCard}
             onPress={() => navigation.navigate('Prescricao')}
           >
-            <FileText color="#0c87c4" size={28} />
+            <FileText color="#0c87c4" size={elderMode ? 36 : 28} />
             <Text style={styles.toolCardTitle}>Minhas Prescrições</Text>
             <Text style={styles.toolCardDescription}>Acesse suas receitas médicas</Text>
           </TouchableOpacity>

@@ -1,14 +1,18 @@
 // dashboardStyles.js
 import { StyleSheet } from 'react-native';
 
-export const getDashboardStyles = (theme) =>
-  StyleSheet.create({
+export const getDashboardStyles = (theme, elderMode = false) => {
+  // helpers para escalar valores
+  const scaleFont = (size) => elderMode ? size + 4 : size;
+  const scaleSpacing = (value) => elderMode ? value * 1.2 : value;
+
+  return StyleSheet.create({
     background: {
-      flex: 1, 
-      backgroundColor: theme.background
+      flex: 1,
+      backgroundColor: theme.background,
     },
     scrollContent: {
-      padding: 20,
+      padding: scaleSpacing(20),
       backgroundColor: theme.background,
     },
     loadingContainer: {
@@ -18,11 +22,11 @@ export const getDashboardStyles = (theme) =>
       backgroundColor: theme.background,
     },
     header: {
-      padding: 10,
+      padding: scaleSpacing(10),
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: 16,
+      marginBottom: scaleSpacing(16),
       backgroundColor: theme.backgroundCard,
       borderBottomWidth: 1,
       borderBottomColor: theme.border,
@@ -33,30 +37,30 @@ export const getDashboardStyles = (theme) =>
       shadowRadius: 3,
     },
     logoText: {
-      fontSize: 24,
+      fontSize: scaleFont(24),
       fontWeight: 'bold',
       color: theme.primary,
     },
     welcomeText: {
-      fontSize: 18,
+      fontSize: scaleFont(18),
       fontWeight: '600',
       color: theme.textPrimary,
-      marginBottom: 4,
+      marginBottom: scaleSpacing(4),
       textAlign: 'left',
     },
     subWelcome: {
-      fontSize: 14,
+      fontSize: scaleFont(14),
       color: theme.textMuted,
-      marginBottom: 16,
+      marginBottom: scaleSpacing(16),
       textAlign: 'left',
     },
     chatCard: {
       flexDirection: 'column',
       alignItems: 'center',
       backgroundColor: theme.primary,
-      borderRadius: 16,
-      padding: 20,
-      marginBottom: 24,
+      borderRadius: scaleSpacing(16),
+      padding: scaleSpacing(20),
+      marginBottom: scaleSpacing(24),
       elevation: 6,
       shadowColor: theme.shadowColor,
       shadowOffset: { width: 0, height: 4 },
@@ -64,32 +68,32 @@ export const getDashboardStyles = (theme) =>
       shadowRadius: 5,
     },
     chatCardTitle: {
-      fontSize: 16,
+      fontSize: scaleFont(16),
       fontWeight: 'bold',
       color: theme.textOnPrimary,
-      marginTop: 10,
+      marginTop: scaleSpacing(10),
     },
     chatCardDescription: {
-      fontSize: 14,
+      fontSize: scaleFont(14),
       color: theme.textOnPrimary,
-      marginTop: 4,
+      marginTop: scaleSpacing(4),
       textAlign: 'center',
     },
     sectionTitle: {
-      fontSize: 18,
+      fontSize: scaleFont(18),
       fontWeight: 'bold',
       color: theme.textPrimary,
-      marginBottom: 12,
+      marginBottom: scaleSpacing(12),
     },
     cardGrid: {
       flexDirection: 'column',
-      gap: 12,
+      gap: scaleSpacing(12),
     },
     toolCard: {
       backgroundColor: theme.backgroundCard,
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 16,
+      borderRadius: scaleSpacing(16),
+      padding: scaleSpacing(16),
+      marginBottom: scaleSpacing(16),
       elevation: 5,
       shadowColor: theme.shadowColor,
       shadowOffset: { width: 0, height: 4 },
@@ -98,15 +102,16 @@ export const getDashboardStyles = (theme) =>
       alignItems: 'center',
     },
     toolCardTitle: {
-      fontSize: 15,
+      fontSize: scaleFont(15),
       fontWeight: 'bold',
       color: theme.primary,
-      marginTop: 8,
+      marginTop: scaleSpacing(8),
     },
     toolCardDescription: {
-      fontSize: 13,
+      fontSize: scaleFont(13),
       color: theme.textSecondary,
       textAlign: 'center',
-      marginTop: 4,
+      marginTop: scaleSpacing(4),
     },
   });
+};
