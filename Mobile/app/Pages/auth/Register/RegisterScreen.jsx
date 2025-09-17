@@ -116,7 +116,7 @@ export default function RegisterScreen({ navigation }) {
           >
             <InputField label="Nome Completo" placeholder="Ex: Antonio Nascimento Barros" value={nome} onChangeText={setNome} iconName="user" theme={lightTheme} />
 
-            <CpfInput label="CPF" value={cpf} onChangeText={setCpf} onValidityChange={setCpfIsValid} />
+            <CpfInput label="CPF" value={cpf} onChangeText={setCpf} onValidityChange={setCpfIsValid} theme={lightTheme} />
 
             <EmailInput label="Email" value={email} onChangeText={setEmail} onValidityChange={setEmailIsValid} keyboardType="email-address" iconName="mail" />
 
