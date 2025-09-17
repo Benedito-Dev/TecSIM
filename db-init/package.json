@@ -1,0 +1,13 @@
+{
+  "name": "db-init",
+  "version": "1.0.0",
+  "main": "createTables.js",
+  "scripts": {
+    "start": "node createTables.js",
+    "seed": "node seedData.js"
+  },
+  "dependencies": {
+    "pg": "^8.11.0",
+    "dotenv": "^16.3.1"
+  }
+}

@@ -1,4 +1,9 @@
-const db = require('./db');
+require('dotenv').config();
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+});
 
 const tables = [
   {
@@ -176,22 +181,20 @@ const tables = [
   }
 ];
 
-const createTables = async () => {
+(async () => {
   try {
     for (const table of tables) {
-      const checkTableQuery = `SELECT to_regclass('public.${table.name}');`;
-      const result = await db.query(checkTableQuery);
-
-      if (result.rows[0].to_regclass === null) {
-        await db.query(table.createQuery);
-        console.log(`✅ Tabela "${table.name}" criada com sucesso!`);
+      const res = await pool.query(`SELECT to_regclass('public.${table.name}');`);
+      if (!res.rows[0].to_regclass) {
+        await pool.query(table.createQuery);
+        console.log(`✅ Tabela "${table.name}" criada.`);
       } else {
-        console.log(`ℹ️  Tabela "${table.name}" já existe.`);
+        console.log(`ℹ️ Tabela "${table.name}" já existe.`);
       }
     }
   } catch (err) {
-    console.error('❌ Erro ao criar tabelas:', err.message);
+    console.error('❌ Erro:', err.message);
+  } finally {
+    await pool.end();
   }
-};
-
-module.exports = createTables;
+})();
