@@ -90,3 +90,50 @@ export const darkTheme = {
   placeholder: "#666",
   placeholderLight: "#888"
 };
+
+// elderTheme.js
+export const elderTheme = {
+  // 🔹 Cores principais (alto contraste)
+  primary: "#FFD700",       // Amarelo vibrante para chamar atenção
+  primaryLight: "#FFEA70",  // Versão mais clara do amarelo
+  primaryDark: "#C5A600",   // Versão mais escura para contraste
+
+  // 🔹 Cores de estado (iguais ao padrão para consistência)
+  error: "#FF4C4C",         // Vermelho mais vivo
+  warning: "#FFA500",       // Laranja forte
+  success: "#32CD32",       // Verde mais intenso
+  info: "#1E90FF",          // Azul acessível
+
+  // 🔹 Fundos (alto contraste)
+  background: "#000000",        // Preto puro
+  backgroundCard: "#111111",    // Preto menos intenso para cartões
+  backgroundSecondary: "#222222", // Cinza escuro para camadas secundárias
+
+  // 🔹 Texto (alto contraste e legibilidade)
+  textPrimary: "#FFD700",   // Amarelo vibrante
+  textSecondary: "#FFFFFF", // Branco para contraste direto
+  textMuted: "#DDDDDD",     // Cinza claro para textos menos importantes
+  textOnPrimary: "#000000", // Texto sobre botões/áreas amarelas
+  textOnError: "#FFFFFF",
+  textOnSuccess: "#FFFFFF",
+
+  // 🔹 Bordas
+  border: "#FFD700",       // Bordas em amarelo para destaque
+  borderLight: "#FFEA70",  
+  borderDark: "#C5A600",
+
+  // 🔹 Sombras
+  shadowColor: "#000000",  // Mantém sombras escuras
+
+  // 🔹 Overlays
+  overlay: "rgba(0, 0, 0, 0.8)", // Fundo quase preto
+  overlayLight: "rgba(0, 0, 0, 0.6)",
+
+  // 🔹 Ícones
+  iconPrimary: "#FFD700",  // Ícones destacados em amarelo
+  iconSecondary: "#FFFFFF", // Ícones de apoio em branco
+
+  // 🔹 Placeholders
+  placeholder: "#CCCCCC",
+  placeholderLight: "#AAAAAA"
+};
