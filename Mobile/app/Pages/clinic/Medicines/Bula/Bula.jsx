@@ -15,9 +15,11 @@ import {
 } from "@expo/vector-icons";
 import { ArrowLeft } from "lucide-react-native"; // seta padrão
 import { ThemeContext } from "../../../../context/ThemeContext";
+import { useElderMode } from "../../../../context/ElderModeContext"; // ✅ usa o hook
 import { getBulaPorMedicamento } from "../../../../services/bulaService";
 
 import { getBulaStyles } from "./styles";
+import { useScale } from '../../../../utils/scale'; // ✅ Hook global para escalonamento
 
 export default function BulaScreen() {
   const route = useRoute();
@@ -41,7 +43,9 @@ export default function BulaScreen() {
   });
 
   const { theme } = useContext(ThemeContext);
-  const styles = getBulaStyles(theme);
+  const { fontSize, fontIndex, increaseFont, decreaseFont } = useElderMode(); // ✅ acessa os valores do contexto
+  const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
+  const styles = getBulaStyles(theme, fontSize);
 
   useEffect(() => {
     const fetchBula = async () => {
@@ -93,7 +97,7 @@ export default function BulaScreen() {
         </View>
         <MaterialIcons
           name={expanded ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-          size={24}
+          size={scaleIcon(24)}
           color={important ? theme.error : theme.textMuted}
         />
       </TouchableOpacity>
@@ -170,7 +174,7 @@ export default function BulaScreen() {
           onPress={() => navigation.goBack()}
           style={{ paddingLeft: 12, paddingTop: 15 }}
         >
-          <ArrowLeft size={38} color={theme.textOnPrimary} />
+          <ArrowLeft size={scaleIcon(38)} color={theme.textOnPrimary} />
         </TouchableOpacity>
 
         <View style={styles.headerContent}>
@@ -190,7 +194,7 @@ export default function BulaScreen() {
         <ExpandableSection
           title="DOSAGEM E ADMINISTRAÇÃO"
           icon={
-            <MaterialIcons name="medication" size={22} color={theme.primary} />
+            <MaterialIcons name="medication" size={scaleIcon(22)} color={theme.primary} />
           }
           expanded={expandedSections.dosage}
           onToggle={() => toggleSection("dosage")}
@@ -199,7 +203,7 @@ export default function BulaScreen() {
 
         <ExpandableSection
           title="CONTRAINDICAÇÕES"
-          icon={<MaterialIcons name="warning" size={22} color={theme.error} />}
+          icon={<MaterialIcons name="warning" size={scaleIcon(22)} color={theme.error} />}
           expanded={expandedSections.contraindications}
           onToggle={() => toggleSection("contraindications")}
           items={bula.contraindicacoes}
@@ -208,7 +212,7 @@ export default function BulaScreen() {
 
         <ExpandableSection
           title="INDICAÇÕES"
-          icon={<FontAwesome name="heart" size={20} color={theme.primary} />}
+          icon={<FontAwesome name="heart" size={scaleIcon(20)} color={theme.primary} />}
           expanded={expandedSections.indications}
           onToggle={() => toggleSection("indications")}
           items={bula.indicacoes}
@@ -219,7 +223,7 @@ export default function BulaScreen() {
           icon={
             <MaterialCommunityIcons
               name="alert-circle"
-              size={20}
+              size={scaleIcon(20)}
               color={theme.warning}
             />
           }
@@ -233,7 +237,7 @@ export default function BulaScreen() {
           icon={
             <MaterialCommunityIcons
               name="alert-octagon"
-              size={20}
+              size={scaleIcon(20)}
               color={theme.warning}
             />
           }
@@ -245,7 +249,7 @@ export default function BulaScreen() {
         <ExpandableSection
           title="ARMAZENAMENTO E VALIDADE"
           icon={
-            <MaterialIcons name="inventory" size={20} color={theme.primary} />
+            <MaterialIcons name="inventory" size={scaleIcon(20)} color={theme.primary} />
           }
           expanded={expandedSections.storage}
           onToggle={() => toggleSection("storage")}
