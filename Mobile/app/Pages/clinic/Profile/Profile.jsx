@@ -7,6 +7,7 @@ import { getProfileStyles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import { logout as logoutService } from '../../../services/auth/authService';
 import { getPacienteById } from '../../../services/userService';
+import { IP_HOST } from '@env';
 
 import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings, Moon, Sun } from 'lucide-react-native';
 import SwitchTheme from '../../../components/SwitchTeme';
@@ -34,7 +35,8 @@ export default function ProfileScreen() {
           setPaciente(data);
 
           if (data.foto_perfil) {
-            setFotoPerfil(`http://192.168.1.9:3000${data.foto_perfil}?t=${Date.now()}`);
+            setFotoPerfil(`http://${IP_HOST}:3000${data.foto_perfil}?t=${Date.now()}`);
+
           } else {
             setFotoPerfil(null);
           }
@@ -198,7 +200,7 @@ export default function ProfileScreen() {
           <Text style={styles.configText}>Privacidade</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.configItem}>
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'Help' })}>
           <HelpCircle size={20} color="#0c87c4" />
           <Text style={styles.configText}>Ajuda</Text>
         </TouchableOpacity>

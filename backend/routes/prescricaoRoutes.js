@@ -72,6 +72,36 @@ class PrescricoesRoutes {
 
     /**
      * @swagger
+     * /prescricoes/{id}/download:
+     *   get:
+     *     summary: Baixa a prescrição em PDF
+     *     tags: [Prescricoes]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID da prescrição
+     *     responses:
+     *       200:
+     *         description: PDF da prescrição
+     *         content:
+     *           application/pdf:
+     *             schema:
+     *               type: string
+     *               format: binary
+     *       404:
+     *         description: Prescrição não encontrada
+     *       401:
+     *         description: Não autorizado
+     */
+    this.router.get('/:id/download', controller.download);
+
+    /**
+     * @swagger
      * /prescricoes/paciente/{id_paciente}:
      *   get:
      *     summary: Busca prescrições por paciente

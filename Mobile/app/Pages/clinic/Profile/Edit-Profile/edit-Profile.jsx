@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../../../context/AuthContext';
 import { ThemeContext } from '../../../../context/ThemeContext';
 import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../../services/userService';
+import { IP_HOST } from '@env';
 
 import InputField from '../../../../components/Register/InputField';
 import CpfInput from '../../../../components/Register/CpfInput';
@@ -54,7 +55,7 @@ export default function EditProfileScreen() {
         setCurrentDataNascimento(data.data_nascimento?.split('T')[0] || '');
         setCurrentPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
-        setFotoPerfil(data.foto_perfil ? `http://192.168.1.9:3000${data.foto_perfil}` : null);
+        setFotoPerfil(data.foto_perfil ? `http://${IP_HOST}:3000${data.foto_perfil}` : null);
         setCurrentCpf(data.cpf || '');
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);
