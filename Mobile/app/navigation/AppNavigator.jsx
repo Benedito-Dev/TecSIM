@@ -1,6 +1,6 @@
+// navigation/AppNavigator.jsx
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
 
 // Screens auth
 import WelcomeScreen from '../Pages/auth/Welcome/WelcomeScreen';
@@ -12,14 +12,16 @@ import ResetPasswordScreen from '../Pages/auth/ForgotPassword/ResetPassword/Rese
 import MainTabNavigator from './TabNavigator';
 import CodeScreen from '../Pages/auth/code/code';
 
-// Import ThemeContext
+// Contexts
 import { ThemeProvider } from '../context/ThemeContext';
+import { ElderModeProvider } from '../context/ElderModeContext';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
     <ThemeProvider>
+      <ElderModeProvider>
         <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -33,6 +35,7 @@ export default function AppNavigator() {
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         </Stack.Navigator>
+      </ElderModeProvider>
     </ThemeProvider>
   );
 }

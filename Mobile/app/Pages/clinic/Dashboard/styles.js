@@ -1,11 +1,14 @@
-// dashboardStyles.js
 import { StyleSheet } from "react-native";
 
-export const getDashboardStyles = (theme, elderMode) => {
-  // Helpers para escala no modo idoso
-  const scaleFont = (size) => (elderMode ? size + 6 : size);
-  const scaleSpacing = (value) => (elderMode ? value * 1.3 : value);
-  const scaleRadius = (value) => (elderMode ? value * 1.2 : value);
+export const getDashboardStyles = (theme, baseFontSize) => {
+  // baseFontSize vem do ElderModeContext (ex: 12, 16, 20, 24, 32)
+
+  // Função para escalar fontes de forma proporcional
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+
+  // Podemos também escalar espaçamentos e bordas proporcionalmente
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
 
   return StyleSheet.create({
     background: {
@@ -29,7 +32,7 @@ export const getDashboardStyles = (theme, elderMode) => {
       alignItems: "center",
       marginBottom: scaleSpacing(20),
       backgroundColor: theme.backgroundCard,
-      borderBottomWidth: elderMode ? 2 : 1,
+      borderBottomWidth: 1,
       borderBottomColor: theme.border,
       elevation: 3,
       shadowColor: theme.shadowColor,
@@ -41,6 +44,11 @@ export const getDashboardStyles = (theme, elderMode) => {
       fontSize: scaleFont(28),
       fontWeight: "bold",
       color: theme.textPrimary,
+    },
+    highlightName: {
+      color: theme.primary,
+      fontWeight: "bold",
+      fontSize: scaleFont(22),
     },
     welcomeText: {
       fontSize: scaleFont(22),
@@ -73,6 +81,7 @@ export const getDashboardStyles = (theme, elderMode) => {
       fontWeight: "bold",
       color: theme.textOnPrimary,
       marginTop: scaleSpacing(14),
+      textAlign: "center",
     },
     chatCardDescription: {
       fontSize: scaleFont(17),
