@@ -14,14 +14,12 @@ import CodeScreen from '../Pages/auth/code/code';
 
 // Import ThemeContext
 import { ThemeProvider } from '../context/ThemeContext';
-import { ElderModeProvider } from '../context/ElderModeContext'; // <--- importe o provider
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
     <ThemeProvider>
-      <ElderModeProvider>
         <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -35,7 +33,6 @@ export default function AppNavigator() {
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         </Stack.Navigator>
-      </ElderModeProvider>
     </ThemeProvider>
   );
 }

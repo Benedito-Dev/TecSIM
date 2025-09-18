@@ -1,23 +1,28 @@
-// Contexto do tema claro e escuro
-import React, { createContext, useState, useMemo } from 'react';
-import { lightTheme, darkTheme } from '../constants/temas';
+// ThemeContext.js
+import React, { createContext, useState, useMemo } from "react";
+import { lightTheme, darkTheme, elderTheme } from "../constants/temas";
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [mode, setMode] = useState('light'); // "light" ou "dark"
+  const [mode, setMode] = useState("light"); // light | dark | elder
 
-  const toggleTheme = () => {
-    setMode(prev => (prev === 'light' ? 'dark' : 'light'));
-  };
+  const toggleTheme = () => setMode(prev => (prev === "light" ? "dark" : "light"));
 
-  const theme = mode === 'light' ? lightTheme : darkTheme;
+  const setElderMode = (enable) => setMode(enable ? "elder" : "light");
 
-  const value = useMemo(() => ({ theme, toggleTheme, mode }), [mode]);
+  const elderMode = mode === "elder";
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+  const theme =
+    mode === "elder" ? elderTheme :
+    mode === "light" ? lightTheme :
+    darkTheme;
+
+  const value = useMemo(
+    () => ({ theme, mode, toggleTheme, setElderMode, elderMode }),
+    [mode]
   );
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
+

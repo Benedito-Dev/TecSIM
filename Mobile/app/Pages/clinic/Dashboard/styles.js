@@ -1,7 +1,8 @@
 // dashboardStyles.js
 import { StyleSheet } from "react-native";
 
-export const getDashboardStyles = (theme, elderMode = false) => {
+export const getDashboardStyles = (theme, elderMode) => {
+  // Helpers para escala no modo idoso
   const scaleFont = (size) => (elderMode ? size + 6 : size);
   const scaleSpacing = (value) => (elderMode ? value * 1.3 : value);
   const scaleRadius = (value) => (elderMode ? value * 1.2 : value);

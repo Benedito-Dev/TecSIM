@@ -1,28 +1,24 @@
 import React, { useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch, Alert, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../../../context/ThemeContext';
-import { useElderMode } from '../../../../context/ElderModeContext';
 import { getAjustesStyles } from './styles';
 
-import { deletePaciente } from '../../../../services/userService'
+import { deletePaciente } from '../../../../services/userService';
 import { useAuth } from '../../../../context/AuthContext';
 
-import { ArrowLeft, Bell, Shield, Info, Moon, Sun, Trash2, User, LogOut } from 'lucide-react-native';
+import { ArrowLeft, Bell, Shield, Info, Moon, Sun, Trash2, User } from 'lucide-react-native';
 
 export default function AjustesScreen() {
   const navigation = useNavigation();
-  const { theme, toggleTheme, mode } = useContext(ThemeContext);
-  const { elderMode, toggleElderMode } = useElderMode();
-
+  const { theme, toggleTheme, setElderMode, mode } = useContext(ThemeContext); // usar setElderMode
   const { user } = useAuth();
-
   const styles = getAjustesStyles(theme);
 
   const handleDeleteAccount = () => {
     if (Platform.OS === 'web') {
       deletePaciente(user.id);
-      alert('Conta excluída', 'Sua conta foi excluída com sucesso.')
+      alert('Conta excluída', 'Sua conta foi excluída com sucesso.');
       navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] });
     } else {
       Alert.alert(
@@ -52,7 +48,6 @@ export default function AjustesScreen() {
           <ArrowLeft size={24} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>Ajustes</Text>
-        {/* Espaço para manter alinhamento */}
         <View style={{ width: 24 }} />
       </View>
 
@@ -60,22 +55,27 @@ export default function AjustesScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Aparência</Text>
 
+        {/* Botão de alternância Light/Dark */}
         <TouchableOpacity style={styles.configItem} onPress={toggleTheme}>
-          {mode === 'dark' ? <Sun size={20} color={theme.primary} /> : <Moon size={20} color={theme.primary} />}
+          {mode === 'dark' ? (
+            <Sun size={20} color={theme.primary} />
+          ) : (
+            <Moon size={20} color={theme.primary} />
+          )}
           <Text style={styles.configText}>
-            Tema: {mode === 'dark' ? 'Escuro' : 'Claro'}
+            Tema: {mode === 'dark' ? 'Escuro' : mode === 'elder' ? 'Modo Idoso' : 'Claro'}
           </Text>
         </TouchableOpacity>
 
-        {/* Botão de Modo Idoso */}
+        {/* Switch para Modo Idoso */}
         <View style={styles.configItem}>
           <User size={20} color={theme.primary} />
           <Text style={styles.configText}>Modo Idoso</Text>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
             <Switch
-              value={elderMode}
-              onValueChange={toggleElderMode}
-              thumbColor={elderMode ? theme.primary : '#ccc'}
+              value={mode === 'elder'}
+              onValueChange={(value) => setElderMode(value)}
+              thumbColor={mode === 'elder' ? theme.primary : '#ccc'}
               trackColor={{ true: theme.primaryLight, false: theme.border }}
             />
           </View>
@@ -85,7 +85,6 @@ export default function AjustesScreen() {
       {/* Notificações */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Notificações</Text>
-
         <TouchableOpacity style={styles.configItem}>
           <Bell size={20} color={theme.primary} />
           <Text style={styles.configText}>Gerenciar Notificações</Text>
@@ -95,8 +94,10 @@ export default function AjustesScreen() {
       {/* Privacidade */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Privacidade</Text>
-
-        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'Privacy' })}>
+        <TouchableOpacity
+          style={styles.configItem}
+          onPress={() => navigation.navigate('Profile', { screen: 'Privacy' })}
+        >
           <Shield size={20} color={theme.primary} />
           <Text style={styles.configText}>Política de Privacidade</Text>
         </TouchableOpacity>
@@ -112,13 +113,11 @@ export default function AjustesScreen() {
       {/* Sobre */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Sobre</Text>
-
         <TouchableOpacity style={styles.configItem}>
           <Info size={20} color={theme.primary} />
           <Text style={styles.configText}>Sobre o App</Text>
         </TouchableOpacity>
       </View>
-
     </ScrollView>
   );
 }

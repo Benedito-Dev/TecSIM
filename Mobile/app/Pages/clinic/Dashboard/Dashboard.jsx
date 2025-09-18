@@ -5,16 +5,14 @@ import { ThemeContext } from '../../../context/ThemeContext';
 import { getDashboardStyles } from './styles';
 import { useAuth } from '../../../context/AuthContext';
 import NotificationIcon from '../../../components/Notification';
-import { useElderMode } from '../../../context/ElderModeContext';
 import { MessageSquare, Pill, Clock, FileText } from 'lucide-react-native';
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
   const { user, loading } = useAuth();
 
-  const { theme } = useContext(ThemeContext);
-  const { elderMode } = useElderMode(); // pegando o estado do modo idoso
-
+  const { theme, elderMode } = useContext(ThemeContext);
+  
   const styles = getDashboardStyles(theme, elderMode); // passando elderMode para o styles
 
   if (loading || !user) {
