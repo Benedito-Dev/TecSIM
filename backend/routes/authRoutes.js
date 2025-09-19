@@ -135,7 +135,7 @@ class AuthRoutes {
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/OTPResponse'
+     *               $ref: '#/components/schemas/OTPRequest'
      *       400:
      *         description: Email inválido ou não fornecido
      *       500:
