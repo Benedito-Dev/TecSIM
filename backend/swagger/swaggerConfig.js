@@ -32,7 +32,22 @@ const options = {
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
             genero: { type: 'string', example: 'masculino' },
-            aceite_termos: { type: 'boolean', example: true }
+            aceite_termos: { type: 'boolean', example: true },
+            alergias: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Amendoim', 'Lactose']
+            },
+            medicacoes: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Dipirona', 'Ibuprofeno']
+            },
+            condicoes: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Asma', 'Hipertensão']
+            }
           }
         },
         PacienteWithSenha: {
@@ -41,14 +56,34 @@ const options = {
             cpf: { type: 'string', example: '224.297.389-48' },
             nome: { type: 'string', example: 'João Silva' },
             email: { type: 'string', format: 'email', example: 'joao@example.com' },
-            senha: { type: 'string', example: 'd41d8cd98f00b204e9800998ecf8427e', readOnly: true, description: 'Senha criptografada (apenas neste endpoint)' },
+            senha: {
+              type: 'string',
+              example: 'd41d8cd98f00b204e9800998ecf8427e',
+              readOnly: true,
+              description: 'Senha criptografada (apenas neste endpoint)'
+            },
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
             genero: { type: 'string', example: 'man' },
             aceite_termos: { type: 'boolean', example: true },
             data_cadastro: { type: 'string', format: 'date-time', example: '2025-06-30T12:34:56Z' },
             ativo: { type: 'boolean', example: true },
-            foto_perfil: { type: 'string', example: 'http://localhost:3000/images/avatar.png' }
+            foto_perfil: { type: 'string', example: 'http://localhost:3000/images/avatar.png' },
+            alergias: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Amendoim', 'Lactose']
+            },
+            medicacoes: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Dipirona', 'Ibuprofeno']
+            },
+            condicoes: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['Asma', 'Hipertensão']
+            }
           }
         },
         Medicamento: {
@@ -112,9 +147,12 @@ const options = {
                   id_medicamento: { type: 'integer', example: 10 },
                   dosagem: { type: 'string', example: '500mg' },
                   frequencia: { type: 'string', example: '8/8h' },
-                  // nome: { type: 'string', example: 'Ibuprofeno' },
                   duracao_dias: { type: 'integer', example: 7 },
-                  via: { type: 'string', example: 'oral', enum: ['oral', 'intravenosa', 'intramuscular', 'subcutânea', 'tópica', 'inalatória'] },
+                  via: {
+                    type: 'string',
+                    example: 'oral',
+                    enum: ['oral', 'intravenosa', 'intramuscular', 'subcutânea', 'tópica', 'inalatória']
+                  },
                   horarios: { type: 'string', example: '08h, 16h, 00h', nullable: true }
                 }
               }

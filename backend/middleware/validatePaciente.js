@@ -50,9 +50,21 @@ class ValidatePaciente {
     return !isNaN(pesoNumber) && pesoNumber > 0 && pesoNumber <= 500;
   }
 
-  // ====== FUNÇÕES JÁ EXISTENTES (adaptadas para usar as auxiliares) ======
+  static isValidStringArray(field, arr) {
+    if (!Array.isArray(arr)) {
+      return `${field} deve ser um array.`;
+    }
+    for (let item of arr) {
+      if (typeof item !== 'string' || item.trim().length < 2) {
+        return `${field} deve conter apenas strings válidas (mínimo 2 caracteres).`;
+      }
+    }
+    return null;
+  }
+
+  // ====== FUNÇÕES DE VALIDAÇÃO ======
   static validateCreate(req, res, next) {
-    const { nome, email, senha, data_nascimento, peso_kg, aceite_termos, cpf } = req.body;
+    const { nome, email, senha, data_nascimento, peso_kg, aceite_termos, cpf, alergias, medicacoes, condicoes } = req.body;
 
     if (!nome || !email || !senha || !cpf) {
       return res.status(400).json({ message: 'Nome, email, CPF e senha são obrigatórios.' });
@@ -88,11 +100,20 @@ class ValidatePaciente {
       return res.status(400).json({ message: 'É necessário aceitar os termos de uso.' });
     }
 
+    // validação extra dos novos atributos
+    const fieldsToCheck = { alergias, medicacoes, condicoes };
+    for (let [field, value] of Object.entries(fieldsToCheck)) {
+      if (value) {
+        const error = ValidatePaciente.isValidStringArray(field, value);
+        if (error) return res.status(400).json({ message: error });
+      }
+    }
+
     next();
   }
 
   static validateUpdate(req, res, next) {
-    const { nome, email, data_nascimento, peso_kg, cpf } = req.body;
+    const { nome, email, data_nascimento, peso_kg, cpf, alergias, medicacoes, condicoes } = req.body;
 
     if (email && !ValidatePaciente.isValidEmail(email)) {
       return res.status(400).json({ message: 'Formato de email inválido ou domínio não permitido.' });
@@ -112,6 +133,15 @@ class ValidatePaciente {
 
     if (peso_kg && !ValidatePaciente.isValidPeso(peso_kg)) {
       return res.status(400).json({ message: 'Peso deve ser um número entre 0.1 e 500 kg.' });
+    }
+
+    // validação extra dos novos atributos
+    const fieldsToCheck = { alergias, medicacoes, condicoes };
+    for (let [field, value] of Object.entries(fieldsToCheck)) {
+      if (value) {
+        const error = ValidatePaciente.isValidStringArray(field, value);
+        if (error) return res.status(400).json({ message: error });
+      }
     }
 
     next();

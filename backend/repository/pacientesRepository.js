@@ -15,12 +15,12 @@ class PacienteRepository {
 
   async findById(id) {
     const result = await db.query(`
-      SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
+      SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil, alergias, medicacoes, condicoes
       FROM paciente WHERE id = $1
     `, [id]);
 
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
-  }
+  } 
 
   async findByCPF(CPF) {
     const result = await db.query(
@@ -53,16 +53,17 @@ class PacienteRepository {
     await db.query('UPDATE paciente SET foto_perfil = $1 WHERE id = $2', [caminho, id]);
   }
 
-  async update(id, { nome, email, data_nascimento, peso_kg, genero }) {
-    const result = await db.query(`
-      UPDATE paciente 
-      SET nome = $1, email = $2, data_nascimento = $3, peso_kg = $4, genero = $5
-      WHERE id = $6 
-      RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro
-    `, [nome, email, data_nascimento, peso_kg, genero, id]);
+  async update(id, { nome, email, data_nascimento, peso_kg, genero, alergias, medicacoes, condicoes }) {
+  const result = await db.query(`
+    UPDATE paciente 
+    SET nome = $1, email = $2, data_nascimento = $3, peso_kg = $4, genero = $5,
+        alergias = $6, medicacoes = $7, condicoes = $8
+    WHERE id = $9 
+    RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, alergias, medicacoes, condicoes
+  `, [nome, email, data_nascimento, peso_kg, genero, alergias, medicacoes, condicoes, id]);
 
-    return result.rows[0] ? new Paciente(result.rows[0]) : null;
-  }
+  return result.rows[0] ? new Paciente(result.rows[0]) : null;
+}
 
   async updatePassword(id, senhaAtual, novaSenha) {
     const paciente = await db.query('SELECT senha FROM paciente WHERE id = $1', [id]);
