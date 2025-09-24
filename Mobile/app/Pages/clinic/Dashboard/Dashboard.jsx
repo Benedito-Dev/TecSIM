@@ -32,7 +32,7 @@ export default function DashboardScreen() {
       {/* Cabeçalho */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
-        <NotificationIcon initialCount={3} iconSize={22} />
+        <NotificationIcon initialCount={3} iconSize={scaleIcon(22)} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>

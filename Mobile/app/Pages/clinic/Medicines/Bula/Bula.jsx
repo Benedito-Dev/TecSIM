@@ -131,19 +131,19 @@ export default function BulaScreen() {
   const getIconForSection = (sectionTitle) => {
     switch (sectionTitle) {
       case "CONTRAINDICAÇÕES":
-        return "❌";
+        return <MaterialIcons name="block" size={scaleIcon(18)} color={theme.error} />;
       case "INTERAÇÕES MEDICAMENTOSAS":
-        return "💊";
+        return <FontAwesome name="exchange" size={scaleIcon(18)} color={theme.primary} />;
       case "PRECAUÇÕES E ADVERTÊNCIAS":
-        return "⚠️";
+        return <MaterialCommunityIcons name="alert" size={scaleIcon(18)} color={theme.warning} />;
       case "INDICAÇÕES":
-        return "✅";
+        return <MaterialIcons name="check-circle" size={scaleIcon(18)} color={theme.success} />;
       case "ARMAZENAMENTO E VALIDADE":
-        return "📦";
+        return <MaterialIcons name="inventory" size={scaleIcon(18)} color={theme.primary} />;
       case "DOSAGEM E ADMINISTRAÇÃO":
-        return "🕒";
+        return <MaterialIcons name="schedule" size={scaleIcon(18)} color={theme.primary} />;
       default:
-        return "•";
+        return <MaterialIcons name="circle" size={scaleIcon(10)} color={theme.text} />;
     }
   };
 
