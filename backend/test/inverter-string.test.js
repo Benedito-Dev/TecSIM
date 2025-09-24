@@ -15,3 +15,5 @@ test('lança erro se o input não for string', () => {
 test('lança erro se a string for vazia', () => {
     expect(() => inverterString('')).toThrow('A string não pode ser vazia');
 });
+
+// Atividades
