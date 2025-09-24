@@ -19,7 +19,7 @@ class PrescricaoRepository {
   async findById(id_prescricao, client = db) {
     try {
       const result = await client.query(
-        'SELECT * FROM prescricoes WHERE id = $1',
+        'SELECT * FROM prescricoes WHERE id_prescricao = $1',
         [id_prescricao]
       );
       if (!result.rows[0]) throw new NotFoundError('Prescrição não encontrada');
@@ -63,16 +63,22 @@ class PrescricaoRepository {
       const result = await client.query(
         `INSERT INTO prescricoes 
          (id_paciente, crm, diagnostico, data_prescricao, validade)
-         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING id_prescricao, id_paciente, crm, diagnostico, data_prescricao, validade`,
         [
-          data.id_paciente, 
-          data.crm, 
-          data.diagnostico, 
-          data.data_prescricao, 
+          data.id_paciente,
+          data.crm,
+          data.diagnostico,
+          data.data_prescricao,
           data.validade
         ]
       );
-      return new Prescricao(result.rows[0]);
+
+      // Retorna id_prescricao e adiciona campo id para compatibilidade com service
+      return {
+        ...result.rows[0],
+        id: result.rows[0].id_prescricao
+      };
     } catch (err) {
       throw new DatabaseError('Erro ao criar prescrição no banco');
     }
@@ -87,14 +93,14 @@ class PrescricaoRepository {
           diagnostico     = COALESCE($3, diagnostico),
           data_prescricao = COALESCE($4, data_prescricao),
           validade        = COALESCE($5, validade)
-         WHERE id_prescricao = $6 
+         WHERE id_prescricao = $6
          RETURNING *`,
         [
-          data.id_paciente || null, 
-          data.crm || null, 
-          data.diagnostico || null, 
-          data.data_prescricao || null, 
-          data.validade || null, 
+          data.id_paciente || null,
+          data.crm || null,
+          data.diagnostico || null,
+          data.data_prescricao || null,
+          data.validade || null,
           id_prescricao
         ]
       );
@@ -109,7 +115,7 @@ class PrescricaoRepository {
   async remove(id_prescricao, client = db) {
     try {
       const result = await client.query(
-        'DELETE FROM prescricoes WHERE id = $1 RETURNING *',
+        'DELETE FROM prescricoes WHERE id_prescricao = $1 RETURNING *',
         [id_prescricao]
       );
       if (!result.rows[0]) throw new NotFoundError('Prescrição não encontrada para remoção');

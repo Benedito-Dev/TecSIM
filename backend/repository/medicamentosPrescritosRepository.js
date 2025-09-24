@@ -11,6 +11,7 @@ class MedicamentoPrescritoRepository {
       `);
       return result.rows;
     } catch (err) {
+      console.error("Erro real ao buscar todos medicamentos:", err);
       throw new DatabaseError('Erro ao buscar medicamentos prescritos no banco');
     }
   }
@@ -30,6 +31,7 @@ class MedicamentoPrescritoRepository {
       return result.rows[0];
     } catch (err) {
       if (err instanceof NotFoundError) throw err;
+      console.error("Erro real ao buscar medicamento por ID:", err);
       throw new DatabaseError('Erro ao buscar medicamento prescrito no banco');
     }
   }
@@ -45,10 +47,10 @@ class MedicamentoPrescritoRepository {
         `,
         [id_prescricao]
       );
-      if (!result.rows.length) throw new NotFoundError('Nenhum medicamento encontrado para esta prescrição');
+      if (!result.rows.length) return []; // Retorna array vazio ao invés de lançar erro
       return result.rows;
     } catch (err) {
-      if (err instanceof NotFoundError) throw err;
+      console.error("Erro real ao buscar medicamentos por prescrição:", err);
       throw new DatabaseError('Erro ao buscar medicamentos por prescrição');
     }
   }
@@ -75,6 +77,13 @@ class MedicamentoPrescritoRepository {
       const created = await this.findById(result.rows[0].id, client);
       return created;
     } catch (err) {
+      console.error("Erro SQL real ao criar medicamento:", {
+        data,
+        message: err.message,
+        code: err.code,
+        detail: err.detail,
+        stack: err.stack
+      });
       throw new DatabaseError('Erro ao criar medicamento prescrito no banco');
     }
   }
@@ -105,6 +114,13 @@ class MedicamentoPrescritoRepository {
       }
       return created;
     } catch (err) {
+      console.error("Erro SQL real ao criar múltiplos medicamentos:", {
+        medicamentos,
+        message: err.message,
+        code: err.code,
+        detail: err.detail,
+        stack: err.stack
+      });
       throw new DatabaseError('Erro ao criar múltiplos medicamentos prescritos');
     }
   }
@@ -141,6 +157,7 @@ class MedicamentoPrescritoRepository {
       return updated;
     } catch (err) {
       if (err instanceof NotFoundError) throw err;
+      console.error("Erro real ao atualizar medicamento:", err);
       throw new DatabaseError('Erro ao atualizar medicamento prescrito');
     }
   }
@@ -155,6 +172,7 @@ class MedicamentoPrescritoRepository {
       return result.rows[0];
     } catch (err) {
       if (err instanceof NotFoundError) throw err;
+      console.error("Erro real ao remover medicamento:", err);
       throw new DatabaseError('Erro ao remover medicamento prescrito');
     }
   }
