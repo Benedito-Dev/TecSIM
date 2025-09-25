@@ -23,7 +23,7 @@ class MedicamentoPrescritoRepository {
         SELECT mp.*, m.nome AS nome
         FROM medicamentos_prescritos mp
         JOIN medicamentos m ON mp.id_medicamento = m.id_medicamento
-        WHERE mp.id = $1
+        WHERE mp.id_medicamento_prescrito = $1
         `,
         [id]
       );
@@ -74,7 +74,8 @@ class MedicamentoPrescritoRepository {
       );
 
       // pega o nome junto do medicamento
-      const created = await this.findById(result.rows[0].id, client);
+      console.log("DEBUG - medicamento criado:", result.rows[0]);
+      const created = await this.findById(result.rows[0].id_medicamento_prescrito, client);
       return created;
     } catch (err) {
       console.error("Erro SQL real ao criar medicamento:", {

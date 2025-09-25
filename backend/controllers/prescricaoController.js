@@ -42,7 +42,6 @@ class PrescricaoController {
   }
 
   async create(req, res, next) {
-    console.log('Dados recebidos para criar prescrição:', req.body); // Log dos dados recebidos
     try {
       const prescricao = await service.create(req.body); // usar service, não repository diretamente
       return res.status(201).json(prescricao);
