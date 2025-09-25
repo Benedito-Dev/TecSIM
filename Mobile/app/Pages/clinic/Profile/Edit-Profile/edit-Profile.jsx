@@ -229,6 +229,35 @@ export default function EditProfileScreen() {
           value={genero} 
           onChange={setGenero}
         />
+        {/* Resumo de saude */}
+        // adicionar titulo centralizado "Resumo de Saúde" com uma linha de cada lado
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
+          <View style={{ flex: 1, height: 1, backgroundColor: theme.border }} />
+          <Text style={{ marginHorizontal: 10, color: theme.textPrimary, fontWeight: 'bold' }}>Resumo de Saúde</Text>
+          <View style={{ flex: 1, height: 1, backgroundColor: theme.border }} />
+        </View>
+
+        <InputField 
+          label="Alergias"
+          value={''}
+          onChangeText={() => {}}
+          placeholder={"Ex: medicamentos, alimentos, etc."}
+          iconName="alert-circle"
+        />
+        <InputField 
+          label="Condições Médicas"
+          value={''}
+          onChangeText={() => {}}
+          placeholder={"Ex: diabetes, hipertensão etc."}
+          iconName="heart"
+        />
+        <InputField 
+          label="Medicações"
+          value={''}
+          onChangeText={() => {}}
+          placeholder={"Ex: aspirina, insulina etc."}
+          iconName="pill"
+        />
       </View>
 
       {/* Botão Salvar */}

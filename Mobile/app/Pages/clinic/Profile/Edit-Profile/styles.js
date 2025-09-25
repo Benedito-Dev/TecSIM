@@ -52,6 +52,11 @@ export const getProfileEditStyles = (theme) => StyleSheet.create({
     marginBottom: 30,
   },
   configText: {
+    borderColor: theme.primary,
+    borderWidth: 1,
+    borderRadius: 9,
+    padding: 12,
+    backgroundColor: null,
     marginLeft: 12,
     fontSize: 14,
     color: theme.textPrimary,
