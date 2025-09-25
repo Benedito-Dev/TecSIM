@@ -11,10 +11,12 @@ import {
   SafeAreaView,
 } from "react-native";
 import { ThemeContext } from "../../../context/ThemeContext";
+import { useElderMode } from "../../../context/ElderModeContext";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrescriptionFormStyles } from "./styles";
+import { useScale } from '../../../utils/scale';
 import { ArrowLeft, Plus, Trash2, Pill, Calendar } from "lucide-react-native";
 
 import { useAuth } from '../../../context/AuthContext';
@@ -26,8 +28,10 @@ import { createPrescricao } from '../../../services/prescricaoService'
 export default function PrescricaoManualScreen() {
   const navigation = useNavigation();
   const { theme } = useContext(ThemeContext);
+  const { fontSize } = useElderMode();
+  const { scaleIcon } = useScale(fontSize);
   const { user } = useAuth();
-  const styles = getPrescriptionFormStyles(theme);
+  const styles = getPrescriptionFormStyles(theme, fontSize);
 
   const [showDatePicker, setShowDatePicker] = useState(null);
   const [openDropdownId, setOpenDropdownId] = useState(null);
@@ -188,7 +192,7 @@ export default function PrescricaoManualScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <ArrowLeft size={24} color={theme.primary} />
+            <ArrowLeft size={scaleIcon(24)} color={theme.primary} />
           </TouchableOpacity>
           <Text style={styles.title}>Nova Prescrição</Text>
           <View style={styles.headerRight} />
@@ -232,7 +236,7 @@ export default function PrescricaoManualScreen() {
                 <Text style={styles.label}>Data da Prescrição</Text>
                 <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker('data')}>
                   <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
-                  <Calendar size={18} color={theme.iconSecondary} />
+                  <Calendar size={scaleIcon(18)} color={theme.iconSecondary} />
                 </TouchableOpacity>
               </View>
 
@@ -240,7 +244,7 @@ export default function PrescricaoManualScreen() {
                 <Text style={styles.label}>Validade</Text>
                 <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker('validade')}>
                   <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
-                  <Calendar size={18} color={theme.iconSecondary} />
+                  <Calendar size={scaleIcon(18)} color={theme.iconSecondary} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -293,14 +297,14 @@ export default function PrescricaoManualScreen() {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Medicamentos Prescritos</Text>
               <TouchableOpacity style={styles.addButton} onPress={handleAddMedicamento}>
-                <Plus size={20} color={theme.textOnPrimary} />
+                <Plus size={scaleIcon(20)} color={theme.textOnPrimary} />
                 <Text style={styles.addButtonText}>Adicionar</Text>
               </TouchableOpacity>
             </View>
 
             {form.medicamentos.length === 0 ? (
               <View style={styles.emptyState}>
-                <Pill size={40} color={theme.iconSecondary} />
+                <Pill size={scaleIcon(40)} color={theme.iconSecondary} />
                 <Text style={styles.emptyText}>Nenhum medicamento adicionado</Text>
               </View>
             ) : (
@@ -312,7 +316,7 @@ export default function PrescricaoManualScreen() {
                     </View>
                     <Text style={styles.medicamentoTitle}>Medicamento</Text>
                     <TouchableOpacity style={styles.deleteButton} onPress={() => handleRemoveMedicamento(med.id)}>
-                      <Trash2 size={20} color={theme.error} />
+                      <Trash2 size={scaleIcon(20)} color={theme.error} />
                     </TouchableOpacity>
                   </View>
 
@@ -324,6 +328,8 @@ export default function PrescricaoManualScreen() {
                         handleMedicamentoSelect(med.id, id_medicamento, nome)
                       }
                       theme={theme}
+                      fontSize={fontSize}
+                      scaleIcon={scaleIcon}
                       placeholder="Busque pelo nome do medicamento"
                     />
                   </View>
@@ -422,7 +428,6 @@ export default function PrescricaoManualScreen() {
           <View style={styles.formSection}>
             <Text style={styles.sectionTitle}>Observações</Text>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Observações</Text>
               <TextInput
                 style={[styles.input, { height: 100, textAlignVertical: "top" }]}
                 value={form.observacoes}
