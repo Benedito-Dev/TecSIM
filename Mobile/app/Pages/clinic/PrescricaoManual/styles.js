@@ -150,6 +150,8 @@ export const getPrescriptionFormStyles = (theme, baseFontSize = 16) => {
       justifyContent: 'space-between',
       zIndex: 1,
     },
+
+    // 🎯 ESTILOS PARA O DROPDOWNPICKER
     dropdown: {
       backgroundColor: theme.backgroundCard,
       borderColor: theme.border,
@@ -157,6 +159,7 @@ export const getPrescriptionFormStyles = (theme, baseFontSize = 16) => {
       borderRadius: scaleRadius(8),
       minHeight: scaleSpacing(48),
       justifyContent: 'center',
+      paddingHorizontal: scaleSpacing(12),
     },
     dropDownContainer: {
       backgroundColor: theme.backgroundCard,
@@ -167,17 +170,18 @@ export const getPrescriptionFormStyles = (theme, baseFontSize = 16) => {
       zIndex: 1000,
       elevation: 5,
     },
-    dropdownText: {
+    dropdownTextStyle: {
       fontSize: scaleFont(15),
       color: theme.textPrimary,
     },
     listItemContainer: {
+      paddingVertical: scaleSpacing(10),
+      paddingHorizontal: scaleSpacing(12),
+      backgroundColor: theme.backgroundCard,
       borderBottomWidth: 0,
       borderTopWidth: 0,
-      borderWidth: 0,
-      paddingVertical: scaleSpacing(10),
-      backgroundColor: theme.backgroundCard,
     },
+
     emptyState: {
       alignItems: 'center',
       justifyContent: 'center',
