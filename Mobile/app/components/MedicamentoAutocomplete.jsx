@@ -7,27 +7,31 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Keyboard,
+  StyleSheet,
 } from 'react-native';
 import { Search, X } from 'lucide-react-native';
 import { searchMedicamentos } from '../services/medicamentosService';
 
-const MedicamentoAutocomplete = ({ 
-  value, 
-  onSelect, 
-  theme, 
+const MedicamentoAutocomplete = ({
+  value,
+  onSelect,
+  theme,
+  fontSize = 16,
+  scaleIcon = (size) => size,
   placeholder = "Digite o nome do medicamento",
   style = {},
   minChars = 2
 }) => {
+  const styles = getAutocompleteStyles(theme, fontSize);
+
   const [query, setQuery] = useState(value || '');
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [skipSearch, setSkipSearch] = useState(false); // 👈 flag para evitar busca duplicada
+  const [skipSearch, setSkipSearch] = useState(false);
 
-  // Buscar medicamentos na API
   const searchMedicamentosAPI = async (searchTerm) => {
     if (searchTerm.length < minChars) {
       setResults([]);
@@ -38,7 +42,7 @@ const MedicamentoAutocomplete = ({
 
     setIsLoading(true);
     setHasSearched(true);
-    
+
     try {
       const medicamentos = await searchMedicamentos(searchTerm);
       setResults(medicamentos);
@@ -54,8 +58,8 @@ const MedicamentoAutocomplete = ({
 
   useEffect(() => {
     if (skipSearch) {
-      setSkipSearch(false); // reseta flag
-      return; // 👈 não executa busca após selecionar item
+      setSkipSearch(false);
+      return;
     }
 
     const delayDebounce = setTimeout(() => {
@@ -68,14 +72,11 @@ const MedicamentoAutocomplete = ({
   const handleSelect = (item) => {
     setQuery(item.nome);
     onSelect(item.id_medicamento, item.nome);
-    console.log(item.id_medicamento);
-
-    setSkipSearch(true); // 👈 impede próxima busca automática
+    setSkipSearch(true);
     setShowResults(false);
     setHasSearched(false);
     Keyboard.dismiss();
   };
-
 
   const clearSearch = () => {
     setQuery('');
@@ -99,16 +100,18 @@ const MedicamentoAutocomplete = ({
 
   return (
     <View style={[styles.container, style]}>
-      <View style={[
-        styles.inputContainer, 
-        { 
-          borderColor: isFocused ? theme.primary : theme.border,
-          backgroundColor: theme.cardBackground
-        }
-      ]}>
-        <Search size={20} color={theme.iconSecondary} style={styles.searchIcon} />
+      <View
+        style={[
+          styles.inputContainer,
+          {
+            borderColor: isFocused ? theme.primary : theme.border,
+            backgroundColor: theme.cardBackground,
+          },
+        ]}
+      >
+        <Search size={scaleIcon(20)} color={theme.iconSecondary} style={styles.searchIcon} />
         <TextInput
-          style={[styles.input, { color: theme.text }]}
+          style={[styles.input, { color: theme.iconPrimary, fontSize: fontSize }]}
           value={query}
           onChangeText={setQuery}
           placeholder={placeholder}
@@ -118,19 +121,16 @@ const MedicamentoAutocomplete = ({
         />
         {query.length > 0 && (
           <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-            <X size={18} color={theme.iconSecondary} />
+            <X size={scaleIcon(18)} color={theme.iconSecondary} />
           </TouchableOpacity>
         )}
       </View>
 
       {isLoading && (
-        <View style={[styles.resultsContainer, { 
-          borderColor: theme.border,
-          backgroundColor: theme.cardBackground
-        }]}>
+        <View style={[styles.resultsContainer, { borderColor: theme.border, backgroundColor: theme.cardBackground }]}>
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="small" color={theme.primary} />
-            <Text style={[styles.loadingText, { color: theme.textSecondary }]}>
+            <Text style={[styles.loadingText, { color: theme.textSecondary, fontSize: fontSize * 0.875 }]}>
               Buscando medicamentos...
             </Text>
           </View>
@@ -138,27 +138,18 @@ const MedicamentoAutocomplete = ({
       )}
 
       {showResults && !isLoading && results.length > 0 && (
-        <View style={[styles.resultsContainer, { 
-          borderColor: theme.border,
-          backgroundColor: theme.cardBackground
-        }]}>
-          <ScrollView
-            style={styles.resultsList}
-            keyboardShouldPersistTaps="always"
-          >
+        <View style={[styles.resultsContainer, { borderColor: theme.border, backgroundColor: theme.cardBackground }]}>
+          <ScrollView style={styles.resultsList} keyboardShouldPersistTaps="always">
             {results.map((item) => (
-              <TouchableOpacity 
+              <TouchableOpacity
                 key={item.id_medicamento}
-                style={[styles.resultItem, { 
-                  borderBottomColor: theme.border,
-                  backgroundColor: theme.cardBackground
-                }]}
+                style={[styles.resultItem, { borderBottomColor: theme.border, backgroundColor: theme.cardBackground }]}
                 onPress={() => handleSelect(item)}
               >
-                <Text style={[styles.resultText, { color: theme.text }]}>
+                <Text style={[styles.resultText, { color: theme.text, fontSize: fontSize }]}>
                   {item.nome}
                 </Text>
-                <Text style={[styles.resultType, { color: theme.textSecondary }]}>
+                <Text style={[styles.resultType, { color: theme.textSecondary, fontSize: fontSize * 0.8125 }]}>
                   {item.tipo} • {item.dosagem_padrao}
                 </Text>
               </TouchableOpacity>
@@ -168,11 +159,8 @@ const MedicamentoAutocomplete = ({
       )}
 
       {showResults && !isLoading && hasSearched && results.length === 0 && (
-        <View style={[styles.resultsContainer, { 
-          borderColor: theme.border,
-          backgroundColor: theme.cardBackground
-        }]}>
-          <Text style={[styles.noResultsText, { color: theme.textSecondary }]}>
+        <View style={[styles.resultsContainer, { borderColor: theme.border, backgroundColor: theme.cardBackground }]}>
+          <Text style={[styles.noResultsText, { color: theme.textSecondary, fontSize: fontSize * 0.875 }]}>
             Nenhum medicamento encontrado para "{query}"
           </Text>
         </View>
@@ -181,88 +169,93 @@ const MedicamentoAutocomplete = ({
   );
 };
 
-const styles = {
-  container: {
-    position: 'relative',
-    zIndex: 1000,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 12, // 🔹 mais arredondado
-    paddingHorizontal: 12,
-    height: 50,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    backgroundColor: '#fff',
-  },
-  searchIcon: {
-    marginRight: 8,
-    opacity: 0.6,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    height: '100%',
-  },
-  clearButton: {
-    padding: 6,
-  },
-  resultsContainer: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    right: 0,
-    marginTop: 6,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
-    backgroundColor: '#fff',
-    maxHeight: 250,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 8, // Android
-    zIndex: 9999,
-  },
-  loadingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
-  },
-  loadingText: {
-    marginLeft: 8,
-    fontSize: 14,
-    opacity: 0.7,
-  },
-  resultsList: {
-    flexGrow: 0,
-  },
-  resultItem: {
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  resultText: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  resultType: {
-    fontSize: 13,
-    opacity: 0.6,
-  },
-  noResultsText: {
-    textAlign: 'center',
-    padding: 18,
-    fontSize: 14,
-    opacity: 0.6,
-  },
-};
+// ======= Styles Dinâmicos =======
+export const getAutocompleteStyles = (theme, baseFontSize = 16) => {
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
 
+  return StyleSheet.create({
+    container: { 
+      position: 'relative', 
+      zIndex: 1000 
+    },
+    inputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderRadius: scaleRadius(12),
+      paddingHorizontal: scaleSpacing(12),
+      height: scaleSpacing(50),
+      shadowColor: '#000',
+      shadowOpacity: 0.05,
+      shadowRadius: scaleRadius(4),
+      backgroundColor: theme.cardBackground,
+    },
+    searchIcon: { 
+      marginRight: scaleSpacing(8), 
+      opacity: 0.6 
+    },
+    input: { 
+      flex: 1,
+      fontSize: scaleFont(16), 
+      height: '100%' 
+    },
+    clearButton: { 
+      padding: scaleSpacing(6) 
+    },
+    resultsContainer: {
+      position: 'absolute',
+      top: '100%',
+      left: 0,
+      right: 0,
+      marginTop: scaleSpacing(6),
+      borderWidth: 1,
+      borderRadius: scaleRadius(12),
+      backgroundColor: "#fff",
+      maxHeight: scaleSpacing(250),
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.15,
+      shadowRadius: scaleRadius(6),
+      elevation: 8,
+      zIndex: 9999,
+    },
+    loadingContainer: { 
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      padding: scaleSpacing(14) 
+    },
+    loadingText: { 
+      marginLeft: scaleSpacing(8),
+      fontSize: scaleFont(14),
+      opacity: 0.7 
+    },
+    resultsList: { 
+      flexGrow: 0 
+    },
+    resultItem: { 
+      paddingVertical: scaleSpacing(14), 
+      paddingHorizontal: scaleSpacing(16), 
+      borderBottomWidth: 1,
+      borderBottomColor: "#eee" 
+    },
+    resultText: {
+      fontSize: scaleFont(16), 
+      fontWeight: '600', 
+      marginBottom: scaleSpacing(2) 
+    },
+    resultType: {
+      fontSize: scaleFont(13), 
+      opacity: 0.6 
+    },
+    noResultsText: { 
+      textAlign: 'center', 
+      padding: scaleSpacing(18),
+      fontSize: scaleFont(14), 
+      opacity: 0.6 
+    },
+  });
+};
 
 export default MedicamentoAutocomplete;

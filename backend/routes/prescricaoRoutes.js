@@ -160,7 +160,7 @@ class PrescricoesRoutes {
      *       401:
      *         description: Não autorizado
      */
-    this.router.get('/medico/:crm_medico', authMiddleware, controller.findByMedicoCrm);
+    this.router.get('/medico/:crm', authMiddleware, controller.findByMedicoCrm);
 
     /**
      * @swagger

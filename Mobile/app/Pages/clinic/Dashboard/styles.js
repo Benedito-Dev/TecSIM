@@ -1,112 +1,127 @@
-// dashboardStyles.js
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-export const getDashboardStyles = (theme) =>
-  StyleSheet.create({
+export const getDashboardStyles = (theme, baseFontSize) => {
+  // baseFontSize vem do ElderModeContext (ex: 12, 16, 20, 24, 32)
+
+  // Função para escalar fontes de forma proporcional
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+
+  // Podemos também escalar espaçamentos e bordas proporcionalmente
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
+
+  return StyleSheet.create({
     background: {
-      flex: 1, 
-      backgroundColor: theme.background
+      flex: 1,
+      backgroundColor: theme.background,
     },
     scrollContent: {
-      padding: 20,
+      padding: scaleSpacing(20),
       backgroundColor: theme.background,
     },
     loadingContainer: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
       backgroundColor: theme.background,
     },
     header: {
-      padding: 10,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 16,
+      padding: scaleSpacing(14),
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: scaleSpacing(20),
       backgroundColor: theme.backgroundCard,
       borderBottomWidth: 1,
       borderBottomColor: theme.border,
       elevation: 3,
       shadowColor: theme.shadowColor,
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 3,
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
     },
     logoText: {
-      fontSize: 24,
-      fontWeight: 'bold',
+      fontSize: scaleFont(28),
+      fontWeight: "bold",
+      color: theme.textPrimary,
+    },
+    highlightName: {
       color: theme.primary,
+      fontWeight: "bold",
+      fontSize: scaleFont(22),
     },
     welcomeText: {
-      fontSize: 18,
-      fontWeight: '600',
+      fontSize: scaleFont(22),
+      fontWeight: "700",
       color: theme.textPrimary,
-      marginBottom: 4,
-      textAlign: 'left',
+      marginBottom: scaleSpacing(8),
+      textAlign: "left",
     },
     subWelcome: {
-      fontSize: 14,
+      fontSize: scaleFont(17),
       color: theme.textMuted,
-      marginBottom: 16,
-      textAlign: 'left',
+      marginBottom: scaleSpacing(20),
+      textAlign: "left",
     },
     chatCard: {
-      flexDirection: 'column',
-      alignItems: 'center',
+      flexDirection: "column",
+      alignItems: "center",
       backgroundColor: theme.primary,
-      borderRadius: 16,
-      padding: 20,
-      marginBottom: 24,
+      borderRadius: scaleRadius(20),
+      padding: scaleSpacing(28),
+      marginBottom: scaleSpacing(30),
       elevation: 6,
       shadowColor: theme.shadowColor,
       shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.25,
-      shadowRadius: 5,
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
     },
     chatCardTitle: {
-      fontSize: 16,
-      fontWeight: 'bold',
+      fontSize: scaleFont(20),
+      fontWeight: "bold",
       color: theme.textOnPrimary,
-      marginTop: 10,
+      marginTop: scaleSpacing(14),
+      textAlign: "center",
     },
     chatCardDescription: {
-      fontSize: 14,
+      fontSize: scaleFont(17),
       color: theme.textOnPrimary,
-      marginTop: 4,
-      textAlign: 'center',
+      marginTop: scaleSpacing(8),
+      textAlign: "center",
     },
     sectionTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
+      fontSize: scaleFont(22),
+      fontWeight: "bold",
       color: theme.textPrimary,
-      marginBottom: 12,
+      marginBottom: scaleSpacing(16),
     },
     cardGrid: {
-      flexDirection: 'column',
-      gap: 12,
+      flexDirection: "column",
+      gap: scaleSpacing(16),
     },
     toolCard: {
       backgroundColor: theme.backgroundCard,
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 16,
+      borderRadius: scaleRadius(20),
+      padding: scaleSpacing(24),
+      marginBottom: scaleSpacing(22),
       elevation: 5,
       shadowColor: theme.shadowColor,
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.25,
       shadowRadius: 6,
-      alignItems: 'center',
+      alignItems: "center",
     },
     toolCardTitle: {
-      fontSize: 15,
-      fontWeight: 'bold',
-      color: theme.primary,
-      marginTop: 8,
+      fontSize: scaleFont(18),
+      fontWeight: "bold",
+      color: theme.textPrimary,
+      marginTop: scaleSpacing(12),
     },
     toolCardDescription: {
-      fontSize: 13,
+      fontSize: scaleFont(16),
       color: theme.textSecondary,
-      textAlign: 'center',
-      marginTop: 4,
+      textAlign: "center",
+      marginTop: scaleSpacing(8),
     },
   });
+};
