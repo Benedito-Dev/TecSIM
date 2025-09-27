@@ -111,7 +111,7 @@ const MedicamentoAutocomplete = ({
       >
         <Search size={scaleIcon(20)} color={theme.iconSecondary} style={styles.searchIcon} />
         <TextInput
-          style={[styles.input, { color: theme.text, fontSize: fontSize }]}
+          style={[styles.input, { color: theme.iconPrimary, fontSize: fontSize }]}
           value={query}
           onChangeText={setQuery}
           placeholder={placeholder}
