@@ -9,7 +9,7 @@ class PrescricaoRepository {
 
   async findAll(client = db) {
     try {
-      const result = await client.query('SELECT * FROM prescricoes');
+      const result = await client.query('SELECT id_prescricao AS id, id_paciente, crm, diagnostico, data_prescricao, validade, data_cadastro FROM prescricoes;');
       return result.rows.map(row => new Prescricao(row));
     } catch (err) {
       throw new DatabaseError('Erro ao buscar prescrições no banco');
@@ -33,7 +33,7 @@ class PrescricaoRepository {
   async findByPacienteId(id_paciente, client = db) {
     try {
       const result = await client.query(
-        'SELECT * FROM prescricoes WHERE id_paciente = $1',
+        'SELECT id_prescricao AS id, id_paciente, crm, diagnostico, data_prescricao, validade, data_cadastro FROM prescricoes WHERE id_paciente = $1',
         [id_paciente]
       );
       if (!result.rows.length) throw new NotFoundError('Nenhuma prescrição encontrada para este paciente');

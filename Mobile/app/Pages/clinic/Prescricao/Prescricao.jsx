@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { ThemeContext } from '../../../context/ThemeContext';
-import { useElderMode } from "../../../context/ElderModeContext"; // ✅ usa o hook
+import { useElderMode } from "../../../context/ElderModeContext";
 import { useNavigation } from '@react-navigation/native';
 import { FileText, ArrowLeft, Plus, ChevronDown, ChevronUp, Trash2, Clock, Calendar, Syringe, User, Clipboard, Download, MoreHorizontal } from 'lucide-react-native';
 import { getPrescriptionStyles } from './styles';
-import { useScale } from '../../../utils/scale'; // ✅ Hook global para escalonamento
+import { useScale } from '../../../utils/scale';
 
 import { useAuth } from '../../../context/AuthContext';
 import { getPrescricoesByPaciente, deletePrescricao, downloadPrescricao } from '../../../services/prescricaoService';
@@ -28,8 +28,8 @@ const formatarData = (dataString) => {
 // Componente de Ações para cada prescrição
 const PrescricaoActions = ({ onDownload, onDelete }) => {
   const { theme } = useContext(ThemeContext);
-  const { fontSize, fontIndex, increaseFont, decreaseFont } = useElderMode();
-  const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
+  const { fontSize } = useElderMode();
+  const { scaleIcon } = useScale(fontSize);
   const styles = getPrescriptionStyles(theme);
   const [expanded, setExpanded] = useState(false);
 
@@ -44,7 +44,6 @@ const PrescricaoActions = ({ onDownload, onDelete }) => {
           <TouchableOpacity
             style={styles.actionItem}
             onPress={() => {
-              console.log('[DEBUG] Ação: Download acionada pelo menu');
               onDownload();
               setExpanded(false);
             }}
@@ -74,14 +73,15 @@ export default function PrescricaoScreen() {
   const { theme } = useContext(ThemeContext);
   const { user } = useAuth();
 
-  const { fontSize, fontIndex, increaseFont, decreaseFont } = useElderMode(); // ✅ acessa os valores do contexto
-  const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
-
+  const { fontSize } = useElderMode();
+  const { scaleIcon } = useScale(fontSize);
   const styles = getPrescriptionStyles(theme, fontSize);
 
   const [prescricoes, setPrescricoes] = useState([]);
   const [expandedPrescricao, setExpandedPrescricao] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // ⬇️ Estados para download e exclusão
   const [deletingId, setDeletingId] = useState(null);
   const [downloadingId, setDownloadingId] = useState(null);
 
@@ -101,7 +101,7 @@ export default function PrescricaoScreen() {
     fetchPrescricoes();
   }, [user?.id]);
 
-  const togglePrescricao = (id) => {;
+  const togglePrescricao = (id) => {
     setExpandedPrescricao(expandedPrescricao === id ? null : id);
   };
 
@@ -109,33 +109,25 @@ export default function PrescricaoScreen() {
     navigation.navigate('NovaPrescricao', { id_paciente: user.id });
   };
 
+  // ⬇️ Função de Download de Prescrição
   const handleDownloadPrescricao = async (prescricao) => {
     try {
-      setDownloadingId(prescricao?.id ?? prescricao?.id_prescricao ?? prescricao?.id_prescricao_uuid ?? null);
+      setDownloadingId(prescricao?.id ?? null);
       Alert.alert("Gerando PDF", "Aguarde enquanto preparamos seu documento...");
 
-      // Tente diferentes campos caso o backend use nomes diferentes
-      const prescIdToUse = prescricao?.id ?? prescricao?.id_prescricao ?? prescricao?.id_prescricao_uuid;
-
-      const filePath = await downloadPrescricao(prescIdToUse);
-
+      const filePath = await downloadPrescricao(prescricao?.id);
+      console.log("Sucesso fase 2")
       Alert.alert("Download Concluído", `PDF salvo com sucesso`);
     } catch (error) {
-      // log detalhado se existir response (axios)
-      if (error?.response) {
-        console.error('[DEBUG] error.response:', {
-          status: error.response.status,
-          data: error.response.data
-        });
-      }
+      console.error("Erro ao gerar PDF:", error);
       Alert.alert("Erro", "Não foi possível gerar o PDF da prescrição.");
     } finally {
       setDownloadingId(null);
     }
   };
 
+  // ⬇️ Função de Exclusão de Prescrição
   const handleDeletePrescricao = async (prescricaoId) => {
-    console.log('[DEBUG] Solicitação de exclusão (iniciando) id =', prescricaoId);
     Alert.alert(
       "Excluir Prescrição",
       "Tem certeza que deseja excluir esta prescrição? Esta ação não pode ser desfeita.",
@@ -143,44 +135,25 @@ export default function PrescricaoScreen() {
         {
           text: "Cancelar",
           style: "cancel",
-          onPress: () => {
-            console.log('[DEBUG] Exclusão cancelada pelo usuário (id =', prescricaoId, ')');
-            setExpandedPrescricao(null);
-          }
+          onPress: () => setExpandedPrescricao(null)
         },
         {
           text: "Excluir",
           style: "destructive",
           onPress: async () => {
             try {
-              console.log('[DEBUG] Confirmado: excluindo id =', prescricaoId);
               setDeletingId(prescricaoId);
               await deletePrescricao(prescricaoId);
-              setPrescricoes(prev => {
-                console.log('[DEBUG] Atualizando state prescricoes: removendo id =', prescricaoId);
-                return prev.filter(p => {
-                  const pId = p?.id ?? p?.id_prescricao ?? p?.id_prescricao_uuid ?? null;
-                  // debug cada p
-                  // console.log('[DEBUG] comparando', pId, '!==', prescricaoId);
-                  return String(pId) !== String(prescricaoId);
-                });
-              });
+              setPrescricoes(prev => prev.filter(p => String(p.id) !== String(prescricaoId)));
               Alert.alert("Sucesso", "Prescrição excluída com sucesso!");
             } catch (error) {
-              console.error('[DEBUG] Erro ao excluir prescrição:', error);
-              if (error?.response) {
-                console.error('[DEBUG] deletePrescricao error.response:', {
-                  status: error.response.status,
-                  data: error.response.data
-                });
-              }
+              console.error("Erro ao excluir prescrição:", error);
               let errorMessage = "Não foi possível excluir a prescrição.";
-              if (error?.response?.status === 404) errorMessage = "Prescrição não encontrada.";
-              if (error?.response?.status === 403) errorMessage = "Você não tem permissão para excluir esta prescrição.";
-              if (error?.response?.status === 500) errorMessage = "Erro no servidor. Tente novamente mais tarde.";
+              if (error.response?.status === 404) errorMessage = "Prescrição não encontrada.";
+              if (error.response?.status === 403) errorMessage = "Você não tem permissão para excluir esta prescrição.";
+              if (error.response?.status === 500) errorMessage = "Erro no servidor. Tente novamente mais tarde.";
               Alert.alert("Erro", errorMessage);
             } finally {
-              console.log('[DEBUG] Exclusão finalizada (finally) para id =', prescricaoId);
               setDeletingId(null);
               setExpandedPrescricao(null);
             }
@@ -190,46 +163,10 @@ export default function PrescricaoScreen() {
     );
   };
 
-  // Render medicamento (recebe via inline arrow o prescricaoId)
-  const renderMedicamento = ({ item, prescricaoId }) => {
-    console.log('[DEBUG] renderMedicamento chamado, prescricaoId =', prescricaoId, 'med =', item);
-    return (
-      <View style={styles.medicineItem}>
-        <View style={styles.medicineHeader}>
-          <Text style={styles.medicineName}>{item?.nome ?? '—'}</Text>
-          <Text style={styles.medicineDose}>{item?.dosagem ?? '—'}</Text>
-        </View>
-
-        <View style={styles.medicineDetails}>
-          <View style={styles.detailRow}>
-            <Clock size={scaleIcon(14)} color="#6B7280" />
-            <Text style={styles.detailText}>{item?.frequencia ?? '—'}x ao dia</Text>
-          </View>
-
-          <View style={styles.detailRow}>
-            <Calendar size={scaleIcon(14)} color="#6B7280" />
-            <Text style={styles.detailText}>{item?.duracao_dias ?? '—'} dias</Text>
-          </View>
-
-          <View style={styles.detailRow}>
-            <Syringe size={scaleIcon(14)} color="#6B7280" />
-            <Text style={styles.detailText}>Via: {item?.via ?? '—'}</Text>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
+  // ⬇️ Renderização de cada item de prescrição (com overlay para download/exclusão)
   const renderPrescricao = ({ item }) => {
-    console.log('[DEBUG] renderPrescricao chamado para item =', item);
-    const prescId = item?.id ?? item?.id_prescricao ?? item?.id_prescricao_uuid;
-    const isDeleting = String(deletingId) === String(prescId);
-    const isDownloading = String(downloadingId) === String(prescId);
-
-    // garantir que medicamentos seja array
-    const medicamentosArr = Array.isArray(item?.medicamentos) ? item.medicamentos : [];
-
-    console.log('[DEBUG] prescricao computed ids:', { prescId, medicamentosCount: medicamentosArr.length });
+    const isDeleting = String(deletingId) === String(item.id);
+    const isDownloading = String(downloadingId) === String(item.id);
 
     return (
       <View style={styles.prescricaoItem}>
@@ -245,28 +182,28 @@ export default function PrescricaoScreen() {
             <View style={styles.prescricaoTitleRow}>
               <View style={styles.prescricaoTitleContainer}>
                 <Clipboard size={scaleIcon(16)} color="#2563EB" />
-                <Text style={styles.prescricaoTitle}>{item?.diagnostico ?? '—'}</Text>
+                <Text style={styles.prescricaoTitle}>{item.diagnostico}</Text>
               </View>
               <PrescricaoActions
                 onDownload={() => handleDownloadPrescricao(item)}
-                onDelete={() => handleDeletePrescricao(prescId)}
+                onDelete={() => handleDeletePrescricao(item.id)}
               />
             </View>
 
             <View style={styles.prescricaoHeaderRow}>
               <User size={scaleIcon(16)} color="#6B7280" />
-              <Text style={styles.prescricaoSubtitle}>CRM: {item?.crm ?? '—'}</Text>
+              <Text style={styles.prescricaoSubtitle}>CRM: {item.crm}</Text>
             </View>
 
-            <Text style={styles.prescricaoDate}>• Cadastro: {formatarData(item?.data_prescricao)}</Text>
-            <Text style={styles.prescricaoDate}>• Validade: {formatarData(item?.validade)}</Text>
+            <Text style={styles.prescricaoDate}>• Cadastro: {formatarData(item.data_prescricao)}</Text>
+            <Text style={styles.prescricaoDate}>• Validade: {formatarData(item.validade)}</Text>
 
             <TouchableOpacity
               style={styles.chevronContainer}
-              onPress={() => !isDeleting && togglePrescricao(prescId)}
+              onPress={() => !isDeleting && togglePrescricao(item.id)}
               disabled={isDeleting}
             >
-              {expandedPrescricao === prescId ? (
+              {expandedPrescricao === item.id ? (
                 <ChevronUp size={scaleIcon(20)} color="#6B7280" />
               ) : (
                 <ChevronDown size={scaleIcon(20)} color="#6B7280" />
@@ -274,32 +211,12 @@ export default function PrescricaoScreen() {
             </TouchableOpacity>
           </View>
         </View>
-
-        {expandedPrescricao === prescId && !isDeleting && (
-          <View style={styles.prescricaoContent}>
-            {medicamentosArr.length > 0 ? (
-              <FlatList
-                data={medicamentosArr}
-                renderItem={({ item: medItem }) => renderMedicamento({ item: medItem, prescricaoId: prescId })}
-                keyExtractor={(med, index) => {
-                  const computed = String(med?.id ?? med?.id_medicamento_prescrito ?? med?.id_medicamento ?? index);
-                  console.log('[DEBUG] medicamento keyExtractor:', { med, computed });
-                  return computed;
-                }}
-                scrollEnabled={false}
-              />
-            ) : (
-              <Text style={styles.emptyMedicamentos}>Nenhum medicamento prescrito</Text>
-            )}
-          </View>
-        )}
       </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft size={scaleIcon(24)} color="#2563EB" />
@@ -308,11 +225,7 @@ export default function PrescricaoScreen() {
         <View style={{ width: 24 }} />
       </View>
 
-      {/* Lista de prescrições */}
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        style={{ flex: 1 }}
-      >
+      <ScrollView contentContainerStyle={styles.scrollContainer} style={{ flex: 1 }}>
         {loading ? (
           <View style={styles.emptyContainer}>
             <ActivityIndicator size="large" color="#2563EB" />
@@ -322,11 +235,8 @@ export default function PrescricaoScreen() {
           <FlatList
             data={prescricoes}
             renderItem={renderPrescricao}
-            keyExtractor={(it, index) => {
-              const computed = String(it?.id ?? it?.id_prescricao ?? it?.id_prescricao_uuid ?? index);
-              console.log('[DEBUG] prescricao keyExtractor:', { it, computed });
-              return computed;
-            }}
+            keyExtractor={item => item.id
+            }
             scrollEnabled={false}
           />
         ) : (
@@ -338,11 +248,7 @@ export default function PrescricaoScreen() {
         )}
       </ScrollView>
 
-      {/* Botão Adicionar Prescrição */}
-      <TouchableOpacity
-        style={styles.addPrescButton}
-        onPress={handleAddPrescricao}
-      >
+      <TouchableOpacity style={styles.addPrescButton} onPress={handleAddPrescricao}>
         <Plus size={scaleIcon(24)} color="#fff" />
         <Text style={styles.addPrescButtonText}>Nova Prescrição</Text>
       </TouchableOpacity>
