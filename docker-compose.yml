@@ -35,6 +35,15 @@ services:
     networks:
       - app-network
 
+  db-init:
+    build: ./db-init
+    container_name: db-init
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    command: ["node", "createTables.js"]  # comando padrão para criar tabelas
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge

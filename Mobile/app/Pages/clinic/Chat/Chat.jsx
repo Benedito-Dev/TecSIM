@@ -15,8 +15,10 @@ import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../../context/AuthContext';
 import { ThemeContext } from '../../../context/ThemeContext';
-import { getAIResponse, listAvailableModels } from '../../../services/aiService';
+import { useElderMode } from "../../../context/ElderModeContext"; // ✅ usa o hook
+import { getAIResponse } from '../../../services/aiService';
 import { getChatStyles } from './styles';
+import { useScale } from '../../../utils/scale'; // ✅ Hook global para escalonamento
 import QuickActionButtons from '../../../components/QuickActionButtons'; // Importação do novo componente
 
 // Componente para os pontos animados
@@ -91,6 +93,9 @@ export default function ChatScreen() {
   const scrollViewRef = useRef();
   const inputRef = useRef(null);
 
+  const { fontSize, fontIndex, increaseFont, decreaseFont } = useElderMode(); // ✅ acessa os valores do contexto
+  const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
+
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString('pt-BR', { 
       hour: '2-digit', 
@@ -100,7 +105,7 @@ export default function ChatScreen() {
   };
 
   const { theme } = useContext(ThemeContext)
-  const styles = getChatStyles(theme)
+  const styles = getChatStyles(theme, fontSize);
 
   useEffect(() => {
     const initialMessages = [
@@ -273,7 +278,7 @@ export default function ChatScreen() {
           {isLoading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <Icon name="send" size={20} color="#fff" />
+            <Icon name="send" size={scaleIcon(20)} color="#fff" />
           )}
         </TouchableOpacity>
       </KeyboardAvoidingView>

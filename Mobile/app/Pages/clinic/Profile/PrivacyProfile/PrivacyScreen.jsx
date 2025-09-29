@@ -4,17 +4,20 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useAuth } from '../../../../context/AuthContext';
 import { ThemeContext } from '../../../../context/ThemeContext';
+import { useElderMode } from "../../../../context/ElderModeContext";
 import { deletePaciente, inativarPaciente } from '../../../../services/userService'
 
 import { getPrivacyStyles } from './styles';
+import { useScale } from '../../../../utils/scale';
 import { ArrowLeft } from 'lucide-react-native';
 
 export default function PrivacyScreen() {
   const navigation = useNavigation();
   const { user } = useAuth();
-
+  const { fontSize } = useElderMode();
+  const { scaleIcon } = useScale(fontSize);
   const { theme } = useContext(ThemeContext)
-  const styles = getPrivacyStyles(theme)
+  const styles = getPrivacyStyles(theme, fontSize);
 
   const handleInactiveAccount = () => {
     if (Platform.OS === 'web') {
@@ -72,7 +75,7 @@ export default function PrivacyScreen() {
       {/* Cabeçalho */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color={theme.primary} />
+          <ArrowLeft size={scaleIcon(24)} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Privacidade</Text>
         <View style={{ width: 24 }} /> {/* Placeholder para alinhamento */}

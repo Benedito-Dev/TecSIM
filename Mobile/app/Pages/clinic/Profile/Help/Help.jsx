@@ -9,8 +9,10 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../../../context/ThemeContext';
+import { useElderMode } from "../../../../context/ElderModeContext";
 import { ArrowLeft, Mail, Phone, FileText, Globe } from 'lucide-react-native';
 import { getHelpStyles } from './styles';
+import { useScale } from '../../../../utils/scale';
 
 const faqItems = [
   {
@@ -32,19 +34,21 @@ const faqItems = [
 
 export default function HelpScreen() {
   const navigation = useNavigation();
+  const { fontSize } = useElderMode();
+  const { scaleIcon } = useScale(fontSize);
   const { theme } = useContext(ThemeContext);
-  const styles = getHelpStyles(theme);
+  const styles = getHelpStyles(theme, fontSize);
 
   const contactMethods = [
     {
-      icon: <Mail size={22} color={theme.primary} />,
+      icon: <Mail size={scaleIcon(22)} color={theme.primary} />,
       title: 'E-mail de Suporte',
       description: 'Envie suas dúvidas para nossa equipe',
       contact: 'suporte@tecsim.com.br',
       action: () => Linking.openURL('mailto:suporte@tecsim.com.br'),
     },
     {
-      icon: <Phone size={22} color={theme.primary} />,
+      icon: <Phone size={scaleIcon(22)} color={theme.primary} />,
       title: 'Telefone',
       description: 'Disponível de seg. a sexta, das 8h às 18h',
       contact: '(11) 3456-7890',
@@ -54,17 +58,17 @@ export default function HelpScreen() {
 
   const usefulLinks = [
     {
-      icon: <FileText size={18} color={theme.primary} />,
+      icon: <FileText size={scaleIcon(18)} color={theme.primary} />,
       label: 'Termos de Uso',
       url: 'https://tecsim.com.br/termos',
     },
     {
-      icon: <FileText size={18} color={theme.primary} />,
+      icon: <FileText size={scaleIcon(18)} color={theme.primary} />,
       label: 'Política de Privacidade',
       url: 'https://tecsim.com.br/privacidade',
     },
     {
-      icon: <Globe size={18} color={theme.primary} />,
+      icon: <Globe size={scaleIcon(18)} color={theme.primary} />,
       label: 'Site Oficial',
       url: 'https://tecsim.com.br',
     },
@@ -81,7 +85,7 @@ export default function HelpScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color={theme.primary} />
+          <ArrowLeft size={scaleIcon(24)} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Ajuda & Suporte</Text>
         <View style={{ width: 24 }} /> {/* Placeholder para alinhamento */}
