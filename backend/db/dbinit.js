@@ -6,15 +6,19 @@ const tables = [
     createQuery: `
       CREATE TABLE paciente (
         id SERIAL PRIMARY KEY,
-        CPF VARCHAR(14) UNIQUE NOT NULL,
+        cpf VARCHAR(14) UNIQUE NOT NULL,
         nome VARCHAR(100) NOT NULL,
         email VARCHAR(150) UNIQUE NOT NULL,
         senha VARCHAR(255) NOT NULL,
         data_nascimento DATE,
-        peso_kg DECIMAL(5,2),
+        peso_kg NUMERIC(5,2),
         genero VARCHAR(100) NOT NULL,
         aceite_termos BOOLEAN DEFAULT TRUE,
-        data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        ativo BOOLEAN,
+        foto_perfil TEXT,
+        CONSTRAINT paciente_cpf_key UNIQUE (cpf),
+        CONSTRAINT paciente_email_key UNIQUE (email)
       );
     `
   },
@@ -39,12 +43,14 @@ const tables = [
       CREATE TABLE medicos (
         id SERIAL PRIMARY KEY,
         nome VARCHAR(100) NOT NULL,
-        crm VARCHAR(20) UNIQUE NOT NULL,
+        crm VARCHAR(20) NOT NULL,
         especialidade VARCHAR(100),
-        email VARCHAR(150) UNIQUE NOT NULL,
+        email VARCHAR(150) NOT NULL,
         senha VARCHAR(255) NOT NULL,
         telefone VARCHAR(16) NOT NULL,
-        ativo BOOLEAN DEFAULT TRUE
+        ativo BOOLEAN NOT NULL DEFAULT TRUE,
+        CONSTRAINT medicos_crm_key UNIQUE (crm),
+        CONSTRAINT medicos_email_key UNIQUE (email)
       );
     `
   },
@@ -56,8 +62,8 @@ const tables = [
         nome VARCHAR(100) NOT NULL,
         tipo VARCHAR(50),
         descricao TEXT,
-        faixa_etaria_minima INT,
-        faixa_etaria_maxima INT,
+        faixa_etaria_minima INTEGER,
+        faixa_etaria_maxima INTEGER,
         contraindicacoes TEXT,
         interacoes_comuns TEXT,
         composicao TEXT,
@@ -71,13 +77,14 @@ const tables = [
     createQuery: `
       CREATE TABLE bulas (
         id SERIAL PRIMARY KEY,
-        id_medicamento INTEGER UNIQUE NOT NULL,
+        id_medicamento INTEGER NOT NULL,
         dosagem_e_administracao TEXT[],
         indicacoes TEXT[],
         contraindicacoes TEXT[],
         advertencias TEXT[],
         interacoes_medicamentosas TEXT[],
         armazenamento_e_validade TEXT[],
+        CONSTRAINT bulas_id_medicamento_key UNIQUE (id_medicamento),
         CONSTRAINT fk_bula_medicamento FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento) ON DELETE CASCADE
       );
     `
@@ -87,16 +94,14 @@ const tables = [
     createQuery: `
       CREATE TABLE prescricoes (
         id_prescricao SERIAL PRIMARY KEY,
-        id_paciente INT NOT NULL,
-        id INT NOT NULL,
+        id_paciente INTEGER NOT NULL,
         crm VARCHAR(20),
         diagnostico TEXT NOT NULL,
         data_prescricao DATE NOT NULL,
         validade DATE,
-        data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE,
-        FOREIGN KEY (id) REFERENCES medicos(id),
-        FOREIGN KEY (crm) REFERENCES medicos(crm)
+        data_cadastro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT prescricoes_crm_fkey FOREIGN KEY (crm) REFERENCES medicos(crm) ON UPDATE CASCADE ON DELETE SET NULL,
+        CONSTRAINT prescricoes_paciente_fkey FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
       );
     `
   },
@@ -105,15 +110,15 @@ const tables = [
     createQuery: `
       CREATE TABLE medicamentos_prescritos (
         id_medicamento_prescrito SERIAL PRIMARY KEY,
-        id_prescricao INT NOT NULL,
-        id_medicamento INT NOT NULL,
+        id_prescricao INTEGER NOT NULL,
+        id_medicamento INTEGER NOT NULL,
         dosagem VARCHAR(50),
         frequencia VARCHAR(50),
-        duracao_dias INT,
+        duracao_dias INTEGER,
         horarios VARCHAR(255),
         via VARCHAR(50),
-        FOREIGN KEY (id_prescricao) REFERENCES prescricoes(id_prescricao) ON DELETE CASCADE,
-        FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento)
+        CONSTRAINT medicamentos_prescritos_id_prescricao_fkey FOREIGN KEY (id_prescricao) REFERENCES prescricoes(id_prescricao) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT medicamentos_prescritos_id_medicamento_fkey FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento)
       );
     `
   },
@@ -122,17 +127,17 @@ const tables = [
     createQuery: `
       CREATE TABLE lembretes (
         id_lembrete SERIAL PRIMARY KEY,
-        id_paciente INT NOT NULL,
-        id_prescricao INT NOT NULL,
-        id_medicamento INT NOT NULL,
+        id_paciente INTEGER NOT NULL,
+        id_prescricao INTEGER NOT NULL,
+        id_medicamento INTEGER NOT NULL,
         horario TIME NOT NULL,
         data_inicio DATE NOT NULL,
         data_fim DATE NOT NULL,
-        canal_envio VARCHAR(20) CHECK (canal_envio IN ('App', 'WhatsApp', 'Email')),
-        enviado BOOLEAN DEFAULT FALSE,
-        FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE,
-        FOREIGN KEY (id_prescricao) REFERENCES prescricoes(id_prescricao),
-        FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento)
+        canal_envio VARCHAR(20) NOT NULL CHECK (canal_envio IN ('App', 'WhatsApp', 'Email')),
+        enviado BOOLEAN NOT NULL DEFAULT FALSE,
+        CONSTRAINT lembretes_id_prescricao_fkey FOREIGN KEY (id_prescricao) REFERENCES prescricoes(id_prescricao) ON UPDATE CASCADE ON DELETE RESTRICT,
+        CONSTRAINT lembretes_id_paciente_fkey FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE,
+        CONSTRAINT lembretes_id_medicamento_fkey FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento)
       );
     `
   },
@@ -141,11 +146,11 @@ const tables = [
     createQuery: `
       CREATE TABLE favoritos (
         id_favorito SERIAL PRIMARY KEY,
-        id_paciente INT NOT NULL,
-        tipo VARCHAR(20) CHECK (tipo IN ('medicamento', 'sintoma')),
-        referencia_id INT NOT NULL,
-        data_favoritado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
+        id_paciente INTEGER NOT NULL,
+        tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('medicamento', 'sintoma')),
+        referencia_id INTEGER NOT NULL,
+        data_favoritado TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT favoritos_id_paciente_fkey FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
       );
     `
   },
@@ -154,11 +159,11 @@ const tables = [
     createQuery: `
       CREATE TABLE historico_interacoes (
         id_historico SERIAL PRIMARY KEY,
-        id_paciente INT NOT NULL,
-        tipo VARCHAR(30) CHECK (tipo IN ('busca', 'dosagem', 'interacao', 'simulacao')),
+        id_paciente INTEGER NOT NULL,
+        tipo VARCHAR(30) NOT NULL CHECK (tipo IN ('busca', 'dosagem', 'interacao', 'simulacao')),
         descricao TEXT,
-        data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
+        data_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT historico_interacoes_id_paciente_fkey FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
       );
     `
   },
@@ -170,9 +175,9 @@ const tables = [
         email VARCHAR(255) NOT NULL,
         otp VARCHAR(10) NOT NULL,
         expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-        verified BOOLEAN DEFAULT false,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-        attempts INTEGER DEFAULT 0
+        verified BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        attempts INTEGER NOT NULL DEFAULT 0
       );
     `
   }

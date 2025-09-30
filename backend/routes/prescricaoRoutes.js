@@ -72,6 +72,36 @@ class PrescricoesRoutes {
 
     /**
      * @swagger
+     * /prescricoes/{id}/download:
+     *   get:
+     *     summary: Baixa a prescrição em PDF
+     *     tags: [Prescricoes]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: integer
+     *         required: true
+     *         description: ID da prescrição
+     *     responses:
+     *       200:
+     *         description: PDF da prescrição
+     *         content:
+     *           application/pdf:
+     *             schema:
+     *               type: string
+     *               format: binary
+     *       404:
+     *         description: Prescrição não encontrada
+     *       401:
+     *         description: Não autorizado
+     */
+    this.router.get('/:id/download', controller.download);
+
+    /**
+     * @swagger
      * /prescricoes/paciente/{id_paciente}:
      *   get:
      *     summary: Busca prescrições por paciente
@@ -103,7 +133,7 @@ class PrescricoesRoutes {
 
     /**
      * @swagger
-     * /prescricoes/medico/{id_medico}:
+     * /prescricoes/medico/{crm_medico}:
      *   get:
      *     summary: Busca prescrições por médico
      *     tags: [Prescricoes]
@@ -111,11 +141,11 @@ class PrescricoesRoutes {
      *       - bearerAuth: []
      *     parameters:
      *       - in: path
-     *         name: id_medico
+     *         name: crm_medico
      *         schema:
      *           type: integer
      *         required: true
-     *         description: ID do médico
+     *         description: CRM do médico
      *     responses:
      *       200:
      *         description: Lista de prescrições do médico
@@ -130,7 +160,7 @@ class PrescricoesRoutes {
      *       401:
      *         description: Não autorizado
      */
-    this.router.get('/medico/:id_medico', authMiddleware, controller.findByMedicoId);
+    this.router.get('/medico/:crm', authMiddleware, controller.findByMedicoCrm);
 
     /**
      * @swagger
@@ -145,29 +175,7 @@ class PrescricoesRoutes {
      *       content:
      *         application/json:
      *           schema:
-     *             type: object
-     *             required:
-     *               - id_paciente
-     *               - id_medico
-     *               - crm
-     *               - diagnostico
-     *               - data_prescricao
-     *             properties:
-     *               id_paciente:
-     *                 type: integer
-     *               id_medico:
-     *                 type: integer
-     *               crm:
-     *                 type: string
-     *                 example: "CRM-SP-123456"
-     *               diagnostico:
-     *                 type: string
-     *               data_prescricao:
-     *                 type: string
-     *                 format: date
-     *               validade:
-     *                 type: string
-     *                 format: date
+     *             $ref: '#/components/schemas/PrescricaoRequest'
      *     responses:
      *       201:
      *         description: Prescrição criada com sucesso
@@ -201,14 +209,11 @@ class PrescricoesRoutes {
      *             type: object
      *             required:
      *               - id_paciente
-     *               - id_medico
      *               - crm
      *               - diagnostico
      *               - data_prescricao
      *             properties:
      *               id_paciente:
-     *                 type: integer
-     *               id_medico:
      *                 type: integer
      *               crm:
      *                 type: string

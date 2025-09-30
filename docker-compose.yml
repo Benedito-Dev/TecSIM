@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+version: "3.9"
+
+>>>>>>> sprint-4
 services:
   backend:
     build: ./backend
@@ -5,9 +10,17 @@ services:
     ports:
       - "3000:3000"
     environment:
+<<<<<<< HEAD
       POSTGRES_URI: ${POSTGRES_URI}
       DATABASE_URL_MONGO: ${MONGO_URI}
       JWT_SECRET: ${JWT_SECRET}
+=======
+      POSTGRES_URI: ${DATABASE_URL}       # Neon Postgres (banco externo AWS)
+      DATABASE_URL_MONGO: ${MONGODB_URI}    # Caso use Mongo também
+      JWT_SECRET: ${JWT_SECRET}
+    networks:
+      - app-network
+>>>>>>> sprint-4
 
   frontend:
     build: ./mobile
@@ -19,13 +32,22 @@ services:
       - "19002:19002" # Expo DevTools (web)
     volumes:
       - ./mobile:/app
+<<<<<<< HEAD
       - /app/node_modules
     environment:
       API_URL: http://backend:3000
+=======
+      - /app/node_modules 
+    environment:
+      # ⚠️ Atenção: este endereço só funciona dentro da rede Docker.
+      # Para rodar no dispositivo físico, usar o IP da sua máquina na rede.
+      API_URL: http://${IP_HOST}:3000
+>>>>>>> sprint-4
     stdin_open: true
     tty: true
     depends_on:
       - backend
+<<<<<<< HEAD
 
   db-init:
     build: ./backend
@@ -39,3 +61,20 @@ services:
 
 volumes:
   postgres_data:
+=======
+    networks:
+      - app-network
+
+  db-init:
+    build: ./db-init
+    container_name: db-init
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    command: ["node", "createTables.js"]  # comando padrão para criar tabelas
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+>>>>>>> sprint-4

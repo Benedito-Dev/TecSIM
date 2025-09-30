@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { ThemeContext } from '../../context/ThemeContext';
 
 export default function EmailInput({
-  label,
+  label = "E-mail",
   value,
   onChangeText,
   placeholder = 'exemplo@gmail.com',
   iconName = 'mail',
-  onValidityChange, // prop nova para avisar validade
+  onValidityChange,
+  theme: propTheme,
+  fontSize = 16,              // 🔹 controla fontes
+  scaleIcon = (size) => size, // 🔹 escala ícones
 }) {
-  const [isValid, setIsValid] = useState(null); // null = vazio/sem digitação
+  const contextTheme = useContext(ThemeContext).theme;
+  const theme = propTheme || contextTheme;
+  const styles = createStyles(theme, fontSize);
+
+  const [isValid, setIsValid] = useState(null);
 
   const validDomains = [
     'gmail.com',
@@ -32,7 +40,7 @@ export default function EmailInput({
   const handleChange = (text) => {
     onChangeText(text);
     if (text.trim() === '') {
-      setIsValid(null); // volta para cinza quando apagar tudo
+      setIsValid(null);
     } else {
       setIsValid(validateEmail(text));
     }
@@ -40,55 +48,73 @@ export default function EmailInput({
 
   useEffect(() => {
     if (onValidityChange) {
-      // passar false quando null para evitar habilitar botão antes de digitar
       onValidityChange(isValid === true);
     }
   }, [isValid]);
 
   const getBorderColor = () => {
-    if (isValid === null) return 'gray'; // inicial / vazio
-    return isValid ? 'green' : 'red';
+    if (isValid === null) return theme.border;
+    return isValid ? theme.success : theme.error;
   };
 
   return (
     <>
       <Text style={styles.label}>{label}</Text>
-      <View style={[styles.input, { borderColor: getBorderColor() }]}>
+      <View style={[styles.inputContainer, { borderColor: getBorderColor() }]}>
         <TextInput
-          style={{ flex: 1 }}
+          style={styles.input}
           placeholder={placeholder}
           value={value}
           onChangeText={handleChange}
-          placeholderTextColor="gray"
+          placeholderTextColor={theme.placeholder}
           keyboardType="email-address"
           autoCapitalize="none"
         />
         <TouchableOpacity disabled>
-          <Icon name={iconName} size={20} color="gray" style={{ marginRight: 10 }} />
+          <Icon
+            name={iconName}
+            size={scaleIcon(20)} // 🔹 ícone escalável
+            color={theme.icon}
+            style={styles.icon}
+          />
         </TouchableOpacity>
       </View>
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-    marginTop: 12,
-    marginBottom: 4,
-    alignItems: 'flex-start',
-    width: '85%',
-  },
-  input: {
-    height: 45,
-    width: '85%',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-});
+// ======= Styles Dinâmicos =======
+const createStyles = (theme, baseFontSize = 16) => {
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
+
+  return StyleSheet.create({
+    label: {
+      fontSize: scaleFont(16),
+      fontWeight: '500',
+      color: theme.textPrimary,
+      marginTop: scaleSpacing(12),
+      marginBottom: scaleSpacing(4),
+      width: '85%',
+    },
+    inputContainer: {
+      height: scaleSpacing(45),
+      width: '85%',
+      borderWidth: 1,
+      borderRadius: scaleRadius(8),
+      paddingHorizontal: scaleSpacing(10),
+      backgroundColor: theme.backgroundCard,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    input: {
+      flex: 1,
+      fontSize: scaleFont(16),
+      color: theme.textPrimary,
+    },
+    icon: {
+      marginRight: scaleSpacing(10),
+    },
+  });
+};

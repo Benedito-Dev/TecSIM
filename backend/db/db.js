@@ -3,12 +3,17 @@ const { Pool } = require('pg');
 
 // Cria pool usando a variável correta do Neon
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URI,  // <- usar a variável correta
-  ssl: {
-    rejectUnauthorized: false, // necessário para Neon
-  },
+  connectionString: process.env.DATABASE_URL,
+  // ssl: {
+  //   rejectUnauthorized: false, // Necessário para conexões com SSL como na Neon
+  // },
 });
 
 const query = (text, params) => pool.query(text, params);
 
-module.exports = { query };
+// Adicione estas linhas para exportar os métodos necessários
+module.exports = {
+  query,
+  connect: () => pool.connect(), // Isso resolve o erro "db.connect is not a function"
+  pool // Exporta o pool completo se necessário
+};

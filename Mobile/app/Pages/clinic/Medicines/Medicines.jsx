@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getMedicamentos } from '../../../services/medicamentosService';
+import { useElderMode } from "../../../context/ElderModeContext"; // ✅ usa o hook
 
 import { ThemeContext } from '../../../context/ThemeContext';
 
@@ -12,6 +13,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ArrowLeft } from 'lucide-react-native';
 import { getMedicationStyles } from './styles';
+import { useScale } from '../../../utils/scale'; // ✅ Hook global para escalonamento
 
 import removeAccents from 'remove-accents'; // npm install remove-accents
 
@@ -25,7 +27,9 @@ export default function MedicineScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
   const { theme } = useContext(ThemeContext)
-  const styles = getMedicationStyles(theme)
+  const { fontSize, fontIndex, increaseFont, decreaseFont } = useElderMode(); // ✅ acessa os valores do contexto
+  const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
+  const styles = getMedicationStyles(theme, fontSize);
 
   const filterOptions = [
     { id: 'analgesico', label: 'Analgésico', icon: 'emoticon-happy' },
@@ -99,7 +103,7 @@ export default function MedicineScreen() {
       <View style={styles.header}>
         <View style={{ display: "flex", alignItems: "center", flexDirection: "row", gap: 20 }} >
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <ArrowLeft size={24} color={theme.primary} />
+            <ArrowLeft size={scaleIcon(24)} color={theme.primary} />
           </TouchableOpacity>
           <Text style={styles.title}>Medicamentos</Text>
         </View>
@@ -107,7 +111,7 @@ export default function MedicineScreen() {
 
       {/* Barra de busca */}
       <View style={styles.searchContainer}>
-        <FeatherIcon name="search" size={20} color="#A0A0A0" style={styles.searchIcon} />
+        <FeatherIcon name="search" size={scaleIcon(20)} color="#A0A0A0" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder="Buscar por nome ou tipo..."
@@ -148,7 +152,7 @@ export default function MedicineScreen() {
       {/* Lista de medicamentos */}
       {filtered.length === 0 ? (
         <View style={styles.emptyState}>
-          <MaterialCommunityIcons name="pill-off" size={48} color="#E5E7EB" />
+          <MaterialCommunityIcons name="pill-off" size={scaleIcon(48)} color="#E5E7EB" />
           <Text style={styles.emptyText}>Nenhum medicamento encontrado</Text>
           <Text style={styles.emptySubtext}>
             {activeFilters.length > 0
@@ -167,7 +171,7 @@ export default function MedicineScreen() {
                                                                                                   tipoMedicamento: item.tipo, 
                                                                                                   dosagemMedicamento: item.dosagem_padrao })}>
               <View style={styles.medIcon}>
-                <MaterialCommunityIcons name="pill" size={24} color={theme.primary} />
+                <MaterialCommunityIcons name="pill" size={scaleIcon(24)} color={theme.primary} />
               </View>
               <View style={styles.medInfo}>
                 <Text style={styles.medName}>{item.nome}</Text>
@@ -180,7 +184,7 @@ export default function MedicineScreen() {
                   </View>
                 </View>
               </View>
-              <FeatherIcon name="chevron-right" size={20} color="#9CA3AF" />
+              <FeatherIcon name="chevron-right" size={scaleIcon(20)} color="#9CA3AF" />
             </TouchableOpacity>
           )}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -199,7 +203,7 @@ export default function MedicineScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Filtrar por tipo</Text>
               <TouchableOpacity onPress={() => setShowFilters(false)}>
-                <FeatherIcon name="x" size={24} color="#6B7280" />
+                <FeatherIcon name="x" size={scaleIcon(24)} color="#6B7280" />
               </TouchableOpacity>
             </View>
 
@@ -215,7 +219,7 @@ export default function MedicineScreen() {
                 >
                   <MaterialCommunityIcons
                     name={filter.icon}
-                    size={20}
+                    size={scaleIcon(20)}
                     color={activeFilters.includes(filter.id) ? '#2563EB' : '#6B7280'}
                   />
                   <Text style={[
@@ -227,7 +231,7 @@ export default function MedicineScreen() {
                   {activeFilters.includes(filter.id) && (
                     <FeatherIcon
                       name="check"
-                      size={18}
+                      size={scaleIcon(18)}
                       color="#2563EB"
                       style={styles.filterCheckIcon}
                     />

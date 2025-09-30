@@ -1,13 +1,32 @@
 import api from '../api/api';
 
-// 🟢 [GET] Lista todos os medicamentos
-export const getMedicamentos = async () => {
+// 🟢 [GET] Lista medicamentos com filtros e paginação
+export const getMedicamentos = async (params = {}) => {
   try {
-    const response = await api.get('/medicamentos');
+    const response = await api.get(`/medicamentos`);
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar medicamentos:', error.message);
     throw error;
+  }
+};
+
+// 🟢 [GET] Busca medicamentos por termo (para autocomplete)
+export const searchMedicamentos = async (searchTerm = '') => {
+  try {
+    if (!searchTerm || searchTerm.length < 2) {
+      return []; // Não buscar com menos de 2 caracteres
+    }
+    
+    const response = await api.get(`/medicamentos/search?q=${encodeURIComponent(searchTerm)}`);
+    
+    // A API retorna { data: [], pagination: {} } - precisamos extrair o array data
+    return response.data.data || response.data || [];
+  } catch (error) {
+    console.error('Erro ao buscar medicamentos:', error.message);
+    
+    // Em caso de erro, retornar array vazio para não quebrar o autocomplete
+    return [];
   }
 };
 

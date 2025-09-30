@@ -1,5 +1,5 @@
 const service = require('../services/prescricaoServices');
-const { NotFoundError, DatabaseError, ConflictError } = require('../utils/errors');
+const generatePrescriptionPDF = require('../utils/Prescription-Pdf')
 
 class PrescricaoController {
   async findAll(req, res, next) {
@@ -31,10 +31,10 @@ class PrescricaoController {
     }
   }
 
-  async findByMedicoId(req, res, next) {
+  async findByMedicoCrm(req, res, next) {
     try {
       const { crm } = req.params;
-      const prescricoes = await service.findByMedicoId(crm);
+      const prescricoes = await service.findByMedicoCrm(crm);
       res.status(200).json(prescricoes);
     } catch (error) {
       next(error);
@@ -76,6 +76,27 @@ class PrescricaoController {
       next(error);
     }
   }
+
+  async download(req, res) {
+    try {
+      const { id } = req.params;
+      const prescricao = await service.findById(id, { include: ['medicamentos'] }); 
+
+      if (!prescricao) {
+        return res.status(404).json({ message: 'Prescrição não encontrada' });
+      }
+
+      const pdfBuffer = generatePrescriptionPDF(prescricao);
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=prescricao_${id}.pdf`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      res.status(500).json({ message: 'Erro ao gerar PDF' });
+    }
+  };
+
 }
 
 module.exports = new PrescricaoController();

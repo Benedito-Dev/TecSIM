@@ -11,10 +11,12 @@ export default function CpfInput({
   iconName = 'user',
   onValidityChange,
   theme: propTheme,
+  fontSize = 16,              // 🔹 controla fontes
+  scaleIcon = (size) => size, // 🔹 escala ícones
 }) {
   const contextTheme = useContext(ThemeContext).theme;
   const theme = propTheme || contextTheme;
-  const styles = createStyles(theme);
+  const styles = createStyles(theme, fontSize);
 
   const [isValid, setIsValid] = useState(false);
 
@@ -75,38 +77,45 @@ export default function CpfInput({
           maxLength={14}
         />
         <TouchableOpacity disabled>
-          <Icon name={iconName} size={20} color={theme.icon} style={styles.icon} />
+          <Icon name={iconName} size={scaleIcon(20)} color={theme.icon} style={styles.icon} />
         </TouchableOpacity>
       </View>
     </>
   );
 }
 
-const createStyles = (theme) =>
-  StyleSheet.create({
+// ======= Styles Dinâmicos =======
+const createStyles = (theme, baseFontSize = 16) => {
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
+
+  return StyleSheet.create({
     label: {
-      fontSize: 16,
+      fontSize: scaleFont(16),
       fontWeight: '500',
       color: theme.textPrimary,
-      marginTop: 12,
-      marginBottom: 4,
+      marginTop: scaleSpacing(12),
+      marginBottom: scaleSpacing(4),
       width: '85%',
     },
     inputContainer: {
-      height: 45,
+      height: scaleSpacing(45),
       width: '85%',
       borderWidth: 1,
-      borderRadius: 8,
-      paddingHorizontal: 10,
+      borderRadius: scaleRadius(8),
+      paddingHorizontal: scaleSpacing(10),
       backgroundColor: theme.backgroundCard,
       flexDirection: 'row',
       alignItems: 'center',
     },
     input: {
       flex: 1,
+      fontSize: scaleFont(16),
       color: theme.textPrimary,
     },
     icon: {
-      marginRight: 10,
+      marginRight: scaleSpacing(10),
     },
   });
+};

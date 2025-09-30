@@ -14,4 +14,4 @@ COPY . .
 EXPOSE 8081 19000 19001 19002
 
 # Comando para iniciar o Expo
-CMD ["npx", "expo", "start", "--tunnel", "--non-interactive"]
+CMD ["npx", "expo", "start"]

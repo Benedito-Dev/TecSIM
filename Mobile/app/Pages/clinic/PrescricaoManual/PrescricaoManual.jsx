@@ -11,17 +11,27 @@ import {
   SafeAreaView,
 } from "react-native";
 import { ThemeContext } from "../../../context/ThemeContext";
+import { useElderMode } from "../../../context/ElderModeContext";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrescriptionFormStyles } from "./styles";
+import { useScale } from "../../../utils/scale";
 import { ArrowLeft, Plus, Trash2, Pill, Calendar } from "lucide-react-native";
 import PrescriptionSummaryModal from "../../../components/PrescriptionSummaryModal";
+
+import { useAuth } from "../../../context/AuthContext";
+import PrescriptionSummaryModal from "../../../components/PrescriptionSummaryModal";
+import MedicamentoAutocomplete from "../../../components/MedicamentoAutocomplete";
+import { createPrescricao } from "../../../services/prescricaoService";
 
 export default function PrescricaoManualScreen() {
   const navigation = useNavigation();
   const { theme } = useContext(ThemeContext);
-  const styles = getPrescriptionFormStyles(theme);
+  const { fontSize } = useElderMode();
+  const { scaleIcon } = useScale(fontSize);
+  const { user } = useAuth();
+  const styles = getPrescriptionFormStyles(theme, fontSize);
 
   const [showDatePicker, setShowDatePicker] = useState(null);
   const [openDropdownId, setOpenDropdownId] = useState(null);
@@ -40,10 +50,16 @@ export default function PrescricaoManualScreen() {
     const novoMedicamento = {
       id: Math.random().toString(36).substr(2, 9),
       nome: "",
+      id_medicamento: "",
       dosagem: "",
       frequencia: "",
       duracao_dias: "",
+<<<<<<< HEAD
       via: "",
+=======
+      via: "oral",
+      horarios: "",
+>>>>>>> sprint-4
     };
 
     setForm((prev) => ({
@@ -88,6 +104,15 @@ export default function PrescricaoManualScreen() {
     }));
   };
 
+  const handleMedicamentoSelect = (medId, id_medicamento, nome) => {
+    setForm((prev) => ({
+      ...prev,
+      medicamentos: prev.medicamentos.map((med) =>
+        med.id === medId ? { ...med, nome, id_medicamento } : med
+      ),
+    }));
+  };
+
   const handleSubmit = () => {
     if (!form.crm.trim()) {
       Alert.alert("Campo obrigatório", "Por favor, informe o número do CRM");
@@ -105,12 +130,28 @@ export default function PrescricaoManualScreen() {
     }
 
     for (const med of form.medicamentos) {
+      if (!med.id_medicamento) {
+        Alert.alert(
+          "Medicamento inválido",
+          `O medicamento "${med.nome}" não foi selecionado da lista. Por favor, use a busca para selecionar um medicamento válido.`
+        );
+        return;
+      }
+
       if (
+<<<<<<< HEAD
         !med.nome.trim() ||
         !med.dosagem.trim() ||
         !med.frequencia.trim() ||
         !med.duracao_dias.trim() ||
         !med.via.trim()
+=======
+        !med.dosagem.trim() ||
+        !med.frequencia.trim() ||
+        !med.duracao_dias.trim() ||
+        !med.via.trim() ||
+        !med.horarios.trim()
+>>>>>>> sprint-4
       ) {
         Alert.alert("Dados incompletos", "Preencha todos os campos obrigatórios dos medicamentos");
         return;
@@ -120,9 +161,38 @@ export default function PrescricaoManualScreen() {
     setShowSummary(true);
   };
 
+<<<<<<< HEAD
   const handleSavePrescription = () => {
     setShowSummary(false);
     console.log("Prescrição salva:", form);
+=======
+  const formatDataForBackend = (formData) => {
+    return {
+      id_paciente: user.id,
+      crm: formData.crm,
+      diagnostico: formData.diagnostico,
+      observacoes: formData.observacoes,
+      data_prescricao: formData.data_prescricao.toISOString().split("T")[0],
+      medicamentos: formData.medicamentos.map((med) => ({
+        id_medicamento: parseInt(med.id_medicamento),
+        dosagem: med.dosagem,
+        frequencia: med.frequencia,
+        duracao_dias: parseInt(med.duracao_dias),
+        via: med.via.toLowerCase(),
+        horarios: med.horarios,
+      })),
+    };
+  };
+
+  const handleSavePrescription = async () => {
+    const formattedData = formatDataForBackend(form);
+    console.log("Prescrição formatada:", formattedData);
+
+    const resultado = await createPrescricao(formattedData);
+    console.log(resultado);
+
+    setShowSummary(false);
+>>>>>>> sprint-4
     Alert.alert("Sucesso", "Prescrição salva com sucesso", [
       { text: "OK", onPress: () => navigation.navigate("Prescricao") },
     ]);
@@ -136,14 +206,23 @@ export default function PrescricaoManualScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+<<<<<<< HEAD
             <ArrowLeft size={24} color={theme.primary} />
+=======
+            <ArrowLeft size={scaleIcon(24)} color={theme.primary} />
+>>>>>>> sprint-4
           </TouchableOpacity>
           <Text style={styles.title}>Nova Prescrição</Text>
           <View style={styles.headerRight} />
         </View>
 
+<<<<<<< HEAD
         <ScrollView 
           contentContainerStyle={styles.scrollContainer} 
+=======
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+>>>>>>> sprint-4
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.formSection}>
@@ -178,21 +257,40 @@ export default function PrescricaoManualScreen() {
             <View style={styles.dateRow}>
               <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
                 <Text style={styles.label}>Data da Prescrição</Text>
+<<<<<<< HEAD
                 <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker('data')}>
                   <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
                   <Calendar size={18} color={theme.iconSecondary} />
+=======
+                <TouchableOpacity
+                  style={styles.dateInput}
+                  onPress={() => setShowDatePicker("data")}
+                >
+                  <Text style={styles.dateText}>{formatDate(form.data_prescricao)}</Text>
+                  <Calendar size={scaleIcon(18)} color={theme.iconSecondary} />
+>>>>>>> sprint-4
                 </TouchableOpacity>
               </View>
 
               <View style={[styles.inputGroup, { flex: 1 }]}>
                 <Text style={styles.label}>Validade</Text>
+<<<<<<< HEAD
                 <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker('validade')}>
                   <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
                   <Calendar size={18} color={theme.iconSecondary} />
+=======
+                <TouchableOpacity
+                  style={styles.dateInput}
+                  onPress={() => setShowDatePicker("validade")}
+                >
+                  <Text style={styles.dateText}>{formatDate(form.validade)}</Text>
+                  <Calendar size={scaleIcon(18)} color={theme.iconSecondary} />
+>>>>>>> sprint-4
                 </TouchableOpacity>
               </View>
             </View>
 
+<<<<<<< HEAD
             {(showDatePicker === 'data' || showDatePicker === 'validade') && (
               <DateTimePicker
                 value={showDatePicker === 'data' ? form.data_prescricao : form.validade}
@@ -211,6 +309,23 @@ export default function PrescricaoManualScreen() {
                         setForm(prev => ({ ...prev, validade: novaValidade }));
                         
                         // Mostra alerta informativo
+=======
+            {(showDatePicker === "data" || showDatePicker === "validade") && (
+              <DateTimePicker
+                value={showDatePicker === "data" ? form.data_prescricao : form.validade}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                onChange={(event, date) => {
+                  if (event.type === "set" && date) {
+                    if (showDatePicker === "data") {
+                      setForm({ ...form, data_prescricao: date });
+
+                      if (form.validade < date) {
+                        const novaValidade = new Date(date);
+                        novaValidade.setDate(date.getDate() + 1);
+                        setForm((prev) => ({ ...prev, validade: novaValidade }));
+
+>>>>>>> sprint-4
                         setTimeout(() => {
                           Alert.alert(
                             "Validade ajustada",
@@ -219,8 +334,12 @@ export default function PrescricaoManualScreen() {
                           );
                         }, 100);
                       }
+<<<<<<< HEAD
                     } else if (showDatePicker === 'validade') {
                       // Valida se a data de validade não é anterior à data de prescrição
+=======
+                    } else if (showDatePicker === "validade") {
+>>>>>>> sprint-4
                       if (date < form.data_prescricao) {
                         Alert.alert(
                           "Data inválida",
@@ -229,14 +348,27 @@ export default function PrescricaoManualScreen() {
                         );
                         return;
                       }
+<<<<<<< HEAD
                       
+=======
+
+>>>>>>> sprint-4
                       setForm({ ...form, validade: date });
                     }
                   }
                   setShowDatePicker(null);
                 }}
+<<<<<<< HEAD
                 minimumDate={showDatePicker === 'validade' ? form.data_prescricao : new Date()}
                 maximumDate={showDatePicker === 'validade' ? new Date(new Date().setFullYear(new Date().getFullYear() + 5)) : undefined}
+=======
+                minimumDate={showDatePicker === "validade" ? form.data_prescricao : new Date()}
+                maximumDate={
+                  showDatePicker === "validade"
+                    ? new Date(new Date().setFullYear(new Date().getFullYear() + 5))
+                    : undefined
+                }
+>>>>>>> sprint-4
               />
             )}
           </View>
@@ -245,14 +377,22 @@ export default function PrescricaoManualScreen() {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Medicamentos Prescritos</Text>
               <TouchableOpacity style={styles.addButton} onPress={handleAddMedicamento}>
+<<<<<<< HEAD
                 <Plus size={20} color={theme.textOnPrimary} />
+=======
+                <Plus size={scaleIcon(20)} color={theme.textOnPrimary} />
+>>>>>>> sprint-4
                 <Text style={styles.addButtonText}>Adicionar</Text>
               </TouchableOpacity>
             </View>
 
             {form.medicamentos.length === 0 ? (
               <View style={styles.emptyState}>
+<<<<<<< HEAD
                 <Pill size={40} color={theme.iconSecondary} />
+=======
+                <Pill size={scaleIcon(40)} color={theme.iconSecondary} />
+>>>>>>> sprint-4
                 <Text style={styles.emptyText}>Nenhum medicamento adicionado</Text>
               </View>
             ) : (
@@ -263,19 +403,36 @@ export default function PrescricaoManualScreen() {
                       <Text style={styles.medNumberText}>{index + 1}</Text>
                     </View>
                     <Text style={styles.medicamentoTitle}>Medicamento</Text>
+<<<<<<< HEAD
                     <TouchableOpacity style={styles.deleteButton} onPress={() => handleRemoveMedicamento(med.id)}>
                       <Trash2 size={20} color={theme.error} />
+=======
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => handleRemoveMedicamento(med.id)}
+                    >
+                      <Trash2 size={scaleIcon(20)} color={theme.error} />
+>>>>>>> sprint-4
                     </TouchableOpacity>
                   </View>
 
                   <View style={styles.inputGroup}>
                     <Text style={styles.label}>Nome do Medicamento*</Text>
-                    <TextInput
-                      style={styles.input}
+                    <MedicamentoAutocomplete
                       value={med.nome}
+<<<<<<< HEAD
                       onChangeText={(text) => handleMedicamentoChange(med.id, "nome", text)}
                       placeholder="Ex: Losartana"
                       placeholderTextColor={theme.placeholder}
+=======
+                      onSelect={(id_medicamento, nome) =>
+                        handleMedicamentoSelect(med.id, id_medicamento, nome)
+                      }
+                      theme={theme}
+                      fontSize={fontSize}
+                      scaleIcon={scaleIcon}
+                      placeholder="Busque pelo nome do medicamento"
+>>>>>>> sprint-4
                     />
                   </View>
 
@@ -285,12 +442,15 @@ export default function PrescricaoManualScreen() {
                       <TextInput
                         style={styles.input}
                         value={med.dosagem}
-                        onChangeText={(text) => handleMedicamentoChange(med.id, "dosagem", text)}
+                        onChangeText={(text) =>
+                          handleMedicamentoChange(med.id, "dosagem", text)
+                        }
                         placeholder="Ex: 50mg"
                         placeholderTextColor={theme.placeholder}
                       />
                     </View>
 
+<<<<<<< HEAD
                     <View style={[styles.inputGroup, { flex: 1, zIndex: openDropdownId === med.id ? 1000 : 1 }]}>
                       <Text style={styles.label}>Via de Administração</Text>
                       <View style={styles.pickerWrapper}>
@@ -327,6 +487,42 @@ export default function PrescricaoManualScreen() {
                           zIndexInverse={1000}
                         />
                       </View>
+=======
+                    <View
+                      style={[
+                        styles.inputGroup,
+                        { flex: 1, zIndex: openDropdownId === med.id ? 1000 : 1 },
+                      ]}
+                    >
+                      <Text style={styles.label}>Via de Administração</Text>
+                      <DropDownPicker
+                        open={openDropdownId === med.id}
+                        value={med.via || null}
+                        items={[
+                          { label: "Oral", value: "oral" },
+                          { label: "Tópica", value: "tópica" },
+                          { label: "Inalatória", value: "inalatória" },
+                          { label: "Subcutânea", value: "subcutânea" },
+                          { label: "Intravenosa", value: "intravenosa" },
+                          { label: "Intramuscular", value: "intramuscular" },
+                        ]}
+                        setOpen={(open) => setOpenDropdownId(open ? med.id : null)}
+                        setValue={(callback) => {
+                          const value = callback(med.via);
+                          handleMedicamentoChange(med.id, "via", value);
+                        }}
+                        onClose={() => setOpenDropdownId(null)}
+                        placeholder="Selecione..."
+                        style={styles.dropdown}
+                        dropDownContainerStyle={styles.dropDownContainer}
+                        textStyle={styles.dropdownTextStyle}
+                        listItemContainerStyle={styles.listItemContainer}
+                        listMode="SCROLLVIEW"
+                        dropDownDirection="BOTTOM"
+                        zIndex={openDropdownId === med.id ? 1000 : 1}
+                        zIndexInverse={1000}
+                      />
+>>>>>>> sprint-4
                     </View>
                   </View>
 
@@ -336,8 +532,15 @@ export default function PrescricaoManualScreen() {
                       <TextInput
                         style={styles.input}
                         value={med.frequencia}
+<<<<<<< HEAD
                         onChangeText={(text) => handleMedicamentoChange(med.id, "frequencia", text)}
                         placeholder="Ex: 1x ao dia"
+=======
+                        onChangeText={(text) =>
+                          handleMedicamentoChange(med.id, "frequencia", text)
+                        }
+                        placeholder="Ex: 8/8h"
+>>>>>>> sprint-4
                         placeholderTextColor={theme.placeholder}
                       />
                     </View>
@@ -347,12 +550,31 @@ export default function PrescricaoManualScreen() {
                       <TextInput
                         style={styles.input}
                         value={med.duracao_dias}
-                        onChangeText={(text) => handleMedicamentoChange(med.id, "duracao_dias", text)}
+                        onChangeText={(text) =>
+                          handleMedicamentoChange(med.id, "duracao_dias", text)
+                        }
                         keyboardType="numeric"
+<<<<<<< HEAD
                         placeholder="Ex: 30"
+=======
+                        placeholder="Ex: 7"
+>>>>>>> sprint-4
                         placeholderTextColor={theme.placeholder}
                       />
                     </View>
+                  </View>
+
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Horários*</Text>
+                    <TextInput
+                      style={styles.input}
+                      value={med.horarios}
+                      onChangeText={(text) =>
+                        handleMedicamentoChange(med.id, "horarios", text)
+                      }
+                      placeholder="Ex: 08h, 16h, 00h"
+                      placeholderTextColor={theme.placeholder}
+                    />
                   </View>
                 </View>
               ))
@@ -362,7 +584,10 @@ export default function PrescricaoManualScreen() {
           <View style={styles.formSection}>
             <Text style={styles.sectionTitle}>Observações</Text>
             <View style={styles.inputGroup}>
+<<<<<<< HEAD
               <Text style={styles.label}>Observações</Text>
+=======
+>>>>>>> sprint-4
               <TextInput
                 style={[styles.input, { height: 100, textAlignVertical: "top" }]}
                 value={form.observacoes}
@@ -375,7 +600,15 @@ export default function PrescricaoManualScreen() {
           </View>
         </ScrollView>
 
+<<<<<<< HEAD
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} activeOpacity={0.8}>
+=======
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleSubmit}
+          activeOpacity={0.8}
+        >
+>>>>>>> sprint-4
           <Text style={styles.submitButtonText}>Salvar Prescrição</Text>
         </TouchableOpacity>
 

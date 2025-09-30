@@ -8,15 +8,82 @@ import {
   ScrollView, 
   Platform,
   ActivityIndicator,
-  Alert 
+  Alert,
+  Animated
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../../context/AuthContext';
 import { ThemeContext } from '../../../context/ThemeContext';
-import { getAIResponse, listAvailableModels } from '../../../services/aiService';
+import { useElderMode } from "../../../context/ElderModeContext"; // ✅ usa o hook
+import { getAIResponse } from '../../../services/aiService';
 import { getChatStyles } from './styles';
+import { useScale } from '../../../utils/scale'; // ✅ Hook global para escalonamento
+import QuickActionButtons from '../../../components/QuickActionButtons'; // Importação do novo componente
 
+// Componente para os pontos animados
+const BouncingDots = ({ color = '#00c4cd' }) => {
+  const [animations] = useState([
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0)
+  ]);
+
+  useEffect(() => {
+    const animateDots = () => {
+      const timing = (dotIndex, delay) => {
+        return Animated.sequence([
+          Animated.delay(delay),
+          Animated.loop(
+            Animated.sequence([
+              Animated.timing(animations[dotIndex], {
+                toValue: -8,
+                duration: 300,
+                useNativeDriver: true,
+              }),
+              Animated.timing(animations[dotIndex], {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+              }),
+              Animated.delay(400),
+            ])
+          )
+        ]);
+      };
+
+      Animated.parallel([
+        timing(0, 0),
+        timing(1, 150),
+        timing(2, 300),
+      ]).start();
+    };
+
+    animateDots();
+    
+    return () => {
+      animations.forEach(anim => anim.stopAnimation());
+    };
+  }, []);
+
+  return (
+    <View style={{ flexDirection: 'row', padding: 10 }}>
+      {animations.map((anim, index) => (
+        <Animated.Text
+          key={index}
+          style={{
+            fontSize: 24,
+            color,
+            transform: [{ translateY: anim }],
+            marginHorizontal: 2,
+          }}
+        >
+          •
+        </Animated.Text>
+      ))}
+    </View>
+  );
+};
 
 export default function ChatScreen() {
   const { user } = useAuth();
@@ -25,6 +92,9 @@ export default function ChatScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollViewRef = useRef();
   const inputRef = useRef(null);
+
+  const { fontSize, fontIndex, increaseFont, decreaseFont } = useElderMode(); // ✅ acessa os valores do contexto
+  const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
 
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString('pt-BR', { 
@@ -35,7 +105,7 @@ export default function ChatScreen() {
   };
 
   const { theme } = useContext(ThemeContext)
-  const styles = getChatStyles(theme)
+  const styles = getChatStyles(theme, fontSize);
 
   useEffect(() => {
     const initialMessages = [
@@ -108,6 +178,15 @@ export default function ChatScreen() {
     }
   };
 
+  // Função para lidar com o pressionar dos botões de ação rápida
+  const handleQuickActionPress = (message) => {
+    setNewMessage(message);
+    // Dispara o envio da mensagem após um pequeno delay
+    setTimeout(() => {
+      handleSendMessage();
+    }, 100);
+  };
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -160,10 +239,16 @@ export default function ChatScreen() {
         
         {isLoading && (
           <View style={[styles.messageBubble, styles.botMessage]}>
-            <ActivityIndicator size="small" color="#00c4cd" />
+            <BouncingDots color={theme.primary} />
           </View>
         )}
       </ScrollView>
+
+      {/* Adicione o componente de botões rápidos */}
+      <QuickActionButtons 
+        onButtonPress={handleQuickActionPress} 
+        isLoading={isLoading} 
+      />
 
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -193,7 +278,7 @@ export default function ChatScreen() {
           {isLoading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <Icon name="send" size={20} color="#fff" />
+            <Icon name="send" size={scaleIcon(20)} color="#fff" />
           )}
         </TouchableOpacity>
       </KeyboardAvoidingView>
