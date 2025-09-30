@@ -6,20 +6,25 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { useAuth } from '../../../../context/AuthContext';
 import { ThemeContext } from '../../../../context/ThemeContext';
+import { useElderMode } from "../../../../context/ElderModeContext"; // ✅ usa o hook
 import { updatePaciente, getPacienteById, uploadFotoPaciente } from '../../../../services/userService';
-import { IP_HOST } from '@env';
 
 import InputField from '../../../../components/Register/InputField';
 import CpfInput from '../../../../components/Register/CpfInput';
+import EmailInput from '../../../../components/Register/EmailInput';
 import DateInput from '../../../../components/Register/DataInput';
 import PesoInput from '../../../../components/Register/PesoInput';
 import GenderInput from '../../../../components/Register/InputGender';
+import { useScale } from '../../../../utils/scale'; // ✅ Hook global para escalonamento
 import { getProfileEditStyles } from './styles';
 
 export default function EditProfileScreen() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const { user, atualizarUsuario } = useAuth();
+
+  const { fontSize } = useElderMode(); // ✅ acessa os valores do contexto
+  const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
 
   const userId = user.id;
 
@@ -44,7 +49,7 @@ export default function EditProfileScreen() {
   const [novaImagem, setNovaImagem] = useState(null);
 
   const { theme } = useContext(ThemeContext);
-  const styles = getProfileEditStyles(theme);
+  const styles = getProfileEditStyles(theme, fontSize);
 
   useEffect(() => {
     const carregarPaciente = async () => {
@@ -55,7 +60,7 @@ export default function EditProfileScreen() {
         setCurrentDataNascimento(data.data_nascimento?.split('T')[0] || '');
         setCurrentPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
-        setFotoPerfil(data.foto_perfil ? `http://${IP_HOST}:3000${data.foto_perfil}` : null);
+        setFotoPerfil(data.foto_perfil ? `http://10.0.30.116:3000${data.foto_perfil}` : null);
         setCurrentCpf(data.cpf || '');
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);
@@ -171,7 +176,7 @@ export default function EditProfileScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color={theme.primary} />
+          <ArrowLeft size={scaleIcon(24)} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>Editar Perfil</Text>
         <View style={{ width: 24 }} />
@@ -199,36 +204,82 @@ export default function EditProfileScreen() {
         <CpfInput 
           value={cpf} 
           onChangeText={setCpf} 
-          placeholder={currentCpf || "Digite seu CPF"} 
+          placeholder={currentCpf || "Digite seu CPF"}
+          fontSize={fontSize}
+          scaleIcon={scaleIcon} 
         />
         <InputField 
           label="Nome" 
           value={nome} 
           onChangeText={setNome} 
           placeholder={currentNome || "Digite seu nome"} 
-          iconName="user" 
+          iconName="user"
+          fontSize={fontSize}
+          scaleIcon={scaleIcon} 
         />
-        <InputField 
+        <EmailInput 
           label="Email" 
           value={email} 
           onChangeText={setEmail} 
           placeholder={currentEmail || "Digite seu email"} 
           keyboardType="email-address" 
-          iconName="mail" 
+          iconName="mail"
+          fontSize={fontSize}
+          scaleIcon={scaleIcon} 
         />
         <DateInput 
           value={dataNascimento} 
           onChange={setDataNascimento} 
-          placeholder={currentDataNascimento || "Selecione a data de nascimento"} 
+          placeholder={currentDataNascimento || "Selecione a data de nascimento"}
+          fontSize={fontSize}
+          scaleIcon={scaleIcon} 
         />
         <PesoInput 
           value={peso} 
           onChangeText={setPeso} 
-          placeholder={currentPeso || "Digite seu peso"} 
+          placeholder={currentPeso || "Digite seu peso"}
+          fontSize={fontSize}
+          scaleIcon={scaleIcon} 
         />
         <GenderInput 
           value={genero} 
           onChange={setGenero}
+          fontSize={fontSize}
+        />
+        {/* Resumo de saude */}
+        {/*adicionar titulo centralizado "Resumo de Saúde" com uma linha de cada lado */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
+          <View style={{ flex: 1, height: 1, backgroundColor: theme.border }} />
+          <Text style={{ marginHorizontal: 10, color: theme.textPrimary, fontWeight: 'bold', fontSize: fontSize }}>Resumo de Saúde</Text>
+          <View style={{ flex: 1, height: 1, backgroundColor: theme.border }} />
+        </View>
+
+        <InputField 
+          label="Alergias"
+          value={''}
+          onChangeText={() => {}}
+          placeholder={"Ex: medicamentos, alimentos, etc."}
+          iconName="alert-circle"
+          fontSize={fontSize}
+          scaleIcon={scaleIcon}
+        />
+        <InputField 
+          label="Condições Médicas"
+          value={''}
+          onChangeText={() => {}}
+          placeholder={"Ex: diabetes, hipertensão etc."}
+          iconName="heart"
+          fontSize={fontSize}
+          scaleIcon={scaleIcon}
+        />
+        <InputField 
+          label="Medicações"
+          value={''}
+          onChangeText={() => {}}
+          placeholder={"Ex: aspirina, insulina etc."}
+          iconName="pill"
+          fontSize={fontSize}
+          scaleIcon={scaleIcon}
         />
       </View>
 
