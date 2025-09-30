@@ -1,44 +1,41 @@
 import React, { useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import AppNavigator from './navigation/AppNavigator';
-import { setupNotifications } from './services/notifications';
+import { setupNotifications, testWaterNotification } from './services/notifications';
 
 export default function App() {
   useEffect(() => {
-    // Inicializar notificações quando o app abrir
+    // Inicializar notificações ao abrir o app
     const initializeNotifications = async () => {
       try {
-        console.log('💧 Inicializando lembretes de água...');
+        console.log('💧 Inicializando notificações...');
         const token = await setupNotifications();
-        
+
         if (token) {
-          console.log('✅ Lembretes de água ativados!');
+          console.log('✅ Notificações ativadas! FCM Token:', token);
         } else {
-          console.log('⚠️ Lembretes não ativados');
+          console.log('⚠️ Notificações não ativadas');
         }
       } catch (error) {
-        console.error('❌ Erro nos lembretes:', error);
+        console.error('❌ Erro ao inicializar notificações:', error);
       }
     };
 
     initializeNotifications();
 
-    // 🔥 TESTE: Notificação em 3 segundos (REMOVA DEPOIS DO TESTE)
-    setTimeout(async () => {
+    // 🔥 Teste rápido: disparar notificação local em 3 segundos
+    const testTimeout = setTimeout(async () => {
       try {
-        console.log('🧪 Testando notificação em 3 segundos...');
-        const { testWaterNotification } = await import('./services/notifications');
+        console.log('🧪 Enviando notificação de teste...');
         const success = await testWaterNotification();
-        
-        if (success) {
-          console.log('✅ Teste de notificação enviado!');
-        } else {
-          console.log('❌ Teste de notificação falhou');
-        }
+        console.log(success ? '✅ Notificação de teste enviada!' : '❌ Falha no teste');
       } catch (error) {
-        console.error('❌ Erro no teste:', error);
+        console.error('❌ Erro no teste de notificação:', error);
       }
-    }, 3000); // ⏰ 3 segundos
+    }, 3000);
+
+    // Cleanup caso o componente desmonte
+    return () => clearTimeout(testTimeout);
 
   }, []);
 

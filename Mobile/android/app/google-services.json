@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1019090638745",
+    "project_id": "tecsim-109a8",
+    "storage_bucket": "tecsim-109a8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019090638745:android:2bc1c2ac5d0e1cd6f9a508",
+        "android_client_info": {
+          "package_name": "com.seunome.tecsim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhWedNo-Qf4-fMF-9d4zWEWqyLdDR2dUQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
