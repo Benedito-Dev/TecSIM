@@ -15,6 +15,9 @@ export default function WelcomeScreen({ navigation }) {
       <View style={styles.content}>
         <ProfessionalHeader />
 
+        <Text style={styles.title}>Acesso Profissional - TecSIM</Text>
+        <Text style={styles.subtitle}>Painel de atendimento médico</Text>
+
         <PrimaryButton
           title="Login"
           onPress={() => navigation.navigate('Login')}

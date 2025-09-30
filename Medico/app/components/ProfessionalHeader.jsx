@@ -1,15 +1,19 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window'); // largura da tela
 
 export default function ProfessionalHeader() {
+  // Define o tamanho da logo como 30% da largura da tela (pode ajustar)
+  const logoSize = width * 0.3;
+
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/images/Profile/logo.png')}
-        style={styles.logo}
+        source={require('../assets/images/logo.png')}
+        style={[styles.logo, { width: logoSize, height: logoSize }]}
+        resizeMode="contain"
       />
-      <Text style={styles.title}>Acesso Profissional - TecSIM</Text>
-      <Text style={styles.subtitle}>Painel de atendimento médico</Text>
     </View>
   );
 }
@@ -17,27 +21,16 @@ export default function ProfessionalHeader() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: -100,
-    marginBottom: 20,
+    marginTop: -width * 0.25, // margin proporcional à largura da tela
+    marginBottom: width * 0.04,
     backgroundColor: '#fff',
-    padding: 15,
+    padding: width * 0.03,
     borderRadius: 20,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 18,
-    color: '#222',
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#555',
-    textAlign: 'center',
+    marginBottom: -10,
   },
 });

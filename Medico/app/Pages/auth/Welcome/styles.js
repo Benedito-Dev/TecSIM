@@ -12,4 +12,15 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 20,
   },
+  title: {
+    fontSize: 18,
+    color: '#222',
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#555',
+    textAlign: 'center',
+  },
 });

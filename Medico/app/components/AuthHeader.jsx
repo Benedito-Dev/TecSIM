@@ -7,7 +7,7 @@ export default function AuthHeader() {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../assets/images/AuthWelcome/Image-Background.png')}
+        source={require('../assets/images/AuthWelcome/"Image-Background".png')}
         style={styles.image}
         resizeMode="cover"
       />
