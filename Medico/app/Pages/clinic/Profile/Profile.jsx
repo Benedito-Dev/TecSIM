@@ -2,17 +2,22 @@ import React, { useState, useCallback, useContext } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator, Platform } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../../context/ThemeContext';
+import { useElderMode } from "../../../context/ElderModeContext";
 import { getProfileStyles } from './styles';
+import { useScale } from '../../../utils/scale';
 
 import { useAuth } from '../../../context/AuthContext';
 import { logout as logoutService } from '../../../services/auth/authService';
 import { getPacienteById } from '../../../services/userService';
+import { IP_HOST } from '@env';
 
 import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings, Moon, Sun } from 'lucide-react-native';
 import SwitchTheme from '../../../components/SwitchTeme';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const { fontSize } = useElderMode();
+  const { scaleIcon } = useScale(fontSize);
   const { user, Logout } = useAuth();
 
   const [paciente, setPaciente] = useState(null);
@@ -21,7 +26,7 @@ export default function ProfileScreen() {
 
   const { theme, toggleTheme, mode } = useContext(ThemeContext)
 
-  const styles = getProfileStyles(theme)
+  const styles = getProfileStyles(theme, fontSize);
 
   useFocusEffect(
     useCallback(() => {
@@ -34,7 +39,8 @@ export default function ProfileScreen() {
           setPaciente(data);
 
           if (data.foto_perfil) {
-            setFotoPerfil(`http://10.0.30.116:3000${data.foto_perfil}?t=${Date.now()}`);
+            setFotoPerfil(`http://${IP_HOST}:3000${data.foto_perfil}?t=${Date.now()}`);
+
           } else {
             setFotoPerfil(null);
           }
@@ -114,7 +120,7 @@ export default function ProfileScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('App', { screen: 'Dashboard' })}>
-          <ArrowLeft size={24} color={theme.primary} />
+          <ArrowLeft size={scaleIcon(24)} color={theme.primary} />
         </TouchableOpacity>
         <Text style={styles.title}>TecSIM</Text>
         <SwitchTheme 
@@ -158,7 +164,7 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Interações com o Chatbot</Text>
         <TouchableOpacity style={styles.chatItem}>
-          <MessageCircle size={20} color="#0c87c4" />
+          <MessageCircle size={scaleIcon(20)} color="#0c87c4" />
           <View style={styles.chatText}>
             <Text style={styles.chatTitle}>Receitas de Baixo Risco</Text>
             <Text style={styles.chatDate}>15/03/2024</Text>
@@ -166,7 +172,7 @@ export default function ProfileScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.chatItem}>
-          <MessageCircle size={20} color="#0c87c4" />
+          <MessageCircle size={scaleIcon(20)} color="#0c87c4" />
           <View style={styles.chatText}>
             <Text style={styles.chatTitle}>Tratamentos Naturais</Text>
             <Text style={styles.chatDate}>20/02/2024</Text>
@@ -178,33 +184,33 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Configurações</Text>
 
-        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}>
-        <Settings size={20} color="#0c87c4"></Settings>
+        <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'Ajustes' })}>
+        <Settings size={scaleIcon(20)} color="#0c87c4"></Settings>
           <Text style={styles.configText}>Ajustes</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}>
-          <Edit3 size={20} color="#0c87c4" />
+          <Edit3 size={scaleIcon(20)} color="#0c87c4" />
           <Text style={styles.configText}>Editar Perfil</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.configItem}>
-          <Bell size={20} color="#0c87c4" />
+          <Bell size={scaleIcon(20)} color="#0c87c4" />
           <Text style={styles.configText}>Notificações</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'Privacy' })} >
-          <Shield size={20} color="#0c87c4" />
+          <Shield size={scaleIcon(20)} color="#0c87c4" />
           <Text style={styles.configText}>Privacidade</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.configItem} onPress={() => navigation.navigate('Profile', { screen: 'Help' })}>
-          <HelpCircle size={20} color="#0c87c4" />
+          <HelpCircle size={scaleIcon(20)} color="#0c87c4" />
           <Text style={styles.configText}>Ajuda</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.configItem} onPress={handleLogout}>
-          <LogOut size={20} color="red" />
+          <LogOut size={scaleIcon(20)} color="red" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>

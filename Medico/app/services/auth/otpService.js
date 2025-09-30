@@ -8,7 +8,6 @@ import api from '../../api/api';
 export const requestOtp = async (email) => {
   try {
     const response = await api.post('/auth/request-otp', { email });
-    console.log('Resposta do requestOtp:', response.data);
 
     return {
       email: response.data.data.email,

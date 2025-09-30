@@ -1,4 +1,8 @@
 import api from '../api/api';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { Platform } from "react-native";
+import { IP_HOST } from '@env';
 
 // 🟢 [GET] Lista todas as prescrições
 export const getPrescricoes = async () => {
@@ -50,7 +54,6 @@ export const createPrescricao = async (prescricaoData) => {
     const response = await api.post('/prescricoes', prescricaoData);
     return response.data;
   } catch (error) {
-    // Tratamento de erro mais específico
     if (error.response) {
       const errorMsg = error.response.data.error || 'Erro ao criar prescrição';
       console.error('Erro detalhado:', errorMsg);
@@ -85,35 +88,44 @@ export const deletePrescricao = async (id) => {
   }
 };
 
-// 🟣 [GET] Busca medicamentos de uma prescrição
-export const getMedicamentosPrescricao = async (id_prescricao) => {
+// 📄 [GET] Download do PDF da prescrição
+export const downloadPrescricao = async (id) => {
   try {
-    const response = await api.get(`/prescricoes/${id_prescricao}/medicamentos`);
-    return response.data;
-  } catch (error) {
-    console.error(`Erro ao buscar medicamentos da prescrição ${id_prescricao}:`, error.message);
-    throw error;
-  }
-};
+    // Versão Web
+    if (Platform.OS === "web") {
+      // 🌐 Web: cria um link temporário e dispara o download
+      const response = await fetch(`http://${IP_HOST}:3000/prescricoes/${id}/download`);
+      const blob = await response.blob();
 
-// 🟣 [POST] Adiciona medicamento a uma prescrição
-export const addMedicamentoPrescricao = async (id_prescricao, medicamentoData) => {
-  try {
-    const response = await api.post(`/prescricoes/${id_prescricao}/medicamentos`, medicamentoData);
-    return response.data;
-  } catch (error) {
-    console.error(`Erro ao adicionar medicamento à prescrição ${id_prescricao}:`, error.message);
-    throw error;
-  }
-};
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `prescricao_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
 
-// 🟣 [DELETE] Remove medicamento de uma prescrição
-export const removeMedicamentoPrescricao = async (id_prescricao, id_medicamento) => {
-  try {
-    const response = await api.delete(`/prescricoes/${id_prescricao}/medicamentos/${id_medicamento}`);
-    return response.data;
+      console.log("PDF baixado no navegador");
+      return `prescricao_${id}.pdf`;
+    } else { // Versão mobile
+      // 📱 Mobile: usa FileSystem + Sharing
+      const fileUri = `${FileSystem.documentDirectory}prescricao_${id}.pdf`;
+      const downloadResult = await FileSystem.downloadAsync(
+        `http://${IP_HOST}:3000/prescricoes/${id}/download`,
+        fileUri
+      );
+
+      console.log("PDF salvo em:", downloadResult.uri);
+
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(downloadResult.uri);
+      }
+
+      return downloadResult.uri;
+    }
   } catch (error) {
-    console.error(`Erro ao remover medicamento ${id_medicamento} da prescrição ${id_prescricao}:`, error.message);
+    console.error(`Erro ao baixar PDF da prescrição ${id}:`, error);
     throw error;
   }
 };

@@ -1,35 +1,33 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text } from 'react-native';
+import AuthHeader from '../../../components/AuthHeader';
+import ProfessionalHeader from '../../../components/ProfessionalHeader';
+import PrimaryButton from '../../../components/PrimaryButton';
+import SecondaryButton from '../../../components/SecondaryButton';
 
 import { styles } from './styles';
 
 export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <View style={styles.Imagecontainer}>
-        <ImageBackground
-          source={require('../../../assets/images/AuthWelcome/Image-Background.png')}
-          style={styles.topImage}
-          resizeMode="cover"
-        />
-      </View>
+      <AuthHeader />
 
-      {/* Conteúdo principal */}
       <View style={styles.content}>
-        <Image
-          source={require('../../../assets/images/logo.png')}
-          style={styles.logo}
+        <ProfessionalHeader />
+
+        <PrimaryButton
+          title="Login"
+          onPress={() => navigation.navigate('Login')}
         />
-        <Text style={styles.subtitle}>assistente de saúde</Text>
-        <Text style={styles.subtitleBold}>inteligente</Text>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+        <SecondaryButton
+          title="Criar conta"
+          onPress={() => navigation.navigate('Register')}
+        />
 
-        <TouchableOpacity style={styles.buttonSecondary} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.buttonTextSecondary}>Criar conta</Text>
-        </TouchableOpacity>
+        <Text style={{ marginTop: 20, color: '#999', fontSize: 12 }}>
+          Acesso exclusivo para profissionais de saúde.
+        </Text>
       </View>
     </View>
   );

@@ -1,7 +1,12 @@
 import { StyleSheet } from 'react-native';
 
-export const getHelpStyles = (theme) =>
-  StyleSheet.create({
+export const getHelpStyles = (theme, baseFontSize = 16) => {
+  // Funções de escala baseadas no ElderMode
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
+
+  return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: theme.background,
@@ -10,108 +15,109 @@ export const getHelpStyles = (theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingTop: 50,
-      paddingBottom: 20,
-      paddingHorizontal: 20,
+      paddingTop: scaleSpacing(50),
+      paddingBottom: scaleSpacing(20),
+      paddingHorizontal: scaleSpacing(20),
       backgroundColor: theme.backgroundCard,
       borderBottomWidth: 0.3,
       borderBottomColor: theme.border,
     },
     headerTitle: {
-      fontSize: 18,
+      fontSize: scaleFont(18),
       fontWeight: 'bold',
       color: theme.textPrimary,
     },
     scrollContent: {
-      padding: 20,
+      padding: scaleSpacing(20),
     },
     section: {
-      marginBottom: 20,
+      marginBottom: scaleSpacing(20),
     },
     sectionTitle: {
-      fontSize: 20,
+      fontSize: scaleFont(20),
       fontWeight: 'bold',
       color: theme.primary,
-      marginBottom: 10,
+      marginBottom: scaleSpacing(10),
     },
     sectionDescription: {
-      fontSize: 14,
+      fontSize: scaleFont(14),
       color: theme.textSecondary,
-      marginBottom: 15,
+      marginBottom: scaleSpacing(15),
     },
     contactCard: {
       flexDirection: 'row',
       backgroundColor: theme.backgroundCard,
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 12,
+      borderRadius: scaleRadius(16),
+      padding: scaleSpacing(16),
+      marginBottom: scaleSpacing(12),
       alignItems: 'center',
       elevation: 2,
       shadowColor: theme.shadowColor,
       shadowOpacity: 0.06,
       shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
+      shadowRadius: scaleRadius(4),
     },
     iconContainer: {
-      marginRight: 15,
+      marginRight: scaleSpacing(15),
     },
     contactInfo: {
       flex: 1,
     },
     contactTitle: {
-      fontSize: 16,
+      fontSize: scaleFont(16),
       fontWeight: '700',
       color: theme.primary,
-      marginBottom: 4,
+      marginBottom: scaleSpacing(4),
     },
     contactDescription: {
-      fontSize: 14,
+      fontSize: scaleFont(14),
       color: theme.textSecondary,
     },
     contactText: {
-      marginTop: 4,
-      fontSize: 14,
+      marginTop: scaleSpacing(4),
+      fontSize: scaleFont(14),
       fontWeight: '600',
       color: theme.textPrimary,
     },
     faqItem: {
       backgroundColor: theme.backgroundCard,
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 12,
+      borderRadius: scaleRadius(16),
+      padding: scaleSpacing(16),
+      marginBottom: scaleSpacing(12),
       elevation: 2,
       shadowColor: theme.shadowColor,
       shadowOpacity: 0.06,
       shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
+      shadowRadius: scaleRadius(4),
     },
     faqQuestion: {
+      fontSize: scaleFont(15),
       fontWeight: '700',
       color: theme.primary,
-      marginBottom: 6,
-      fontSize: 15,
+      marginBottom: scaleSpacing(6),
     },
     faqAnswer: {
+      fontSize: scaleFont(14),
       color: theme.textSecondary,
-      fontSize: 14,
     },
     usefulLink: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 12,
+      paddingVertical: scaleSpacing(12),
     },
     usefulLinkText: {
-      marginLeft: 10,
-      fontSize: 16,
+      marginLeft: scaleSpacing(10),
+      fontSize: scaleFont(16),
       color: theme.primary,
       fontWeight: '600',
     },
     versionContainer: {
       alignItems: 'center',
-      paddingVertical: 20,
+      paddingVertical: scaleSpacing(20),
     },
     versionText: {
+      fontSize: scaleFont(13),
       color: theme.textMuted,
-      fontSize: 13,
     },
   });
+};
