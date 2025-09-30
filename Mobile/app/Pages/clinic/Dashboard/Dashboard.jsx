@@ -13,7 +13,7 @@ export default function DashboardScreen() {
   const navigation = useNavigation();
   const { user, loading } = useAuth();
   const { theme } = useContext(ThemeContext);
-  const { fontSize, fontIndex, increaseFont, decreaseFont } = useElderMode(); // ✅ acessa os valores do contexto
+  const { fontSize } = useElderMode(); // ✅ acessa os valores do contexto
   const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
 
   // Passa fontSize para o style

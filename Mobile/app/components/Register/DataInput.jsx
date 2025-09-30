@@ -20,10 +20,12 @@ export default function DateInput({
   placeholder = 'Selecione uma data',
   onValidityChange,
   theme: propTheme,
+  fontSize = 16,              // 🔹 controla fontes
+  scaleIcon = (size) => size, // 🔹 escala ícones
 }) {
   const contextTheme = useContext(ThemeContext).theme;
   const theme = propTheme || contextTheme;
-  const styles = createStyles(theme);
+  const styles = createStyles(theme, fontSize);
 
   const [showPicker, setShowPicker] = useState(false);
   const [tempDate, setTempDate] = useState(new Date());
@@ -38,16 +40,11 @@ export default function DateInput({
   }, [value]);
 
   useEffect(() => {
-    if (onValidityChange) {
-      onValidityChange(isValid);
-    }
+    if (onValidityChange) onValidityChange(isValid);
   }, [isValid]);
 
-  const formatDate = (date) => {
-    return date.getFullYear() + '-' +
-      String(date.getMonth() + 1).padStart(2, '0') + '-' +
-      String(date.getDate()).padStart(2, '0');
-  };
+  const formatDate = (date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
   const formatDateToBrazilian = (dateStr) => {
     if (!dateStr) return '';
@@ -58,10 +55,7 @@ export default function DateInput({
   const handleChange = (event, selectedDate) => {
     if (Platform.OS === 'android') {
       setShowPicker(false);
-      if (selectedDate) {
-        const formatted = formatDate(selectedDate);
-        onChange(formatted);
-      }
+      if (selectedDate) onChange(formatDate(selectedDate));
     } else {
       if (selectedDate) setTempDate(selectedDate);
     }
@@ -69,8 +63,7 @@ export default function DateInput({
 
   const handleConfirmIOS = () => {
     setShowPicker(false);
-    const formatted = formatDate(tempDate);
-    onChange(formatted);
+    onChange(formatDate(tempDate));
   };
 
   if (Platform.OS === 'web') {
@@ -81,7 +74,7 @@ export default function DateInput({
           type="date"
           style={[
             webStyles.inputContainer,
-            { borderColor: value ? (isValid ? theme.success : theme.error) : theme.border }
+            { borderColor: value ? (isValid ? theme.success : theme.error) : theme.border, fontSize }
           ]}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -95,16 +88,13 @@ export default function DateInput({
     <>
       <Text style={styles.label}>{label}</Text>
       <TouchableOpacity
-        style={[
-          styles.inputContainer,
-          { borderColor: value ? (isValid ? theme.success : theme.error) : theme.border }
-        ]}
+        style={[styles.inputContainer, { borderColor: value ? (isValid ? theme.success : theme.error) : theme.border }]}
         onPress={() => setShowPicker(true)}
       >
         <Text style={[styles.inputText, !value && { color: theme.placeholder }]}>
           {value ? formatDateToBrazilian(value) : placeholder}
         </Text>
-        <Icon name="calendar" size={20} color={theme.icon} />
+        <Icon name="calendar" size={scaleIcon(20)} color={theme.icon} />
       </TouchableOpacity>
 
       {Platform.OS === 'android' && showPicker && (
@@ -112,7 +102,7 @@ export default function DateInput({
           mode="date"
           display="default"
           value={value ? new Date(value) : new Date()}
-          locale="pt-BR" // ← Adicione esta linha
+          locale="pt-BR"
           onChange={handleChange}
           themeVariant="light"
         />
@@ -127,16 +117,16 @@ export default function DateInput({
                 display="spinner"
                 value={value ? new Date(value) : tempDate}
                 onChange={handleChange}
-                locale="pt-BR" // ← Adicione esta linha
+                locale="pt-BR"
                 themeVariant="light"
                 style={{ backgroundColor: theme.backgroundCard }}
               />
               <View style={styles.modalButtons}>
                 <Pressable onPress={() => setShowPicker(false)} style={styles.cancelBtn}>
-                  <Text style={styles.cancelText}>Cancelar</Text>
+                  <Text style={[styles.cancelText, { fontSize } ]}>Cancelar</Text>
                 </Pressable>
                 <Pressable onPress={handleConfirmIOS} style={styles.confirmBtn}>
-                  <Text style={styles.confirmText}>Confirmar</Text>
+                  <Text style={[styles.confirmText, { fontSize } ]}>Confirmar</Text>
                 </Pressable>
               </View>
             </View>
@@ -147,29 +137,34 @@ export default function DateInput({
   );
 }
 
-const createStyles = (theme) =>
-  StyleSheet.create({
+// ======= Styles Dinâmicos =======
+const createStyles = (theme, baseFontSize = 16) => {
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
+
+  return StyleSheet.create({
     label: {
-      fontSize: 16,
+      fontSize: scaleFont(16),
       fontWeight: '500',
       color: theme.textPrimary,
-      marginTop: 12,
-      marginBottom: 4,
+      marginTop: scaleSpacing(12),
+      marginBottom: scaleSpacing(4),
       width: '85%',
     },
     inputContainer: {
-      height: 45,
+      height: scaleSpacing(45),
       width: '85%',
       borderWidth: 1,
-      borderRadius: 8,
-      paddingHorizontal: 10,
+      borderRadius: scaleRadius(8),
+      paddingHorizontal: scaleSpacing(10),
       backgroundColor: theme.backgroundCard,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
     },
     inputText: {
-      fontSize: 15,
+      fontSize: scaleFont(15),
       color: theme.textPrimary,
     },
     modalBackground: {
@@ -179,32 +174,21 @@ const createStyles = (theme) =>
     },
     modalContent: {
       backgroundColor: theme.backgroundCard,
-      paddingTop: 16,
-      borderTopLeftRadius: 12,
-      borderTopRightRadius: 12,
+      paddingTop: scaleSpacing(16),
+      borderTopLeftRadius: scaleRadius(12),
+      borderTopRightRadius: scaleRadius(12),
     },
     modalButtons: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: 12,
+      padding: scaleSpacing(12),
     },
-    cancelBtn: {
-      padding: 10,
-    },
-    confirmBtn: {
-      padding: 10,
-    },
-    cancelText: {
-      color: theme.error,
-      fontWeight: 'bold',
-      fontSize: 16,
-    },
-    confirmText: {
-      color: theme.primary,
-      fontWeight: 'bold',
-      fontSize: 16,
-    },
+    cancelBtn: { padding: scaleSpacing(10) },
+    confirmBtn: { padding: scaleSpacing(10) },
+    cancelText: { color: theme.error, fontWeight: 'bold', fontSize: scaleFont(16) },
+    confirmText: { color: theme.primary, fontWeight: 'bold', fontSize: scaleFont(16) },
   });
+};
 
 const webStyles = {
   inputContainer: {

@@ -10,36 +10,28 @@ export default function PesoInput({
   minWeight = 30,
   maxWeight = 300,
   onValidityChange,
-  theme: propTheme
+  theme: propTheme,
+  fontSize = 16,             // 🔹 controla fontes
+  scaleIcon = (size) => size, // 🔹 caso queira usar em algum ícone futuro
 }) {
-  const [isValid, setIsValid] = useState(null); // null: sem digitação ainda
+  const [isValid, setIsValid] = useState(null);
 
   const contextTheme = useContext(ThemeContext).theme;
   const theme = propTheme || contextTheme;
-  const styles = createStyles(theme);
+  const styles = createStyles(theme, fontSize);
 
   const handleChange = (text) => {
-    // Remove tudo que não é número
     const onlyNumbers = text.replace(/[^0-9]/g, '');
-
     const numericValue = Number(onlyNumbers);
-
     onChangeText(onlyNumbers);
 
-    if (onlyNumbers.length === 0) {
-      setIsValid(null);
-    } else if (numericValue >= minWeight && numericValue <= maxWeight) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
-    }
+    if (onlyNumbers.length === 0) setIsValid(null);
+    else if (numericValue >= minWeight && numericValue <= maxWeight) setIsValid(true);
+    else setIsValid(false);
   };
 
-  // Notifica componente pai sobre validade
   useEffect(() => {
-    if (onValidityChange) {
-      onValidityChange(isValid === true);
-    }
+    if (onValidityChange) onValidityChange(isValid === true);
   }, [isValid]);
 
   return (
@@ -65,43 +57,49 @@ export default function PesoInput({
   );
 }
 
-const createStyles = (theme) =>
-  StyleSheet.create({
+// ======= Styles Dinâmicos =======
+const createStyles = (theme, baseFontSize = 16) => {
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
+
+  return StyleSheet.create({
     label: {
-      fontSize: 16,
+      fontSize: scaleFont(16),
       fontWeight: '500',
       color: theme.textPrimary,
-      marginTop: 12,
-      marginBottom: 4,
+      marginTop: scaleSpacing(12),
+      marginBottom: scaleSpacing(4),
       width: '85%',
     },
     inputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       width: '85%',
-      height: 45,
+      height: scaleSpacing(45),
       borderWidth: 1,
-      borderRadius: 8,
-      paddingHorizontal: 10,
+      borderRadius: scaleRadius(8),
+      paddingHorizontal: scaleSpacing(10),
       backgroundColor: theme.backgroundCard,
-    },
-    valid: {
-      color: theme.success,
-      fontSize: 14,
-      fontWeight: 'bold',
     },
     input: {
       flex: 1,
-      fontSize: 16,
+      fontSize: scaleFont(16),
       color: theme.textPrimary,
+    },
+    kgText: {
+      fontSize: scaleFont(16),
+      color: '#555',
+      marginLeft: scaleSpacing(8),
+    },
+    valid: {
+      color: theme.success,
+      fontSize: scaleFont(14),
+      fontWeight: 'bold',
     },
     invalid: {
       color: theme.error,
-      fontSize: 14,
-    },
-    kgText: {
-      fontSize: 16,
-      color: '#555',
-      marginLeft: 8,
+      fontSize: scaleFont(14),
     },
   });
+};

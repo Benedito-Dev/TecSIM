@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { ThemeContext } from '../../context/ThemeContext'; // Adjust the import path as needed
+import { ThemeContext } from '../../context/ThemeContext'; // ajuste se necessário
 
 export default function InputField({
   label,
@@ -13,11 +13,13 @@ export default function InputField({
   iconName,
   showIcon = true,
   onIconPress = null,
-  theme: propTheme
+  theme: propTheme,
+  fontSize = 16,               // 🔹 controla fontes
+  scaleIcon = (size) => size,  // 🔹 escala ícones
 }) {
   const contextTheme = useContext(ThemeContext).theme;
-  const theme = propTheme || contextTheme; // usa propTheme se existir, senão contexto
-  const styles = createStyles(theme);
+  const theme = propTheme || contextTheme;
+  const styles = createStyles(theme, fontSize);
 
   return (
     <>
@@ -32,13 +34,13 @@ export default function InputField({
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}
         />
-        {showIcon && (
+        {showIcon && iconName && (
           <TouchableOpacity onPress={onIconPress} disabled={!onIconPress}>
             <Icon
               name={iconName}
-              size={20}
+              size={scaleIcon(20)} // 🔹 ícone escalável
               color={theme.textMuted}
-              style={{ marginRight: 10 }}
+              style={styles.icon}
             />
           </TouchableOpacity>
         )}
@@ -47,27 +49,39 @@ export default function InputField({
   );
 }
 
-const createStyles = (theme) => StyleSheet.create({
-  label: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: theme.textPrimary, // Uses theme color
-    marginTop: 12,
-    marginBottom: 4,
-    alignItems: "flex-start",
-    width: "85%",
-  },
-  inputContainer: {
-    height: 45,
-    width: '85%',
-    borderColor: theme.border,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: theme.backgroundCard,
-  },
-  textInput: {
-    flex: 1,
-    color: theme.textPrimary, // Text color adapts to theme
-  },
-});
+// ======= Styles Dinâmicos =======
+const createStyles = (theme, baseFontSize = 16) => {
+  const scaleFont = (size) => (size / 16) * baseFontSize;
+  const scaleSpacing = (value) => (value / 16) * baseFontSize;
+  const scaleRadius = (value) => (value / 16) * baseFontSize;
+
+  return StyleSheet.create({
+    label: {
+      fontSize: scaleFont(16),
+      fontWeight: '500',
+      color: theme.textPrimary,
+      marginTop: scaleSpacing(12),
+      marginBottom: scaleSpacing(4),
+      width: '85%',
+    },
+    inputContainer: {
+      height: scaleSpacing(45),
+      width: '85%',
+      borderColor: theme.border,
+      borderWidth: 1,
+      borderRadius: scaleRadius(8),
+      paddingHorizontal: scaleSpacing(10),
+      backgroundColor: theme.backgroundCard,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    textInput: {
+      flex: 1,
+      fontSize: scaleFont(16),
+      color: theme.textPrimary,
+    },
+    icon: {
+      marginRight: scaleSpacing(10),
+    },
+  });
+};
