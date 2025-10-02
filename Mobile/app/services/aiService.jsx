@@ -3,6 +3,7 @@ import { API_KEY } from '@env';
 import { verificarGatilhoCritico, detectarTemaForaDaSaude, validarMencaoMedicamentos } from '../utils/filters';
 
 // Configuração segura da chave de API
+console.log(API_KEY)
 if (!API_KEY) {
   throw new Error("Chave de API não configurada. Configure a variável de ambiente REACT_APP_GOOGLE_API_KEY ou GOOGLE_API_KEY.");
 }

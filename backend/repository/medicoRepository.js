@@ -95,6 +95,10 @@ class MedicoRepository {
       id
     ]);
 
+    if (!result.rows[0]) {
+      throw new Error('Médico não encontrado'); // garante que o constructor nunca receba undefined
+    }
+
     return new Medico(result.rows[0]);
   }
 

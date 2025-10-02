@@ -1,6 +1,7 @@
 class Medico {
-  constructor({ id_medico, nome, crm, especialidade, email, senha, data_cadastro }) {
-    this.id_medico = id_medico;
+  
+constructor({ id, nome, crm, especialidade, email, senha, data_cadastro }) {
+    this.id = id;
     this.nome = nome;
     this.crm = crm; // CRM é único por médico
     this.especialidade = especialidade;
@@ -8,11 +9,10 @@ class Medico {
     this.senha = senha; // Nota: Em operações normais, evite expor a senha
     this.data_cadastro = data_cadastro || new Date().toISOString();
   }
-
   // Método para serialização segura (exclui a senha)
   toJSON() {
     return {
-      id_medico: this.id_medico,
+      id: this.id,
       nome: this.nome,
       crm: this.crm,
       especialidade: this.especialidade,
@@ -24,7 +24,7 @@ class Medico {
   // Método para serialização com dados básicos (útil para JWT)
   toAuthJSON() {
     return {
-      id_medico: this.id_medico,
+      id: this.id,
       nome: this.nome,
       email: this.email,
       especialidade: this.especialidade,
