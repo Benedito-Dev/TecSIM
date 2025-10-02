@@ -7,7 +7,7 @@ export default function AuthHeader() {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../assets/images/AuthWelcome/"Image-Background".png')}
+        source={require('../assets/images/AuthWelcome/Image-Background.png')}
         style={styles.image}
         resizeMode="cover"
       />
@@ -18,7 +18,7 @@ export default function AuthHeader() {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: '#00acd2',
+    backgroundColor: '#1c4aacff',
   },
   image: {
     height: height * 0.45,

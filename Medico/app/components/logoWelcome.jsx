@@ -11,7 +11,7 @@ export default function ProfessionalHeader() {
     <View style={styles.container}>
       <Image
         source={require('../assets/images/logo.png')}
-        style={[styles.logo, { width: logoSize, height: logoSize }]}
+        style={[styles.logo, { width: logoSize, height: logoSize, tintColor: '#1c4aacff' }]} // Aplica a cor verde
         resizeMode="contain"
       />
     </View>

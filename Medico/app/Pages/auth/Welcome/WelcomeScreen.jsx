@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import AuthHeader from '../../../components/AuthHeader';
-import ProfessionalHeader from '../../../components/ProfessionalHeader';
+import AuthHeader from '../../../components/AuthBanner';
+import ProfessionalHeader from '../../../components/logoWelcome';
 import PrimaryButton from '../../../components/PrimaryButton';
 import SecondaryButton from '../../../components/SecondaryButton';
 
