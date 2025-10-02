@@ -176,40 +176,91 @@ class PacientesRoutes {
 
     /**
      * @swagger
-     * /pacientes/{id}:
-     *   put:
-     *     summary: Atualiza todos os dados do paciente
-     *     tags: [Pacientes]
-     *     security:
-     *       - bearerAuth: []
-     *     parameters:
-     *       - in: path
-     *         name: id
-     *         schema:
-     *           type: integer
-     *         required: true
-     *         description: ID do paciente
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/Paciente'
-     *     responses:
-     *       200:
-     *         description: paciente atualizado
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/Paciente'
-     *       400:
-     *         description: Dados inválidos
-     *       401:
-     *         description: Não autorizado
-     *       404:
-     *         description: paciente não encontrado
-     */
-    this.router.put('/:id', authMiddleware, ValidatePaciente.validateUpdate, controller.update);
+    //  * /pacientes/{id}:
+    //  *   put:
+    //  *     summary: Atualiza todos os dados do paciente
+    //  *     tags: [Pacientes]
+    //  *     security:
+    //  *       - bearerAuth: []
+    //  *     parameters:
+    //  *       - in: path
+    //  *         name: id
+    //  *         schema:
+    //  *           type: integer
+    //  *         required: true
+    //  *         description: ID do paciente
+    //  *     requestBody:
+    //  *       required: true
+    //  *       content:
+    //  *         application/json:
+    //  *           schema:
+    //  *             $ref: '#/components/schemas/Paciente'
+    //  *     responses:
+    //  *       200:
+    //  *         description: paciente atualizado
+    //  *         content:
+    //  *           application/json:
+    //  *             schema:
+    //  *               $ref: '#/components/schemas/Paciente'
+    //  *       400:
+    //  *         description: Dados inválidos
+    //  *       401:
+    //  *         description: Não autorizado
+    //  *       404:
+    //  *         description: paciente não encontrado
+    //  */
+    // this.router.put('/:id', authMiddleware, ValidatePaciente.validateUpdate, controller.update);
+
+/**
+ * @swagger
+ * /pacientes/{id}:
+ *   put:
+ *     summary: Atualiza todos os dados do paciente (exige senha atual)
+ *     tags: [Pacientes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID do paciente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/Paciente'
+ *               - type: object
+ *                 required:
+ *                   - senhaAtual
+ *                 properties:
+ *                   senhaAtual:
+ *                     type: string
+ *                     example: "SenhaAtual@123"
+ *     responses:
+ *       200:
+ *         description: Paciente atualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Paciente'
+ *       400:
+ *         description: Dados inválidos
+ *       401:
+ *         description: Não autorizado
+ *       404:
+ *         description: Paciente não encontrado
+ */
+this.router.put(
+  '/:id',
+  authMiddleware,
+  ValidatePaciente.validateUpdate,
+  controller.update
+);
+
 
     /**
      * @swagger
