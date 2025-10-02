@@ -203,7 +203,8 @@
 
 // module.exports = createTables;
 
-const db = require('./index');
+const db = require('./db');
+
 
 const tables = [
   {
@@ -418,3 +419,16 @@ const createTables = async () => {
 };
 
 module.exports = createTables;
+
+if (require.main === module) {
+  (async () => {
+    try {
+      await createTables();
+      console.log('Tabelas criadas ou já existiam. Processo finalizado.');
+      process.exit(0);
+    } catch (err) {
+      console.error('Erro ao criar tabelas:', err);
+      process.exit(1);
+    }
+  })();
+}
