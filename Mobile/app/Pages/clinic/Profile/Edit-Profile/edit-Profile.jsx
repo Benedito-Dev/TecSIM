@@ -60,13 +60,8 @@ export default function EditProfileScreen() {
         setCurrentDataNascimento(data.data_nascimento?.split('T')[0] || '');
         setCurrentPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
-<<<<<<< HEAD
-        setFotoPerfil(data.foto_perfil ? `http://10.126.33.31:3000${data.foto_perfil}` : null);
-        setCpf(data.cpf || '');
-=======
         setFotoPerfil(data.foto_perfil ? `http://10.0.30.116:3000${data.foto_perfil}` : null);
         setCurrentCpf(data.cpf || '');
->>>>>>> sprint-4
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);
         Alert.alert('Erro', 'Não foi possível carregar os dados do paciente.');

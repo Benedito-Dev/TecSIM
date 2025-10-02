@@ -39,13 +39,8 @@ export default function ProfileScreen() {
           setPaciente(data);
 
           if (data.foto_perfil) {
-<<<<<<< HEAD
-            setFotoPerfil(`http://10.126.33.31:3000${data.foto_perfil}?t=${Date.now()}`);
-            setFotoPerfil(`http://10.126.33.31:3000${data.foto_perfil}?t=${Date.now()}`);
-=======
             setFotoPerfil(`http://${IP_HOST}:3000${data.foto_perfil}?t=${Date.now()}`);
 
->>>>>>> sprint-4
           } else {
             setFotoPerfil(null);
           }
