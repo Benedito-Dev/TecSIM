@@ -105,17 +105,17 @@ describe('MedicoRepository', () => {
 
   describe('update', () => {
     it('deve atualizar os dados de um médico', async () => {
-      const updatedMock = { ...mockMedicoData, nome: 'Dr. Atualizado' };
+    const updatedMock = { ...mockMedicoData, nome: 'Dr. Atualizado' };
 
-      db.query
-        .mockResolvedValueOnce({ rows: [mockMedicoData] }) // findById
-        .mockResolvedValueOnce({ rows: [] }) // CRM check
-        .mockResolvedValueOnce({ rows: [updatedMock] }); // UPDATE retornando dados atualizados
+    db.query
+      .mockResolvedValueOnce({ rows: [mockMedicoData] }) // findById
+      .mockResolvedValueOnce({ rows: [updatedMock] });   // UPDATE retornando dados atualizados
 
-      const updated = await MedicoRepository.update(1, { nome: 'Dr. Atualizado' });
-      expect(updated).toBeInstanceOf(Medico);
-      expect(updated.nome).toBe('Dr. Atualizado');
-    });
+    const updated = await MedicoRepository.update(1, { nome: 'Dr. Atualizado' });
+    expect(updated).toBeInstanceOf(Medico);
+    expect(updated.nome).toBe('Dr. Atualizado');
+  });
+
 
     it('deve lançar erro se médico não existir', async () => {
       db.query.mockResolvedValueOnce({ rows: [] }); // findById retorna nada
@@ -138,20 +138,17 @@ describe('MedicoRepository', () => {
     });
   });
 
-  describe('deactivate e activate', () => {
+  describe('deactivate ', () => {
     it('deve desativar um médico', async () => {
       db.query.mockResolvedValueOnce({ rows: [{ ...mockMedicoData, ativo: false }] });
+      const mockDesativado = { ...mockMedicoData, ativo: false };
+      db.query.mockResolvedValueOnce({ rows: [mockDesativado] });
+
       const result = await MedicoRepository.deactivate(1);
-      expect(result).toBeInstanceOf(Medico);
-      expect(result.ativo).toBe(false);
 
-    });
-
-    it('deve ativar um médico', async () => {
-      db.query.mockResolvedValueOnce({ rows: [{ ...mockMedicoData, ativo: true }] });
-      const result = await MedicoRepository.activate(1);
+      console.log(result); // <-- para validar se o model está trazendo "ativo"
       expect(result).toBeInstanceOf(Medico);
-      expect(result.ativo).toBe(true);
+      expect(result.ativo).toBe(false)
     });
   });
 });

@@ -162,7 +162,7 @@ class MedicoRepository {
     return result.rows[0] ? new Medico(result.rows[0]) : null;
   }
 
-  async activate(id) {
+  async activate(id) {  
     const result = await db.query(`
       UPDATE medicos 
       SET ativo = true 

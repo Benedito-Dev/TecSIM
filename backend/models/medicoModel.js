@@ -1,6 +1,7 @@
 class Medico {
   
-constructor({ id, nome, crm, especialidade, email, senha, data_cadastro }) {
+constructor({ id, nome, crm, especialidade, email, senha, data_cadastro, ativo }) {
+    console.log("constructor recebeu ativo:", ativo, typeof ativo);
     this.id = id;
     this.nome = nome;
     this.crm = crm; // CRM é único por médico
@@ -8,6 +9,7 @@ constructor({ id, nome, crm, especialidade, email, senha, data_cadastro }) {
     this.email = email; // Adicionei email que é comum em cadastros
     this.senha = senha; // Nota: Em operações normais, evite expor a senha
     this.data_cadastro = data_cadastro || new Date().toISOString();
+    this.ativo = ativo;
   }
   // Método para serialização segura (exclui a senha)
   toJSON() {
