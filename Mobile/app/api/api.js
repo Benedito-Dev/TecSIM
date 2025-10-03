@@ -3,7 +3,7 @@ import { IP_HOST } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Para desenvolvimento com backend local
-const API_URL = `http://192.168.1.104:3000`; // Utilizar IP da Maquina ao inves de localhost
+const API_URL = `http://10.0.30.181:3000`; // Utilizar IP da Maquina ao inves de localhost
 
 // Para Android emulador, use:
 // const API_URL = 'http://10.0.2.2:3000';
