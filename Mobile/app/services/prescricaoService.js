@@ -94,7 +94,7 @@ export const downloadPrescricao = async (id) => {
     // Versão Web
     if (Platform.OS === "web") {
       // 🌐 Web: cria um link temporário e dispara o download
-      const response = await fetch(`http://${IP_HOST}:3000/prescricoes/${id}/download`);
+      const response = await fetch(`http://192.168.1.106:3000/prescricoes/${id}/download`);
       const blob = await response.blob();
 
       const url = window.URL.createObjectURL(blob);
@@ -112,7 +112,7 @@ export const downloadPrescricao = async (id) => {
       // 📱 Mobile: usa FileSystem + Sharing
       const fileUri = `${FileSystem.documentDirectory}prescricao_${id}.pdf`;
       const downloadResult = await FileSystem.downloadAsync(
-        `http://${IP_HOST}:3000/prescricoes/${id}/download`,
+        `http://192.168.1.106:3000/prescricoes/${id}/download`,
         fileUri
       );
 

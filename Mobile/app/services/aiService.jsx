@@ -113,8 +113,8 @@ export const getAIResponse = async (message, history = [], options = {}) => {
 
   try {
     const defaultOptions = {
-      modelName: "gemini-1.5-flash",
-      apiVersion: "v1beta",
+      modelName: "gemini-2.0-flash",
+      apiVersion: "v1",
       maxOutputTokens: 2000,
       temperature: 0.7,
       topP: 0.9,

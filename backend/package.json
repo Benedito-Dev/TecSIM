@@ -6,8 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
     "start": "node server.js",
-    "db:seed": "node prisma/seed.js",
-    "db:migrate": "npx prisma migrate deploy",
     "vercel-build": "node ./db/dbinit.js"
   },
   "keywords": [],
