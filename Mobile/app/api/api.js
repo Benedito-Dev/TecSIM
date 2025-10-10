@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { IP_HOST } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Para desenvolvimento com backend local

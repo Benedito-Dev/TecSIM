@@ -9,7 +9,7 @@ class PrescricaoRepository {
 
   async findAll(client = db) {
     try {
-      const result = await client.query('SELECT * FROM prescricoes');
+      const result = await client.query('SELECT id_prescricao AS id, id_paciente, crm, diagnostico, data_prescricao, validade, data_cadastro FROM prescricoes;');
       return result.rows.map(row => new Prescricao(row));
     } catch (err) {
       throw new DatabaseError('Erro ao buscar prescrições no banco');
@@ -33,7 +33,7 @@ class PrescricaoRepository {
   async findByPacienteId(id_paciente, client = db) {
     try {
       const result = await client.query(
-        'SELECT * FROM prescricoes WHERE id_paciente = $1',
+        'SELECT id_prescricao AS id, id_paciente, crm, diagnostico, data_prescricao, validade, data_cadastro FROM prescricoes WHERE id_paciente = $1',
         [id_paciente]
       );
       if (!result.rows.length) throw new NotFoundError('Nenhuma prescrição encontrada para este paciente');
@@ -63,16 +63,22 @@ class PrescricaoRepository {
       const result = await client.query(
         `INSERT INTO prescricoes 
          (id_paciente, crm, diagnostico, data_prescricao, validade)
-         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING id_prescricao, id_paciente, crm, diagnostico, data_prescricao, validade`,
         [
-          data.id_paciente, 
-          data.crm, 
-          data.diagnostico, 
-          data.data_prescricao, 
+          data.id_paciente,
+          data.crm,
+          data.diagnostico,
+          data.data_prescricao,
           data.validade
         ]
       );
-      return new Prescricao(result.rows[0]);
+
+      // Retorna id_prescricao e adiciona campo id para compatibilidade com service
+      return {
+        ...result.rows[0],
+        id: result.rows[0].id_prescricao
+      };
     } catch (err) {
       throw new DatabaseError('Erro ao criar prescrição no banco');
     }
@@ -87,14 +93,14 @@ class PrescricaoRepository {
           diagnostico     = COALESCE($3, diagnostico),
           data_prescricao = COALESCE($4, data_prescricao),
           validade        = COALESCE($5, validade)
-         WHERE id_prescricao = $6 
+         WHERE id_prescricao = $6
          RETURNING *`,
         [
-          data.id_paciente || null, 
-          data.crm || null, 
-          data.diagnostico || null, 
-          data.data_prescricao || null, 
-          data.validade || null, 
+          data.id_paciente || null,
+          data.crm || null,
+          data.diagnostico || null,
+          data.data_prescricao || null,
+          data.validade || null,
           id_prescricao
         ]
       );

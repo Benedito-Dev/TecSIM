@@ -44,7 +44,10 @@ class AuthService {
           nome: usuario.nome,
           email: usuario.email,
           idade,
-          genero: usuario.genero
+          genero: usuario.genero,
+          alergias: usuario.alergias,
+          medicacoes: usuario.medicacoes,
+          condicoes: usuario.condicoes
         },
         token
       };

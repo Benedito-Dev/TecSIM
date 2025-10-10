@@ -1,0 +1,200 @@
+// ./backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// MODELO Paciente
+model Paciente {
+  id               Int       @id @default(autoincrement())
+  CPF              String    @unique @db.VarChar(14)
+  nome             String    @db.VarChar(100)
+  email            String    @unique @db.VarChar(150)
+  senha            String    @db.VarChar(255)
+  data_nascimento  DateTime? @db.Date
+  peso_kg          Float?
+  genero           String    @db.VarChar(100)
+  aceite_termos    Boolean   @default(true)
+  data_cadastro    DateTime  @default(now()) @db.Timestamp(6)
+  
+  // Relações
+  prescricoes      Prescricao[]
+  lembretes        Lembrete[]
+  favoritos        Favorito[]
+  historico_interacoes HistoricoInteracao[]
+  
+  @@map("paciente")
+}
+
+// MODELO LoginAttempts
+model LoginAttempts {
+  id             Int      @id @default(autoincrement())
+  email          String   @db.VarChar(255)
+  ip_address     String?  @db.VarChar(45)
+  attempts       Int      @default(0)
+  blocked_until  BigInt?
+  last_attempt   DateTime @default(now()) @db.Timestamp(6)
+  created_at     DateTime @default(now()) @db.Timestamp(6)
+  updated_at     DateTime @default(now()) @db.Timestamp(6)
+  
+  @@map("login_attempts")
+}
+
+// MODELO Medico
+model Medico {
+  id           Int       @id @default(autoincrement())
+  nome         String    @db.VarChar(100)
+  crm          String    @unique @db.VarChar(20)
+  especialidade String?   @db.VarChar(100)
+  email        String    @unique @db.VarChar(150)
+  senha        String    @db.VarChar(255)
+  telefone     String    @db.VarChar(16)
+  ativo        Boolean   @default(true)
+  
+  // Relações
+  prescricoes  Prescricao[]
+  
+  @@map("medicos")
+}
+
+// MODELO Medicamento
+model Medicamento {
+  id_medicamento        Int     @id @default(autoincrement())
+  nome                  String  @db.VarChar(100)
+  tipo                  String? @db.VarChar(50)
+  descricao             String?
+  faixa_etaria_minima   Int?
+  faixa_etaria_maxima   Int?
+  contraindicacoes      String?
+  interacoes_comuns     String?
+  composicao            String?
+  dosagem_padrao        String? @db.VarChar(50)
+  bula_detalhada        String?
+  
+  // Relações
+  bula                  Bula?
+  medicamentos_prescritos MedicamentoPrescrito[]
+  lembretes             Lembrete[]
+  
+  @@map("medicamentos")
+}
+
+// MODELO Bula
+model Bula {
+  id                     Int      @id @default(autoincrement())
+  id_medicamento         Int      @unique
+  dosagem_e_administracao String[]
+  indicacoes             String[]
+  contraindicacoes       String[]
+  advertencias           String[]
+  interacoes_medicamentosas String[]
+  armazenamento_e_validade String[]
+  
+  // Relações
+  medicamento            Medicamento @relation(fields: [id_medicamento], references: [id_medicamento], onDelete: Cascade)
+  
+  @@map("bulas")
+}
+
+// MODELO Prescricao
+model Prescricao {
+  id_prescricao     Int       @id @default(autoincrement())
+  id_paciente       Int
+  crm               String?   // CRM do médico
+  diagnostico       String
+  data_prescricao   DateTime  @db.Date
+  validade          DateTime? @db.Date
+  data_cadastro     DateTime  @default(now()) @db.Timestamp(6)
+  
+  // Relações
+  paciente          Paciente  @relation(fields: [id_paciente], references: [id], onDelete: Cascade)
+  medico_crm        Medico?   @relation(fields: [crm], references: [crm])
+  medicamentos_prescritos MedicamentoPrescrito[]
+  lembretes         Lembrete[]
+  
+  @@map("prescricoes")
+}
+
+// MODELO MedicamentoPrescrito
+model MedicamentoPrescrito {
+  id_medicamento_prescrito Int     @id @default(autoincrement())
+  id_prescricao           Int
+  id_medicamento          Int
+  dosagem                 String? @db.VarChar(50)
+  frequencia              String? @db.VarChar(50)
+  duracao_dias            Int?
+  horarios                String? @db.VarChar(255)
+  via                     String? @db.VarChar(50)
+  
+  // Relações
+  prescricao              Prescricao  @relation(fields: [id_prescricao], references: [id_prescricao], onDelete: Cascade)
+  medicamento             Medicamento @relation(fields: [id_medicamento], references: [id_medicamento])
+  
+  @@map("medicamentos_prescritos")
+}
+
+// MODELO Lembrete
+model Lembrete {
+  id_lembrete      Int       @id @default(autoincrement())
+  id_paciente      Int
+  id_prescricao    Int
+  id_medicamento   Int
+  horario          DateTime  @db.Time(6)
+  data_inicio      DateTime  @db.Date
+  data_fim         DateTime  @db.Date
+  canal_envio      String    @db.VarChar(20) // App, WhatsApp, Email
+  enviado          Boolean   @default(false)
+  
+  // Relações
+  paciente         Paciente  @relation(fields: [id_paciente], references: [id], onDelete: Cascade)
+  prescricao       Prescricao @relation(fields: [id_prescricao], references: [id_prescricao])
+  medicamento      Medicamento @relation(fields: [id_medicamento], references: [id_medicamento])
+  
+  @@map("lembretes")
+}
+
+// MODELO Favorito
+model Favorito {
+  id_favorito     Int       @id @default(autoincrement())
+  id_paciente     Int
+  tipo            String    @db.VarChar(20) // medicamento, sintoma
+  referencia_id   Int
+  data_favoritado DateTime  @default(now()) @db.Timestamp(6)
+  
+  // Relações
+  paciente        Paciente  @relation(fields: [id_paciente], references: [id], onDelete: Cascade)
+  
+  @@map("favoritos")
+}
+
+// MODELO HistoricoInteracao
+model HistoricoInteracao {
+  id_historico    Int       @id @default(autoincrement())
+  id_paciente     Int
+  tipo            String    @db.VarChar(30) // busca, dosagem, interacao, simulacao
+  descricao       String?
+  data_hora       DateTime  @default(now()) @db.Timestamp(6)
+  
+  // Relações
+  paciente        Paciente  @relation(fields: [id_paciente], references: [id], onDelete: Cascade)
+  
+  @@map("historico_interacoes")
+}
+
+// MODELO OTP
+model OTP {
+  id          Int       @id @default(autoincrement())
+  email       String    @db.VarChar(255)
+  otp         String    @db.VarChar(10)
+  expires_at  DateTime  @db.Timestamp(6)
+  verified    Boolean   @default(false)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  attempts    Int       @default(0)
+  
+  @@map("otps")
+}

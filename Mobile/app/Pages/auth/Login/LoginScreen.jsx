@@ -175,6 +175,7 @@ export default function LoginScreen() {
         <EmailInput
           label="Email"
           value={email}
+          theme={lightTheme}
           onChangeText={setEmail}
           onValidityChange={setEmailIsValid}
           keyboardType="email-address"

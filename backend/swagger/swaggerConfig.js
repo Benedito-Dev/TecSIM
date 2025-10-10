@@ -32,7 +32,10 @@ const options = {
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
             genero: { type: 'string', example: 'masculino' },
-            aceite_termos: { type: 'boolean', example: true }
+            aceite_termos: { type: 'boolean', example: true },
+            alergias: { type: 'array', items: { type: 'string', example: 'Amendoim' }, example: ['Amendoim', 'Lactose'] },
+            medicacoes: { type: 'array', items: { type: 'string', example: 'Dipirona' }, example: ['Dipirona', 'Ibuprofeno'] },
+            condicoes: { type: 'array', items: { type: 'string', example: 'Asma' }, example: ['Asma', 'Hipertensão'] },
           }
         },
         PacienteWithSenha: {
@@ -112,6 +115,7 @@ const options = {
                   id_medicamento: { type: 'integer', example: 10 },
                   dosagem: { type: 'string', example: '500mg' },
                   frequencia: { type: 'string', example: '8/8h' },
+                  // nome: { type: 'string', example: 'Ibuprofeno' },
                   duracao_dias: { type: 'integer', example: 7 },
                   via: { type: 'string', example: 'oral', enum: ['oral', 'intravenosa', 'intramuscular', 'subcutânea', 'tópica', 'inalatória'] },
                   horarios: { type: 'string', example: '08h, 16h, 00h', nullable: true }
