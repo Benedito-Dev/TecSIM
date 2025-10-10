@@ -32,7 +32,10 @@ const options = {
             data_nascimento: { type: 'string', format: 'date', example: '1990-05-15' },
             peso_kg: { type: 'number', example: 75.5 },
             genero: { type: 'string', example: 'masculino' },
-            aceite_termos: { type: 'boolean', example: true }
+            aceite_termos: { type: 'boolean', example: true },
+            alergias: { type: 'array', items: { type: 'string', example: 'Amendoim' }, example: ['Amendoim', 'Lactose'] },
+            medicacoes: { type: 'array', items: { type: 'string', example: 'Dipirona' }, example: ['Dipirona', 'Ibuprofeno'] },
+            condicoes: { type: 'array', items: { type: 'string', example: 'Asma' }, example: ['Asma', 'Hipertensão'] },
           }
         },
         PacienteWithSenha: {

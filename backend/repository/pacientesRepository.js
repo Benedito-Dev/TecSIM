@@ -15,7 +15,7 @@ class PacienteRepository {
 
   async findById(id) {
     const result = await db.query(`
-      SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
+      SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil, alergias, medicacoes, condicoes
       FROM paciente WHERE id = $1
     `, [id]);
 
@@ -24,27 +24,27 @@ class PacienteRepository {
 
   async findByCPF(CPF) {
     const result = await db.query(
-      `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
+      `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil, alergias, medicacoes, condicoes
       FROM paciente WHERE CPF = $1`, [CPF]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
   async findByEmail(email) {
     const result = await db.query(
-      `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil
+      `SELECT id, cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, foto_perfil, alergias, medicacoes, condicoes
       FROM paciente WHERE email = $1`, [email]);
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
-  async create({ cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos }) {
+  async create({ cpf, nome, email, senha, data_nascimento, peso_kg, genero, alergias, medicacoes, condicoes, aceite_termos }) {
     const senhaHash = await bcrypt.hash(senha, SALT_ROUNDS);
 
     const result = await db.query(`
       INSERT INTO paciente 
-      (cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
-      RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro
-    `, [cpf, nome, email, senhaHash, data_nascimento, peso_kg, genero, aceite_termos]);
+      (cpf, nome, email, senha, data_nascimento, peso_kg, genero, aceite_termos, alergias, medicacoes, condicoes) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
+      RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, alergias, medicacoes, condicoes
+    `, [cpf, nome, email, senhaHash, data_nascimento, peso_kg, genero, aceite_termos, alergias, medicacoes, condicoes]);
 
     return new Paciente(result.rows[0]);
   }
@@ -53,13 +53,14 @@ class PacienteRepository {
     await db.query('UPDATE paciente SET foto_perfil = $1 WHERE id = $2', [caminho, id]);
   }
 
-  async update(id, { nome, email, data_nascimento, peso_kg, genero }) {
+  async update(id, { nome, email, data_nascimento, peso_kg, genero, alergias, medicacoes, condicoes }) {
     const result = await db.query(`
       UPDATE paciente 
-      SET nome = $1, email = $2, data_nascimento = $3, peso_kg = $4, genero = $5
-      WHERE id = $6 
-      RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro
-    `, [nome, email, data_nascimento, peso_kg, genero, id]);
+      SET nome = $1, email = $2, data_nascimento = $3, peso_kg = $4, genero = $5,
+          alergias = $6, medicacoes = $7, condicoes = $8
+      WHERE id = $9 
+      RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, alergias, medicacoes, condicoes
+    `, [nome, email, data_nascimento, peso_kg, genero, alergias, medicacoes, condicoes, id]);
 
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
@@ -127,7 +128,10 @@ class PacienteRepository {
       genero: usuario.genero,
       aceite_termos: usuario.aceite_termos,
       data_cadastro: usuario.data_cadastro,
-      ativo: usuario.ativo
+      ativo: usuario.ativo,
+      alergias: usuario.alergias,
+      medicacoes: usuario.medicacoes,
+      condicoes: usuario.condicoes
     });
   }
 

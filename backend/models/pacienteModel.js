@@ -13,7 +13,10 @@ class Paciente {
     data_cadastro,
     ativo,
     foto_perfil, // Adicionado
-    cpf // Adicionado pois vi que vem do banco (opcional)
+    cpf, // Adicionado pois vi que vem do banco (opcional)
+    alergias = [], // Novo
+    medicacoes = [], // Novo
+    condicoes = [] // Novo
   }) {
     this.id = id;
     this.nome = nome;
@@ -25,8 +28,11 @@ class Paciente {
     this.aceite_termos = aceite_termos;
     this.data_cadastro = data_cadastro;
     this.ativo = ativo;
-    this.foto_perfil = foto_perfil; // Adicionado
-    this.cpf = cpf; // Adicionado (opcional)
+    this.foto_perfil = foto_perfil;
+    this.cpf = cpf;
+    this.alergias = alergias;       // Novo
+    this.medicacoes = medicacoes;   // Novo
+    this.condicoes = condicoes;     // Novo
   }
 
   // Método para serialização segura
@@ -41,8 +47,11 @@ class Paciente {
       aceite_termos: this.aceite_termos,
       data_cadastro: this.data_cadastro,
       ativo: this.ativo,
-      foto_perfil: this.foto_perfil, // Adicionado
-      cpf: this.cpf // Adicionado (opcional)
+      foto_perfil: this.foto_perfil,
+      cpf: this.cpf,
+      alergias: this.alergias,       // Novo
+      medicacoes: this.medicacoes,   // Novo
+      condicoes: this.condicoes      // Novo
     };
   }
 
@@ -52,7 +61,7 @@ class Paciente {
       id: this.id,
       nome: this.nome,
       email: this.email,
-      foto_perfil: this.foto_perfil // Adicionado (opcional)
+      foto_perfil: this.foto_perfil
     };
   }
 

@@ -11,7 +11,7 @@ import { logout as logoutService } from '../../../services/auth/authService';
 import { getPacienteById } from '../../../services/userService';
 import { IP_HOST } from '@env';
 
-import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings, Moon, Sun } from 'lucide-react-native';
+import { ArrowLeft, MessageCircle, Edit3, Bell, Shield, HelpCircle, LogOut, Settings } from 'lucide-react-native';
 import SwitchTheme from '../../../components/SwitchTeme';
 
 export default function ProfileScreen() {
@@ -148,15 +148,15 @@ export default function ProfileScreen() {
         <Text style={styles.sectionTitle}>Resumo de Saúde</Text>
         <View style={styles.row}>
           <Text style={styles.label}>Alergias</Text>
-          <Text style={styles.value}>Penicilina, Polen</Text>
+          <Text style={styles.value}>{paciente?.alergias?.length > 0 ? paciente.alergias.join(', ') : 'Nenhuma registrada'}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Medicações</Text>
-          <Text style={styles.value}>Ibuprofeno (200mg/dia), Vitamina D (1000UI/dia)</Text>
+          <Text style={styles.value}>{paciente?.medicacoes?.length > 0 ? paciente.medicacoes.join(', ') : 'Nenhuma em uso'}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Condições</Text>
-          <Text style={styles.value}>Asma leve, Rinite alérgica</Text>
+          <Text style={styles.value}>{paciente?.condicoes?.length > 0 ? paciente.condicoes.join(', ') : 'Nenhuma condição registrada'}</Text>
         </View>
       </View>
 
