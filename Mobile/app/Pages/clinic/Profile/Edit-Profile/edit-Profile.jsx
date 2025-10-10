@@ -60,7 +60,7 @@ export default function EditProfileScreen() {
         setCurrentDataNascimento(data.data_nascimento?.split('T')[0] || '');
         setCurrentPeso(String(data.peso_kg || ''));
         setGenero(data.genero || '');
-        setFotoPerfil(data.foto_perfil ? `http://10.0.30.116:3000${data.foto_perfil}` : null);
+        setFotoPerfil(data.foto_perfil ? `https://tec-sim.vercel.app${data.foto_perfil}` : null);
         setCurrentCpf(data.cpf || '');
       } catch (error) {
         console.error('Erro ao carregar paciente:', error);

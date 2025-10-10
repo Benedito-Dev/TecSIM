@@ -6,13 +6,25 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "API_KEY": "AIzaSyChni8yk7O-SRJ_JpXLPP9_gMxpYewNAf8",
+        "API_URL": "https://seu-backend.vercel.app"
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "API_KEY": "AIzaSyChni8yk7O-SRJ_JpXLPP9_gMxpYewNAf8",
+        "API_URL": "https://seu-backend.vercel.app"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "API_KEY": "AIzaSyChni8yk7O-SRJ_JpXLPP9_gMxpYewNAf8",
+        "API_URL": "https://seu-backend.vercel.app"
+      }
     }
   },
   "submit": {

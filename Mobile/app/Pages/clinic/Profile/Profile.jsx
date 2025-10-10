@@ -39,7 +39,7 @@ export default function ProfileScreen() {
           setPaciente(data);
 
           if (data.foto_perfil) {
-            setFotoPerfil(`http://${IP_HOST}:3000${data.foto_perfil}?t=${Date.now()}`);
+            setFotoPerfil(`https://tec-sim.vercel.app${data.foto_perfil}?t=${Date.now()}`);
 
           } else {
             setFotoPerfil(null);
