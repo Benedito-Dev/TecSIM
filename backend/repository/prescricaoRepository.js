@@ -73,11 +73,11 @@ class PrescricaoRepository {
           data.validade
         ]
       );
-
-      // Retorna id_prescricao e adiciona campo id para compatibilidade com service
+      
       return {
         ...result.rows[0],
-        id: result.rows[0].id_prescricao
+        id: result.rows[0].id_prescricao,
+        id_prescricao: result.rows[0].id_prescricao
       };
     } catch (err) {
       throw new DatabaseError('Erro ao criar prescrição no banco');

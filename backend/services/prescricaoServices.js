@@ -57,10 +57,6 @@ class PrescricaoService {
 
       // 1. Cria a prescrição
       const prescricao = await prescricaoRepository.create(data, client);
-      console.log("DEBUG - prescrição criada:", prescricao);
-
-      // Garantir que id_prescricao exista
-      prescricao.id_prescricao = prescricao.id_prescricao || prescricao.id;
 
       // 2. Garante que medicamentos seja array
       const medicamentos = Array.isArray(data.medicamentos) ? data.medicamentos : [];
@@ -72,9 +68,15 @@ class PrescricaoService {
       }));
 
       for (const med of medicamentosComPrescricao) {
-        console.log("DEBUG - inserindo medicamento:", med);
-        await medicamentoPrescritoRepository.create(med, client);
+        try {
+          console.log("DEBUG - inserindo medicamento:", med);
+          await medicamentoPrescritoRepository.create(med, client);
+        } catch (err) {
+          console.error("Erro ao inserir medicamento:", med, err);
+          throw err;
+        }
       }
+
 
       await client.query('COMMIT');
 
