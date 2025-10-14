@@ -1,20 +1,43 @@
 import React, { useState } from "react";
-import { Home, User, MessageSquare, LogOut, Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { 
+  Home, 
+  User, 
+  MessageSquare, 
+  LogOut, 
+  Menu, 
+  X, 
+  Pill, 
+  FileText, 
+  Clock,
+  Settings
+} from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/UserContext";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { Logout } = useAuth();
 
   const navItems = [
     { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
     { name: "Chatbot", icon: <MessageSquare size={20} />, path: "/chatbot" },
+    { name: "Medicamentos", icon: <Pill size={20} />, path: "/medicamentos" },
+    { name: "Prescrições", icon: <FileText size={20} />, path: "/prescricoes" },
+    { name: "Lembretes", icon: <Clock size={20} />, path: "/lembretes" },
     { name: "Perfil", icon: <User size={20} />, path: "/perfil" },
+    { name: "Ajustes", icon: <Settings size={20} />, path: "/ajustes" },
   ];
+
+  const handleLogout = () => {
+    Logout();
+    navigate('/login');
+  };
 
   return (
     <div
-      className={`fixed top-20 left-0 h-full bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 left-0 h-full bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300 ease-in-out z-50 ${
         isOpen ? "w-60" : "w-20"
       }`}
     >
@@ -31,7 +54,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Links */}
+      {/* Links de navegação */}
       <nav className="flex-1 p-3 space-y-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -41,12 +64,14 @@ export default function Sidebar() {
               to={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                 isActive
-                  ? "bg-blue-900 text-white"
+                  ? "bg-blue-900 text-white shadow-md"
                   : "hover:bg-blue-800 text-blue-100"
               }`}
             >
-              {item.icon}
-              {isOpen && <span>{item.name}</span>}
+              <div className="flex-shrink-0">
+                {item.icon}
+              </div>
+              {isOpen && <span className="font-medium">{item.name}</span>}
             </Link>
           );
         })}
@@ -54,9 +79,12 @@ export default function Sidebar() {
 
       {/* Logout */}
       <div className="p-4 border-t border-blue-600">
-        <button className="flex items-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-blue-800 transition-all">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-red-600 transition-all text-red-100 hover:text-white"
+        >
           <LogOut size={20} />
-          {isOpen && <span>Sair</span>}
+          {isOpen && <span className="font-medium">Sair</span>}
         </button>
       </div>
     </div>

@@ -1,12 +1,14 @@
 import React from "react";
 import { useAuth } from "../../context/UserContext";
 import { MessageSquare, Pill, Clock, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import NotificationIcon from "../../components/Home/Bell";
-import Sidebar from "../../components/SideBarr"
+import Sidebar from "../../components/SideBarr";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -23,7 +25,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white flex flex-col">
-    <Sidebar />
+      <Sidebar />
+
       {/* Top Bar */}
       <header className="flex items-center justify-between px-8 py-5 bg-sky-600 shadow-md">
         <h1 className="text-3xl font-extrabold text-white tracking-wide">TecSIM</h1>
@@ -49,7 +52,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Card do Chat */}
-        <div className="bg-sky-600 rounded-2xl shadow-xl p-8 mb-12 text-white hover:scale-[1.02] transition-transform cursor-pointer">
+        <div
+          onClick={() => navigate("/chatbot")}
+          className="bg-sky-600 rounded-2xl shadow-xl p-8 mb-12 text-white hover:scale-[1.02] transition-transform cursor-pointer"
+        >
           <div className="flex items-center gap-4 mb-4">
             <MessageSquare className="w-10 h-10" />
             <h3 className="text-2xl font-bold">Iniciar Conversa com Assistente</h3>
@@ -66,7 +72,10 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Card - Medicamentos */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1">
+          <div
+            onClick={() => navigate("/medicamentos")}
+            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
+          >
             <div className="flex items-center gap-4 mb-3">
               <Pill className="text-sky-600 w-8 h-8" />
               <h4 className="text-xl font-bold text-gray-800">Medicamentos</h4>
@@ -77,7 +86,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Card - Lembretes */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1">
+          <div
+            onClick={() => navigate("/lembretes")}
+            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
+          >
             <div className="flex items-center gap-4 mb-3">
               <Clock className="text-sky-600 w-8 h-8" />
               <h4 className="text-xl font-bold text-gray-800">Lembretes</h4>
@@ -87,15 +99,16 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* Card - Minhas Prescrições */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1">
+          {/* Card - Minhas Prescrições (sem navegação ainda) */}
+          <div 
+            onClick={() => navigate("/prescricoes")} 
+            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
+          >
             <div className="flex items-center gap-4 mb-3">
               <FileText className="text-sky-600 w-8 h-8" />
               <h4 className="text-xl font-bold text-gray-800">Minhas Prescrições</h4>
             </div>
-            <p className="text-gray-600">
-              Acesse suas receitas médicas
-            </p>
+            <p className="text-gray-600">Acesse suas receitas médicas</p>
           </div>
         </div>
       </main>
