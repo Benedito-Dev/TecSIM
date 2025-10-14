@@ -15,29 +15,32 @@ import Ajustes from './views/Ajustes/Ajustes';
 import { ThemeProvider } from './context/ThemeContext';
 import { RegisterProvider } from './context/RegisterContext';
 import { AuthProvider } from './context/UserContext'
+import { ElderModeProvider } from './context/ElderModeContext'
 
 export default function App() {
   return (
     <Router>
       <ThemeProvider>
         <AuthProvider>
+          <ElderModeProvider>
 
-          <RegisterProvider> 
-            <Routes>
-              <Route path="/" element={<Welcome />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/verify" element={<ConfirmCodePage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/medicamentos" element={<Medicines />} />
-              <Route path="/perfil" element={<Profile />} />
-              <Route path="/lembretes" element={<Lembretes />} />
-              <Route path="/chatbot" element={<Chatbot />} />
-              <Route path="/prescricoes" element={<Prescricao />} />
-              <Route path="ajustes" element={<Ajustes />} />
-            </Routes>
-          </RegisterProvider> 
-          
+            <RegisterProvider> 
+              <Routes>
+                <Route path="/" element={<Welcome />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/verify" element={<ConfirmCodePage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/medicamentos" element={<Medicines />} />
+                <Route path="/perfil" element={<Profile />} />
+                <Route path="/lembretes" element={<Lembretes />} />
+                <Route path="/chatbot" element={<Chatbot />} />
+                <Route path="/prescricoes" element={<Prescricao />} />
+                <Route path="ajustes" element={<Ajustes />} />
+              </Routes>
+            </RegisterProvider> 
+            
+          </ElderModeProvider>
         </AuthProvider>
       </ThemeProvider>
     </Router>

@@ -37,7 +37,7 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`fixed top-0 left-0 h-full bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300 ease-in-out z-50 ${
+      className={`fixed top-20 left-0 h-full bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300 ease-in-out z-50 ${
         isOpen ? "w-60" : "w-20"
       }`}
     >
