@@ -245,8 +245,8 @@ export default function ChatScreen() {
                         background: `linear-gradient(135deg, ${theme.primary || '#0048cdff'}, ${theme.secondary || '#0c87c4'})` 
                     }}
                 >
-                    <div className="max-w-4xl mx-auto px-4 py-4 text-white">
-                        <div className="flex justify-between items-center">
+                    <div className="py-4 text-white">
+                        <div className="flex w-[100vw] justify-between items-center">
 
                             {/* BOTÃO VOLTAR */}
                             <button 

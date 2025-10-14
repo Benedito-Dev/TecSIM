@@ -10,6 +10,7 @@ const dbInit = require('./db/dbinit');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
+const lembretesRoutes = require('./routes/lembreteRoutes')
 const prescricaoRoutes = require('./routes/prescricaoRoutes');
 const bulaRoutes = require('./routes/bulaRoutes');
 const authMiddleware = require('./middleware/authMiddleware');
@@ -44,6 +45,7 @@ class Server {
     this.app.use('/medicamentos', medicamentoRoutes);
     this.app.use('/bulas', bulaRoutes);
     this.app.use('/prescricoes', prescricaoRoutes);
+    this.app.use('/lembretes', lembretesRoutes)
 
     // Rota base
     this.app.get('/', (req, res) => {
