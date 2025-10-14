@@ -29,7 +29,7 @@ export default function DashboardPage() {
 
       {/* Top Bar */}
       <header className="flex items-center justify-between px-8 py-5 bg-sky-600 shadow-md">
-        <h1 className="text-3xl font-extrabold text-white tracking-wide">TecSIM</h1>
+        <h1 className="text-3xl font-extrabold text-white tracking-wide">DashBoard</h1>
         <div className="relative">
           <NotificationIcon initialCount={5} />
         </div>
