@@ -87,7 +87,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.tecsim"
+    namespace 'com.seunome.tecsim'
     defaultConfig {
         applicationId 'com.seunome.tecsim'
         minSdkVersion rootProject.ext.minSdkVersion

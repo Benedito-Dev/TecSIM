@@ -5,25 +5,26 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "API_KEY": "AIzaSyChni8yk7O-SRJ_JpXLPP9_gMxpYewNAf8",
-        "API_URL": "https://seu-backend.vercel.app"
+        "API_KEY": "@API_KEY",
+        "API_URL": "@API_URL"
       }
     },
     "preview": {
       "distribution": "internal",
+      "channel": "preview",
       "env": {
-        "API_KEY": "AIzaSyChni8yk7O-SRJ_JpXLPP9_gMxpYewNAf8",
-        "API_URL": "https://seu-backend.vercel.app"
+        "API_KEY": "@API_KEY",
+        "API_URL": "@API_URL"
       }
     },
     "production": {
       "autoIncrement": true,
+      "distribution": "store",
       "env": {
-        "API_KEY": "AIzaSyChni8yk7O-SRJ_JpXLPP9_gMxpYewNAf8",
-        "API_URL": "https://seu-backend.vercel.app"
+        "API_KEY": "@API_KEY",
+        "API_URL": "@API_URL"
       }
     }
   },
