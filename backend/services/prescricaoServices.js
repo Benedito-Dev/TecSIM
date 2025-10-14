@@ -59,6 +59,9 @@ class PrescricaoService {
       const prescricao = await prescricaoRepository.create(data, client);
       console.log("DEBUG - prescrição criada:", prescricao);
 
+      // Garantir que id_prescricao exista
+      prescricao.id_prescricao = prescricao.id_prescricao || prescricao.id;
+
       // 2. Garante que medicamentos seja array
       const medicamentos = Array.isArray(data.medicamentos) ? data.medicamentos : [];
 
@@ -89,6 +92,7 @@ class PrescricaoService {
       client.release();
     }
   }
+
 
   async update(id, data) {
     return await prescricaoRepository.update(id, data);

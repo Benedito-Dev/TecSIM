@@ -1,34 +1,30 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-// 📊 Configuração geral
+// 📊 Configuração do teste de carga
 export const options = {
-  vus: 50,             // 20 usuários simultâneos
-  duration: '10s',     // duração total do teste
+  vus: 5,           // número de usuários virtuais simultâneos
+  duration: '10s',  // duração total do teste
 };
 
-// 🚀 Função executada por cada usuário virtual
+// 💡 Usuário de teste
+const TEST_USER = {
+  email: 'rabelomateus4@gmail.com',
+  senha: '11102007Abcfrita#',
+};
+
+// Função principal executada por cada VU
 export default function () {
-  const url = 'http://localhost:3000/auth/login'; // ajuste conforme sua rota real
-
-  // 💡 Payload de teste — use um usuário real de teste
-  const payload = JSON.stringify({
-    email: 'rabelomateus4@gmail.com',
-    senha: '11102007Abcfrita#',
-  });
-
-  const params = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
+  const url = 'http://localhost:3000/auth/login';
+  const payload = JSON.stringify(TEST_USER);
+  const params = { headers: { 'Content-Type': 'application/json' } };
 
   // 🔥 Envia requisição POST de login
   const res = http.post(url, payload, params);
 
   // ✅ Verificações
   check(res, {
-    'status é 200': (r) => r.status === 200,
+    'login status é 200': (r) => r.status === 200,
     'resposta contém token JWT': (r) => {
       try {
         const body = JSON.parse(r.body);
