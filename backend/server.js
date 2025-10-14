@@ -12,9 +12,8 @@ const swaggerSpec = require('./swagger/swaggerConfig');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
 const prescricaoRoutes = require('./routes/prescricaoRoutes');
 const bulaRoutes = require('./routes/bulaRoutes');
-const authMiddleware = require('./middleware/authMiddleware');
-
-const errorHandler = require('./middleware/errorHandler'); // middleware global de erro
+const compositionRoutes = require('./routes/openEHR/compositionRoutes');
+const errorHandler = require('./middleware/errorHandler');
 
 class Server {
   constructor() {
@@ -29,15 +28,14 @@ class Server {
     this.app.use(express.json());
     this.app.use(cors());
     this.app.use(morgan('dev'));
-
-    // Pasta 'uploads' pública
     this.app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-    // Documentação Swagger
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { swaggerOptions: { persistAuthorization: true } }));
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { 
+      swaggerOptions: { persistAuthorization: true } 
+    }));
   }
 
   routes() {
+    // Rotas existentes
     this.app.use('/pacientes', pacientesRoutes);
     this.app.use('/medicos', medicosRoutes);
     this.app.use('/auth', authRoutes);
@@ -45,29 +43,39 @@ class Server {
     this.app.use('/bulas', bulaRoutes);
     this.app.use('/prescricoes', prescricaoRoutes);
 
+    // Rotas openEHR
+    this.app.use('/ehr', compositionRoutes);
+
     // Rota base
     this.app.get('/', (req, res) => {
       res.send('API backend Tecsim de Pé!');
     });
 
-    // Middleware global de erros (último da cadeia)
-    this.app.use(errorHandler);
+    // Health check
+    this.app.get('/health', (req, res) => {
+      res.json({
+        success: true,
+        message: 'API funcionando normalmente',
+        timestamp: new Date().toISOString()
+      });
+    });
 
-    this.app.use((req, res, next) => {
+    // Middlewares de erro
+    this.app.use(errorHandler);
+    this.app.use((req, res) => {
       res.status(404).json({
         success: false,
         message: 'Rota não encontrada'
       });
     });
-    
   }
 
   async initDb() {
     try {
       await dbInit();
-      console.log('Tabela criada com sucesso!');
+      console.log('✅ Banco de dados inicializado');
     } catch (err) {
-      console.error('Erro ao criar a tabela: ', err);
+      console.error('❌ Erro ao inicializar banco de dados:', err);
     }
   }
 
@@ -75,11 +83,12 @@ class Server {
     try {
       await this.initDb();
       this.app.listen(this.port, () => {
-        console.log(`Servidor rodando na porta ${this.port}`);
-        console.log(`Documentação Swagger em http://localhost:${this.port}/api-docs`);
+        console.log(`🚀 Servidor rodando na porta ${this.port}`);
+        console.log(`📚 Documentação: http://localhost:${this.port}/api-docs`);
+        console.log(`❤️  Health Check: http://localhost:${this.port}/health`);
       });
     } catch (error) {
-      console.error('Falha crítica ao iniciar o servidor:', error);
+      console.error('💥 Falha crítica ao iniciar servidor:', error);
       process.exit(1);
     }
   }

@@ -22,6 +22,7 @@ const options = {
         }
       },
       schemas: {
+        // SCHEMAS EXISTENTES (mantenha os que você já tem)
         Paciente: {
           type: 'object',
           properties: {
@@ -54,6 +55,285 @@ const options = {
             foto_perfil: { type: 'string', example: 'http://localhost:3000/images/avatar.png' }
           }
         },
+        
+        // NOVO SCHEMA - Composition
+        Composition: {
+          type: 'object',
+          required: ['paciente_id', 'template_id', 'composition_data'],
+          properties: {
+            id: { 
+              type: 'integer', 
+              example: 1,
+              description: 'ID interno da composição'
+            },
+            composition_id: {
+              type: 'string',
+              example: 'comp_1704038400000_abc123def',
+              description: 'ID único da composição openEHR'
+            },
+            paciente_id: {
+              type: 'integer',
+              example: 1,
+              description: 'ID do paciente relacionado'
+            },
+            template_id: {
+              type: 'string',
+              enum: ['BLOOD_PRESSURE_V1', 'HEART_RATE_V1', 'TEMPERATURE_V1', 'SYMPTOMS_V1', 'MEDICATION_V1'],
+              example: 'BLOOD_PRESSURE_V1',
+              description: 'Template openEHR utilizado'
+            },
+            composition_data: {
+              type: 'object',
+              description: 'Dados clínicos no formato openEHR',
+              example: {
+                systolic: 120,
+                diastolic: 80,
+                heart_rate: 72,
+                position: 'sentado',
+                arm: 'direito',
+                timestamp: '2024-01-15T10:30:00Z',
+                notes: 'Paciente em repouso'
+              }
+            },
+            version: {
+              type: 'integer',
+              example: 1,
+              description: 'Versão da composição'
+            },
+            status: {
+              type: 'string',
+              enum: ['active', 'modified', 'inactive'],
+              example: 'active',
+              description: 'Status da composição'
+            },
+            author: {
+              type: 'string',
+              example: 'dr.silva',
+              description: 'Autor da composição'
+            },
+            created_at: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-01-15T10:30:00Z'
+            },
+            updated_at: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-01-15T10:30:00Z'
+            },
+            paciente_nome: {
+              type: 'string',
+              example: 'João Silva',
+              description: 'Nome do paciente (apenas em consultas)'
+            }
+          }
+        },
+
+        // Blood Pressure Data Schema
+        BloodPressureData: {
+          type: 'object',
+          required: ['systolic', 'diastolic'],
+          properties: {
+            systolic: {
+              type: 'integer',
+              minimum: 50,
+              maximum: 250,
+              example: 120,
+              description: 'Pressão arterial sistólica (mmHg)'
+            },
+            diastolic: {
+              type: 'integer',
+              minimum: 30,
+              maximum: 150,
+              example: 80,
+              description: 'Pressão arterial diastólica (mmHg)'
+            },
+            heart_rate: {
+              type: 'integer',
+              minimum: 30,
+              maximum: 250,
+              example: 72,
+              description: 'Frequência cardíaca (bpm)'
+            },
+            position: {
+              type: 'string',
+              enum: ['sentado', 'deitado', 'em pé'],
+              example: 'sentado',
+              description: 'Posição do paciente durante a medição'
+            },
+            arm: {
+              type: 'string',
+              enum: ['direito', 'esquerdo'],
+              example: 'direito',
+              description: 'Braço utilizado para medição'
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-01-15T10:30:00Z'
+            },
+            notes: {
+              type: 'string',
+              example: 'Paciente relatou tontura'
+            }
+          }
+        },
+
+        // Heart Rate Data Schema
+        HeartRateData: {
+          type: 'object',
+          required: ['rate'],
+          properties: {
+            rate: {
+              type: 'integer',
+              minimum: 30,
+              maximum: 250,
+              example: 72,
+              description: 'Frequência cardíaca (bpm)'
+            },
+            rhythm: {
+              type: 'string',
+              enum: ['regular', 'irregular'],
+              example: 'regular',
+              description: 'Ritmo cardíaco'
+            },
+            method: {
+              type: 'string',
+              enum: ['manual', 'eletrônico'],
+              example: 'manual',
+              description: 'Método de medição'
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-01-15T10:30:00Z'
+            },
+            notes: {
+              type: 'string',
+              example: 'Medido após repouso de 5 minutos'
+            }
+          }
+        },
+
+        // Temperature Data Schema
+        TemperatureData: {
+          type: 'object',
+          required: ['value'],
+          properties: {
+            value: {
+              type: 'number',
+              format: 'float',
+              minimum: 35,
+              maximum: 42,
+              example: 36.5,
+              description: 'Temperatura corporal (°C)'
+            },
+            method: {
+              type: 'string',
+              enum: ['axilar', 'oral', 'retal', 'timpânica'],
+              example: 'axilar',
+              description: 'Método de medição'
+            },
+            time_of_day: {
+              type: 'string',
+              example: 'manhã',
+              description: 'Período do dia da medição'
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-01-15T10:30:00Z'
+            },
+            notes: {
+              type: 'string',
+              example: 'Paciente com febre baixa'
+            }
+          }
+        },
+
+        // Symptoms Data Schema
+        SymptomsData: {
+          type: 'object',
+          required: ['symptoms'],
+          properties: {
+            symptoms: {
+              type: 'array',
+              items: { type: 'string' },
+              example: ['cefaleia', 'tontura', 'náusea'],
+              description: 'Lista de sintomas'
+            },
+            severity: {
+              type: 'string',
+              enum: ['leve', 'moderado', 'grave'],
+              example: 'moderado',
+              description: 'Severidade dos sintomas'
+            },
+            duration: {
+              type: 'string',
+              example: '2 horas',
+              description: 'Duração dos sintomas'
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-01-15T10:30:00Z'
+            },
+            notes: {
+              type: 'string',
+              example: 'Sintomas começaram após alimentação'
+            }
+          }
+        },
+
+        // Medication Data Schema
+        MedicationData: {
+          type: 'object',
+          required: ['name'],
+          properties: {
+            name: {
+              type: 'string',
+              example: 'Paracetamol',
+              description: 'Nome da medicação'
+            },
+            dose: {
+              type: 'string',
+              example: '500mg',
+              description: 'Dosagem'
+            },
+            frequency: {
+              type: 'string',
+              example: '8/8 horas',
+              description: 'Frequência de administração'
+            },
+            route: {
+              type: 'string',
+              enum: ['oral', 'sublingual', 'tópico', 'inalatório', 'injetável'],
+              example: 'oral',
+              description: 'Via de administração'
+            },
+            start_date: {
+              type: 'string',
+              format: 'date',
+              example: '2024-01-15'
+            },
+            end_date: {
+              type: 'string',
+              format: 'date',
+              example: '2024-01-20'
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-01-15T10:30:00Z'
+            },
+            notes: {
+              type: 'string',
+              example: 'Tomar após as refeições'
+            }
+          }
+        },
+
+        // SCHEMAS EXISTENTES (mantenha todos os outros que você já tem)
         Medicamento: {
           type: 'object',
           required: ['nome', 'dosagem_padrao'],
@@ -115,7 +395,6 @@ const options = {
                   id_medicamento: { type: 'integer', example: 10 },
                   dosagem: { type: 'string', example: '500mg' },
                   frequencia: { type: 'string', example: '8/8h' },
-                  // nome: { type: 'string', example: 'Ibuprofeno' },
                   duracao_dias: { type: 'integer', example: 7 },
                   via: { type: 'string', example: 'oral', enum: ['oral', 'intravenosa', 'intramuscular', 'subcutânea', 'tópica', 'inalatória'] },
                   horarios: { type: 'string', example: '08h, 16h, 00h', nullable: true }
@@ -193,7 +472,7 @@ const options = {
       { bearerAuth: [] }
     ]
   },
-  apis: ['./routes/*.js']
+  apis: ['./routes/*.js', './routes/openEHR/*.js'] // ← ATUALIZEI AQUI para incluir as rotas openEHR
 };
 
 const swaggerSpec = swaggerJSDoc(options);
