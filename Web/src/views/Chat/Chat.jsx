@@ -1,16 +1,19 @@
-// src/screens/Chat/ChatScreen.js
 import React, { useState, useRef, useEffect, useContext } from 'react';
+import { 
+    Send, Dot, ChevronLeft, Info, Home, User, MessageSquare, LogOut, 
+    Menu, X, Pill, FileText, Clock, Settings, 
+} from 'lucide-react'; 
+
+import Sidebar from '../../components/SideBarr';
 import { useAuth } from '../../context/UserContext';
-import { useNavigate } from "react-router-dom";
 import { ThemeContext } from '../../context/ThemeContext';
 import { useElderMode } from '../../context/ElderModeContext';
 import { getAIResponse } from '../../services/aiService';
-import QuickActionButtons from '../../components/Chat/QuickActionButtons';
-import Sidebar from '../../components/SideBarr';
-// Ícones de navegação adicionados
-import { Send, Dot, ChevronLeft, Info } from 'lucide-react'; 
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
-// ==================== COMPONENTE DE ANIMAÇÃO DOS PONTOS ====================
+// ==================== COMPONENTES REUTILIZÁVEIS ====================
+
+// Componente de Animação dos Pontos
 const BouncingDots = ({ color = '#00c4cd' }) => {
     const [dots, setDots] = useState([0, 0, 0]);
 
@@ -42,33 +45,97 @@ const BouncingDots = ({ color = '#00c4cd' }) => {
     );
 };
 
-// ==================== COMPONENTE PRINCIPAL DO CHAT ====================
+// Componente QuickActionButtons
+const QuickActionButtons = ({ onButtonPress, isLoading }) => {
+    const { fontSize } = useElderMode();
+    const { theme } = useContext(ThemeContext);
+    
+    const quickActions = [
+        {
+            id: 1,
+            title: 'Ver histórico',
+            icon: <Clock size={16} />,
+            message: 'Gostaria de ver meu histórico médico'
+        },
+        {
+            id: 2,
+            title: 'Nova prescrição',
+            icon: <FileText size={16} />,
+            message: 'Como solicitar uma nova prescrição médica?'
+        },
+        {
+            id: 3,
+            title: 'Alterar dados',
+            icon: <User size={16} />,
+            message: 'Preciso alterar meus dados pessoais'
+        },
+        {
+            id: 4,
+            title: 'Dúvidas medicamentos',
+            icon: <Pill size={16} />,
+            message: 'Tenho dúvidas sobre meus medicamentos'
+        }
+    ];
+
+    const handlePress = (message) => {
+        if (!isLoading) {
+            onButtonPress(message);
+        }
+    };
+
+    return (
+        <div className="w-full px-4 max-w-4xl mx-auto">
+            <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide">
+                {quickActions.map((action) => (
+                    <button
+                        key={action.id}
+                        onClick={() => handlePress(action.message)}
+                        disabled={isLoading}
+                        className={`
+                            flex items-center gap-2 px-4 py-3 rounded-xl border transition-all duration-200 whitespace-nowrap flex-shrink-0
+                            ${isLoading 
+                                ? 'bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed' 
+                                : `bg-white border-${theme.primary} text-${theme.primary} hover:bg-${theme.primary} hover:text-white cursor-pointer`
+                            }
+                        `}
+                        style={{
+                            borderColor: isLoading ? '#d1d5db' : theme.primary,
+                            color: isLoading ? '#9ca3af' : theme.primary,
+                            backgroundColor: isLoading ? '#f3f4f6' : '#ffffff'
+                        }}
+                    >
+                        <div 
+                            style={{ 
+                                color: isLoading ? '#9ca3af' : theme.primary 
+                            }}
+                            className="transition-colors duration-200"
+                        >
+                            {action.icon}
+                        </div>
+                        <span className="text-sm font-medium transition-colors duration-200">
+                            {action.title}
+                        </span>
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+// ==================== COMPONENTE PRINCIPAL ====================
 export default function ChatScreen() {
-    const { user } = useAuth();
+    const { user, Logout } = useAuth();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    // Novo estado para simular a abertura da Sidebar (se necessário)
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-
+    
     const messagesEndRef = useRef();
     const inputRef = useRef();
 
     const { fontSize } = useElderMode(); 
     const { theme } = useContext(ThemeContext);
     const navigate = useNavigate();
-
-    // Placeholder para a ação de Voltar
-    const handleGoBack = () => {
-        // Implementar a lógica de navegação (ex: history.push('/dashboard'))
-        navigate('/dashboard') 
-    };
-
-    // Placeholder para abrir/fechar a Sidebar
-    const handleOpenSidebar = () => {
-        // Implementar a lógica para mostrar a Sidebar de detalhes do chat
-        setIsSidebarOpen(prev => !prev);
-    };
+    const location = useLocation();
 
     // Retorna hora atual formatada
     const getCurrentTime = () =>
@@ -79,7 +146,7 @@ export default function ChatScreen() {
         setMessages([
             {
                 id: 1,
-                text: 'Olá! 👋 Sou o TecSim, seu assistente virtual de saúde.',
+                text: 'Olá! 👋 Sou o TecSim, seu assistente virtual de saúde. Como posso ajudar hoje?',
                 isBot: true,
                 time: getCurrentTime(),
             },
@@ -91,14 +158,13 @@ export default function ChatScreen() {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // Lógica de envio de mensagem (mantida)
-    const handleSendMessage = async () => {
-        // ... (lógica de envio de mensagem)
-        if (!newMessage.trim() || isLoading) return;
+    // Lógica de envio de mensagem
+    const handleSendMessage = async (messageText = newMessage) => {
+        if (!messageText.trim() || isLoading) return;
 
         const userMessage = {
             id: Date.now(),
-            text: newMessage.trim(),
+            text: messageText.trim(),
             isBot: false,
             time: getCurrentTime(),
         };
@@ -108,6 +174,7 @@ export default function ChatScreen() {
         setIsLoading(true);
 
         try {
+            // Prepara o histórico, ignorando a mensagem inicial (ID 1)
             const formattedHistory = messages
                 .filter(msg => msg.id !== 1)
                 .map(msg => ({ isBot: msg.isBot, text: msg.text }));
@@ -131,12 +198,14 @@ export default function ChatScreen() {
                 ...prev,
                 {
                     id: Date.now() + 2,
-                    text: '⚠️ Ocorreu um erro. Tente novamente mais tarde.',
+                    text: '⚠️ Ocorreu um erro ao conectar com o assistente. Tente novamente.',
                     isBot: true,
                     time: getCurrentTime(),
                 },
             ]);
-            if (err.message.includes('API key')) {
+            
+            // Mostra alerta específico para erro de API
+            if (err.message.includes('API key') || err.message.includes('chave')) {
                 alert('Erro: Problema com a chave de API. Verifique as configurações.');
             }
         } finally {
@@ -147,7 +216,8 @@ export default function ChatScreen() {
 
     const handleQuickActionPress = (message) => {
         setNewMessage(message);
-        setTimeout(() => handleSendMessage(), 150);
+        // Pequeno atraso para o usuário ver o texto digitado antes de enviar
+        setTimeout(() => handleSendMessage(message), 150);
     };
 
     const handleKeyPress = (e) => {
@@ -156,169 +226,154 @@ export default function ChatScreen() {
             handleSendMessage();
         }
     };
-    // Fim da lógica de envio de mensagem
+
+    const handleGoBack = () => navigate('/dashboard');
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50">
+        <div className="flex flex-col h-screen bg-gray-50 font-sans">
             
+            {/* SIDEBAR DE NAVEGAÇÃO */}
+            <Sidebar />
             
-            {/* TOPO/HEADER: Botão de Voltar e Botão de Sidebar */}
-            <div 
-                className="shadow-lg z-20" // Z-index para ficar acima do chat
-                style={{ 
-                    background: `linear-gradient(135deg, ${theme.primary || '#00c4cd'}, ${theme.secondary || '#0c87c4'})` 
-                }}
-            >
-                <div className="max-w-4xl mx-auto px-4 py-3 text-white">
-                    <div className="flex justify-between items-center">
+            {/* CONTEÚDO PRINCIPAL */}
+            <div className={`flex flex-col flex-1 h-screen transition-all duration-300`}>
 
-                        {/* 1. BOTÃO DE VOLTAR PARA DASHBOARD */}
-                        <button 
-                            onClick={handleGoBack}
-                            className="flex items-center space-x-1 p-1 -ml-1 rounded-full hover:bg-white/20 transition-colors"
-                        >
-                            <ChevronLeft size={fontSize * 1.5 * 0.9} />
-                            <span 
-                                className="font-semibold hidden sm:inline"
-                                style={{ fontSize: `${fontSize * 1.1}px` }}
-                            >
-                                Dashboard
-                            </span>
-                        </button>
+                {/* HEADER */}
+                <div 
+                    className="shadow-lg z-10 w-full h-20 flex-shrink-0"
+                    style={{ 
+                        background: `linear-gradient(135deg, ${theme.primary || '#0048cdff'}, ${theme.secondary || '#0c87c4'})` 
+                    }}
+                >
+                    <div className="max-w-4xl mx-auto px-4 py-4 text-white">
+                        <div className="flex justify-between items-center">
 
-                        {/* TÍTULO CENTRALIZADO */}
-                        <div className="flex flex-col items-center">
-                            <h1 
-                                className="font-bold text-center"
-                                style={{ fontSize: `${fontSize * 1.3}px` }} 
+                            {/* BOTÃO VOLTAR */}
+                            <button 
+                                onClick={handleGoBack}
+                                className="flex items-center space-x-1 p-1 -ml-1 rounded-full hover:bg-white/20 transition-colors"
                             >
-                                Chat - TecSim
-                            </h1>
-                            {/* Status Online/Processando */}
-                            <div className="flex items-center space-x-1" style={{ fontSize: `${fontSize * 0.85}px` }}>
-                                <div 
-                                    className={`w-2 h-2 rounded-full ${isLoading ? 'bg-yellow-400 animate-pulse' : 'bg-green-500'}`}
-                                />
-                                <span className="font-medium">
-                                    {isLoading ? 'Processando...' : 'Online'}
+                                <ChevronLeft size={fontSize * 1.5 * 0.9} />
+                                <span 
+                                    className="font-semibold hidden sm:inline"
+                                    style={{ fontSize: `${fontSize * 1.1}px` }}
+                                >
+                                    Dashboard
                                 </span>
-                            </div>
-                        </div>
+                            </button>
 
-                        {/* 2. BOTÃO PARA ABRIR SIDEBAR/DETALHES */}
-                        <button
-                            onClick={handleOpenSidebar}
-                            className="p-2 rounded-full hover:bg-white/20 transition-colors"
-                        >
-                            <Info size={fontSize * 1.5 * 0.9} />
-                        </button>
+                            {/* TÍTULO E STATUS */}
+                            <div className="flex flex-col items-center">
+                                <h1 
+                                    className="font-bold text-center"
+                                    style={{ fontSize: `${fontSize * 1.3}px` }} 
+                                >
+                                    Chat - TecSim
+                                </h1>
+                                <div className="flex items-center space-x-1" style={{ fontSize: `${fontSize * 0.85}px` }}>
+                                    <div 
+                                        className={`w-2 h-2 rounded-full ${isLoading ? 'bg-yellow-400 animate-pulse' : 'bg-green-500'}`}
+                                    />
+                                    <span className="font-medium">
+                                        {isLoading ? 'Processando...' : 'Online'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* ESPAÇO PARA ALINHAMENTO */}
+                            <div className='w-[44px]' /> 
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* CONTEÚDO PRINCIPAL (MENSAGENS) */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 w-full"> 
-                {/* ... (Mensagens aqui, código anterior mantido) ... */}
-                <div className="space-y-4">
-                    {messages.map((msg) => (
-                        <div
-                            key={msg.id}
-                            className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
-                        >
+                {/* ÁREA DE MENSAGENS */}
+                <div className="flex-1 overflow-y-auto px-4 py-4 w-full h-[calc(100vh-14rem)]">
+                    <div className="space-y-4 max-w-4xl mx-auto">
+                        {messages.map((msg) => (
                             <div
-                                className={`max-w-4xl rounded-2xl p-4 shadow-sm ${
-                                    msg.isBot 
-                                        ? 'bg-white border border-gray-200' 
-                                        : 'bg-blue-500 text-white'
-                                } ${
-                                    msg.text.startsWith('⚠️') && 'bg-red-50 border border-red-200'
-                                }`}
+                                key={msg.id}
+                                className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
                             >
-                                {msg.isBot && (
-                                    <div className="text-xs font-semibold text-gray-500 mb-1" style={{ fontSize: `${fontSize * 0.75}px` }}>
-                                        TecSim
-                                    </div>
-                                )}
-                                <div 
-                                    style={{ fontSize: `${fontSize}px` }}
-                                    className={`
-                                        ${
+                                <div
+                                    className={`max-w-[80%] md:max-w-xl rounded-2xl p-4 shadow-md ${
+                                        msg.isBot 
+                                            ? 'bg-white border border-gray-200' 
+                                            : 'bg-blue-500 text-white'
+                                        } ${
+                                            msg.text.startsWith('⚠️') && 'bg-red-50 border border-red-200'
+                                        }`}
+                                >
+                                    {msg.isBot && (
+                                        <div className="text-xs font-semibold text-gray-500 mb-1" style={{ fontSize: `${fontSize * 0.75}px` }}>
+                                            TecSim
+                                        </div>
+                                    )}
+                                    <div 
+                                        style={{ fontSize: `${fontSize}px` }}
+                                        className={`whitespace-pre-wrap ${
                                             msg.isBot 
                                                 ? msg.text.startsWith('⚠️') ? 'text-red-700' : 'text-gray-800'
                                                 : 'text-white'
-                                        }`}
-                                >
-                                    {msg.text}
-                                </div>
-                                <div className="text-xs mt-2" style={{ fontSize: `${fontSize * 0.7}px` }} >
-                                    {msg.time}
+                                            }`}
+                                    >
+                                        {msg.text}
+                                    </div>
+                                    <div className={`text-xs mt-2 ${msg.isBot ? 'text-gray-400' : 'text-blue-200'}`} style={{ fontSize: `${fontSize * 0.7}px` }} >
+                                        {msg.time}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                    
-                    {isLoading && (
-                        <div className="flex justify-start">
-                            <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
-                                <BouncingDots color={theme.primary} />
+                        ))}
+                        
+                        {/* INDICADOR DE DIGITAÇÃO */}
+                        {isLoading && (
+                            <div className="flex justify-start">
+                                <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+                                    <BouncingDots color={theme.primary} />
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    <div ref={messagesEndRef} />
-                </div>
-            </div>
-
-            {/* BOTÕES DE AÇÃO RÁPIDA: Mantém max-w-4xl para alinhamento limpo */}
-            <div className="px-4 max-w-4xl mx-auto w-full">
-                <QuickActionButtons onButtonPress={handleQuickActionPress} isLoading={isLoading} />
-            </div>
-
-            {/* INPUT: LARGURA TOTAL */}
-            <div className="border-t border-gray-200 bg-white p-4 w-full"> 
-                <div className="max-w-4xl mx-auto flex space-x-3"> 
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Digite sua mensagem..."
-                        disabled={isLoading}
-                        className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                        style={{ fontSize: `${fontSize}px` }} 
-                    />
-                    <button
-                        onClick={handleSendMessage}
-                        disabled={!newMessage.trim() || isLoading}
-                        className="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center"
-                        style={{ minWidth: `${fontSize * 2.5}px` }} 
-                    >
-                        {isLoading ? (
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                            <Send size={fontSize * 1.25} />
                         )}
-                    </button>
+                        <div ref={messagesEndRef} />
+                    </div>
                 </div>
+
+                {/* RODAPÉ (Ações + Input) */}
+                <div className="flex-shrink-0 w-full bg-white border-t border-gray-200">
+                    
+                    {/* BOTÕES DE AÇÃO RÁPIDA */}
+                    <QuickActionButtons onButtonPress={handleQuickActionPress} isLoading={isLoading} />
+
+                    {/* INPUT DE MENSAGEM */}
+                    <div className="p-4 w-full"> 
+                        <div className="max-w-4xl mx-auto flex space-x-3"> 
+                            <textarea
+                                ref={inputRef}
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="Digite sua mensagem..."
+                                disabled={isLoading}
+                                rows={1}
+                                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed resize-none"
+                                style={{ fontSize: `${fontSize}px`, minHeight: '48px', maxHeight: '100px' }} 
+                            />
+                            <button
+                                onClick={() => handleSendMessage()}
+                                disabled={!newMessage.trim() || isLoading}
+                                className="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center h-full"
+                                style={{ minWidth: '48px', height: '48px' }} 
+                            >
+                                {isLoading ? (
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                    <Send size={fontSize * 1.25} />
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            
-            {/* SIDEBAR PLACEHOLDER (Use este div para renderizar sua sidebar) */}
-            {isSidebarOpen && (
-                <div className="fixed top-0 right-0 h-full w-full sm:w-80 bg-white shadow-2xl z-30 transition-transform duration-300">
-                    <div className="p-4 border-b flex justify-between items-center bg-gray-100">
-                        <h2 className="text-xl font-bold">Detalhes do Chat</h2>
-                        <button onClick={handleOpenSidebar} className="p-2 rounded-full hover:bg-gray-300">
-                            {/* Ícone para fechar */}
-                            <ChevronLeft size={24} /> 
-                        </button>
-                    </div>
-                    <div className="p-4 text-sm text-gray-600">
-                        {/* Seu componente <Sidebar /> ou conteúdo de detalhes deve ir aqui */}
-                        <p>Conteúdo da Sidebar. Feche para voltar ao chat.</p>
-                        <p>Aqui você pode mostrar informações do usuário ou opções de configuração do chat.</p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
