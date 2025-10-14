@@ -68,8 +68,8 @@ class MedicamentoController {
   async findById(req, res) {
     const { id } = req.params;
     try {
-      if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      if (!id || isNaN(Number(id))) {
+        return res.status(400).json({ error: 'ID inválido. Deve ser um número.' });
       }
 
       const medicamento = await service.findById(id);
@@ -88,8 +88,8 @@ class MedicamentoController {
   async update(req, res) {
     const { id } = req.params;
     try {
-      if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      if (!id || isNaN(Number(id))) {
+        return res.status(400).json({ error: 'ID inválido. Deve ser um número.' });
       }
 
       if (!req.body || Object.keys(req.body).length === 0) {
@@ -115,8 +115,8 @@ class MedicamentoController {
   async remove(req, res) {
     const { id } = req.params;
     try {
-      if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'ID inválido. Formato incorreto.' });
+      if (!id || isNaN(Number(id))) {
+        return res.status(400).json({ error: 'ID inválido. Deve ser um número.' });
       }
 
       const removed = await service.remove(id);
