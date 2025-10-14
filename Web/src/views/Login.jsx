@@ -5,7 +5,9 @@ import PasswordInput from '../components/Inputs/PasswordInput';
 import { lightTheme } from '../constants/temas';
 
 import logoImage from '../assets/images/logo.png';
-import { login } from '../services/auth/authService';
+import { login, getCurrentUser } from '../services/auth/authService';
+
+import { useAuth } from '../context/UserContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -22,6 +24,7 @@ export default function LoginPage() {
   const timerRef = useRef(null);
 
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   useEffect(() => {
     console.log('✅ LoginPage montou');
@@ -63,6 +66,9 @@ export default function LoginPage() {
     try {
       console.log('🟡 Fazendo requisição de login...');
       const response = await login(email, password);
+      const userData = await getCurrentUser();
+      setUser(userData)
+
       console.log('✅ Login bem-sucedido:', response);
 
       setSuccessMessage('Login realizado com sucesso!');
