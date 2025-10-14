@@ -24,59 +24,72 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('✅ LoginPage montou');
+    
     // Contador regressivo do cooldown
     if (cooldown > 0) {
       timerRef.current = setTimeout(() => setCooldown(cooldown - 1), 1000);
     }
-    return () => clearTimeout(timerRef.current);
+    return () => {
+      console.log('🔄 LoginPage desmontou');
+      clearTimeout(timerRef.current);
+    };
   }, [cooldown]);
 
-  // Limpar mensagens após alguns segundos
-  useEffect(() => {
-    if (errorMessage || successMessage) {
-      const timer = setTimeout(() => {
-        setErrorMessage('');
-        setSuccessMessage('');
-      }, 5000);
-      return () => clearTimeout(timer);
+  const handleLogin = async (e) => {
+    // Previne qualquer comportamento padrão
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
-  }, [errorMessage, successMessage]);
+    
+    console.log('🟡 handleLogin chamado');
 
-  const handleLogin = async () => {
     if (!allValid) {
+      console.log('🔴 Campos inválidos');
       setErrorMessage('Erro: preencha todos os campos corretamente');
       return;
     }
 
-    if (cooldown > 0) return;
+    if (cooldown > 0) {
+      console.log('⏰ Cooldown ativo');
+      return;
+    }
 
     setLoading(true);
     setErrorMessage('');
     setSuccessMessage('');
 
     try {
+      console.log('🟡 Fazendo requisição de login...');
       const response = await login(email, password);
-      console.log(response);
+      console.log('✅ Login bem-sucedido:', response);
 
-      // Se chegou aqui, login foi bem-sucedido
       setSuccessMessage('Login realizado com sucesso!');
       
-      // Navega após um breve delay para mostrar a mensagem
+      console.log('🟡 Navegando para dashboard...');
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
 
     } catch (error) {
+      console.log('🔴 Erro no login:', error);
       let msg = error.message || 'Erro ao realizar login.';
       let seconds = error.cooldown || 10;
 
       setCooldown(seconds);
-
       msg += ` Aguarde ${seconds} segundo${seconds > 1 ? 's' : ''} antes de tentar novamente.`;
       setErrorMessage(msg);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Teste: função simples sem API
+  const handleTest = (e) => {
+    if (e) e.preventDefault();
+    console.log('🧪 Teste de clique - sem API');
+    setErrorMessage('Mensagem de teste - sem recarregar');
   };
 
   return (
@@ -152,6 +165,14 @@ export default function LoginPage() {
             }`}
         >
           {loading ? 'Entrando...' : 'Entrar'}
+        </button>
+
+        {/* Botão Teste */}
+        <button
+          onClick={handleTest}
+          className="mt-4 w-full py-4 rounded-xl font-bold text-gray-700 bg-yellow-400 hover:bg-yellow-500 text-lg transition-all duration-300 shadow-md"
+        >
+          Teste (Sem API)
         </button>
 
         {/* Link para Registro */}
