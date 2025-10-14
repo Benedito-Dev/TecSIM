@@ -3,6 +3,8 @@ import EmailInput from '../components/Inputs/EmailInput';
 import PasswordInput from '../components/Inputs/PasswordInput';
 import { lightTheme } from '../constants/temas';
 
+import logoImage from '../assets/images/logo.png';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +24,7 @@ export default function LoginPage() {
 
       {/* Logo */}
       <img
-        src="/logo.png"
+        src={logoImage}
         alt="Logo do Sistema"
         className="w-36 h-36 mb-10 drop-shadow-lg"
       />

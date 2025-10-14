@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../context/RegisterContext';
 // Mantenha todos os seus imports
+import CpfInput from '../components/Inputs/CpfInput'
 import EmailInput from '../components/Inputs/EmailInput';
 import PasswordInput from '../components/Inputs/PasswordInput';
 import PesoInput from '../components/Inputs/PesoInput';
@@ -11,130 +14,180 @@ import { lightTheme } from '../constants/temas';
 
 import logoImage from '../assets/images/logo.png';
 
+import { requestOtp } from '../services/auth/otpService';
+
 
 export default function RegisterPage() {
     // --- States de Dados ---
-    const [name, setName] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [nome, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [weight, setWeight] = useState('');
-    const [birthDate, setBirthDate] = useState('');
-    const [gender, setGender] = useState(''); 
+    const [senha, setPassword] = useState('');
+    const [peso_kg, setWeight] = useState('');
+    const [data_nascimento, setBirthDate] = useState('');
+    const [genero, setGender] = useState(''); // Estado para o Gênero
+    const [aceite_termos, setTerms] = useState(true); // Estado para o Gênero
     
     // --- States de Validação ---
-    const [validName, setValidName] = useState(false);
+    const [validCpf, setValidCpf] = useState(false)
     const [validEmail, setValidEmail] = useState(false);
     const [validPassword, setValidPassword] = useState(false);
     const [validWeight, setValidWeight] = useState(false);
     const [validDate, setValidDate] = useState(false);
-    const [validGender, setValidGender] = useState(false); 
+    const [validGender, setValidGender] = useState(false); // Estado de validação do Gênero
 
     const [showTerms, setShowTerms] = useState(false);
 
-    const allValid = validName && validEmail && validPassword && validWeight && validDate && validGender;
+    const navigate = useNavigate();
+    const { setRegisterData } = useRegister();
+
+    // Validação geral: agora inclui o validGender
+    const allValid =  validCpf && validEmail && validPassword && validWeight && validDate && validGender;
 
     const handleCreateAccount = () => {
         setShowTerms(true);
     };
 
-    const handleAcceptTerms = () => {
+    const handleAcceptTerms = async () => {
         setShowTerms(false);
-        alert('Conta criada com sucesso!');
-    };
+
+        if (!allValid) {
+            alert('Preencha todos os campos corretamente.');
+            return;
+        }
+
+        try {
+            const response = await requestOtp(email); // função que envia o OTP
+            if (response?.email) {
+            setRegisterData({
+                cpf,
+                nome,
+                email,
+                senha,
+                data_nascimento,
+                peso_kg,
+                genero,
+                aceite_termos
+            });
+
+            alert('Código enviado! Verifique seu e-mail.');
+            navigate('/verify'); // vai para a tela de verificação
+            } else {
+            alert('Erro ao enviar código. Tente novamente.');
+            }
+        } catch (err) {
+            alert('Falha ao enviar código de verificação.');
+        }
+        };
 
     return (
-        // MUDANÇA PRINCIPAL: Fundo escuro (sky-900) e container principal
-        <div className="relative min-h-screen flex items-center justify-center bg-sky-900 p-4 lg:p-10 overflow-hidden">
+        // Fundo clean: Quase branco com um toque suave de azul
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 lg:p-10 relative overflow-hidden">
             
-            {/* EFEITO BLOBS ANIMADOS (O coração do design de fundo) */}
-            <div className="absolute top-0 -left-4 w-72 h-72 bg-sky-400 rounded-full mix-blend-lighten filter blur-xl opacity-70 animate-blob"></div>
-            <div className="absolute top-0 -right-4 w-72 h-72 bg-sky-600 rounded-full mix-blend-lighten filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-sky-500 rounded-full mix-blend-lighten filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-            {/* FIM BLOBS */}
+            {/* Efeitos de Fundo Sutil (Mantidos do Neo-Brutalista Suave) */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-sky-200 opacity-30 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 animate-pulse-slow"></div>
+            <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-200 opacity-20 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2 animate-pulse-slow animation-delay-3000"></div>
 
 
-            {/* Container Principal do Formulário */}
-            <div className="w-full max-w-4xl mx-auto z-10 animate-fade-in-down">
+            {/* Container Principal */}
+            <div className="w-full max-w-5xl mx-auto z-10 animate-fade-in-down">
                 
                 {/* Cabeçalho */}
                 <div className="text-center mb-8">
-                    {/* Logo */}
+                    {/* Logo Estilizada (Círculo Azul) */}
                     <div className="mx-auto w-20 h-20 mb-3 flex items-center justify-center">
-                        {/* Como o fundo é escuro, vamos garantir que a logo apareça bem */}
-                        <img src={logoImage} alt="Logo" className="w-full h-full drop-shadow-lg" />
+                        <img src={logoImage} alt="" />
                     </div>
                     
-                    <h1 className="text-4xl font-extrabold text-white tracking-tight">
-                        Crie Sua Conta
+                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+                        Crie Sua Conta de Saúde
                     </h1>
-                    <p className="text-sky-200 mt-1 text-lg">
-                        Comece a transformar seu bem-estar agora.
+                    <p className="text-gray-600 mt-1 text-lg">
+                        Insira seus dados para começar a usar a plataforma.
                     </p>
                 </div>
 
-                {/* Cartão do Formulário: ESTILO GLASSMORPHISM */}
-                <div className="w-full bg-white/250 p-6 md:p-10 rounded-2xl shadow-2xl backdrop-blur-xl border border-white/20">
+                {/* Cartão do Formulário: Estilo "Tech-Plate" */}
+                <div className="bg-white p-6 md:p-10 rounded-2xl border-2 shadow-lg">
                     
                     {/* Layout de Grid para Múltiplos Inputs */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
                         
                         {/* COLUNA 1: Nome, Email, Senha */}
                         <div className="space-y-6">
-                            <InputField 
-                                // MUDANÇA: Adicionado text-white/90 para os labels ficarem legíveis
+                            <InputField
                                 label="Nome Completo"
-                                // ... (Outras props)
-                                theme={{...lightTheme, textPrimary: '#e5e7eb'}} // Passa texto claro para o label
+                                value={nome}
+                                onChangeText={setName}
+                                placeholder="Seu nome"
+                                theme={lightTheme}
                             />
-                            <EmailInput 
-                                // ...
-                                theme={{...lightTheme, textPrimary: '#e5e7eb'}}
+                            <CpfInput
+                                value={cpf}
+                                onChangeText={setCpf}
+                                onValidityChange={setValidCpf}
+                                theme={lightTheme}
                             />
-                            <PasswordInput 
-                                // ...
-                                theme={{...lightTheme, textPrimary: '#e5e7eb'}}
+                            <EmailInput
+                                value={email}
+                                onChangeText={setEmail}
+                                onValidityChange={setValidEmail}
+                                theme={lightTheme}
+                            />
+                            <PasswordInput
+                                onChangeText={setPassword}
+                                onValidityChange={setValidPassword}
+                                theme={lightTheme}
                             />
                         </div>
 
                         {/* COLUNA 2: Peso, Data de Nascimento, Gênero */}
                         <div className="space-y-6">
                             <PesoInput
-                                // ...
-                                theme={{...lightTheme, textPrimary: '#e5e7eb'}}
+                                label="Peso (kg)"
+                                value={peso_kg}
+                                onChangeText={setWeight}
+                                onValidityChange={setValidWeight}
+                                theme={lightTheme}
                             />
                             <DateInput
-                                // ...
-                                theme={{...lightTheme, textPrimary: '#e5e7eb'}}
+                                label="Data de Nascimento"
+                                value={data_nascimento}
+                                onChange={setBirthDate}
+                                onValidityChange={setValidDate}
+                                theme={lightTheme}
                             />
-                            {/* Input de Gênero */}
+                            {/* Input de Gênero Personalizado e Estilizado */}
                             <div className="pt-2"> 
-                                <label className="block text-sm font-semibold text-white/90 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Gênero
                                 </label>
                                 <GenderInput
-                                    value={gender}
+                                    value={genero}
                                     onChange={(val) => {
                                         setGender(val);
-                                        setValidGender(!!val);
+                                        setValidGender(!!val); // Valida se algum valor foi escolhido
                                     }}
-                                    theme={{...lightTheme, textPrimary: '#e5e7eb'}} // Ajuste o tema
+                                    theme={lightTheme}
                                     fontSize={16}
                                 />
+                                {/* OBS: O componente GenderInput deve ser um SELECT ou Radios para funcionar bem aqui */}
                             </div>
                         </div>
                     </div> {/* Fim do Grid */}
 
-                    {/* Botão Principal - DESTAQUE em cor sólida sobre o glassmorphism */}
+                    {/* Botão Principal - Alto Contraste (Fica em linha inteira, fora do grid) */}
                     <button
                         onClick={handleCreateAccount}
                         disabled={!allValid}
                         className={`
-                            mt-10 w-full py-4 rounded-lg font-bold text-lg 
-                            transition-all duration-300 transform shadow-lg
+                            mt-10 w-full py-4 rounded-lg font-bold text-white text-xl 
+                            border-2 border-gray-800 
+                            transition-all duration-200 transform
                             focus:outline-none focus:ring-4 focus:ring-sky-300
                             ${allValid
-                                ? 'bg-sky-600 text-white hover:bg-sky-500 hover:scale-[1.01]' // Destaque na cor principal
-                                : 'bg-gray-500 text-gray-200 cursor-not-allowed'
+                                ? 'bg-sky-600 hover:bg-sky-700 shadow-custom-button hover:translate-x-0.5 hover:translate-y-0.5' // Efeito de pressão
+                                : 'bg-gray-400 cursor-not-allowed border-gray-500'
                             }
                         `}
                     >
@@ -144,9 +197,9 @@ export default function RegisterPage() {
 
                 {/* Link para Login */}
                 <div className="text-center mt-6">
-                    <p className="text-white/70">
+                    <p className="text-gray-700">
                         Já possui uma conta?{' '}
-                        <a href="/login" className="font-bold text-sky-400 hover:text-sky-300 hover:underline transition-colors">
+                        <a href="/login" className="font-bold text-sky-600 hover:text-sky-800 hover:underline transition-colors">
                             Acesse aqui
                         </a>
                     </p>
