@@ -57,7 +57,7 @@ export default function EmailInput({
   };
 
   return (
-    <div className="flex flex-col w-[85%] mt-3 mb-1">
+    <div className="flex flex-col w-[100%] mt-3 mb-1">
       <label
         className="mb-1 font-medium"
         style={{ fontSize, color: theme.textPrimary }}

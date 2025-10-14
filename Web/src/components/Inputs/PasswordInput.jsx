@@ -42,7 +42,7 @@ export default function PasswordInput({
   const scale = (size) => (size / 16) * fontSize;
 
   return (
-    <div className="w-[85%] mt-3">
+    <div className="w-[100%] mt-3">
       <label
         className="block mb-1 font-medium"
         style={{ fontSize: scale(16), color: theme.textPrimary }}

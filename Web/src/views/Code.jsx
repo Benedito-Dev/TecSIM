@@ -35,7 +35,7 @@ export default function ConfirmCodePage() {
 
       if (result?.data.id) {
         Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-        navigate.replace('Login');
+        navigate('/login');
       } else {
         throw new Error('Erro inesperado ao criar paciente. Tente novamente.');
       }

@@ -1,12 +1,48 @@
 import api from '../../api/api'; // Importa a instância configurada do axios
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Utilitário para localStorage
+const storage = {
+  setItem: (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {
+      console.error('Erro ao salvar no localStorage:', error);
+    }
+  },
+  
+  getItem: (key) => {
+    try {
+      return localStorage.getItem(key);
+    } catch (error) {
+      console.error('Erro ao ler do localStorage:', error);
+      return null;
+    }
+  },
+  
+  removeItem: (key) => {
+    try {
+      localStorage.removeItem(key);
+    } catch (error) {
+      console.error('Erro ao remover do localStorage:', error);
+    }
+  },
+  
+  multiRemove: (keys) => {
+    try {
+      keys.forEach(key => localStorage.removeItem(key));
+    } catch (error) {
+      console.error('Erro ao remover múltiplos itens do localStorage:', error);
+    }
+  }
+};
 
 export const login = async (email, senha) => {
   try {
     const response = await api.post('/auth/login', { email, senha });
     
-    await AsyncStorage.setItem('@Auth:token', response.data.token);
-    await AsyncStorage.setItem('@Auth:user', JSON.stringify(response.data.usuario));
+    // Usando localStorage em vez de AsyncStorage
+    storage.setItem('@Auth:token', response.data.token);
+    storage.setItem('@Auth:user', JSON.stringify(response.data.usuario));
     
     return response.data;
   } catch (error) {
@@ -30,9 +66,9 @@ export const login = async (email, senha) => {
   }
 };
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = () => { // Removido async pois é síncrono
   try {
-    const user = await AsyncStorage.getItem('@Auth:user');
+    const user = storage.getItem('@Auth:user');
     return user ? JSON.parse(user) : null;
   } catch (error) {
     console.error('Erro ao recuperar usuário:', error);
@@ -40,9 +76,9 @@ export const getCurrentUser = async () => {
   }
 };
 
-export const isAuthenticated = async () => {
+export const isAuthenticated = () => { // Removido async pois é síncrono
   try {
-    const token = await AsyncStorage.getItem('@Auth:token');
+    const token = storage.getItem('@Auth:token');
     return !!token;
   } catch (error) {
     console.error('Erro ao verificar autenticação:', error);
@@ -50,9 +86,9 @@ export const isAuthenticated = async () => {
   }
 };
 
-export const logout = async () => {
+export const logout = () => { // Removido async pois é síncrono
   try {
-    await AsyncStorage.multiRemove(['@Auth:token', '@Auth:user']);
+    storage.multiRemove(['@Auth:token', '@Auth:user']);
   } catch (error) {
     console.error('Erro ao fazer logout:', error);
     throw error;
@@ -63,10 +99,13 @@ export const logout = async () => {
 export const refreshToken = async () => {
   try {
     const response = await api.post('/auth/refresh');
-    await AsyncStorage.setItem('@Auth:token', response.data.token);
+    storage.setItem('@Auth:token', response.data.token);
     return response.data.token;
   } catch (error) {
-    await logout();
+    logout(); // Removido await pois não é mais async
     throw error;
   }
 };
+
+// Exporta o storage para uso em outros lugares se necessário
+export { storage };

@@ -36,7 +36,7 @@ export default function PesoInput({
     isValid === null ? '#ccc' : isValid ? theme.success : theme.error;
 
   return (
-    <div className="w-[85%] mt-3">
+    <div className="w-[100%] mt-3">
       <label
         className="block mb-1 font-medium"
         style={{ fontSize: scale(16), color: theme.textPrimary }}
