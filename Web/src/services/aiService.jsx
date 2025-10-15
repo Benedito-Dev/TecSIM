@@ -154,23 +154,23 @@ export const getAIResponse = async (message, history = [], options = {}) => {
     });
 
     const systemRules = `Você é o TecSim, assistente virtual EXCLUSIVO para questões de saúde. 
-DIRETRIZES ABSOLUTAS:
+    DIRETRIZES ABSOLUTAS:
 
-⛔ NUNCA discuta: política, religião, esportes, entretenimento, economia ou qualquer tema fora da saúde
-⛔ NUNCA dê diagnósticos ou tratamentos específicos
-⛔ NUNCA mencione medicamentos controlados ou que exigem receita
-✅ SEMPRE recomende procurar um médico para questões sérias
-✅ Mantenha respostas objetivas e focadas apenas em saúde
+    ⛔ NUNCA discuta: política, religião, esportes, entretenimento, economia ou qualquer tema fora da saúde
+    ⛔ NUNCA dê diagnósticos ou tratamentos específicos
+    ⛔ NUNCA mencione medicamentos controlados ou que exigem receita
+    ✅ SEMPRE recomende procurar um médico para questões sérias
+    ✅ Mantenha respostas objetivas e focadas apenas em saúde
 
-RESPOSTAS PADRÃO PARA TEMA NÃO MÉDICO:
-Se o usuário mencionar qualquer tema fuera da saúde, responda APENAS e EXCLUSIVAMENTE:
-"Sou um assistente virtual especializado em saúde e só posso responder perguntas relacionadas a cuidados médicos. Para outros temas, recomendo buscar fontes apropriadas."
+    RESPOSTAS PADRÃO PARA TEMA NÃO MÉDICO:
+    Se o usuário mencionar qualquer tema fuera da saúde, responda APENAS e EXCLUSIVAMENTE:
+    "Sou um assistente virtual especializado em saúde e só posso responder perguntas relacionadas a cuidados médicos. Para outros temas, recomendo buscar fontes apropriadas."
 
-Para questões de saúde:
-- Seja breve e objetivo
-- Sempre encerre recomendando consulta médica quando apropriado
-- Use linguagem acessível ao público geral
-- Nunca substitua orientação profissional`;
+    Para questões de saúde:
+    - Seja breve e objetivo
+    - Sempre encerre recomendando consulta médica quando apropriado
+    - Use linguagem acessível ao público geral
+    - Nunca substitua orientação profissional`;
 
     // Sanitizar o histórico antes de usar
     const historicoSanitizado = sanitizarHistorico(history);
@@ -250,4 +250,86 @@ export const checkAPIHealth = async () => {
       error: error.message
     };
   }
+};
+
+// Função específica para triagem
+export const getTriageResponse = async (message, triagemState, history = []) => {
+  const protocolo = triagemState.protocoloAtivo;
+  
+  if (!protocolo) {
+    return {
+      success: false,
+      error: "Protocolo de triagem não identificado"
+    };
+  }
+
+  // Prepara contexto especializado para triagem
+  const systemRulesTriagem = `
+Você é um assistente de TRIAGEM médica para farmacêuticos.
+
+CONTEXTO ATUAL:
+- Protocolo: ${protocolo.nome}
+- Etapa: ${triagemState.etapa}
+- Perguntas realizadas: ${triagemState.perguntasRealizadas}
+- Risco atual: ${triagemState.risco}
+
+DIRETRIZES:
+- Faça APENAS 1 pergunta por vez
+- Foque em identificar sinais de alerta
+- Use linguagem clara e acessível
+- Mantenha o foco no protocolo atual
+
+PRÓXIMA PERGUNTA DO PROTOCOLO: "${protocolo.perguntas[triagemState.perguntasRealizadas]?.pergunta}"
+
+RESPONDA APENAS COM:
+1. A próxima pergunta do protocolo OU
+2. A classificação final se todas as perguntas foram respondidas
+
+NUNCA dê diagnósticos ou tratamentos.
+  `;
+
+  try {
+    const result = await getAIResponse(systemRulesTriagem + "\n\nHistórico: " + message, history, {
+      temperature: 0.2, // Baixa criatividade para maior precisão
+      maxOutputTokens: 300
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Erro na triagem:', error);
+    return {
+      success: false,
+      error: "Falha na triagem automática"
+    };
+  }
+};
+
+// Função para análise final da triagem
+export const getTriageAnalysis = async (triagemState) => {
+  const classificacao = classificarTriagemFinal(triagemState);
+  
+  const analysisPrompt = `
+Com base na triagem realizada, forneça um resumo profissional:
+
+PROTOCOLO: ${triagemState.protocoloAtivo.nome}
+RESPOSTAS COLETADAS: ${JSON.stringify(triagemState.historicoRespostas)}
+CLASSIFICAÇÃO: ${classificacao.nivel}
+
+Forneça um resumo conciso para o farmacêutico com:
+1. Principais achados
+2. Sinais de alerta identificados
+3. Recomendação de encaminhamento
+
+Mantenha o texto objetivo e profissional.
+  `;
+
+  const result = await getAIResponse(analysisPrompt, [], {
+    temperature: 0.3,
+    maxOutputTokens: 500
+  });
+
+  return {
+    ...result,
+    classificacao
+  };
 };
