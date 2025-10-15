@@ -36,19 +36,23 @@ const storage = {
   }
 };
 
-export const login = async (email, senha) => {
+export const login = async (email, senha, tipo = 'paciente') => {
   try {
-    const response = await api.post('/auth/login', { email, senha });
+    const response = await api.post('/auth/login', { 
+      email, 
+      senha, 
+      tipo 
+    });
     
     // Usando localStorage em vez de AsyncStorage
     storage.setItem('@Auth:token', response.data.token);
     storage.setItem('@Auth:user', JSON.stringify(response.data.usuario));
+    storage.setItem('@Auth:userType', response.data.usuario.tipo); // Salva o tipo separadamente
     
     return response.data;
   } catch (error) {
     let errorMessage = 'Erro ao fazer login';
     let cooldown = 0;
-    console.log(cooldown);
 
     if (error.response) {
       errorMessage = error.response.data?.message || errorMessage;
@@ -76,6 +80,15 @@ export const getCurrentUser = () => { // Removido async pois é síncrono
   }
 };
 
+export const getCurrentUserType = () => { // Nova função para obter o tipo
+  try {
+    return storage.getItem('@Auth:userType') || 'paciente';
+  } catch (error) {
+    console.error('Erro ao recuperar tipo do usuário:', error);
+    return 'paciente';
+  }
+};
+
 export const isAuthenticated = () => { // Removido async pois é síncrono
   try {
     const token = storage.getItem('@Auth:token');
@@ -86,9 +99,31 @@ export const isAuthenticated = () => { // Removido async pois é síncrono
   }
 };
 
+// Nova função para verificar se é enfermeiro
+export const isEnfermeiro = () => {
+  try {
+    const userType = storage.getItem('@Auth:userType');
+    return userType === 'enfermeiro';
+  } catch (error) {
+    console.error('Erro ao verificar tipo de usuário:', error);
+    return false;
+  }
+};
+
+// Nova função para verificar se é paciente
+export const isPaciente = () => {
+  try {
+    const userType = storage.getItem('@Auth:userType');
+    return userType === 'paciente';
+  } catch (error) {
+    console.error('Erro ao verificar tipo de usuário:', error);
+    return false;
+  }
+};
+
 export const logout = () => { // Removido async pois é síncrono
   try {
-    storage.multiRemove(['@Auth:token', '@Auth:user']);
+    storage.multiRemove(['@Auth:token', '@Auth:user', '@Auth:userType']);
   } catch (error) {
     console.error('Erro ao fazer logout:', error);
     throw error;
@@ -105,6 +140,29 @@ export const refreshToken = async () => {
     logout(); // Removido await pois não é mais async
     throw error;
   }
+};
+
+// Funções auxiliares para facilitar o uso
+export const authService = {
+  // Login
+  loginPaciente: (email, senha) => login(email, senha, 'paciente'),
+  loginEnfermeiro: (email, senha) => login(email, senha, 'enfermeiro'),
+  
+  // Getters
+  getCurrentUser,
+  getCurrentUserType,
+  isAuthenticated,
+  isEnfermeiro,
+  isPaciente,
+  
+  // Logout
+  logout,
+  
+  // Token
+  refreshToken,
+  
+  // Storage
+  storage
 };
 
 // Exporta o storage para uso em outros lugares se necessário
