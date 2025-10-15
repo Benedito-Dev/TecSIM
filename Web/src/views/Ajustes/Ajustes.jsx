@@ -97,11 +97,11 @@ export default function Ajustes() {
       <div className="flex-1 flex flex-col transition-all duration-300">
         
         {/* Navbar */}
-        <div className="h-20 bg-white shadow flex items-center justify-between px-6 sticky top-0 z-10">
+        <div className="h-20 bg-sky-600 shadow flex items-center justify-between px-6 sticky top-0 z-10">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <Settings size={28} className="text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-800">Configurações do Sistema</h1>
+              <Settings size={28} className="text-white" />
+              <h1 className="text-2xl font-bold text-white">Configurações do Sistema</h1>
             </div>
           </div>
         </div>
