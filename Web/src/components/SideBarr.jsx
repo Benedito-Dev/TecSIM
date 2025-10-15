@@ -9,7 +9,8 @@ import {
   Pill, 
   FileText, 
   Clock,
-  Settings
+  Settings,
+  Users
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/UserContext";
@@ -26,6 +27,7 @@ export default function Sidebar() {
     { name: "Medicamentos", icon: <Pill size={20} />, path: "/medicamentos" },
     { name: "Prescrições", icon: <FileText size={20} />, path: "/prescricoes" },
     { name: "Lembretes", icon: <Clock size={20} />, path: "/lembretes" },
+    { name: "Clientes", icon: <Users size={20} />, path: "/clientes" }, // ✅ NOVO ITEM ADICIONADO
     { name: "Perfil", icon: <User size={20} />, path: "/perfil" },
     { name: "Ajustes", icon: <Settings size={20} />, path: "/ajustes" },
   ];

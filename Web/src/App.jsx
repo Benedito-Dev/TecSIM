@@ -11,6 +11,7 @@ import Lembretes from './views/Lembretes/Lembretes';
 import Chatbot from './views/Chat/Chat';
 import Prescricao from './views/Prescricao/Prescricao';
 import Ajustes from './views/Ajustes/Ajustes';
+import Clients from './views/clients/Clients';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { RegisterProvider } from './context/RegisterContext';
@@ -37,6 +38,7 @@ export default function App() {
                 <Route path="/chatbot" element={<Chatbot />} />
                 <Route path="/prescricoes" element={<Prescricao />} />
                 <Route path="ajustes" element={<Ajustes />} />
+                <Route path='/clientes' element={<Clients />} />
               </Routes>
             </RegisterProvider> 
             

@@ -7,7 +7,7 @@ const SALT_ROUNDS = 10;
 class PacienteRepository {
   async findAll() {
     const result = await db.query(`
-      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro 
+      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, alergias, medicacoes, condicoes
       FROM paciente
     `);
     return result.rows.map(row => new Paciente(row));
