@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1759526843100" clover="3.2.0">
-  <project timestamp="1759526843100" name="All files">
-    <metrics statements="340" coveredstatements="298" conditionals="183" coveredconditionals="143" methods="84" coveredmethods="64" elements="607" coveredelements="505" complexity="0" loc="340" ncloc="340" packages="4" files="12" classes="12"/>
+<coverage generated="1760551782505" clover="3.2.0">
+  <project timestamp="1760551782505" name="All files">
+    <metrics statements="674" coveredstatements="602" conditionals="453" coveredconditionals="391" methods="135" coveredmethods="110" elements="1262" coveredelements="1103" complexity="0" loc="674" ncloc="674" packages="5" files="18" classes="18"/>
     <package name="db">
       <metrics statements="6" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
       <file name="db.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\db\db.js">
         <metrics statements="6" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
-        <line num="2" count="6" type="stmt"/>
-        <line num="4" count="6" type="stmt"/>
-        <line num="7" count="6" type="stmt"/>
-        <line num="14" count="6" type="stmt"/>
-        <line num="17" count="6" type="stmt"/>
+        <line num="2" count="12" type="stmt"/>
+        <line num="4" count="12" type="stmt"/>
+        <line num="7" count="12" type="stmt"/>
+        <line num="14" count="12" type="stmt"/>
+        <line num="17" count="12" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
       </file>
     </package>
     <package name="models">
-      <metrics statements="56" coveredstatements="41" conditionals="9" coveredconditionals="2" methods="14" coveredmethods="4"/>
+      <metrics statements="56" coveredstatements="43" conditionals="9" coveredconditionals="2" methods="14" coveredmethods="6"/>
       <file name="bulaModel.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\models\bulaModel.js">
-        <metrics statements="11" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="1"/>
-        <line num="12" count="7" type="stmt"/>
-        <line num="13" count="7" type="stmt"/>
-        <line num="14" count="7" type="stmt"/>
-        <line num="15" count="7" type="stmt"/>
-        <line num="16" count="7" type="stmt"/>
-        <line num="17" count="7" type="stmt"/>
-        <line num="18" count="7" type="stmt"/>
-        <line num="19" count="7" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
+        <metrics statements="11" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="2"/>
+        <line num="12" count="14" type="stmt"/>
+        <line num="13" count="14" type="stmt"/>
+        <line num="14" count="14" type="stmt"/>
+        <line num="15" count="14" type="stmt"/>
+        <line num="16" count="14" type="stmt"/>
+        <line num="17" count="14" type="stmt"/>
+        <line num="18" count="14" type="stmt"/>
+        <line num="19" count="14" type="stmt"/>
+        <line num="24" count="4" type="stmt"/>
         <line num="38" count="0" type="stmt"/>
-        <line num="45" count="1" type="stmt"/>
+        <line num="45" count="3" type="stmt"/>
       </file>
       <file name="medicoModel.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\models\medicoModel.js">
         <metrics statements="14" coveredstatements="10" conditionals="4" coveredconditionals="2" methods="5" coveredmethods="1"/>
-        <line num="4" count="10" type="stmt"/>
-        <line num="5" count="10" type="stmt"/>
-        <line num="6" count="10" type="stmt"/>
-        <line num="7" count="10" type="stmt"/>
-        <line num="8" count="10" type="stmt"/>
-        <line num="9" count="10" type="stmt"/>
-        <line num="10" count="10" type="stmt"/>
-        <line num="11" count="10" type="cond" truecount="2" falsecount="0"/>
-        <line num="12" count="10" type="stmt"/>
+        <line num="4" count="24" type="stmt"/>
+        <line num="5" count="24" type="stmt"/>
+        <line num="6" count="24" type="stmt"/>
+        <line num="7" count="24" type="stmt"/>
+        <line num="8" count="24" type="stmt"/>
+        <line num="9" count="24" type="stmt"/>
+        <line num="10" count="24" type="stmt"/>
+        <line num="11" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="12" count="24" type="stmt"/>
         <line num="16" count="0" type="stmt"/>
         <line num="28" count="0" type="stmt"/>
         <line num="39" count="0" type="stmt"/>
         <line num="44" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="48" count="1" type="stmt"/>
+        <line num="48" count="2" type="stmt"/>
       </file>
       <file name="pacienteModel.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\models\pacienteModel.js">
-        <metrics statements="22" coveredstatements="14" conditionals="5" coveredconditionals="0" methods="4" coveredmethods="1"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="18" count="14" type="stmt"/>
-        <line num="19" count="14" type="stmt"/>
-        <line num="20" count="14" type="stmt"/>
-        <line num="21" count="14" type="stmt"/>
-        <line num="22" count="14" type="stmt"/>
-        <line num="23" count="14" type="stmt"/>
-        <line num="24" count="14" type="stmt"/>
-        <line num="25" count="14" type="stmt"/>
-        <line num="26" count="14" type="stmt"/>
-        <line num="27" count="14" type="stmt"/>
-        <line num="28" count="14" type="stmt"/>
-        <line num="29" count="14" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
+        <metrics statements="22" coveredstatements="15" conditionals="5" coveredconditionals="0" methods="4" coveredmethods="2"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="18" count="38" type="stmt"/>
+        <line num="19" count="38" type="stmt"/>
+        <line num="20" count="38" type="stmt"/>
+        <line num="21" count="38" type="stmt"/>
+        <line num="22" count="38" type="stmt"/>
+        <line num="23" count="38" type="stmt"/>
+        <line num="24" count="38" type="stmt"/>
+        <line num="25" count="38" type="stmt"/>
+        <line num="26" count="38" type="stmt"/>
+        <line num="27" count="38" type="stmt"/>
+        <line num="28" count="38" type="stmt"/>
+        <line num="29" count="38" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
         <line num="51" count="0" type="stmt"/>
         <line num="61" count="0" type="stmt"/>
         <line num="62" count="0" type="cond" truecount="0" falsecount="3"/>
@@ -70,27 +70,27 @@
         <line num="65" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="66" count="0" type="stmt"/>
         <line num="72" count="0" type="stmt"/>
-        <line num="79" count="1" type="stmt"/>
+        <line num="79" count="3" type="stmt"/>
       </file>
       <file name="prescricaoModel.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\models\prescricaoModel.js">
         <metrics statements="9" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
-        <line num="11" count="6" type="stmt"/>
-        <line num="12" count="6" type="stmt"/>
-        <line num="13" count="6" type="stmt"/>
-        <line num="14" count="6" type="stmt"/>
-        <line num="15" count="6" type="stmt"/>
-        <line num="16" count="6" type="stmt"/>
-        <line num="17" count="6" type="stmt"/>
+        <line num="11" count="14" type="stmt"/>
+        <line num="12" count="14" type="stmt"/>
+        <line num="13" count="14" type="stmt"/>
+        <line num="14" count="14" type="stmt"/>
+        <line num="15" count="14" type="stmt"/>
+        <line num="16" count="14" type="stmt"/>
+        <line num="17" count="14" type="stmt"/>
         <line num="21" count="0" type="stmt"/>
-        <line num="33" count="1" type="stmt"/>
+        <line num="33" count="3" type="stmt"/>
       </file>
     </package>
     <package name="repository">
-      <metrics statements="267" coveredstatements="245" conditionals="174" coveredconditionals="141" methods="61" coveredmethods="57"/>
+      <metrics statements="267" coveredstatements="265" conditionals="174" coveredconditionals="165" methods="61" coveredmethods="60"/>
       <file name="bulaRepository.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\repository\bulaRepository.js">
         <metrics statements="23" coveredstatements="23" conditionals="8" coveredconditionals="8" methods="7" coveredmethods="7"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
         <line num="7" count="2" type="stmt"/>
         <line num="11" count="2" type="stmt"/>
@@ -111,12 +111,12 @@
         <line num="99" count="3" type="stmt"/>
         <line num="100" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="102" count="1" type="stmt"/>
-        <line num="107" count="1" type="stmt"/>
+        <line num="107" count="2" type="stmt"/>
       </file>
       <file name="medicamentoRepository.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\repository\medicamentoRepository.js">
         <metrics statements="37" coveredstatements="37" conditionals="4" coveredconditionals="4" methods="11" coveredmethods="11"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="5" count="1" type="stmt"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
         <line num="20" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="22" count="3" type="stmt"/>
         <line num="23" count="3" type="stmt"/>
@@ -151,12 +151,12 @@
         <line num="185" count="1" type="stmt"/>
         <line num="189" count="2" type="stmt"/>
         <line num="196" count="1" type="stmt"/>
-        <line num="200" count="1" type="stmt"/>
+        <line num="200" count="3" type="stmt"/>
       </file>
       <file name="medicamentosPrescritosRepository.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\repository\medicamentosPrescritosRepository.js">
         <metrics statements="52" coveredstatements="52" conditionals="35" coveredconditionals="35" methods="7" coveredmethods="7"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
         <line num="6" count="2" type="stmt"/>
         <line num="7" count="2" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
@@ -206,26 +206,26 @@
         <line num="175" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="176" count="1" type="stmt"/>
         <line num="177" count="1" type="stmt"/>
-        <line num="182" count="1" type="stmt"/>
+        <line num="182" count="2" type="stmt"/>
       </file>
       <file name="medicoRepository.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\repository\medicoRepository.js">
-        <metrics statements="55" coveredstatements="34" conditionals="64" coveredconditionals="36" methods="12" coveredmethods="9"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="9" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="13" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="18" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="22" count="4" type="stmt"/>
-        <line num="23" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="27" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="31" count="3" type="stmt"/>
-        <line num="32" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="36" count="3" type="cond" truecount="1" falsecount="1"/>
-        <line num="40" count="3" type="stmt"/>
-        <line num="41" count="3" type="cond" truecount="2" falsecount="0"/>
+        <metrics statements="55" coveredstatements="54" conditionals="64" coveredconditionals="60" methods="12" coveredmethods="12"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="9" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="13" count="2" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="18" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="22" count="6" type="stmt"/>
+        <line num="23" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="27" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="31" count="8" type="stmt"/>
+        <line num="32" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="36" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="40" count="7" type="stmt"/>
+        <line num="41" count="7" type="cond" truecount="2" falsecount="0"/>
         <line num="46" count="3" type="stmt"/>
         <line num="47" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="50" count="2" type="stmt"/>
@@ -233,45 +233,45 @@
         <line num="53" count="1" type="stmt"/>
         <line num="55" count="1" type="stmt"/>
         <line num="62" count="1" type="stmt"/>
-        <line num="67" count="2" type="stmt"/>
-        <line num="68" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="71" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="72" count="0" type="stmt"/>
-        <line num="73" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="74" count="0" type="stmt"/>
+        <line num="67" count="3" type="stmt"/>
+        <line num="68" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="71" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="72" count="1" type="stmt"/>
+        <line num="73" count="1" type="cond" truecount="3" falsecount="1"/>
+        <line num="74" count="1" type="stmt"/>
         <line num="78" count="1" type="stmt"/>
         <line num="98" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="99" count="0" type="stmt"/>
         <line num="102" count="1" type="stmt"/>
-        <line num="106" count="0" type="stmt"/>
-        <line num="107" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="108" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="110" count="0" type="stmt"/>
-        <line num="111" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="113" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="115" count="0" type="stmt"/>
-        <line num="117" count="0" type="stmt"/>
-        <line num="123" count="0" type="stmt"/>
-        <line num="127" count="0" type="stmt"/>
-        <line num="128" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="129" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="131" count="0" type="stmt"/>
-        <line num="132" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="134" count="0" type="stmt"/>
+        <line num="106" count="5" type="stmt"/>
+        <line num="107" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="108" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="110" count="3" type="stmt"/>
+        <line num="111" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="113" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="115" count="1" type="stmt"/>
+        <line num="117" count="1" type="stmt"/>
+        <line num="123" count="1" type="stmt"/>
+        <line num="127" count="4" type="stmt"/>
+        <line num="128" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="129" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="131" count="2" type="stmt"/>
+        <line num="132" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="134" count="1" type="stmt"/>
         <line num="146" count="2" type="stmt"/>
         <line num="151" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="155" count="1" type="stmt"/>
-        <line num="162" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="166" count="0" type="stmt"/>
-        <line num="173" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="177" count="1" type="stmt"/>
+        <line num="155" count="2" type="stmt"/>
+        <line num="162" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="166" count="2" type="stmt"/>
+        <line num="173" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="177" count="2" type="stmt"/>
       </file>
       <file name="pacientesRepository.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\repository\pacientesRepository.js">
         <metrics statements="57" coveredstatements="56" conditionals="26" coveredconditionals="22" methods="13" coveredmethods="12"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="5" count="1" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
         <line num="13" count="1" type="stmt"/>
         <line num="17" count="2" type="stmt"/>
@@ -324,14 +324,14 @@
         <line num="147" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="151" count="2" type="stmt"/>
         <line num="156" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="160" count="1" type="stmt"/>
+        <line num="160" count="2" type="stmt"/>
       </file>
       <file name="prescricaoRepository.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\repository\prescricaoRepository.js">
         <metrics statements="43" coveredstatements="43" conditionals="37" coveredconditionals="36" methods="11" coveredmethods="11"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
         <line num="11" count="2" type="stmt"/>
         <line num="12" count="2" type="stmt"/>
         <line num="13" count="1" type="stmt"/>
@@ -356,7 +356,7 @@
         <line num="57" count="1" type="stmt"/>
         <line num="62" count="2" type="stmt"/>
         <line num="63" count="2" type="stmt"/>
-        <line num="78" count="1" type="stmt"/>
+        <line num="77" count="1" type="stmt"/>
         <line num="83" count="1" type="stmt"/>
         <line num="88" count="3" type="stmt"/>
         <line num="89" count="3" type="stmt"/>
@@ -370,24 +370,379 @@
         <line num="122" count="1" type="stmt"/>
         <line num="124" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="125" count="1" type="stmt"/>
+        <line num="130" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="services">
+      <metrics statements="289" coveredstatements="279" conditionals="236" coveredconditionals="224" methods="40" coveredmethods="39"/>
+      <file name="bulaServices.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\services\bulaServices.js">
+        <metrics statements="39" coveredstatements="39" conditionals="28" coveredconditionals="28" methods="6" coveredmethods="6"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="7" count="9" type="cond" truecount="4" falsecount="0"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="11" count="7" type="cond" truecount="4" falsecount="0"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="16" count="4" type="stmt"/>
+        <line num="17" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="21" count="3" type="stmt"/>
+        <line num="22" count="3" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="26" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="34" count="2" type="stmt"/>
+        <line num="38" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="42" count="3" type="stmt"/>
+        <line num="43" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="48" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="49" count="1" type="stmt"/>
+        <line num="52" count="3" type="stmt"/>
+        <line num="53" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="58" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="62" count="3" type="stmt"/>
+        <line num="63" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="64" count="2" type="stmt"/>
+        <line num="68" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="69" count="1" type="stmt"/>
+        <line num="72" count="3" type="stmt"/>
+        <line num="73" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="74" count="2" type="stmt"/>
+        <line num="78" count="1" type="stmt"/>
+      </file>
+      <file name="medicamentosService.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\services\medicamentosService.js">
+        <metrics statements="61" coveredstatements="56" conditionals="60" coveredconditionals="54" methods="7" coveredmethods="6"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="6" count="8" type="cond" truecount="4" falsecount="0"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="10" count="6" type="cond" truecount="5" falsecount="0"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="18" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+        <line num="29" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="30" count="2" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="36" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="40" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="45" count="8" type="cond" truecount="5" falsecount="0"/>
+        <line num="46" count="4" type="stmt"/>
+        <line num="49" count="4" type="stmt"/>
+        <line num="50" count="4" type="stmt"/>
+        <line num="52" count="2" type="cond" truecount="4" falsecount="0"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="58" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="59" count="2" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="66" count="6" type="cond" truecount="4" falsecount="0"/>
+        <line num="67" count="3" type="stmt"/>
+        <line num="70" count="3" type="stmt"/>
+        <line num="71" count="3" type="stmt"/>
+        <line num="72" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="73" count="1" type="stmt"/>
+        <line num="75" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="76" count="1" type="stmt"/>
+        <line num="78" count="1" type="stmt"/>
+        <line num="83" count="8" type="cond" truecount="4" falsecount="0"/>
+        <line num="84" count="2" type="stmt"/>
+        <line num="86" count="6" type="cond" truecount="4" falsecount="0"/>
+        <line num="87" count="2" type="stmt"/>
+        <line num="90" count="4" type="stmt"/>
+        <line num="91" count="4" type="stmt"/>
+        <line num="92" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="93" count="1" type="stmt"/>
+        <line num="95" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="96" count="2" type="stmt"/>
+        <line num="98" count="1" type="stmt"/>
+        <line num="103" count="6" type="cond" truecount="4" falsecount="0"/>
+        <line num="104" count="2" type="stmt"/>
+        <line num="107" count="4" type="stmt"/>
+        <line num="108" count="4" type="stmt"/>
+        <line num="109" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="110" count="1" type="stmt"/>
+        <line num="112" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="113" count="2" type="stmt"/>
+        <line num="115" count="1" type="stmt"/>
+        <line num="120" count="1" type="stmt"/>
+      </file>
+      <file name="medicoService.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\services\medicoService.js">
+        <metrics statements="69" coveredstatements="69" conditionals="70" coveredconditionals="70" methods="8" coveredmethods="8"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="12" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="15" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="21" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="26" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="32" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="37" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="43" count="13" type="stmt"/>
+        <line num="46" count="13" type="cond" truecount="4" falsecount="0"/>
+        <line num="47" count="2" type="stmt"/>
+        <line num="50" count="11" type="cond" truecount="4" falsecount="0"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="54" count="9" type="cond" truecount="4" falsecount="0"/>
+        <line num="55" count="2" type="stmt"/>
+        <line num="58" count="7" type="cond" truecount="4" falsecount="0"/>
+        <line num="59" count="2" type="stmt"/>
+        <line num="62" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="63" count="2" type="stmt"/>
+        <line num="67" count="3" type="stmt"/>
+        <line num="68" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="69" count="1" type="stmt"/>
+        <line num="72" count="2" type="stmt"/>
+        <line num="73" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="74" count="1" type="stmt"/>
+        <line num="77" count="1" type="stmt"/>
+        <line num="78" count="1" type="stmt"/>
+        <line num="82" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="85" count="7" type="stmt"/>
+        <line num="86" count="7" type="stmt"/>
+        <line num="87" count="7" type="stmt"/>
+        <line num="90" count="7" type="stmt"/>
+        <line num="91" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="94" count="6" type="cond" truecount="4" falsecount="0"/>
+        <line num="95" count="3" type="stmt"/>
+        <line num="96" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="97" count="1" type="stmt"/>
+        <line num="101" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="102" count="3" type="stmt"/>
+        <line num="103" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="104" count="1" type="stmt"/>
+        <line num="108" count="4" type="stmt"/>
+        <line num="109" count="4" type="stmt"/>
+        <line num="113" count="6" type="cond" truecount="4" falsecount="0"/>
+        <line num="114" count="2" type="stmt"/>
+        <line num="117" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="118" count="1" type="stmt"/>
+        <line num="121" count="3" type="stmt"/>
+        <line num="122" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="124" count="2" type="stmt"/>
+        <line num="125" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="126" count="1" type="stmt"/>
+        <line num="129" count="1" type="stmt"/>
+        <line num="133" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="135" count="2" type="stmt"/>
+        <line num="136" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="138" count="1" type="stmt"/>
+        <line num="142" count="1" type="stmt"/>
+      </file>
+      <file name="pacientesService.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\services\pacientesService.js">
+        <metrics statements="82" coveredstatements="78" conditionals="74" coveredconditionals="69" methods="10" coveredmethods="10"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="14" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="16" count="3" type="stmt"/>
+        <line num="17" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="23" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="28" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="34" count="6" type="stmt"/>
+        <line num="36" count="6" type="cond" truecount="4" falsecount="0"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="40" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="44" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="48" count="3" type="stmt"/>
+        <line num="49" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
+        <line num="54" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="63" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="65" count="5" type="stmt"/>
+        <line num="66" count="5" type="stmt"/>
+        <line num="67" count="5" type="stmt"/>
+        <line num="69" count="5" type="stmt"/>
+        <line num="70" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="72" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="73" count="3" type="stmt"/>
+        <line num="74" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="75" count="1" type="stmt"/>
+        <line num="79" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="80" count="1" type="stmt"/>
+        <line num="81" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="82" count="1" type="stmt"/>
+        <line num="86" count="2" type="stmt"/>
+        <line num="87" count="2" type="stmt"/>
+        <line num="91" count="6" type="cond" truecount="4" falsecount="0"/>
+        <line num="92" count="2" type="stmt"/>
+        <line num="95" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="96" count="1" type="stmt"/>
+        <line num="99" count="3" type="stmt"/>
+        <line num="100" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="102" count="2" type="stmt"/>
+        <line num="103" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="104" count="1" type="stmt"/>
+        <line num="107" count="1" type="stmt"/>
+        <line num="111" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="113" count="2" type="stmt"/>
+        <line num="114" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="116" count="1" type="stmt"/>
+        <line num="120" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="122" count="2" type="stmt"/>
+        <line num="123" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="125" count="1" type="stmt"/>
+        <line num="129" count="5" type="cond" truecount="4" falsecount="0"/>
         <line num="130" count="1" type="stmt"/>
+        <line num="133" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="134" count="2" type="stmt"/>
+        <line num="137" count="2" type="stmt"/>
+        <line num="138" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="140" count="1" type="stmt"/>
+        <line num="141" count="1" type="stmt"/>
+        <line num="145" count="3" type="stmt"/>
+        <line num="146" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="148" count="2" type="stmt"/>
+        <line num="149" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="151" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="153" count="0" type="stmt"/>
+        <line num="156" count="0" type="stmt"/>
+        <line num="171" count="1" type="stmt"/>
+      </file>
+      <file name="prescricaoServices.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\services\prescricaoServices.js">
+        <metrics statements="38" coveredstatements="37" conditionals="4" coveredconditionals="3" methods="9" coveredmethods="9"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="15" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="29" count="3" type="stmt"/>
+        <line num="32" count="2" type="stmt"/>
+        <line num="34" count="2" type="stmt"/>
+        <line num="35" count="2" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="46" count="2" type="stmt"/>
+        <line num="54" count="5" type="stmt"/>
+        <line num="55" count="5" type="stmt"/>
+        <line num="56" count="5" type="stmt"/>
+        <line num="59" count="5" type="stmt"/>
+        <line num="62" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="65" count="4" type="stmt"/>
+        <line num="70" count="4" type="stmt"/>
+        <line num="71" count="2" type="stmt"/>
+        <line num="72" count="2" type="stmt"/>
+        <line num="73" count="2" type="stmt"/>
+        <line num="75" count="1" type="stmt"/>
+        <line num="76" count="1" type="stmt"/>
+        <line num="81" count="3" type="stmt"/>
+        <line num="84" count="3" type="stmt"/>
+        <line num="85" count="3" type="stmt"/>
+        <line num="90" count="2" type="stmt"/>
+        <line num="91" count="2" type="stmt"/>
+        <line num="92" count="2" type="stmt"/>
+        <line num="94" count="5" type="stmt"/>
+        <line num="100" count="2" type="stmt"/>
+        <line num="104" count="2" type="stmt"/>
+        <line num="108" count="1" type="stmt"/>
       </file>
     </package>
     <package name="utils">
-      <metrics statements="11" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="3"/>
+      <metrics statements="56" coveredstatements="10" conditionals="34" coveredconditionals="0" methods="18" coveredmethods="5"/>
       <file name="errors.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\utils\errors.js">
-        <metrics statements="11" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="3"/>
-        <line num="7" count="22" type="stmt"/>
-        <line num="8" count="22" type="stmt"/>
-        <line num="9" count="22" type="stmt"/>
-        <line num="10" count="22" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="22" count="8" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
+        <metrics statements="11" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="5"/>
+        <line num="7" count="133" type="stmt"/>
+        <line num="8" count="133" type="stmt"/>
+        <line num="9" count="133" type="stmt"/>
+        <line num="10" count="133" type="stmt"/>
+        <line num="16" count="62" type="stmt"/>
+        <line num="22" count="39" type="stmt"/>
+        <line num="28" count="10" type="stmt"/>
         <line num="34" count="0" type="stmt"/>
         <line num="40" count="0" type="stmt"/>
-        <line num="49" count="14" type="stmt"/>
-        <line num="53" count="2" type="stmt"/>
+        <line num="49" count="22" type="stmt"/>
+        <line num="53" count="9" type="stmt"/>
+      </file>
+      <file name="validationUtils.js" path="C:\Users\Eric Mateus\Documents\Programação\TecSIM\backend\utils\validationUtils.js">
+        <metrics statements="45" coveredstatements="1" conditionals="34" coveredconditionals="0" methods="11" coveredmethods="0"/>
+        <line num="7" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="11" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="14" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+        <line num="19" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="22" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="23" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="31" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="32" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="46" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="57" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="58" count="0" type="stmt"/>
+        <line num="59" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="64" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="82" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="90" count="0" type="stmt"/>
+        <line num="91" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="98" count="0" type="stmt"/>
+        <line num="99" count="0" type="stmt"/>
+        <line num="101" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="102" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="108" count="2" type="stmt"/>
       </file>
     </package>
   </project>
