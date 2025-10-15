@@ -1,5 +1,5 @@
 const BulaRepository = require('../repository/bulaRepository.js');
-const db = require('../db/db');
+const db = require('../db/db.js');
 const Bula = require('../models/bulaModel.js');
 
 jest.mock('../db/db'); // Mock do db
