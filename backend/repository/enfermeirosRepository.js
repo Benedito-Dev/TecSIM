@@ -63,14 +63,15 @@ class EnfermeirosRepository {
   }
 
   async updatePassword(id, senhaAtual, novaSenha) {
-    const enfermeiro = await db.query('SELECT senha FROM enfermeiros WHERE id = $1', [id]);
-    if (!enfermeiro.rows[0]) {
+    // Buscar senha atual diretamente do banco
+    const result = await db.query('SELECT senha FROM enfermeiros WHERE id = $1', [id]);
+    if (!result.rows[0]) {
       const error = new Error('Enfermeiro não encontrado.');
       error.code = 404;
       throw error;
     }
 
-    const senhaMatch = await bcrypt.compare(senhaAtual, enfermeiro.rows[0].senha);
+    const senhaMatch = await bcrypt.compare(senhaAtual, result.rows[0].senha);
     if (!senhaMatch) {
       const error = new Error('Senha atual incorreta.');
       error.code = 401;
@@ -85,39 +86,57 @@ class EnfermeirosRepository {
 
     const novaSenhaHash = await bcrypt.hash(novaSenha, SALT_ROUNDS);
 
-    const result = await db.query(`
+    const updateResult = await db.query(`
       UPDATE enfermeiros SET senha = $1, data_atualizacao = NOW()
       WHERE id = $2 RETURNING *
     `, [novaSenhaHash, id]);
 
-    return new Enfermeiro(result.rows[0]);
+    return new Enfermeiro(updateResult.rows[0]);
   }
 
   async verifyCredentials(email, senha) {
-    const enfermeiro = await this.findByEmail(email);
-    if (!enfermeiro) {
-      const error = new Error('Credenciais inválidas');
-      error.code = 401;
-      throw error;
-    }
+      // Buscar diretamente do banco para ter acesso à senha criptografada
+      const result = await db.query(`
+        SELECT * FROM enfermeiros WHERE email = $1
+      `, [email]);
+      
+      const enfermeiroRaw = result.rows[0];
+      
+      if (!enfermeiroRaw) {
+        const error = new Error('Credenciais inválidas');
+        error.code = 401;
+        throw error;
+      }
 
-    const senhaMatch = await bcrypt.compare(senha, enfermeiro.senha);
-    if (!senhaMatch) {
-      const error = new Error('Credenciais inválidas');
-      error.code = 401;
-      throw error;
-    }
+      console.log(enfermeiroRaw)
 
-    if (enfermeiro.ativo === false) {
-      const error = new Error('Conta desativada');
-      error.code = 403;
-      throw error;
-    }
+      console.log('Senha fornecida:', senha);
+      console.log('Senha esperada: Teste123456'); // Para debug
 
-    return new Enfermeiro({
-      ...enfermeiro,
-      senha: undefined
-    });
+      // Use a senha fornecida no login para comparar
+      const senhaMatch = await bcrypt.compare(senha, enfermeiroRaw.senha);
+      console.log('Senha match:', senhaMatch);
+      
+      if (!senhaMatch) {
+        const error = new Error('Credenciais inválidas');
+        error.code = 401;
+        throw error;
+      }
+
+      if (enfermeiroRaw.ativo === false) {
+        const error = new Error('Conta desativada');
+        error.code = 403;
+        throw error;
+      }
+
+      // Retornar a model sem a senha
+      const { senha: _, ...enfermeiroSemSenha } = enfermeiroRaw;
+      return new Enfermeiro(enfermeiroSemSenha);
+  }
+
+  async debugSenha(email) {
+    const result = await db.query(`SELECT senha FROM enfermeiros WHERE email = $1`, [email]);
+    return result.rows[0];
   }
 
   async desativar(id) {
@@ -141,6 +160,20 @@ class EnfermeirosRepository {
       DELETE FROM enfermeiros WHERE id = $1 RETURNING *
     `, [id]);
     return result.rows[0] ? new Enfermeiro(result.rows[0]) : null;
+  }
+
+  async search(searchTerm) {
+    const result = await db.query(`
+      SELECT id, nome, email, telefone, registro_coren, cargo, unidade, turno, data_admissao, especialidade, anos_experiencia, status, foto_perfil, data_cadastro, ativo
+      FROM enfermeiros 
+      WHERE nome ILIKE $1 
+         OR email ILIKE $1 
+         OR registro_coren ILIKE $1 
+         OR cargo ILIKE $1 
+         OR especialidade ILIKE $1
+    `, [`%${searchTerm}%`]);
+    
+    return result.rows.map(row => new Enfermeiro(row));
   }
 }
 

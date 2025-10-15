@@ -82,7 +82,7 @@ class EnfermeirosService {
       email: dados.email.trim().toLowerCase(),
       registro_coren: dados.registro_coren.trim(),
       telefone: dados.telefone ? dados.telefone.trim() : null,
-      senha: await bcrypt.hash(dados.senha, 10),
+      senha: dados.senha,
       cargo: dados.cargo || 'Enfermeiro',
       status: dados.status || 'Ativo',
       ativo: dados.ativo !== undefined ? dados.ativo : true
@@ -185,7 +185,7 @@ class EnfermeirosService {
           email: dados.email.trim().toLowerCase(),
           registro_coren: dados.registro_coren.trim(),
           telefone: dados.telefone ? dados.telefone.trim() : null,
-          senha: await bcrypt.hash(dados.senha, 10),
+          senha: dados.senha,
           cargo: dados.cargo || 'Enfermeiro',
           status: dados.status || 'Ativo',
           ativo: dados.ativo !== undefined ? dados.ativo : true

@@ -31,6 +31,7 @@ class AuthRoutes {
      *       required:
      *         - email
      *         - senha
+     *         - tipo
      *       properties:
      *         email:
      *           type: string
@@ -39,6 +40,10 @@ class AuthRoutes {
      *         senha:
      *           type: string
      *           example: Senha@123
+     *         tipo:
+     *           type: string
+     *           enum: [paciente, enfermeiro]
+     *           example: paciente
      *     LoginResponse:
      *       type: object
      *       properties:
@@ -54,12 +59,15 @@ class AuthRoutes {
      *             email:
      *               type: string
      *               example: usuario@example.com
+     *             tipo:
+     *               type: string
+     *               example: paciente
      *             genero:
-     *                type: string
-     *                example: man
+     *               type: string
+     *               example: man
      *             idade:
-     *                type: integer
-     *                example: 17
+     *               type: integer
+     *               example: 17
      *         token:
      *           type: string
      *           description: Token JWT para autenticação
@@ -69,7 +77,7 @@ class AuthRoutes {
      * @swagger
      * /auth/login:
      *   post:
-     *     summary: Autentica um usuário
+     *     summary: Autentica um usuário (paciente ou enfermeiro)
      *     tags: [Autenticação]
      *     requestBody:
      *       required: true
@@ -107,7 +115,17 @@ class AuthRoutes {
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Usuario'
+     *               type: object
+     *               properties:
+     *                 id:
+     *                   type: integer
+     *                 nome:
+     *                   type: string
+     *                 email:
+     *                   type: string
+     *                 tipo:
+     *                   type: string
+     *                   enum: [paciente, enfermeiro]
      *       401:
      *         description: Token inválido ou não fornecido
      *       404:
@@ -115,7 +133,7 @@ class AuthRoutes {
      */
     this.router.get('/me', authMiddleware, authController.me);
 
-    // Request OTP (exemplo: para quem não está autenticado, remova authMiddleware, se quiser proteger, adicione)
+    // Request OTP
     /**
      * @swagger
      * /auth/request-otp:
