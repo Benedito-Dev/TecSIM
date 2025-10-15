@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const path = require('path');
 const pacientesRoutes = require('./routes/pacientesRoutes');
 const medicosRoutes = require('./routes/medicoRoutes');
+const enfermeiroRoutes = require('./routes/enfermeirosRoutes')
 const authRoutes = require('./routes/authRoutes');
 const dbInit = require('./db/dbinit');
 const swaggerUi = require('swagger-ui-express');
@@ -45,7 +46,8 @@ class Server {
     this.app.use('/medicamentos', medicamentoRoutes);
     this.app.use('/bulas', bulaRoutes);
     this.app.use('/prescricoes', prescricaoRoutes);
-    this.app.use('/lembretes', lembretesRoutes)
+    this.app.use('/lembretes', lembretesRoutes);
+    this.app.use('/enfermeiros', enfermeiroRoutes)
 
     // Rota base
     this.app.get('/', (req, res) => {

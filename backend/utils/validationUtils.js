@@ -36,6 +36,7 @@ function isValidCPF(cpf) {
 
 // Validação de email
 function isValidEmail(email) {
+  console.log(email)
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
