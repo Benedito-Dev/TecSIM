@@ -55,6 +55,30 @@ const tables = [
     `
   },
   {
+    name: 'enfermeiros',
+    createQuery: `
+      CREATE TABLE enfermeiros (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        email VARCHAR(150) UNIQUE NOT NULL,
+        senha VARCHAR(255) NOT NULL,
+        telefone VARCHAR(16) NOT NULL,
+        registro_coren VARCHAR(30) UNIQUE NOT NULL,
+        cargo VARCHAR(100) DEFAULT 'Enfermeiro',
+        unidade VARCHAR(150),
+        turno VARCHAR(50),
+        data_admissao DATE,
+        especialidade VARCHAR(100),
+        anos_experiencia INTEGER,
+        status VARCHAR(20) DEFAULT 'Ativo' CHECK (status IN ('Ativo', 'Inativo', 'Férias', 'Licença')),
+        foto_perfil TEXT,
+        data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        ativo BOOLEAN DEFAULT TRUE
+      );
+    `
+  },
+  {
     name: 'medicamentos',
     createQuery: `
       CREATE TABLE medicamentos (

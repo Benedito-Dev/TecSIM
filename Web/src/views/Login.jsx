@@ -9,7 +9,7 @@ import { login, getCurrentUser } from '../services/auth/authService';
 
 import { useAuth } from '../context/UserContext';
 
-export default function LoginPage() {
+export default function LoginEnfermeiroPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,14 +27,14 @@ export default function LoginPage() {
   const { setUser } = useAuth();
 
   useEffect(() => {
-    console.log('✅ LoginPage montou');
+    console.log('✅ LoginEnfermeiroPage montou');
     
     // Contador regressivo do cooldown
     if (cooldown > 0) {
       timerRef.current = setTimeout(() => setCooldown(cooldown - 1), 1000);
     }
     return () => {
-      console.log('🔄 LoginPage desmontou');
+      console.log('🔄 LoginEnfermeiroPage desmontou');
       clearTimeout(timerRef.current);
     };
   }, [cooldown]);
@@ -46,7 +46,7 @@ export default function LoginPage() {
       e.stopPropagation();
     }
     
-    console.log('🟡 handleLogin chamado');
+    console.log('🟡 handleLogin chamado - ENFERMEIRO');
 
     if (!allValid) {
       console.log('🔴 Campos inválidos');
@@ -64,23 +64,37 @@ export default function LoginPage() {
     setSuccessMessage('');
 
     try {
-      console.log('🟡 Fazendo requisição de login...');
-      const response = await login(email, password);
+      console.log('🟡 Fazendo requisição de login como ENFERMEIRO...');
+      
+      // Login específico para enfermeiros
+      const response = await login(email, password, 'enfermeiro');
       const userData = await getCurrentUser();
-      setUser(userData)
+      
+      // Verifica se o usuário retornado é realmente um enfermeiro
+      if (userData.tipo !== 'enfermeiro') {
+        throw new Error('Acesso permitido apenas para enfermeiros');
+      }
+      
+      setUser(userData);
 
-      console.log('✅ Login bem-sucedido:', response);
+      console.log('✅ Login de enfermeiro bem-sucedido:', response);
 
       setSuccessMessage('Login realizado com sucesso!');
       
-      console.log('🟡 Navegando para dashboard...');
+      console.log('🟡 Navegando para dashboard de enfermeiro...');
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/dashboard'); // Rota específica para enfermeiros
       }, 1000);
 
     } catch (error) {
-      console.log('🔴 Erro no login:', error);
+      console.log('🔴 Erro no login de enfermeiro:', error);
       let msg = error.message || 'Erro ao realizar login.';
+      
+      // Tratamento específico para erro de tipo de usuário
+      if (msg.includes('enfermeiro') || msg.includes('tipo') || msg.includes('permitido')) {
+        msg = 'Acesso permitido apenas para enfermeiros cadastrados.';
+      }
+      
       let seconds = error.cooldown || 10;
 
       setCooldown(seconds);
@@ -98,17 +112,22 @@ export default function LoginPage() {
     setErrorMessage('Mensagem de teste - sem recarregar');
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-gray-50 to-gray-100 relative">
+  // Função para redirecionar para login de paciente
+  const handleRedirectToPaciente = () => {
+    navigate('/login'); // Rota padrão de login (pacientes)
+  };
 
-      {/* Faixa azul no topo */}
-      <div className="absolute top-0 left-0 w-full h-40 bg-sky-600 rounded-b-3xl shadow-md z-0"></div>
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-blue-50 to-blue-100 relative">
+
+      {/* Faixa azul escuro no topo (diferente do paciente) */}
+      <div className="absolute top-0 left-0 w-full h-40 bg-blue-700 rounded-b-3xl shadow-md z-0"></div>
 
       {/* Container principal */}
       <div className="flex flex-col items-center w-full max-w-md z-10 mt-16 px-4">
 
         {/* Logo */}
-        <div className="bg-white p-4 rounded-full shadow-lg mb-6">
+        <div className="bg-white p-4 rounded-full shadow-lg mb-6 border-2 border-blue-200">
           <img
             src={logoImage}
             alt="Logo do Sistema"
@@ -117,26 +136,38 @@ export default function LoginPage() {
         </div>
 
         {/* Card de Inputs */}
-        <div className="w-full bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center space-y-6">
+        <div className="w-full bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center space-y-6 border border-blue-100">
           <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-4">
-            Bem-vindo de volta
+            Área do Enfermeiro
           </h1>
           <p className="text-gray-600 text-center mb-6">
-            Entre com seu e-mail e senha para continuar
+            Entre com seu e-mail e senha para acessar o sistema
           </p>
 
-          <EmailInput
-            value={email}
-            onChangeText={setEmail}
-            onValidityChange={setValidEmail}
-            theme={lightTheme}
-          />
+          <div className="w-full">
+            <label className="block text-sm font-medium text-blue-700 mb-2">
+              E-mail Profissional
+            </label>
+            <EmailInput
+              value={email}
+              onChangeText={setEmail}
+              onValidityChange={setValidEmail}
+              theme={lightTheme}
+              placeholder="seu.email@hospital.com"
+            />
+          </div>
 
-          <PasswordInput
-            onChangeText={setPassword}
-            onValidityChange={setValidPassword}
-            theme={lightTheme}
-          />
+          <div className="w-full">
+            <label className="block text-sm font-medium text-blue-700 mb-2">
+              Senha
+            </label>
+            <PasswordInput
+              onChangeText={setPassword}
+              onValidityChange={setValidPassword}
+              theme={lightTheme}
+              placeholder="Sua senha de acesso"
+            />
+          </div>
         </div>
 
         {/* Mensagem de sucesso */}
@@ -166,11 +197,11 @@ export default function LoginPage() {
           disabled={!allValid || cooldown > 0 || loading}
           className={`mt-8 w-full py-4 rounded-xl font-bold text-white text-lg transition-all duration-300 shadow-md
             ${allValid && cooldown === 0 && !loading
-              ? 'bg-blue-600 hover:bg-blue-700 hover:scale-105'
+              ? 'bg-blue-700 hover:bg-blue-800 hover:scale-105'
               : 'bg-gray-400 cursor-not-allowed'
             }`}
         >
-          {loading ? 'Entrando...' : 'Entrar'}
+          {loading ? 'Entrando...' : 'Entrar como Enfermeiro'}
         </button>
 
         {/* Botão Teste */}
@@ -181,16 +212,23 @@ export default function LoginPage() {
           Teste (Sem API)
         </button>
 
-        {/* Link para Registro */}
+        {/* Link para login de paciente */}
         <p className="mt-6 text-gray-700 text-sm">
-          Não tem conta?{' '}
+          É paciente?{' '}
           <button 
-            onClick={() => navigate('/register')}
+            onClick={handleRedirectToPaciente}
             className="font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
           >
-            Cadastre-se aqui
+            Faça login como paciente
           </button>
         </p>
+
+        {/* Informação adicional para enfermeiros */}
+        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-xs text-blue-700 text-center">
+            💡 Acesso restrito a enfermeiros cadastrados no sistema
+          </p>
+        </div>
       </div>
     </div>
   );

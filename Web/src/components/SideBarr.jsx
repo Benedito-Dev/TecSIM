@@ -37,7 +37,7 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`fixed top-0 left-0 h-full bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300 ease-in-out z-50 ${
+      className={`fixed top-20 left-0 h-[calc(100vh-5rem)] bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300 ease-in-out z-50 ${
         isOpen ? "w-60" : "w-20"
       }`}
     >
@@ -55,7 +55,7 @@ export default function Sidebar() {
       </div>
 
       {/* Links de navegação */}
-      <nav className="flex-1 p-3 space-y-2">
+      <nav className="flex-1 p-3 space-y-2 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
@@ -77,14 +77,14 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Logout */}
-      <div className="p-4 border-t border-blue-600">
+      {/* Logout - FIXADO NO FINAL */}
+      <div className="mt-auto p-4 border-t border-blue-600 bg-blue-700">
         <button 
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-red-600 transition-all text-red-100 hover:text-white"
+          className="flex items-center justify-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-red-600 transition-all text-red-100 hover:text-white font-medium"
         >
           <LogOut size={20} />
-          {isOpen && <span className="font-medium">Sair</span>}
+          {isOpen && <span>Sair</span>}
         </button>
       </div>
     </div>
