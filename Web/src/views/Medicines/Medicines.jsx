@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/SideBarr";
 import { FaPills, FaSearch, FaSpinner } from "react-icons/fa";
-
+import { useTheme } from "../../context/ThemeContext";
 import { getMedicamentos } from '../../services/medicamentosService';
 
 const Medicamentos = () => {
@@ -10,6 +10,7 @@ const Medicamentos = () => {
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { theme, mode } = useTheme();
 
   useEffect(() => {
     async function fetchMedicamentos() {
@@ -42,7 +43,6 @@ const Medicamentos = () => {
   );
 
   const formatPrice = (medicamento) => {
-    // Simulação de preço baseada no tipo do medicamento
     const priceMap = {
       "Analgésico": "R$ 12,00",
       "Anti-inflamatório": "R$ 15,00", 
@@ -53,54 +53,86 @@ const Medicamentos = () => {
   };
 
   const handleAddMedicamento = (medicamento) => {
-    // Aqui você pode implementar a lógica para adicionar ao carrinho ou lista pessoal
     console.log("Medicamento adicionado:", medicamento);
     alert(`${medicamento.nome} adicionado à sua lista!`);
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div 
+      className="flex h-screen"
+      style={{ background: theme.background }}
+    >
       {/* Sidebar */}
       <Sidebar />
 
       {/* Conteúdo principal */}
-      <div className="flex-1 flex flex-col transition-all  duration-300">
+      <div className="flex-1 flex flex-col transition-all duration-300">
         {/* Navbar */}
-        <div className="h-20 bg-sky-600 shadow flex items-center px-6 sticky top-0 z-10">
-          <h1 className="text-3xl font-bold text-white">Medicamentos</h1>
+        <div 
+          className="h-20 shadow flex items-center px-6 sticky top-0 z-10"
+          style={{ 
+            background: theme.primary,
+            color: theme.textOnPrimary
+          }}
+        >
+          <h1 className="text-3xl font-bold">Medicamentos</h1>
         </div>
 
         {/* Conteúdo da lista */}
-        <div className="p-6 overflow-y-auto flex-1 ml-20 lg:ml-60">
+        <div 
+          className="p-6 overflow-y-auto flex-1 ml-20 lg:ml-60"
+          style={{ color: theme.textPrimary }}
+        >
           {/* Barra de busca */}
           <div className="relative mb-6">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaSearch className="text-gray-400" />
+              <FaSearch style={{ color: theme.textMuted }} />
             </div>
             <input
               type="text"
               placeholder="Buscar por nome, tipo ou descrição..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition-all duration-200"
+              style={{
+                background: theme.backgroundCard,
+                border: `1px solid ${theme.border}`,
+                color: theme.textPrimary
+              }}
+              className="w-full pl-10 p-3 rounded-xl focus:outline-none focus:ring-2 transition-all duration-200"
             />
           </div>
 
           {/* Loading State */}
           {isLoading && (
             <div className="flex flex-col items-center justify-center py-12">
-              <FaSpinner className="animate-spin text-sky-600 text-4xl mb-4" />
-              <p className="text-gray-600 text-lg">Carregando medicamentos...</p>
+              <FaSpinner 
+                className="animate-spin text-4xl mb-4" 
+                style={{ color: theme.primary }}
+              />
+              <p style={{ color: theme.textSecondary }}>
+                Carregando medicamentos...
+              </p>
             </div>
           )}
 
           {/* Error State */}
           {error && !isLoading && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-              <p className="text-red-600 font-medium">{error}</p>
+            <div 
+              className="border rounded-xl p-6 text-center"
+              style={{
+                background: theme.backgroundSecondary,
+                borderColor: theme.error,
+                color: theme.textPrimary
+              }}
+            >
+              <p style={{ color: theme.error }} className="font-medium">{error}</p>
               <button 
                 onClick={() => window.location.reload()}
-                className="mt-3 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                style={{
+                  background: theme.error,
+                  color: theme.textOnError
+                }}
+                className="mt-3 px-4 py-2 rounded-lg hover:opacity-90 transition-colors"
               >
                 Tentar Novamente
               </button>
@@ -110,14 +142,18 @@ const Medicamentos = () => {
           {/* Empty State */}
           {!isLoading && !error && filteredMedicamentos.length === 0 && (
             <div className="text-center py-12">
-              <FaPills className="text-gray-300 text-6xl mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">
+              <FaPills 
+                className="text-6xl mx-auto mb-4"
+                style={{ color: theme.textMuted }}
+              />
+              <p style={{ color: theme.textSecondary }}>
                 {search ? "Nenhum medicamento encontrado para sua busca." : "Nenhum medicamento cadastrado."}
               </p>
               {search && (
                 <button 
                   onClick={() => setSearch("")}
-                  className="mt-2 text-sky-600 hover:text-sky-700 underline"
+                  style={{ color: theme.primary }}
+                  className="mt-2 hover:opacity-80 underline transition-colors"
                 >
                   Limpar busca
                 </button>
@@ -128,7 +164,10 @@ const Medicamentos = () => {
           {/* Lista de Medicamentos */}
           {!isLoading && !error && filteredMedicamentos.length > 0 && (
             <div className="space-y-4">
-              <p className="text-gray-600 text-sm">
+              <p 
+                className="text-sm"
+                style={{ color: theme.textSecondary }}
+              >
                 {filteredMedicamentos.length} medicamento(s) encontrado(s)
                 {search && ` para "${search}"`}
               </p>
@@ -136,36 +175,60 @@ const Medicamentos = () => {
               {filteredMedicamentos.map((med) => (
                 <div
                   key={med.id_medicamento}
-                  className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
+                  style={{
+                    background: theme.backgroundCard,
+                    border: `1px solid ${theme.border}`,
+                    color: theme.textPrimary
+                  }}
+                  className="p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4 flex-1">
-                      <div className="text-sky-600 text-2xl mt-1">
+                      <div 
+                        className="text-2xl mt-1"
+                        style={{ color: theme.primary }}
+                      >
                         <FaPills />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-bold text-xl text-gray-900">{med.nome}</h3>
-                          <span className="bg-sky-100 text-sky-800 text-xs font-medium px-2 py-1 rounded-full">
+                          <h3 
+                            className="font-bold text-xl"
+                            style={{ color: theme.textPrimary }}
+                          >
+                            {med.nome}
+                          </h3>
+                          <span 
+                            className="text-xs font-medium px-2 py-1 rounded-full"
+                            style={{
+                              background: theme.primaryLight,
+                              color: theme.primary
+                            }}
+                          >
                             {med.tipo}
                           </span>
                         </div>
-                        <p className="text-gray-600 mb-3">{med.descricao}</p>
+                        <p 
+                          className="mb-3"
+                          style={{ color: theme.textSecondary }}
+                        >
+                          {med.descricao}
+                        </p>
                         
                         {/* Informações detalhadas */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-500">
-                          <div>
-                            <span className="font-medium">Composição:</span> {med.composicao}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                          <div style={{ color: theme.textSecondary }}>
+                            <span style={{ color: theme.textPrimary }} className="font-medium">Composição:</span> {med.composicao}
                           </div>
-                          <div>
-                            <span className="font-medium">Dosagem:</span> {med.dosagem_padrao}
+                          <div style={{ color: theme.textSecondary }}>
+                            <span style={{ color: theme.textPrimary }} className="font-medium">Dosagem:</span> {med.dosagem_padrao}
                           </div>
-                          <div>
-                            <span className="font-medium">Faixa Etária:</span> {med.faixa_etaria_minima} - {med.faixa_etaria_maxima} anos
+                          <div style={{ color: theme.textSecondary }}>
+                            <span style={{ color: theme.textPrimary }} className="font-medium">Faixa Etária:</span> {med.faixa_etaria_minima} - {med.faixa_etaria_maxima} anos
                           </div>
                           {med.contraindicacoes && (
-                            <div>
-                              <span className="font-medium text-red-600">Cuidado:</span> {med.contraindicacoes}
+                            <div style={{ color: theme.error }}>
+                              <span className="font-medium">Cuidado:</span> {med.contraindicacoes}
                             </div>
                           )}
                         </div>
@@ -173,20 +236,37 @@ const Medicamentos = () => {
                         {/* Interações */}
                         {med.interacoes_comuns && (
                           <div className="mt-2">
-                            <span className="font-medium text-orange-600 text-sm">Interações:</span> 
-                            <span className="text-sm text-gray-600 ml-1">{med.interacoes_comuns}</span>
+                            <span 
+                              className="font-medium text-sm"
+                              style={{ color: theme.warning }}
+                            >
+                              Interações:
+                            </span> 
+                            <span 
+                              className="text-sm ml-1"
+                              style={{ color: theme.textSecondary }}
+                            >
+                              {med.interacoes_comuns}
+                            </span>
                           </div>
                         )}
                       </div>
                     </div>
 
                     <div className="flex flex-col items-end gap-3 ml-4">
-                      <span className="font-bold text-xl text-gray-900">
+                      <span 
+                        className="font-bold text-xl"
+                        style={{ color: theme.textPrimary }}
+                      >
                         {formatPrice(med)}
                       </span>
                       <button 
                         onClick={() => handleAddMedicamento(med)}
-                        className="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition-colors font-medium flex items-center gap-2"
+                        style={{
+                          background: theme.primary,
+                          color: theme.textOnPrimary
+                        }}
+                        className="px-4 py-2 rounded-lg hover:opacity-90 transition-colors font-medium flex items-center gap-2"
                       >
                         <FaPills size={14} />
                         Adicionar
@@ -196,7 +276,8 @@ const Medicamentos = () => {
                           href={med.bula_detalhada}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sky-600 hover:text-sky-700 text-sm underline"
+                          style={{ color: theme.primary }}
+                          className="hover:opacity-80 text-sm underline transition-colors"
                         >
                           Ver bula completa
                         </a>

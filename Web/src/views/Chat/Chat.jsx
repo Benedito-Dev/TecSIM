@@ -1,15 +1,16 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { 
-    Send, Dot, ChevronLeft, Info, Home, User, MessageSquare, LogOut, 
-    Menu, X, Pill, FileText, Clock, Settings, AlertTriangle, CheckCircle 
+    Send, Dot, ChevronLeft, User, Pill, FileText, Clock, AlertTriangle, CheckCircle 
 } from 'lucide-react'; 
 
 import Sidebar from '../../components/SideBarr';
+
+
 import { useAuth } from '../../context/UserContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useElderMode } from '../../context/ElderModeContext';
 import { getAIResponse } from '../../services/aiService';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // ==================== UTILS DE TRIAGEM ====================
 
@@ -320,8 +321,9 @@ const BouncingDots = ({ color = '#00c4cd' }) => {
 };
 
 // Componente QuickActionButtons
-const QuickActionButtons = ({ onButtonPress, isLoading, theme }) => {
+const QuickActionButtons = ({ onButtonPress, isLoading }) => {
     const { fontSize } = useElderMode();
+    const { theme } = useContext(ThemeContext);
     
     const quickSymptoms = [
         {
@@ -387,7 +389,13 @@ const QuickActionButtons = ({ onButtonPress, isLoading, theme }) => {
         <div className="w-full px-4 max-w-4xl mx-auto">
             {/* Sintomas Comuns */}
             <div className="mb-4">
-                <h3 className="text-sm font-semibold text-gray-600 mb-2" style={{ fontSize: `${fontSize * 0.9}px` }}>
+                <h3 
+                    className="text-sm font-semibold mb-2"
+                    style={{ 
+                        fontSize: `${fontSize * 0.9}px`,
+                        color: theme.textSecondary 
+                    }}
+                >
                     Sintomas Comuns:
                 </h3>
                 <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide">
@@ -396,44 +404,50 @@ const QuickActionButtons = ({ onButtonPress, isLoading, theme }) => {
                             key={action.id}
                             onClick={() => handlePress(action.message)}
                             disabled={isLoading}
-                            className="flex items-center gap-2 px-4 py-3 bg-white border border-blue-200 text-blue-700 rounded-xl hover:bg-blue-50 transition-all duration-200 whitespace-nowrap flex-shrink-0 disabled:opacity-50"
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl border transition-all duration-200 whitespace-nowrap flex-shrink-0 disabled:opacity-50 hover:scale-105"
+                            style={{
+                                background: theme.backgroundCard,
+                                borderColor: theme.primary,
+                                color: theme.primary
+                            }}
                         >
                             <span className="text-lg">{action.icon}</span>
-                            <span className="text-sm font-medium">{action.title}</span>
+                            <span 
+                                className="text-sm font-medium"
+                                style={{ fontSize: `${fontSize * 0.85}px` }}
+                            >
+                                {action.title}
+                            </span>
                         </button>
                     ))}
                 </div>
             </div>
             
-            {/* Ações rápidas originais */}
+            {/* Ações Rápidas */}
             <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide">
                 {quickActions.map((action) => (
                     <button
                         key={action.id}
                         onClick={() => handlePress(action.message)}
                         disabled={isLoading}
-                        className={`
-                            flex items-center gap-2 px-4 py-3 rounded-xl border transition-all duration-200 whitespace-nowrap flex-shrink-0
-                            ${isLoading 
-                                ? 'bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed' 
-                                : `bg-white border-${theme.primary} text-${theme.primary} hover:bg-${theme.primary} hover:text-white cursor-pointer`
-                            }
-                        `}
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl border transition-all duration-200 whitespace-nowrap flex-shrink-0 disabled:opacity-50 hover:scale-105"
                         style={{
-                            borderColor: isLoading ? '#d1d5db' : theme.primary,
-                            color: isLoading ? '#9ca3af' : theme.primary,
-                            backgroundColor: isLoading ? '#f3f4f6' : '#ffffff'
+                            background: theme.backgroundCard,
+                            borderColor: isLoading ? theme.borderLight : theme.primary,
+                            color: isLoading ? theme.textMuted : theme.primary
                         }}
                     >
                         <div 
                             style={{ 
-                                color: isLoading ? '#9ca3af' : theme.primary 
+                                color: isLoading ? theme.textMuted : theme.primary 
                             }}
-                            className="transition-colors duration-200"
                         >
                             {action.icon}
                         </div>
-                        <span className="text-sm font-medium transition-colors duration-200">
+                        <span 
+                            className="text-sm font-medium"
+                            style={{ fontSize: `${fontSize * 0.85}px` }}
+                        >
                             {action.title}
                         </span>
                     </button>
@@ -744,47 +758,71 @@ export default function ChatScreen() {
                         msg.isBot 
                             ? isTriage 
                                 ? msg.isTriageResult
-                                    ? 'bg-green-50 border-2 border-green-200'
-                                    : 'bg-blue-50 border-2 border-blue-200'
-                                : 'bg-white border border-gray-200'
-                            : 'bg-blue-500 text-white'
-                    } ${
-                        msg.text.startsWith('⚠️') && 'bg-red-50 border border-red-200'
+                                    ? 'border-2'
+                                    : 'border-2'
+                                : 'border'
+                            : ''
                     }`}
+                    style={{
+                        background: msg.isBot 
+                            ? isTriage 
+                                ? msg.isTriageResult
+                                    ? theme.success + '20' // Fundo verde claro para resultado
+                                    : theme.primaryLight // Fundo azul claro para triagem
+                                : theme.backgroundCard // Fundo do card normal
+                            : theme.primary, // Fundo azul para usuário
+                        borderColor: msg.isBot 
+                            ? isTriage 
+                                ? msg.isTriageResult
+                                    ? theme.success
+                                    : theme.primary
+                                : theme.border
+                            : theme.primary,
+                        color: msg.isBot 
+                            ? isTriage 
+                                ? msg.isTriageResult
+                                    ? theme.success
+                                    : theme.primary
+                                : theme.textPrimary
+                            : theme.textOnPrimary
+                    }}
                 >
                     {msg.isBot && (
-                        <div className="text-xs font-semibold mb-1 flex items-center gap-2" 
-                             style={{ fontSize: `${fontSize * 0.75}px` }}>
+                        <div 
+                            className="text-xs font-semibold mb-1 flex items-center gap-2" 
+                            style={{ 
+                                fontSize: `${fontSize * 0.75}px`,
+                                color: isTriage 
+                                    ? msg.isTriageResult
+                                        ? theme.success
+                                        : theme.primary
+                                    : theme.textSecondary
+                            }}
+                        >
                             {isTriage ? '🔍 TecSim - Triagem' : 'TecSim'}
                             {isTriage && !msg.isTriageResult && (
-                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Triagem</span>
+                                <span 
+                                    className="text-xs px-2 py-1 rounded-full"
+                                    style={{
+                                        background: theme.primary + '20',
+                                        color: theme.primary
+                                    }}
+                                >
+                                    Triagem
+                                </span>
                             )}
                         </div>
                     )}
                     <div 
                         style={{ fontSize: `${fontSize}px` }}
-                        className={`whitespace-pre-wrap ${
-                            msg.isBot 
-                                ? msg.text.startsWith('⚠️') 
-                                    ? 'text-red-700' 
-                                    : isTriage
-                                        ? msg.isTriageResult
-                                            ? 'text-green-800'
-                                            : 'text-blue-800'
-                                        : 'text-gray-800'
-                                : 'text-white'
-                        }`}
+                        className="whitespace-pre-wrap"
                     >
                         {msg.text}
                     </div>
-                    <div className={`text-xs mt-2 ${
-                        msg.isBot 
-                            ? isTriage 
-                                ? msg.isTriageResult ? 'text-green-500' : 'text-blue-500'
-                                : 'text-gray-400'
-                            : 'text-blue-200'
-                    }`} 
-                         style={{ fontSize: `${fontSize * 0.7}px` }} >
+                    <div 
+                        className="text-xs mt-2 opacity-70"
+                        style={{ fontSize: `${fontSize * 0.7}px` }}
+                    >
                         {msg.time}
                     </div>
                 </div>
@@ -793,7 +831,10 @@ export default function ChatScreen() {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50 font-sans">
+        <div 
+            className="flex flex-col h-screen font-sans"
+            style={{ background: theme.background }}
+        >
             
             {/* SIDEBAR DE NAVEGAÇÃO */}
             <Sidebar />
@@ -805,7 +846,7 @@ export default function ChatScreen() {
                 <div 
                     className="shadow-lg z-10 w-full h-20 flex-shrink-0"
                     style={{ 
-                        background: `linear-gradient(135deg, ${theme.primary || '#0048cdff'}, ${theme.secondary || '#0c87c4'})` 
+                        background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})` 
                     }}
                 >
                     <div className="py-4 text-white">
@@ -835,7 +876,10 @@ export default function ChatScreen() {
                                 </h1>
                                 <div className="flex items-center space-x-1" style={{ fontSize: `${fontSize * 0.85}px` }}>
                                     <div 
-                                        className={`w-2 h-2 rounded-full ${isLoading ? 'bg-yellow-400 animate-pulse' : 'bg-green-500'}`}
+                                        className={`w-2 h-2 rounded-full ${isLoading ? 'animate-pulse' : ''}`}
+                                        style={{
+                                            backgroundColor: isLoading ? theme.warning : theme.success
+                                        }}
                                     />
                                     <span className="font-medium">
                                         {isLoading ? 'Processando...' : emTriagem ? 'Em Triagem' : 'Online'}
@@ -850,14 +894,23 @@ export default function ChatScreen() {
                 </div>
 
                 {/* ÁREA DE MENSAGENS */}
-                <div className="flex-1 overflow-y-auto px-4 py-4 w-full h-[calc(100vh-14rem)]">
+                <div 
+                    className="flex-1 overflow-y-auto px-4 py-4 w-full h-[calc(100vh-14rem)]"
+                    style={{ background: theme.background }}
+                >
                     <div className="space-y-4 max-w-4xl mx-auto">
                         {messages.map(renderMessage)}
                         
                         {/* INDICADOR DE DIGITAÇÃO */}
                         {isLoading && (
                             <div className="flex justify-start">
-                                <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+                                <div 
+                                    className="rounded-2xl p-4 shadow-sm border"
+                                    style={{
+                                        background: theme.backgroundCard,
+                                        borderColor: theme.border
+                                    }}
+                                >
                                     <BouncingDots color={theme.primary} />
                                 </div>
                             </div>
@@ -867,7 +920,13 @@ export default function ChatScreen() {
                 </div>
 
                 {/* RODAPÉ (Ações + Input) */}
-                <div className="flex-shrink-0 w-full bg-white border-t border-gray-200">
+                <div 
+                    className="flex-shrink-0 w-full border-t"
+                    style={{
+                        background: theme.backgroundCard,
+                        borderColor: theme.border
+                    }}
+                >
                     
                     {/* BOTÕES DE AÇÃO RÁPIDA */}
                     <QuickActionButtons 
@@ -887,17 +946,31 @@ export default function ChatScreen() {
                                 placeholder={emTriagem ? "Responda à pergunta de triagem..." : "Digite sua mensagem..."}
                                 disabled={isLoading}
                                 rows={1}
-                                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed resize-none"
-                                style={{ fontSize: `${fontSize}px`, minHeight: '48px', maxHeight: '100px' }} 
+                                className="flex-1 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed resize-none"
+                                style={{ 
+                                    fontSize: `${fontSize}px`, 
+                                    minHeight: '48px', 
+                                    maxHeight: '100px',
+                                    background: theme.backgroundCard,
+                                    borderColor: theme.border,
+                                    color: theme.textPrimary
+                                }}
                             />
                             <button
                                 onClick={() => handleSendMessage()}
                                 disabled={!newMessage.trim() || isLoading}
-                                className="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center h-full"
-                                style={{ minWidth: '48px', height: '48px' }} 
+                                className="px-6 py-3 text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center h-full"
+                                style={{ 
+                                    minWidth: '48px', 
+                                    height: '48px',
+                                    background: theme.primary
+                                }} 
                             >
                                 {isLoading ? (
-                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    <div 
+                                        className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"
+                                        style={{ borderColor: theme.textOnPrimary }}
+                                    />
                                 ) : (
                                     <Send size={fontSize * 1.25} />
                                 )}
