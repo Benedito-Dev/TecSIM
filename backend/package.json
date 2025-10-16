@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test:models": "jest test/models",
+    "test:db": "jest test/db",
     "test:repository": "jest test/repository",
     "test:service": "jest test/service",
     "test:controller": "jest test/controller",

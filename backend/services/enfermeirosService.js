@@ -40,12 +40,6 @@ class EnfermeirosService {
   }
 
   static async create(dados) {
-    // Verifica se é um array (criação em lote)
-    if (Array.isArray(dados)) {
-      return await this.createBatch(dados);
-    }
-    
-    // Criação individual (código original)
     const { email, registro_coren, nome, senha } = dados;
 
     if (!email || !isValidEmail(email)) {
@@ -89,105 +83,6 @@ class EnfermeirosService {
 
     const novoEnfermeiro = await repository.create(enfermeiroData);
     return novoEnfermeiro;
-  }
-
-  static async createBatch(dadosArray) {
-    if (!Array.isArray(dadosArray)) {
-      throw new ValidationError('Para criação em lote, envie um array de enfermeiros.');
-    }
-
-    if (dadosArray.length === 0) {
-      throw new ValidationError('Array de enfermeiros vazio.');
-    }
-
-    if (dadosArray.length > 100) {
-      throw new ValidationError('Número máximo de 100 enfermeiros por lote.');
-    }
-
-    const resultados = {
-      sucesso: [],
-      erros: [],
-      total: dadosArray.length
-    };
-
-    // Validar todos os dados primeiro
-    for (let i = 0; i < dadosArray.length; i++) {
-      const dados = dadosArray[i];
-      
-      try {
-        // Validações básicas
-        if (!dados.email || !isValidEmail(dados.email)) {
-          throw new ValidationError(`Email inválido no item ${i + 1}`);
-        }
-        
-        if (!dados.registro_coren || dados.registro_coren.trim().length === 0) {
-          throw new ValidationError(`Registro COREN inválido no item ${i + 1}`);
-        }
-        
-        if (!dados.nome || dados.nome.trim().length < 3) {
-          throw new ValidationError(`Nome deve ter pelo menos 3 caracteres no item ${i + 1}`);
-        }
-
-        if (!dados.senha || dados.senha.length < 6) {
-          throw new ValidationError(`Senha deve ter pelo menos 6 caracteres no item ${i + 1}`);
-        }
-
-        // Verificar duplicatas no banco
-        const existingByEmail = await repository.findByEmail(dados.email);
-        if (existingByEmail) {
-          throw new ConflictError(`Email já cadastrado: ${dados.email}`);
-        }
-
-        const existingByCoren = await repository.findByCOREN(dados.registro_coren);
-        if (existingByCoren) {
-          throw new ConflictError(`COREN já cadastrado: ${dados.registro_coren}`);
-        }
-
-      } catch (error) {
-        resultados.erros.push({
-          indice: i,
-          dados: dados,
-          erro: error.message
-        });
-      }
-    }
-
-    // Se houver erros de validação, não prossegue
-    if (resultados.erros.length > 0) {
-      throw new ValidationError('Erros de validação no lote', resultados);
-    }
-
-    // Criar todos os enfermeiros
-    for (let i = 0; i < dadosArray.length; i++) {
-      const dados = dadosArray[i];
-      
-      try {
-        // Preparar dados e criptografar senha
-        const enfermeiroData = {
-          ...dados,
-          nome: dados.nome.trim(),
-          email: dados.email.trim().toLowerCase(),
-          registro_coren: dados.registro_coren.trim(),
-          telefone: dados.telefone ? dados.telefone.trim() : null,
-          senha: dados.senha,
-          cargo: dados.cargo || 'Enfermeiro',
-          status: dados.status || 'Ativo',
-          ativo: dados.ativo !== undefined ? dados.ativo : true
-        };
-
-        const novoEnfermeiro = await repository.create(enfermeiroData);
-        resultados.sucesso.push(novoEnfermeiro);
-
-      } catch (error) {
-        resultados.erros.push({
-          indice: i,
-          dados: dados,
-          erro: error.message
-        });
-      }
-    }
-
-    return resultados;
   }
 
   static async update(id, dados) {
