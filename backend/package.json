@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "test:models": "jest test/models",
+    "test:repository": "jest test/repository",
+    "test:service": "jest test/service",
+    "test:utils": "jest test/utils",
+    "test:watch": "jest --watch",
+    "test:all": "jest test/medicos test/pacientes test/prescricoes test/bulas test/medicamentos test/utils",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "dev": "nodemon index.js",

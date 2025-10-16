@@ -33,12 +33,17 @@ class MedicoRepository {
   }
 
   async findByCrm(crm, includeInactive = false) {
+    // Monta a query considerando se quer incluir médicos inativos ou não
     const query = includeInactive
       ? `SELECT * FROM medicos WHERE crm = $1`
       : `SELECT * FROM medicos WHERE crm = $1 AND ativo = true`;
-    
+
     const result = await db.query(query, [crm]);
-    return result.rows[0] ? new Medico(result.rows[0]) : null;
+
+    // Retorna null se não encontrou, ou instancia o modelo Medico
+    if (!result.rows || result.rows.length === 0) return null;
+
+    return new Medico(result.rows[0]);
   }
 
   async create({ nome, crm, especialidade, email, senha, telefone }) {

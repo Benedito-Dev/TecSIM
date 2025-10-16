@@ -1,9 +1,9 @@
-const db = require('../db/db');
-const PrescricaoRepository = require('../repository/prescricaoRepository');
-const Prescricao = require('../models/prescricaoModel');
-const { NotFoundError, DatabaseError } = require('../utils/errors');
+const db = require('../../db/db');
+const PrescricaoRepository = require('../../repository/prescricaoRepository');
+const Prescricao = require('../../models/prescricaoModel');
+const { NotFoundError, DatabaseError } = require('../../utils/errors');
 
-jest.mock('../db/db');
+jest.mock('../../db/db');
 
 const mockPrescricaoData = {
   id: 1,

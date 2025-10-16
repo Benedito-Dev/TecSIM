@@ -1,9 +1,9 @@
-const db = require('../db/db');
+const db = require('../../db/db');
 const bcrypt = require('bcrypt');
-const PacienteRepository = require('../repository/pacientesRepository')
-const Paciente = require('../models/pacienteModel');
+const PacienteRepository = require('../../repository/pacientesRepository')
+const Paciente = require('../../models/pacienteModel');
 
-jest.mock('../db/db');
+jest.mock('../../db/db');
 jest.mock('bcrypt');
 
 const mockPacienteData = {

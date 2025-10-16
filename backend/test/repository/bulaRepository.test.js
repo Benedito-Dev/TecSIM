@@ -1,8 +1,8 @@
-const BulaRepository = require('../repository/bulaRepository.js');
-const db = require('../db/db');
-const Bula = require('../models/bulaModel.js');
+const BulaRepository = require('../../repository/bulaRepository.js');
+const db = require('../../db/db.js');
+const Bula = require('../../models/bulaModel.js');
 
-jest.mock('../db/db'); // Mock do db
+jest.mock('../../db/db'); // Mock do db
 
 describe('BulaRepository', () => {
 

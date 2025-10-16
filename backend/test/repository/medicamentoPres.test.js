@@ -1,8 +1,8 @@
-const MedicamentoPrescritoRepository = require('../repository/medicamentosPrescritosRepository')
-const db = require('../db/db');
-const { NotFoundError, DatabaseError } = require('../utils/errors');
+const MedicamentoPrescritoRepository = require('../../repository/medicamentosPrescritosRepository')
+const db = require('../../db/db');
+const { NotFoundError, DatabaseError } = require('../../utils/errors');
 
-jest.mock('../db/db');
+jest.mock('../../db/db');
 
 describe('MedicamentoPrescritoRepository', () => {
   afterEach(() => {

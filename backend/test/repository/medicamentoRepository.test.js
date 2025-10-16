@@ -1,7 +1,23 @@
-const MedicamentoRepository = require('../repository/medicamentoRepository');
-const db = require('../db/db');
+const MedicamentoRepository = require('../../repository/medicamentoRepository');
+const db = require('../../db/db');
 
-jest.mock('../db/db');
+jest.mock('../../db/db');
+
+// Mock do console para evitar "vazamento" de logs nos testes
+beforeAll(() => {
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  console.log.mockRestore();
+  console.error.mockRestore();
+});
+
+// Ou para cada teste individualmente:
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('MedicamentoRepository', () => {
   afterEach(() => {

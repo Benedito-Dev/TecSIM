@@ -43,7 +43,8 @@ function isValidEmail(email) {
 
 // Validação de telefone
 function isValidPhone(phone) {
-  const phoneRegex = /^\(?\d{2}\)?[\s-]?[\s9]?\d{4}-?\d{4}$/;
+  if (!phone) return false;
+  const phoneRegex = /^\(?\d{2}\)?[\s-]?[\s9]?\d{4,5}[- ]?\d{4}$/;
   return phoneRegex.test(phone);
 }
 
@@ -66,9 +67,11 @@ function isValidPassword(password) {
   return password.length >= 6;
 }
 
-// Remove caracteres especiais
+// Remove caracteres especiais - VERSÃO CORRIGIDA
 function removeSpecialChars(str) {
-  return str.replace(/[^\w\s]/gi, '');
+  if (!str) return '';
+  // Mantém letras (incluindo acentuadas), números e espaços
+  return str.replace(/[^a-zA-ZÀ-ÿ0-9\s]/g, '');
 }
 
 // Formata CPF
@@ -88,8 +91,37 @@ function formatPhone(phone) {
 
 // Validação de data
 function isValidDate(dateString) {
-  const date = new Date(dateString);
-  return date instanceof Date && !isNaN(date);
+  if (!dateString || typeof dateString !== 'string') return false;
+  
+  // Regex para formato YYYY-MM-DD
+  const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
+  if (!regex.test(dateString)) return false;
+  
+  const [, year, month, day] = regex.exec(dateString);
+  const yearNum = parseInt(year, 10);
+  const monthNum = parseInt(month, 10);
+  const dayNum = parseInt(day, 10);
+  
+  // Validações básicas
+  if (monthNum < 1 || monthNum > 12) return false;
+  if (dayNum < 1 || dayNum > 31) return false;
+  
+  // Validação específica por mês
+  const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  
+  // Ajuste para ano bissexto
+  if (monthNum === 2) {
+    const isLeapYear = (yearNum % 4 === 0 && yearNum % 100 !== 0) || (yearNum % 400 === 0);
+    if (isLeapYear) {
+      if (dayNum > 29) return false;
+    } else {
+      if (dayNum > 28) return false;
+    }
+  } else if (dayNum > daysInMonth[monthNum - 1]) {
+    return false;
+  }
+  
+  return true;
 }
 
 // Validação de idade mínima
