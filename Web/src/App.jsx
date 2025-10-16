@@ -17,6 +17,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import { RegisterProvider } from './context/RegisterContext';
 import { AuthProvider } from './context/UserContext'
 import { ElderModeProvider } from './context/ElderModeContext'
+import NewClient from './views/clients/NewClient';
+import FormPacient from './views/clients/FormPacient';
 
 export default function App() {
   return (
@@ -39,6 +41,8 @@ export default function App() {
                 <Route path="/prescricoes" element={<Prescricao />} />
                 <Route path="ajustes" element={<Ajustes />} />
                 <Route path='/clientes' element={<Clients />} />
+                <Route path='/novocliente' element={<NewClient/>}/>
+                <Route path='/formpacient' element={<FormPacient/>}/>
               </Routes>
             </RegisterProvider> 
             
