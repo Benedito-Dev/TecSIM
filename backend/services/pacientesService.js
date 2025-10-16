@@ -11,7 +11,10 @@ class PacienteService {
   }
 
   static async getById(id) {
-    if (isNaN(id)) throw new ValidationError('ID inválido. Informe um número válido.');
+    // Validação mais robusta
+    if (id === null || id === undefined || id === '' || isNaN(Number(id))) {
+      throw new ValidationError('ID inválido. Informe um número válido.');
+    }
     
     const paciente = await repository.findById(id);
     if (!paciente) throw new NotFoundError('Paciente não encontrado.');

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.73% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>90/95</span>
+                <span class='fraction'>95/95</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.24% </span>
+                <span class="strong">98.71% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>69/74</span>
+                <span class='fraction'>77/78</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.12% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>78/82</span>
+                <span class='fraction'>83/83</span>
             </div>
         
             
@@ -234,7 +234,10 @@
 <a name='L169'></a><a href='#L169'>169</a>
 <a name='L170'></a><a href='#L170'>170</a>
 <a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -244,15 +247,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -378,18 +384,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -418,7 +424,10 @@ class PacienteService {
   }
 &nbsp;
   static async getById(id) {
-    if (isNaN(id)) throw new ValidationError('ID inválido. Informe um número válido.');
+    // Validação mais robusta
+    if (id === null || id === undefined || id === '' || isNaN(Number(id))) {
+      throw new ValidationError('ID inválido. Informe um número válido.');
+    }
     
     const paciente = await repository.findById(id);
     if (!paciente) throw new NotFoundError('Paciente não encontrado.');
@@ -550,17 +559,17 @@ class PacienteService {
 &nbsp;
   static async verifyCredentials(email, senha) {
     const usuario = await repository.verifyCredentials(email);
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!usuario) <span class="cstat-no" title="statement not covered" >throw new Error('Credenciais inválidas');</span>
+    if (!usuario) throw new Error('Credenciais inválidas');
 &nbsp;
     const senhaMatch = await bcrypt.compare(senha, usuario.senha);
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (!senhaMatch) throw new Error('Credenciais inválidas');
+    if (!senhaMatch) throw new Error('Credenciais inválidas');
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (usuario.ativo === false) {</span>
-<span class="cstat-no" title="statement not covered" >      await repository.reativar(usuario.id);</span>
-<span class="cstat-no" title="statement not covered" >      usuario.ativo = true;</span>
+    if (usuario.ativo === false) {
+      await repository.reativar(usuario.id);
+      usuario.ativo = true;
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return new Paciente({</span>
+    return new Paciente({
       id: usuario.id,
       cpf: usuario.cpf,
       nome: usuario.nome,
@@ -583,7 +592,7 @@ module.exports = PacienteService;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-10-16T15:31:04.718Z
+                at 2025-10-16T16:21:35.542Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -132,21 +132,6 @@ class EnfermeirosService {
           throw new ValidationError(`Senha deve ter pelo menos 6 caracteres no item ${i + 1}`);
         }
 
-        // Verificar duplicatas no array
-        const emailDuplicado = dadosArray.slice(0, i).some(item => 
-          item.email.toLowerCase() === dados.email.toLowerCase()
-        );
-        if (emailDuplicado) {
-          throw new ConflictError(`Email duplicado no array: ${dados.email}`);
-        }
-
-        const corenDuplicado = dadosArray.slice(0, i).some(item => 
-          item.registro_coren === dados.registro_coren
-        );
-        if (corenDuplicado) {
-          throw new ConflictError(`COREN duplicado no array: ${dados.registro_coren}`);
-        }
-
         // Verificar duplicatas no banco
         const existingByEmail = await repository.findByEmail(dados.email);
         if (existingByEmail) {

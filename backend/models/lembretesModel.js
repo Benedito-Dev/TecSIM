@@ -79,16 +79,34 @@ class Lembrete {
 
   // Método para validar dados do lembrete
   isValid() {
-    return (
-      this.id_paciente &&
-      this.id_prescricao &&
-      this.id_medicamento &&
-      this.horario &&
-      this.data_inicio &&
-      this.data_fim &&
-      this.canal_envio &&
-      new Date(this.data_inicio) <= new Date(this.data_fim)
-    );
+    // Verificar campos obrigatórios
+    const camposObrigatorios = [
+      'id_paciente',
+      'id_prescricao', 
+      'id_medicamento',
+      'horario',
+      'data_inicio',
+      'data_fim',
+      'canal_envio'
+    ];
+
+    for (const campo of camposObrigatorios) {
+      if (this[campo] === undefined || this[campo] === null || this[campo] === '') {
+        return false;
+      }
+    }
+
+    // Verificar se data_inicio não é depois de data_fim
+    if (new Date(this.data_inicio) > new Date(this.data_fim)) {
+      return false;
+    }
+
+    // Verificar se o canal de envio é válido
+    if (!this.isCanalEnvioValido()) {
+      return false;
+    }
+
+    return true;
   }
 
   // Método para verificar canal de envio válido

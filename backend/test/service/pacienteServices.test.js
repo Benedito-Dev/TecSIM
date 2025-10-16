@@ -81,11 +81,17 @@ describe('PacienteService', () => {
     });
 
     it('deve lançar ValidationError para ID inválido', async () => {
+      // Garantir que o repository NÃO seja chamado para IDs inválidos
+      pacientesRepository.findById.mockResolvedValue(null);
+
       await expect(PacienteService.getById('abc'))
         .rejects.toThrow(ValidationError);
       
       await expect(PacienteService.getById(null))
         .rejects.toThrow(ValidationError);
+
+      // Verificar que o repository não foi chamado para IDs inválidos
+      expect(pacientesRepository.findById).not.toHaveBeenCalled();
     });
 
     it('deve lançar NotFoundError se paciente não existir', async () => {
@@ -344,33 +350,74 @@ describe('PacienteService', () => {
   });
 
   describe('verifyCredentials', () => {
+    // Mock do bcrypt para todos os testes de verifyCredentials
+    beforeEach(() => {
+      bcrypt.compare.mockReset();
+    });
+
     it('deve verificar credenciais com sucesso e reativar conta se desativada', async () => {
-      const pacienteDesativado = new Paciente({ ...mockPacienteData, ativo: false });
+      const pacienteDesativado = new Paciente({ 
+        ...mockPacienteData, 
+        ativo: false,
+        senha: 'senha_hasheada'
+      });
+      
       pacientesRepository.verifyCredentials.mockResolvedValue(pacienteDesativado);
       pacientesRepository.reativar.mockResolvedValue(new Paciente({ ...mockPacienteData, ativo: true }));
+      bcrypt.compare.mockResolvedValue(true); // Senha correta
 
       const result = await PacienteService.verifyCredentials('fulano@example.com', 'senha_correta');
 
       expect(pacientesRepository.verifyCredentials).toHaveBeenCalledWith('fulano@example.com');
+      expect(bcrypt.compare).toHaveBeenCalledWith('senha_correta', 'senha_hasheada');
       expect(pacientesRepository.reativar).toHaveBeenCalledWith(pacienteDesativado.id);
       expect(result).toBeInstanceOf(Paciente);
       expect(result.ativo).toBe(true);
     });
 
     it('deve verificar credenciais com sucesso para conta ativa', async () => {
-      pacientesRepository.verifyCredentials.mockResolvedValue(new Paciente(mockPacienteData));
+      const pacienteAtivo = new Paciente({ 
+        ...mockPacienteData, 
+        ativo: true,
+        senha: 'senha_hasheada'
+      });
+      
+      pacientesRepository.verifyCredentials.mockResolvedValue(pacienteAtivo);
+      bcrypt.compare.mockResolvedValue(true); // Senha correta
 
       const result = await PacienteService.verifyCredentials('fulano@example.com', 'senha_correta');
 
+      expect(pacientesRepository.verifyCredentials).toHaveBeenCalledWith('fulano@example.com');
+      expect(bcrypt.compare).toHaveBeenCalledWith('senha_correta', 'senha_hasheada');
       expect(result).toBeInstanceOf(Paciente);
       expect(result.ativo).toBe(true);
+      // Não deve chamar reativar para conta já ativa
+      expect(pacientesRepository.reativar).not.toHaveBeenCalled();
     });
 
     it('deve lançar erro se credenciais forem inválidas', async () => {
-      pacientesRepository.verifyCredentials.mockRejectedValue(new Error('Credenciais inválidas'));
+      const pacienteAtivo = new Paciente({ 
+        ...mockPacienteData, 
+        ativo: true,
+        senha: 'senha_hasheada'
+      });
+      
+      pacientesRepository.verifyCredentials.mockResolvedValue(pacienteAtivo);
+      bcrypt.compare.mockResolvedValue(false); // Senha incorreta
 
       await expect(PacienteService.verifyCredentials('fulano@example.com', 'senha_errada'))
         .rejects.toThrow('Credenciais inválidas');
+
+      expect(bcrypt.compare).toHaveBeenCalledWith('senha_errada', 'senha_hasheada');
+    });
+
+    it('deve lançar erro se usuário não for encontrado', async () => {
+      pacientesRepository.verifyCredentials.mockResolvedValue(null);
+
+      await expect(PacienteService.verifyCredentials('inexistente@example.com', 'qualquer_senha'))
+        .rejects.toThrow('Credenciais inválidas');
+
+      expect(bcrypt.compare).not.toHaveBeenCalled();
     });
   });
 
