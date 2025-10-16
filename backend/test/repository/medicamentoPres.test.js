@@ -4,6 +4,19 @@ const { NotFoundError, DatabaseError } = require('../../utils/errors');
 
 jest.mock('../../db/db');
 
+// Mock do console para evitar logs nos testes
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  console.error.mockRestore();
+});
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 describe('MedicamentoPrescritoRepository', () => {
   afterEach(() => {
     jest.clearAllMocks();

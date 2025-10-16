@@ -65,12 +65,12 @@ class PacienteController {
     } catch (error) {
       console.error('Erro ao buscar paciente por email:', error);
 
-      if (error.statusCode) {
-        return res.status(error.statusCode).json({ error: error.message });
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: error.message });
       }
 
-      if (error.name === 'ValidationError') {
-        return res.status(400).json({ error: 'Dados inválidos.', details: error.message });
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({ error: error.message });
       }
 
       res.status(500).json({ error: 'Erro interno ao buscar paciente.' });
@@ -124,10 +124,10 @@ class PacienteController {
 
       // Apagar imagem anterior se existir
       if (paciente.foto_perfil) {
-        const caminhoAntigo = path.join(__dirname, '..', paciente.foto_perfil);
-        if (fs.existsSync(caminhoAntigo)) {
-          fs.unlinkSync(caminhoAntigo);
-        }
+          const caminhoAntigo = path.join(__dirname, '..', 'uploads', paciente.foto_perfil);
+          if (fs.existsSync(caminhoAntigo)) {
+              fs.unlinkSync(caminhoAntigo);
+          }
       }
 
       const novoCaminho = `/uploads/${req.file.filename}`;

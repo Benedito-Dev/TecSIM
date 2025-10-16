@@ -106,6 +106,13 @@ describe('PrescricaoService', () => {
         .rejects.toThrow(NotFoundError);
     });
 
+    it('deve lançar NotFoundError se findById retornar null', async () => {
+      prescricaoRepository.findById.mockResolvedValue(null);
+
+      await expect(PrescricaoService.findById(999))
+        .rejects.toThrow('Prescrição não encontrada');
+    });
+
     it('deve retornar prescrição com array vazio se não houver medicamentos', async () => {
       prescricaoRepository.findById.mockResolvedValue(new Prescricao(mockPrescricaoData));
       medicamentoPrescritoRepository.findByPrescricaoId.mockResolvedValue([]);

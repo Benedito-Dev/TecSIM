@@ -185,29 +185,87 @@ describe('ValidationUtils', () => {
       expect(isValidDate('invalid-date')).toBe(false);
       expect(isValidDate('2023-02-30')).toBe(false);
     });
+
+    test('deve retornar false para dia 31 em meses com 30 dias', () => {
+      // Meses com 30 dias: Abril (04), Junho (06), Setembro (09), Novembro (11)
+      expect(isValidDate('2023-04-31')).toBe(false); // Abril tem 30 dias
+      expect(isValidDate('2023-06-31')).toBe(false); // Junho tem 30 dias
+      expect(isValidDate('2023-09-31')).toBe(false); // Setembro tem 30 dias
+      expect(isValidDate('2023-11-31')).toBe(false); // Novembro tem 30 dias
+    });
+
+    test('deve retornar false para dia 30/31 em fevereiro de ano bissexto', () => {
+      // Ano bissexto (2024 é bissexto) mas fevereiro nunca tem 30 ou 31 dias
+      expect(isValidDate('2024-02-30')).toBe(false); // ← Cobre linha 116
+      expect(isValidDate('2024-02-31')).toBe(false); // ← Cobre linha 116
+    });
   });
 
-  // =============================================
-  // TESTES PARA isValidAge
-  // =============================================
+// =============================================
+// TESTES PARA isValidAge
+// =============================================
   describe('isValidAge', () => {
+    let originalDate;
+
+    beforeAll(() => {
+      // Guarda o Date original
+      originalDate = global.Date;
+    });
+
+    afterAll(() => {
+      // Restaura o Date original
+      global.Date = originalDate;
+    });
+
+    function mockDate(dateString) {
+      const fixedDate = new Date(dateString);
+      global.Date = jest.fn(() => fixedDate);
+      global.Date.now = jest.fn(() => fixedDate.getTime());
+      
+      // Preserva métodos estáticos que podem ser usados
+      global.Date.parse = originalDate.parse;
+      global.Date.UTC = originalDate.UTC;
+      global.Date.prototype = originalDate.prototype;
+    }
+
     test('deve retornar true para idade válida', () => {
-      const birthDate = new Date();
-      birthDate.setFullYear(birthDate.getFullYear() - 25); // 25 anos atrás
-      expect(isValidAge(birthDate.toISOString().split('T')[0], 18)).toBe(true);
+      mockDate('2024-06-15');
+      expect(isValidAge('1999-06-14', 18)).toBe(true); // Já fez aniversário
     });
 
     test('deve retornar false para idade inválida', () => {
-      const birthDate = new Date();
-      birthDate.setFullYear(birthDate.getFullYear() - 15); // 15 anos atrás
-      expect(isValidAge(birthDate.toISOString().split('T')[0], 18)).toBe(false);
+      mockDate('2024-06-15');
+      expect(isValidAge('2010-01-01', 18)).toBe(false); // Só tem 14 anos
     });
 
     test('deve validar idade mínima personalizada', () => {
-      const birthDate = new Date();
-      birthDate.setFullYear(birthDate.getFullYear() - 20); // 20 anos atrás
-      expect(isValidAge(birthDate.toISOString().split('T')[0], 21)).toBe(false);
-      expect(isValidAge(birthDate.toISOString().split('T')[0], 18)).toBe(true);
+      mockDate('2024-06-15');
+      expect(isValidAge('2003-06-14', 21)).toBe(true); // 21 anos ou mais
+      expect(isValidAge('2004-06-14', 21)).toBe(false); // 20 anos
+    });
+
+    test('deve cobrir linha age-1 quando aniversário é NO MESMO MÊS mas DIA MAIOR que hoje', () => {
+      // Hoje é 15 de Junho 2024, nasceu em 20 de Junho 2005
+      // Ainda não fez 19 anos (vai fazer dia 20) → age - 1 = 18
+      mockDate('2024-06-15');
+      expect(isValidAge('2005-06-20', 18)).toBe(true); // 18 >= 18 → true
+      expect(isValidAge('2005-06-20', 19)).toBe(false); // 18 >= 19 → false
+    });
+
+    test('deve cobrir linha age-1 quando aniversário é em MÊS MAIOR que hoje', () => {
+      // Hoje é 15 de Junho 2024, nasceu em 15 de Dezembro 2005
+      // Ainda não fez 19 anos (vai fazer em Dezembro) → age - 1 = 18
+      mockDate('2024-06-15');
+      expect(isValidAge('2005-12-15', 18)).toBe(true); // 18 >= 18 → true
+      expect(isValidAge('2005-12-15', 19)).toBe(false); // 18 >= 19 → false
+    });
+
+    test('deve cobrir linha age-1 quando aniversário é em MÊS MENOR mas ainda não fez', () => {
+      // Hoje é 15 de Junho 2024, nasceu em 15 de Agosto 2005  
+      // Ainda não fez 19 anos (vai fazer em Agosto) → age - 1 = 18
+      mockDate('2024-06-15');
+      expect(isValidAge('2005-08-15', 18)).toBe(true); // 18 >= 18 → true
+      expect(isValidAge('2005-08-15', 19)).toBe(false); // 18 >= 19 → false
     });
   });
 });

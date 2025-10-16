@@ -5,6 +5,19 @@ const { ValidationError, NotFoundError, ConflictError } = require('../../utils/e
 
 jest.mock('../../services/bulaServices');
 
+// Mock do console para evitar logs nos testes
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  console.error.mockRestore();
+});
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 describe('BulaController', () => {
   let req, res;
 
