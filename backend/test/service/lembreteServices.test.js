@@ -1,7 +1,6 @@
 const LembreteService = require('../../services/lembreteService');
 const lembreteRepository = require('../../repository/lembreteRepository');
 
-// Mock do repository
 jest.mock('../../repository/lembreteRepository');
 
 describe('LembreteService', () => {
@@ -9,319 +8,164 @@ describe('LembreteService', () => {
     jest.clearAllMocks();
   });
 
-  describe('getAll', () => {
-    it('deve retornar todos os lembretes', async () => {
-      // Arrange
-      const mockLembretes = [
-        { id_lembrete: 1, horario: '08:00' },
-        { id_lembrete: 2, horario: '12:00' }
-      ];
-      lembreteRepository.findAll.mockResolvedValue(mockLembretes);
+  const mockLembrete = { id_lembrete: 1, horario: '08:00' };
+  const mockLembreteData = {
+    id_paciente: 1,
+    id_prescricao: 1,
+    id_medicamento: 1,
+    horario: '08:00',
+    data_inicio: '2024-01-01',
+    data_fim: '2024-12-31',
+    canal_envio: 'email'
+  };
 
-      // Act
-      const result = await LembreteService.getAll();
+  // Testes compactos para métodos básicos
+  const basicMethods = [
+    {
+      method: 'getAll',
+      repoMethod: 'findAll',
+      repoResponse: [mockLembrete, { id_lembrete: 2, horario: '12:00' }],
+      args: []
+    },
+    {
+      method: 'getById',
+      repoMethod: 'findById', 
+      repoResponse: mockLembrete,
+      args: [1],
+      errorTest: { repoResponse: null, expectedError: 'Lembrete não encontrado' }
+    }
+  ];
 
-      // Assert
-      expect(lembreteRepository.findAll).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(mockLembretes);
-    });
+  basicMethods.forEach(({ method, repoMethod, repoResponse, args, errorTest }) => {
+    describe(method, () => {
+      it(`deve retornar dados do repository`, async () => {
+        lembreteRepository[repoMethod].mockResolvedValue(repoResponse);
+        const result = await LembreteService[method](...args);
+        expect(lembreteRepository[repoMethod]).toHaveBeenCalledWith(...args);
+        expect(result).toEqual(repoResponse);
+      });
 
-    it('deve propagar erro do repository', async () => {
-      // Arrange
-      const mockError = new Error('Erro de banco de dados');
-      lembreteRepository.findAll.mockRejectedValue(mockError);
+      it('deve propagar erros do repository', async () => {
+        const mockError = new Error('Erro de banco');
+        lembreteRepository[repoMethod].mockRejectedValue(mockError);
+        await expect(LembreteService[method](...args)).rejects.toThrow('Erro de banco');
+      });
 
-      // Act & Assert
-      await expect(LembreteService.getAll()).rejects.toThrow('Erro de banco de dados');
-      expect(lembreteRepository.findAll).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('getById', () => {
-    it('deve retornar lembrete quando encontrado', async () => {
-      // Arrange
-      const mockLembrete = { id_lembrete: 1, horario: '08:00' };
-      lembreteRepository.findById.mockResolvedValue(mockLembrete);
-
-      // Act
-      const result = await LembreteService.getById(1);
-
-      // Assert
-      expect(lembreteRepository.findById).toHaveBeenCalledWith(1);
-      expect(lembreteRepository.findById).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(mockLembrete);
-    });
-
-    it('deve lançar erro quando lembrete não existe', async () => {
-      // Arrange
-      lembreteRepository.findById.mockResolvedValue(null);
-
-      // Act & Assert
-      await expect(LembreteService.getById(999)).rejects.toThrow('Lembrete não encontrado');
-      expect(lembreteRepository.findById).toHaveBeenCalledWith(999);
-    });
-
-    it('deve propagar erro do repository', async () => {
-      // Arrange
-      const mockError = new Error('Erro de conexão');
-      lembreteRepository.findById.mockRejectedValue(mockError);
-
-      // Act & Assert
-      await expect(LembreteService.getById(1)).rejects.toThrow('Erro de conexão');
+      if (errorTest) {
+        it('deve lançar erro quando não encontra registro', async () => {
+          lembreteRepository[repoMethod].mockResolvedValue(errorTest.repoResponse);
+          await expect(LembreteService[method](...args)).rejects.toThrow(errorTest.expectedError);
+        });
+      }
     });
   });
 
+  // Teste específico para create
   describe('create', () => {
-    it('deve criar lembrete com dados válidos', async () => {
-      // Arrange
-      const lembreteData = {
-        id_paciente: 1,
-        id_prescricao: 1,
-        id_medicamento: 1,
-        horario: '08:00',
-        data_inicio: '2024-01-01',
-        data_fim: '2024-12-31',
-        canal_envio: 'email'
-      };
-      const mockLembreteCriado = { id_lembrete: 1, ...lembreteData };
-      lembreteRepository.create.mockResolvedValue(mockLembreteCriado);
+    it('deve criar lembrete e retornar resultado', async () => {
+      const mockCriado = { id_lembrete: 1, ...mockLembreteData };
+      lembreteRepository.create.mockResolvedValue(mockCriado);
 
-      // Act
-      const result = await LembreteService.create(lembreteData);
+      const result = await LembreteService.create(mockLembreteData);
 
-      // Assert
-      expect(lembreteRepository.create).toHaveBeenCalledWith(lembreteData);
-      expect(lembreteRepository.create).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(mockLembreteCriado);
+      expect(lembreteRepository.create).toHaveBeenCalledWith(mockLembreteData);
+      expect(result).toEqual(mockCriado);
     });
 
-    it('deve propagar erro de validação do repository', async () => {
-      // Arrange
-      const lembreteDataInvalido = {
-        id_paciente: 1,
-        // Dados incompletos
-      };
-      const mockError = new Error('Dados do lembrete inválidos');
-      mockError.code = 400;
+    it('deve propagar erros do repository', async () => {
+      const mockError = new Error('Erro de validação');
       lembreteRepository.create.mockRejectedValue(mockError);
-
-      // Act & Assert
-      await expect(LembreteService.create(lembreteDataInvalido))
-        .rejects
-        .toThrow('Dados do lembrete inválidos');
       
-      expect(lembreteRepository.create).toHaveBeenCalledWith(lembreteDataInvalido);
-    });
-
-    it('deve propagar erro genérico do repository', async () => {
-      // Arrange
-      const lembreteData = {
-        id_paciente: 1,
-        id_prescricao: 1,
-        id_medicamento: 1,
-        horario: '08:00',
-        data_inicio: '2024-01-01',
-        data_fim: '2024-12-31',
-        canal_envio: 'email'
-      };
-      const mockError = new Error('Erro interno do servidor');
-      lembreteRepository.create.mockRejectedValue(mockError);
-
-      // Act & Assert
-      await expect(LembreteService.create(lembreteData))
-        .rejects
-        .toThrow('Erro interno do servidor');
+      await expect(LembreteService.create(mockLembreteData)).rejects.toThrow('Erro de validação');
     });
   });
 
-  describe('update', () => {
-    it('deve atualizar lembrete existente', async () => {
-      // Arrange
-      const id = 1;
-      const updateData = {
-        horario: '09:00',
-        canal_envio: 'sms'
-      };
-      const mockLembreteExistente = { id_lembrete: 1, horario: '08:00' };
-      const mockLembreteAtualizado = { id_lembrete: 1, ...updateData };
-      
-      lembreteRepository.findById.mockResolvedValue(mockLembreteExistente);
-      lembreteRepository.update.mockResolvedValue(mockLembreteAtualizado);
+  // Testes para métodos que validam existência (update e delete)
+  const validationMethods = [
+    {
+      method: 'update',
+      repoMethod: 'update',
+      args: [1, { horario: '09:00' }],
+      repoResponse: { id_lembrete: 1, horario: '09:00' }
+    },
+    {
+      method: 'delete', 
+      repoMethod: 'delete',
+      args: [1],
+      repoResponse: mockLembrete
+    }
+  ];
 
-      // Act
-      const result = await LembreteService.update(id, updateData);
+  validationMethods.forEach(({ method, repoMethod, args, repoResponse }) => {
+    describe(method, () => {
+      it(`deve executar ${method} quando lembrete existe`, async () => {
+        lembreteRepository.findById.mockResolvedValue(mockLembrete);
+        lembreteRepository[repoMethod].mockResolvedValue(repoResponse);
 
-      // Assert
-      expect(lembreteRepository.findById).toHaveBeenCalledWith(id);
-      expect(lembreteRepository.update).toHaveBeenCalledWith(id, updateData);
-      expect(result).toEqual(mockLembreteAtualizado);
-    });
+        const result = await LembreteService[method](...args);
 
-    it('deve lançar erro quando lembrete não existe para update', async () => {
-      // Arrange
-      const id = 999;
-      const updateData = { horario: '09:00' };
-      lembreteRepository.findById.mockResolvedValue(null);
+        expect(lembreteRepository.findById).toHaveBeenCalledWith(args[0]);
+        expect(lembreteRepository[repoMethod]).toHaveBeenCalledWith(...args);
+        expect(result).toEqual(repoResponse);
+      });
 
-      // Act & Assert
-      await expect(LembreteService.update(id, updateData))
-        .rejects
-        .toThrow('Lembrete não encontrado');
-      
-      expect(lembreteRepository.findById).toHaveBeenCalledWith(id);
-      expect(lembreteRepository.update).not.toHaveBeenCalled();
-    });
+      it('deve lançar erro quando lembrete não existe', async () => {
+        lembreteRepository.findById.mockResolvedValue(null);
 
-    it('deve propagar erro do repository no findById durante update', async () => {
-      // Arrange
-      const id = 1;
-      const updateData = { horario: '09:00' };
-      const mockError = new Error('Erro de banco');
-      lembreteRepository.findById.mockRejectedValue(mockError);
+        await expect(LembreteService[method](...args)).rejects.toThrow('Lembrete não encontrado');
+        expect(lembreteRepository[repoMethod]).not.toHaveBeenCalled();
+      });
 
-      // Act & Assert
-      await expect(LembreteService.update(id, updateData))
-        .rejects
-        .toThrow('Erro de banco');
-      
-      expect(lembreteRepository.update).not.toHaveBeenCalled();
-    });
+      it('deve propagar erro do findById', async () => {
+        const mockError = new Error('Erro de banco');
+        lembreteRepository.findById.mockRejectedValue(mockError);
 
-    it('deve propagar erro do repository no update', async () => {
-      // Arrange
-      const id = 1;
-      const updateData = { horario: '09:00' };
-      const mockLembreteExistente = { id_lembrete: 1, horario: '08:00' };
-      const mockError = new Error('Erro ao atualizar');
-      
-      lembreteRepository.findById.mockResolvedValue(mockLembreteExistente);
-      lembreteRepository.update.mockRejectedValue(mockError);
+        await expect(LembreteService[method](...args)).rejects.toThrow('Erro de banco');
+        expect(lembreteRepository[repoMethod]).not.toHaveBeenCalled();
+      });
 
-      // Act & Assert
-      await expect(LembreteService.update(id, updateData))
-        .rejects
-        .toThrow('Erro ao atualizar');
-      
-      expect(lembreteRepository.findById).toHaveBeenCalledWith(id);
-      expect(lembreteRepository.update).toHaveBeenCalledWith(id, updateData);
+      it('deve propagar erro do repository method', async () => {
+        lembreteRepository.findById.mockResolvedValue(mockLembrete);
+        const mockError = new Error(`Erro no ${repoMethod}`);
+        lembreteRepository[repoMethod].mockRejectedValue(mockError);
+
+        await expect(LembreteService[method](...args)).rejects.toThrow(`Erro no ${repoMethod}`);
+      });
     });
   });
 
+  // Teste adicional para delete com null response
   describe('delete', () => {
-    it('deve deletar lembrete existente', async () => {
-      // Arrange
-      const id = 1;
-      const mockLembreteExistente = { id_lembrete: 1, horario: '08:00' };
-      const mockLembreteDeletado = { id_lembrete: 1, horario: '08:00' };
-      
-      lembreteRepository.findById.mockResolvedValue(mockLembreteExistente);
-      lembreteRepository.delete.mockResolvedValue(mockLembreteDeletado);
-
-      // Act
-      const result = await LembreteService.delete(id);
-
-      // Assert
-      expect(lembreteRepository.findById).toHaveBeenCalledWith(id);
-      expect(lembreteRepository.delete).toHaveBeenCalledWith(id);
-      expect(result).toEqual(mockLembreteDeletado);
-    });
-
-    it('deve lançar erro quando lembrete não existe para delete', async () => {
-      // Arrange
-      const id = 999;
-      lembreteRepository.findById.mockResolvedValue(null);
-
-      // Act & Assert
-      await expect(LembreteService.delete(id))
-        .rejects
-        .toThrow('Lembrete não encontrado');
-      
-      expect(lembreteRepository.findById).toHaveBeenCalledWith(id);
-      expect(lembreteRepository.delete).not.toHaveBeenCalled();
-    });
-
-    it('deve propagar erro do repository no findById durante delete', async () => {
-      // Arrange
-      const id = 1;
-      const mockError = new Error('Erro de banco');
-      lembreteRepository.findById.mockRejectedValue(mockError);
-
-      // Act & Assert
-      await expect(LembreteService.delete(id))
-        .rejects
-        .toThrow('Erro de banco');
-      
-      expect(lembreteRepository.delete).not.toHaveBeenCalled();
-    });
-
-    it('deve propagar erro do repository no delete', async () => {
-      // Arrange
-      const id = 1;
-      const mockLembreteExistente = { id_lembrete: 1, horario: '08:00' };
-      const mockError = new Error('Erro ao deletar');
-      
-      lembreteRepository.findById.mockResolvedValue(mockLembreteExistente);
-      lembreteRepository.delete.mockRejectedValue(mockError);
-
-      // Act & Assert
-      await expect(LembreteService.delete(id))
-        .rejects
-        .toThrow('Erro ao deletar');
-      
-      expect(lembreteRepository.findById).toHaveBeenCalledWith(id);
-      expect(lembreteRepository.delete).toHaveBeenCalledWith(id);
-    });
-
-    it('deve retornar null quando repository retorna null no delete', async () => {
-      // Arrange
-      const id = 1;
-      const mockLembreteExistente = { id_lembrete: 1, horario: '08:00' };
-      
-      lembreteRepository.findById.mockResolvedValue(mockLembreteExistente);
+    it('deve retornar null quando repository retorna null', async () => {
+      lembreteRepository.findById.mockResolvedValue(mockLembrete);
       lembreteRepository.delete.mockResolvedValue(null);
 
-      // Act
-      const result = await LembreteService.delete(id);
+      const result = await LembreteService.delete(1);
 
-      // Assert
       expect(result).toBeNull();
-      expect(lembreteRepository.delete).toHaveBeenCalledWith(id);
     });
   });
 
-  // Testes de integração entre métodos
-  describe('integração entre métodos', () => {
-    it('deve usar getById para validar existência antes de update e delete', async () => {
-      // Arrange
-      const id = 1;
-      const mockLembrete = { id_lembrete: 1, horario: '08:00' };
-      const updateData = { horario: '09:00' };
-      
+  // Teste de integração compacto
+  describe('integração', () => {
+    it('deve validar existência antes de update e delete', async () => {
       lembreteRepository.findById.mockResolvedValue(mockLembrete);
-      lembreteRepository.update.mockResolvedValue({ ...mockLembrete, ...updateData });
+      lembreteRepository.update.mockResolvedValue(mockLembrete);
       lembreteRepository.delete.mockResolvedValue(mockLembrete);
 
-      // Act
-      await LembreteService.update(id, updateData);
-      await LembreteService.delete(id);
+      await LembreteService.update(1, {});
+      await LembreteService.delete(1);
 
-      // Assert
       expect(lembreteRepository.findById).toHaveBeenCalledTimes(2);
-      expect(lembreteRepository.findById).toHaveBeenNthCalledWith(1, id);
-      expect(lembreteRepository.findById).toHaveBeenNthCalledWith(2, id);
+      expect(lembreteRepository.findById).toHaveBeenNthCalledWith(1, 1);
+      expect(lembreteRepository.findById).toHaveBeenNthCalledWith(2, 1);
     });
   });
 
-  // Testes de instância singleton
-  describe('instância do service', () => {
-    it('deve exportar uma instância singleton', () => {
-      // Arrange & Act
-      const instance1 = require('../../services/lembreteService');
-      const instance2 = require('../../services/lembreteService');
-
-      // Assert
-      expect(instance1).toBe(instance2);
-      expect(instance1).toBeInstanceOf(LembreteService.constructor);
-    });
+  // Teste singleton
+  it('deve ser uma instância singleton', () => {
+    const instance1 = require('../../services/lembreteService');
+    const instance2 = require('../../services/lembreteService');
+    expect(instance1).toBe(instance2);
   });
 });

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1760627698525" clover="3.2.0">
-  <project timestamp="1760627698525" name="All files">
-    <metrics statements="1610" coveredstatements="1592" conditionals="1003" coveredconditionals="969" methods="255" coveredmethods="253" elements="2868" coveredelements="2814" complexity="0" loc="1610" ncloc="1610" packages="6" files="32" classes="32"/>
+<coverage generated="1760628664839" clover="3.2.0">
+  <project timestamp="1760628664839" name="All files">
+    <metrics statements="1610" coveredstatements="1589" conditionals="1003" coveredconditionals="968" methods="255" coveredmethods="253" elements="2868" coveredelements="2810" complexity="0" loc="1610" ncloc="1610" packages="6" files="32" classes="32"/>
     <package name="controllers">
       <metrics statements="484" coveredstatements="484" conditionals="247" coveredconditionals="247" methods="48" coveredmethods="48"/>
       <file name="bulaController.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\controllers\bulaController.js">
@@ -661,7 +661,7 @@
       </file>
     </package>
     <package name="repository">
-      <metrics statements="387" coveredstatements="382" conditionals="225" coveredconditionals="215" methods="98" coveredmethods="97"/>
+      <metrics statements="387" coveredstatements="379" conditionals="225" coveredconditionals="214" methods="98" coveredmethods="97"/>
       <file name="bulaRepository.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\repository\bulaRepository.js">
         <metrics statements="23" coveredstatements="23" conditionals="8" coveredconditionals="8" methods="7" coveredmethods="7"/>
         <line num="1" count="3" type="stmt"/>
@@ -759,7 +759,7 @@
         <line num="180" count="3" type="stmt"/>
       </file>
       <file name="lembreteRepository.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\repository\lembreteRepository.js">
-        <metrics statements="52" coveredstatements="49" conditionals="23" coveredconditionals="22" methods="21" coveredmethods="21"/>
+        <metrics statements="52" coveredstatements="46" conditionals="23" coveredconditionals="21" methods="21" coveredmethods="21"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
         <line num="6" count="3" type="stmt"/>
@@ -768,30 +768,30 @@
         <line num="21" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="25" count="2" type="stmt"/>
         <line num="31" count="2" type="stmt"/>
-        <line num="35" count="1" type="stmt"/>
+        <line num="35" count="2" type="stmt"/>
         <line num="41" count="2" type="stmt"/>
-        <line num="45" count="1" type="stmt"/>
+        <line num="45" count="2" type="stmt"/>
         <line num="52" count="2" type="stmt"/>
-        <line num="56" count="1" type="stmt"/>
-        <line num="66" count="1" type="stmt"/>
-        <line num="80" count="5" type="stmt"/>
-        <line num="83" count="5" type="stmt"/>
-        <line num="95" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="56" count="2" type="stmt"/>
+        <line num="66" count="2" type="stmt"/>
+        <line num="80" count="4" type="stmt"/>
+        <line num="83" count="4" type="stmt"/>
+        <line num="95" count="4" type="cond" truecount="2" falsecount="0"/>
         <line num="96" count="1" type="stmt"/>
         <line num="97" count="1" type="stmt"/>
         <line num="98" count="1" type="stmt"/>
-        <line num="101" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="101" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="102" count="1" type="stmt"/>
         <line num="103" count="1" type="stmt"/>
         <line num="104" count="1" type="stmt"/>
-        <line num="107" count="3" type="stmt"/>
-        <line num="117" count="3" type="stmt"/>
-        <line num="131" count="3" type="stmt"/>
-        <line num="134" count="3" type="stmt"/>
-        <line num="146" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="147" count="1" type="stmt"/>
-        <line num="148" count="1" type="stmt"/>
-        <line num="149" count="1" type="stmt"/>
+        <line num="107" count="2" type="stmt"/>
+        <line num="117" count="2" type="stmt"/>
+        <line num="131" count="2" type="stmt"/>
+        <line num="134" count="2" type="stmt"/>
+        <line num="146" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="147" count="0" type="stmt"/>
+        <line num="148" count="0" type="stmt"/>
+        <line num="149" count="0" type="stmt"/>
         <line num="152" count="2" type="cond" truecount="1" falsecount="1"/>
         <line num="153" count="0" type="stmt"/>
         <line num="154" count="0" type="stmt"/>
@@ -802,11 +802,11 @@
         <line num="181" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="185" count="2" type="stmt"/>
         <line num="193" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="197" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="197" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="198" count="1" type="stmt"/>
         <line num="205" count="2" type="stmt"/>
-        <line num="207" count="2" type="stmt"/>
-        <line num="213" count="3" type="stmt"/>
+        <line num="207" count="1" type="stmt"/>
+        <line num="213" count="2" type="stmt"/>
         <line num="218" count="2" type="stmt"/>
         <line num="226" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="230" count="2" type="stmt"/>
@@ -1299,7 +1299,7 @@
         <line num="9" count="14" type="stmt"/>
         <line num="10" count="11" type="cond" truecount="2" falsecount="0"/>
         <line num="11" count="8" type="stmt"/>
-        <line num="15" count="3" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
         <line num="19" count="5" type="stmt"/>
         <line num="20" count="3" type="stmt"/>
         <line num="24" count="6" type="stmt"/>
