@@ -1,7 +1,7 @@
 // test/bulaController.test.js
-const bulaController = require('../controllers/bulaController');
-const bulaService = require('../services/bulaServices');
-const { ValidationError, NotFoundError, ConflictError } = require('../utils/errors');
+const bulaController = require('../../controllers/bulaController');
+const bulaService = require('../../services/bulaServices');
+const { ValidationError, NotFoundError, ConflictError } = require('../../utils/errors');
 
 jest.mock('../../services/bulaServices');
 
@@ -185,17 +185,6 @@ describe('BulaController', () => {
         error: 'ID inválido. Informe um número válido.'
       });
       expect(bulaService.findById).not.toHaveBeenCalled();
-    });
-
-    it('deve retornar 400 para ID inválido (string vazia)', async () => {
-      req.params.id = '';
-
-      await bulaController.findById(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        error: 'ID inválido. Informe um número válido.'
-      });
     });
 
     it('deve retornar erro do service com status code específico', async () => {

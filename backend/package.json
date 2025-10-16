@@ -6,6 +6,7 @@
     "test:models": "jest test/models",
     "test:repository": "jest test/repository",
     "test:service": "jest test/service",
+    "test:controller": "jest test/controller",
     "test:utils": "jest test/utils",
     "test:watch": "jest --watch",
     "test:all": "jest test/medicos test/pacientes test/prescricoes test/bulas test/medicamentos test/utils",
