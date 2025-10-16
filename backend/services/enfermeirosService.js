@@ -1,7 +1,6 @@
 const repository = require('../repository/enfermeirosRepository');
 const { ValidationError, ConflictError, NotFoundError } = require('../utils/errors');
 const { isValidEmail } = require('../utils/validationUtils');
-const bcrypt = require('bcrypt');
 
 class EnfermeirosService {
   static async getAll() {
@@ -316,35 +315,6 @@ class EnfermeirosService {
     }
 
     return resultados;
-  }
-
-  static async login(email, senha) {
-    if (!email || !senha) {
-      throw new ValidationError('Email e senha são obrigatórios.');
-    }
-
-    if (!isValidEmail(email)) {
-      throw new ValidationError('Email inválido.');
-    }
-
-    const enfermeiro = await repository.findByEmail(email.trim().toLowerCase());
-    if (!enfermeiro) {
-      throw new ValidationError('Credenciais inválidas.');
-    }
-
-    const senhaMatch = await bcrypt.compare(senha, enfermeiro.senha);
-    if (!senhaMatch) {
-      throw new ValidationError('Credenciais inválidas.');
-    }
-
-    if (!enfermeiro.ativo) {
-      throw new ValidationError('Conta desativada.');
-    }
-
-    // Remover senha antes de retornar
-    delete enfermeiro.senha;
-
-    return enfermeiro;
   }
 }
 

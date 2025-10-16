@@ -184,37 +184,6 @@ class EnfermeirosRoutes {
      *         description: Erro interno do servidor
      */
     this.router.delete('/:id', controller.remove);
-
-    /**
-     * @swagger
-     * /enfermeiros/login:
-     *   post:
-     *     summary: Autentica um enfermeiro (login)
-     *     tags: [Enfermeiros]
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             type: object
-     *             properties:
-     *               email: { type: string }
-     *               senha: { type: string }
-     *     responses:
-     *       200:
-     *         description: Autenticação bem sucedida
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/Enfermeiro'
-     *       400:
-     *         description: Dados inválidos
-     *       401:
-     *         description: Credenciais inválidas
-     *       500:
-     *         description: Erro interno do servidor
-     */
-    this.router.post('/login', controller.login);
   }
 
   getRouter() {

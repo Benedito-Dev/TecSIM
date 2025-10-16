@@ -130,31 +130,6 @@ class EnfermeirosController {
       res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
-
-  async login(req, res) {
-    try {
-      const { email, senha } = req.body;
-      if (!email || !senha) {
-        return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
-      }
-
-      const authResult = await service.login({ email, senha });
-
-      // Caso futuramente queira adicionar JWT, gere aqui e retorne token com dados.
-      res.status(200).json({
-        message: 'Autenticação bem sucedida',
-        data: authResult
-      });
-    } catch (err) {
-      console.error('Erro no login de enfermeiro:', err);
-
-      if (err.statusCode) {
-        return res.status(err.statusCode).json({ error: err.message });
-      }
-
-      res.status(500).json({ error: 'Erro interno do servidor.' });
-    }
-  }
 }
 
 module.exports = new EnfermeirosController();
