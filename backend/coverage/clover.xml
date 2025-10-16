@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1760631695658" clover="3.2.0">
-  <project timestamp="1760631695659" name="All files">
-    <metrics statements="1611" coveredstatements="1594" conditionals="1004" coveredconditionals="973" methods="253" coveredmethods="251" elements="2868" coveredelements="2818" complexity="0" loc="1611" ncloc="1611" packages="6" files="32" classes="32"/>
+<coverage generated="1760632066883" clover="3.2.0">
+  <project timestamp="1760632066883" name="All files">
+    <metrics statements="1611" coveredstatements="1592" conditionals="1004" coveredconditionals="969" methods="253" coveredmethods="251" elements="2868" coveredelements="2812" complexity="0" loc="1611" ncloc="1611" packages="6" files="32" classes="32"/>
     <package name="controllers">
       <metrics statements="484" coveredstatements="484" conditionals="247" coveredconditionals="247" methods="48" coveredmethods="48"/>
       <file name="bulaController.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\controllers\bulaController.js">
@@ -1571,7 +1571,7 @@
       </file>
     </package>
     <package name="utils">
-      <metrics statements="145" coveredstatements="145" conditionals="85" coveredconditionals="78" methods="21" coveredmethods="21"/>
+      <metrics statements="145" coveredstatements="143" conditionals="85" coveredconditionals="74" methods="21" coveredmethods="21"/>
       <file name="Prescription-Pdf.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\utils\Prescription-Pdf.js">
         <metrics statements="69" coveredstatements="69" conditionals="20" coveredconditionals="20" methods="3" coveredmethods="3"/>
         <line num="1" count="2" type="stmt"/>
@@ -1660,7 +1660,7 @@
         <line num="48" count="22" type="stmt"/>
       </file>
       <file name="validationUtils.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\utils\validationUtils.js">
-        <metrics statements="64" coveredstatements="64" conditionals="63" coveredconditionals="56" methods="11" coveredmethods="11"/>
+        <metrics statements="64" coveredstatements="62" conditionals="63" coveredconditionals="52" methods="11" coveredmethods="11"/>
         <line num="7" count="11" type="cond" truecount="2" falsecount="0"/>
         <line num="10" count="8" type="stmt"/>
         <line num="11" count="8" type="cond" truecount="2" falsecount="0"/>
@@ -1699,31 +1699,31 @@
         <line num="86" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="87" count="2" type="stmt"/>
         <line num="89" count="1" type="stmt"/>
-        <line num="94" count="11" type="cond" truecount="3" falsecount="1"/>
-        <line num="97" count="11" type="stmt"/>
-        <line num="98" count="11" type="cond" truecount="2" falsecount="0"/>
-        <line num="100" count="10" type="stmt"/>
-        <line num="101" count="10" type="stmt"/>
-        <line num="102" count="10" type="stmt"/>
-        <line num="103" count="10" type="stmt"/>
-        <line num="106" count="10" type="cond" truecount="4" falsecount="0"/>
-        <line num="107" count="9" type="cond" truecount="3" falsecount="1"/>
-        <line num="110" count="9" type="stmt"/>
-        <line num="113" count="9" type="cond" truecount="2" falsecount="0"/>
-        <line num="114" count="3" type="cond" truecount="3" falsecount="0"/>
-        <line num="115" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="116" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="94" count="9" type="cond" truecount="3" falsecount="1"/>
+        <line num="97" count="9" type="stmt"/>
+        <line num="98" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="100" count="8" type="stmt"/>
+        <line num="101" count="8" type="stmt"/>
+        <line num="102" count="8" type="stmt"/>
+        <line num="103" count="8" type="stmt"/>
+        <line num="106" count="8" type="cond" truecount="4" falsecount="0"/>
+        <line num="107" count="7" type="cond" truecount="3" falsecount="1"/>
+        <line num="110" count="7" type="stmt"/>
+        <line num="113" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="114" count="1" type="cond" truecount="2" falsecount="1"/>
+        <line num="115" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="116" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="118" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="120" count="6" type="cond" truecount="2" falsecount="0"/>
         <line num="121" count="4" type="stmt"/>
         <line num="124" count="2" type="stmt"/>
-        <line num="129" count="13" type="stmt"/>
-        <line num="130" count="13" type="stmt"/>
-        <line num="131" count="13" type="stmt"/>
-        <line num="132" count="13" type="stmt"/>
-        <line num="134" count="13" type="cond" truecount="5" falsecount="0"/>
-        <line num="135" count="7" type="stmt"/>
-        <line num="138" count="6" type="stmt"/>
+        <line num="129" count="4" type="stmt"/>
+        <line num="130" count="4" type="stmt"/>
+        <line num="131" count="4" type="stmt"/>
+        <line num="132" count="4" type="stmt"/>
+        <line num="134" count="4" type="cond" truecount="4" falsecount="1"/>
+        <line num="135" count="0" type="stmt"/>
+        <line num="138" count="4" type="stmt"/>
         <line num="141" count="7" type="stmt"/>
       </file>
     </package>
