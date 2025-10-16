@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1760626195377" clover="3.2.0">
-  <project timestamp="1760626195377" name="All files">
-    <metrics statements="1494" coveredstatements="1479" conditionals="961" coveredconditionals="928" methods="216" coveredmethods="214" elements="2671" coveredelements="2621" complexity="0" loc="1494" ncloc="1494" packages="6" files="28" classes="28"/>
+<coverage generated="1760627698525" clover="3.2.0">
+  <project timestamp="1760627698525" name="All files">
+    <metrics statements="1610" coveredstatements="1592" conditionals="1003" coveredconditionals="969" methods="255" coveredmethods="253" elements="2868" coveredelements="2814" complexity="0" loc="1610" ncloc="1610" packages="6" files="32" classes="32"/>
     <package name="controllers">
-      <metrics statements="462" coveredstatements="462" conditionals="247" coveredconditionals="247" methods="43" coveredmethods="43"/>
+      <metrics statements="484" coveredstatements="484" conditionals="247" coveredconditionals="247" methods="48" coveredmethods="48"/>
       <file name="bulaController.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\controllers\bulaController.js">
         <metrics statements="67" coveredstatements="67" conditionals="34" coveredconditionals="34" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
@@ -136,6 +136,31 @@
         <line num="127" count="2" type="stmt"/>
         <line num="130" count="1" type="stmt"/>
         <line num="135" count="1" type="stmt"/>
+      </file>
+      <file name="lembreteController.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\controllers\lembreteController.js">
+        <metrics statements="22" coveredstatements="22" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="23" count="2" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="32" count="2" type="stmt"/>
+        <line num="33" count="2" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
       </file>
       <file name="medicamentoController.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\controllers\medicamentoController.js">
         <metrics statements="61" coveredstatements="61" conditionals="36" coveredconditionals="36" methods="6" coveredmethods="6"/>
@@ -489,16 +514,16 @@
       <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="db.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\db\db.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-        <line num="2" count="21" type="stmt"/>
-        <line num="4" count="21" type="stmt"/>
-        <line num="7" count="21" type="stmt"/>
-        <line num="14" count="21" type="stmt"/>
-        <line num="17" count="21" type="stmt"/>
+        <line num="2" count="24" type="stmt"/>
+        <line num="4" count="24" type="stmt"/>
+        <line num="7" count="24" type="stmt"/>
+        <line num="14" count="24" type="stmt"/>
+        <line num="17" count="24" type="stmt"/>
         <line num="19" count="1" type="stmt"/>
       </file>
     </package>
     <package name="models">
-      <metrics statements="86" coveredstatements="86" conditionals="17" coveredconditionals="17" methods="18" coveredmethods="18"/>
+      <metrics statements="117" coveredstatements="117" conditionals="34" coveredconditionals="34" methods="26" coveredmethods="26"/>
       <file name="bulaModel.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\models\bulaModel.js">
         <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="12" count="28" type="stmt"/>
@@ -542,6 +567,40 @@
         <line num="80" count="6" type="stmt"/>
         <line num="86" count="8" type="stmt"/>
         <line num="93" count="4" type="stmt"/>
+      </file>
+      <file name="lembretesModel.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\models\lembretesModel.js">
+        <metrics statements="31" coveredstatements="31" conditionals="17" coveredconditionals="17" methods="8" coveredmethods="8"/>
+        <line num="14" count="40" type="stmt"/>
+        <line num="15" count="40" type="stmt"/>
+        <line num="16" count="40" type="stmt"/>
+        <line num="17" count="40" type="stmt"/>
+        <line num="18" count="40" type="stmt"/>
+        <line num="19" count="40" type="stmt"/>
+        <line num="20" count="40" type="stmt"/>
+        <line num="21" count="40" type="stmt"/>
+        <line num="22" count="40" type="stmt"/>
+        <line num="23" count="40" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="44" count="13" type="stmt"/>
+        <line num="45" count="13" type="stmt"/>
+        <line num="46" count="13" type="stmt"/>
+        <line num="48" count="13" type="cond" truecount="3" falsecount="0"/>
+        <line num="53" count="8" type="cond" truecount="4" falsecount="0"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="57" count="6" type="stmt"/>
+        <line num="58" count="6" type="stmt"/>
+        <line num="59" count="6" type="stmt"/>
+        <line num="61" count="6" type="stmt"/>
+        <line num="64" count="6" type="stmt"/>
+        <line num="65" count="6" type="stmt"/>
+        <line num="70" count="2" type="stmt"/>
+        <line num="71" count="2" type="stmt"/>
+        <line num="76" count="2" type="stmt"/>
+        <line num="77" count="2" type="stmt"/>
+        <line num="82" count="10" type="stmt"/>
+        <line num="96" count="7" type="stmt"/>
+        <line num="97" count="7" type="stmt"/>
+        <line num="101" count="4" type="stmt"/>
       </file>
       <file name="medicoModel.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\models\medicoModel.js">
         <metrics statements="14" coveredstatements="14" conditionals="4" coveredconditionals="4" methods="5" coveredmethods="5"/>
@@ -602,7 +661,7 @@
       </file>
     </package>
     <package name="repository">
-      <metrics statements="335" coveredstatements="333" conditionals="202" coveredconditionals="193" methods="77" coveredmethods="76"/>
+      <metrics statements="387" coveredstatements="382" conditionals="225" coveredconditionals="215" methods="98" coveredmethods="97"/>
       <file name="bulaRepository.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\repository\bulaRepository.js">
         <metrics statements="23" coveredstatements="23" conditionals="8" coveredconditionals="8" methods="7" coveredmethods="7"/>
         <line num="1" count="3" type="stmt"/>
@@ -698,6 +757,61 @@
         <line num="166" count="2" type="stmt"/>
         <line num="176" count="2" type="stmt"/>
         <line num="180" count="3" type="stmt"/>
+      </file>
+      <file name="lembreteRepository.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\repository\lembreteRepository.js">
+        <metrics statements="52" coveredstatements="49" conditionals="23" coveredconditionals="22" methods="21" coveredmethods="21"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="21" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="52" count="2" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
+        <line num="80" count="5" type="stmt"/>
+        <line num="83" count="5" type="stmt"/>
+        <line num="95" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="96" count="1" type="stmt"/>
+        <line num="97" count="1" type="stmt"/>
+        <line num="98" count="1" type="stmt"/>
+        <line num="101" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="102" count="1" type="stmt"/>
+        <line num="103" count="1" type="stmt"/>
+        <line num="104" count="1" type="stmt"/>
+        <line num="107" count="3" type="stmt"/>
+        <line num="117" count="3" type="stmt"/>
+        <line num="131" count="3" type="stmt"/>
+        <line num="134" count="3" type="stmt"/>
+        <line num="146" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="147" count="1" type="stmt"/>
+        <line num="148" count="1" type="stmt"/>
+        <line num="149" count="1" type="stmt"/>
+        <line num="152" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="153" count="0" type="stmt"/>
+        <line num="154" count="0" type="stmt"/>
+        <line num="155" count="0" type="stmt"/>
+        <line num="158" count="2" type="stmt"/>
+        <line num="169" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="173" count="2" type="stmt"/>
+        <line num="181" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="185" count="2" type="stmt"/>
+        <line num="193" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="197" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="198" count="1" type="stmt"/>
+        <line num="205" count="2" type="stmt"/>
+        <line num="207" count="2" type="stmt"/>
+        <line num="213" count="3" type="stmt"/>
+        <line num="218" count="2" type="stmt"/>
+        <line num="226" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="230" count="2" type="stmt"/>
+        <line num="238" count="2" type="stmt"/>
+        <line num="242" count="3" type="stmt"/>
       </file>
       <file name="medicamentoRepository.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\repository\medicamentoRepository.js">
         <metrics statements="37" coveredstatements="37" conditionals="4" coveredconditionals="4" methods="11" coveredmethods="11"/>
@@ -961,7 +1075,7 @@
       </file>
     </package>
     <package name="services">
-      <metrics statements="460" coveredstatements="448" conditionals="410" coveredconditionals="394" methods="55" coveredmethods="54"/>
+      <metrics statements="471" coveredstatements="459" conditionals="412" coveredconditionals="396" methods="60" coveredmethods="59"/>
       <file name="bulaServices.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\services\bulaServices.js">
         <metrics statements="70" coveredstatements="68" conditionals="54" coveredconditionals="52" methods="6" coveredmethods="6"/>
         <line num="1" count="2" type="stmt"/>
@@ -1177,6 +1291,20 @@
         <line num="314" count="2" type="stmt"/>
         <line num="317" count="1" type="stmt"/>
         <line num="321" count="2" type="stmt"/>
+      </file>
+      <file name="lembreteService.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\services\lembreteService.js">
+        <metrics statements="11" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="5" coveredmethods="5"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="9" count="14" type="stmt"/>
+        <line num="10" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="11" count="8" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="19" count="5" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="24" count="6" type="stmt"/>
+        <line num="25" count="4" type="stmt"/>
+        <line num="29" count="2" type="stmt"/>
       </file>
       <file name="medicamentosService.js" path="C:\Users\Benedito\Documents\Visual Studio Code\TecSim\backend\services\medicamentosService.js">
         <metrics statements="61" coveredstatements="56" conditionals="60" coveredconditionals="54" methods="7" coveredmethods="6"/>
