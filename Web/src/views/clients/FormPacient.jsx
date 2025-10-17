@@ -99,8 +99,6 @@ const FormPacient = ({
               { value: "homem_cis", label: "Homem cis" },
               { value: "mulher_trans", label: "Mulher trans" },
               { value: "homem_trans", label: "Homem trans" },
-              { value: "pessoa_nao_binaria", label: "Pessoa não binária" },
-              { value: "genero_fluid", label: "Gênero fluid" },
               { value: "outro", label: "Outro" },
               { value: "prefere_nao_responder", label: "Prefere não responder" }
             ].map((option) => (
@@ -461,8 +459,6 @@ const FormPacient = ({
         "homem_cis": "Homem cis",
         "mulher_trans": "Mulher trans",
         "homem_trans": "Homem trans",
-        "pessoa_nao_binaria": "Pessoa não binária",
-        "genero_fluid": "Gênero fluid",
         "outro": patientData.generoOutro || "Outro",
         "prefere_nao_responder": "Prefere não responder"
       };
