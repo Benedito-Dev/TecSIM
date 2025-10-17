@@ -98,7 +98,7 @@ export default function Clients() {
   };
 
   const handleNovoCliente = () => {
-    navigate('/clientes/novo');
+    navigate('/novocliente');
   };
 
   const handleVerDetalhes = (cliente) => {
