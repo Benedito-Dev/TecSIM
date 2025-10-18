@@ -86,22 +86,30 @@ const detectarTemaForaDaSaude = (mensagem) => {
 const validarMencaoMedicamentos = (mensagem) => {
   const texto = mensagem.toLowerCase();
   
-  // Verifica se há menção a medicamentos controlados
-  const contemControlado = medicamentosControlados.some(medicamento => 
-    texto.includes(medicamento)
-  );
+  // Ignora saudações e mensagens básicas
+  const saudacoes = ['ola', 'olá', 'oi', 'bom dia', 'boa tarde', 'boa noite', 'como vai', 'tudo bem'];
+  if (saudacoes.some(saudacao => texto.includes(saudacao) && texto.length < 20)) {
+    return false;
+  }
   
-  // Verifica contextos perigosos mesmo com medicamentos permitidos
+  // Verifica apenas contextos EXPLICITAMENTE perigosos
   const contextoPerigoso = (
-    texto.includes("dose") && texto.includes("aumentar") ||
-    texto.includes("quantos tomar") ||
-    texto.includes("misturar") && texto.includes("com ") ||
+    (texto.includes("dose") && texto.includes("aumentar")) ||
+    texto.includes("quantos comprimidos tomar") ||
+    texto.includes("posso misturar") ||
     texto.includes("automedicação") ||
-    texto.includes("uso prolongado") ||
-    texto.includes("sem receita")
+    texto.includes("sem receita médica") ||
+    texto.includes("tarja preta") ||
+    texto.includes("controlado")
   );
   
-  return contemControlado || contextoPerigoso;
+  // Verifica medicamentos controlados específicos apenas em contexto de dosagem
+  const medicamentosEspecificos = ['rivotril', 'ritalina', 'morfina', 'codeína', 'tramadol'];
+  const contemControlado = medicamentosEspecificos.some(med => 
+    texto.includes(med) && (texto.includes('dose') || texto.includes('tomar') || texto.includes('usar'))
+  );
+  
+  return contextoPerigoso || contemControlado;
 };
 
 // Exportações nomeadas (CORRIGIDO)

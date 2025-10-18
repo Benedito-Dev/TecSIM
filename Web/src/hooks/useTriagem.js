@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { 
   iniciarTriagem, 
-  identificarProtocolo, 
+  identificarProtocolo,
+  identificarProtocoloEspecializado,
   processarRespostaTriagem, 
   determinarProximaEtapa,
   getTriageAnalysis 
@@ -11,14 +12,17 @@ export const useTriagem = () => {
   const [triagemState, setTriagemState] = useState(null);
   const [emTriagem, setEmTriagem] = useState(false);
 
-  const iniciarProcessoTriagem = (mensagemUsuario) => {
-    const protocolo = identificarProtocolo(mensagemUsuario);
+  const iniciarProcessoTriagem = (mensagemUsuario, condicoesPaciente = []) => {
+    // Tenta protocolo especializado primeiro
+    const protocolo = identificarProtocoloEspecializado(mensagemUsuario, condicoesPaciente) || 
+                     identificarProtocolo(mensagemUsuario);
     
     if (protocolo) {
       const novaTriagem = iniciarTriagem();
       novaTriagem.protocoloAtivo = protocolo;
       novaTriagem.sintomaPrincipal = mensagemUsuario;
       novaTriagem.etapa = 'triagem_ativa';
+      novaTriagem.condicoesPaciente = condicoesPaciente;
       
       setTriagemState(novaTriagem);
       setEmTriagem(true);
@@ -26,7 +30,8 @@ export const useTriagem = () => {
       return {
         sucesso: true,
         primeiraPergunta: protocolo.perguntas[0],
-        protocolo
+        protocolo,
+        especializado: protocolo.tipo === 'especializado'
       };
     }
     

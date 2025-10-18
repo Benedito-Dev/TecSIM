@@ -1,5 +1,6 @@
 import { protocolosTriagem } from './protocolsConfig';
 import { getAIResponse } from '../aiService';
+import { protocolosEspecializados } from './protocolsEspecializados';
 
 // Estado inicial da triagem
 export const iniciarTriagem = () => ({
@@ -43,6 +44,37 @@ export const identificarProtocolo = (mensagemUsuario) => {
   return null;
 };
 
+// Identificar protocolo especializado baseado nas condições do paciente
+export const identificarProtocoloEspecializado = (mensagemUsuario, condicoesPaciente = []) => {
+  // 1. Identifica protocolo base
+  const protocoloBase = identificarProtocolo(mensagemUsuario);
+  
+  if (!protocoloBase || !condicoesPaciente.length) {
+    return protocoloBase;
+  }
+  
+  // 2. Verifica se existe versão especializada
+  const condicoesAtivas = condicoesPaciente.filter(c => c.ativo);
+  
+  for (const condicao of condicoesAtivas) {
+    const chaveEspecializada = `${protocoloBase.nome.toLowerCase()}_${condicao.condicao}`;
+    
+    if (protocolosEspecializados[chaveEspecializada]) {
+      const protocoloEspecializado = {
+        ...protocoloBase,
+        ...protocolosEspecializados[chaveEspecializada],
+        tipo: 'especializado',
+        condicao_relacionada: condicao.condicao,
+        severidade_paciente: condicao.severidade
+      };
+      
+      return protocoloEspecializado;
+    }
+  }
+  
+  return protocoloBase;
+};
+
 // Processar resposta do usuário
 export const processarRespostaTriagem = (estadoTriagem, respostaUsuario, perguntaAtual) => {
   const novoEstado = { ...estadoTriagem };
@@ -63,19 +95,33 @@ export const processarRespostaTriagem = (estadoTriagem, respostaUsuario, pergunt
   return novoEstado;
 };
 
-// Avaliar risco da resposta
-const avaliarRiscoResposta = (resposta, pergunta) => {
+// Avaliar risco da resposta considerando condições do paciente
+const avaliarRiscoResposta = (resposta, pergunta, condicoesPaciente = []) => {
   const respostaLower = resposta.toLowerCase();
   
+  let risco = 'baixo';
+  
   if (pergunta.tipo === 'critico' && (respostaLower.includes('sim') || respostaLower.includes('sinto'))) {
-    return 'alto';
+    risco = 'alto';
   }
   
   if (pergunta.tipo === 'intensidade' && (respostaLower.includes('forte') || respostaLower.includes('9') || respostaLower.includes('10') || respostaLower.includes('acima'))) {
-    return 'medio';
+    risco = 'medio';
   }
   
-  return 'baixo';
+  // Aumenta risco baseado nas condições do paciente
+  const condicoesAltoRisco = ['hipertensao', 'diabetes', 'cardiaco', 'asma'];
+  const temCondicaoRisco = condicoesPaciente.some(c => 
+    condicoesAltoRisco.includes(c.condicao) && c.severidade !== 'leve'
+  );
+  
+  if (temCondicaoRisco && risco === 'baixo') {
+    risco = 'medio';
+  } else if (temCondicaoRisco && risco === 'medio') {
+    risco = 'alto';
+  }
+  
+  return risco;
 };
 
 // Determinar próxima etapa

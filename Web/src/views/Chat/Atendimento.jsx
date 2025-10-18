@@ -15,13 +15,41 @@ import {
   Eye,
   Stethoscope // ← Adicionei este ícone
 } from "lucide-react";
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import AtendimentoChat from '../../components/chat/AtendimentoChat';
+import CondicoesMedicas from '../../components/chat/CondicoesMedicas';
+import { usePacienteCondicoes } from '../../hooks/usePacienteCondicoes';
 
 export default function AtendimentoPaciente() {
   const location = useLocation();
   const navigate = useNavigate();
   const { paciente } = location.state || {};
+  
+  const [queixaPrincipal, setQueixaPrincipal] = useState('');
+  const [observacoes, setObservacoes] = useState('');
+  const [resultadoTriagem, setResultadoTriagem] = useState(null);
+
+  const { condicoes, adicionarCondicao, removerCondicao } = usePacienteCondicoes(paciente?.id);
+
+  const handleTriagemComplete = (resultado) => {
+    setResultadoTriagem(resultado);
+    if (!queixaPrincipal) {
+      setQueixaPrincipal(`Triagem realizada: ${resultado.classificacao}`);
+    }
+  };
+
+  const handleCondicoesUpdate = async (acao, dados) => {
+    try {
+      if (acao === 'adicionar') {
+        await adicionarCondicao({ ...dados, id_paciente: paciente.id });
+      } else if (acao === 'remover') {
+        await removerCondicao(dados);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar condições:', error);
+    }
+  };
 
   // Fallback caso acessem a página diretamente sem dados
   if (!paciente) {
@@ -115,30 +143,79 @@ export default function AtendimentoPaciente() {
         </div>
       </div>
 
-      {/* Formulário de Atendimento */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-semibold mb-4">Registro do Atendimento</h2>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Queixa Principal
-            </label>
-            <textarea 
-              className="w-full h-20 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Descreva a queixa principal do paciente..."
-            />
+      {/* Condições Médicas */}
+      <CondicoesMedicas 
+        paciente={paciente}
+        condicoes={condicoes}
+        onCondicoesUpdate={handleCondicoesUpdate}
+      />
+
+      {/* Grid com Chat e Formulário */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {/* Chat de Atendimento */}
+        <div>
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <MessageSquare size={20} className="text-blue-600" />
+            Chat de Atendimento
+          </h2>
+          <AtendimentoChat 
+            paciente={paciente} 
+            onTriagemComplete={handleTriagemComplete}
+          />
+        </div>
+
+        {/* Formulário de Atendimento */}
+        <div>
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <FileText size={20} className="text-green-600" />
+            Registro do Atendimento
+          </h2>
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <form className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Queixa Principal
+                </label>
+                <textarea 
+                  value={queixaPrincipal}
+                  onChange={(e) => setQueixaPrincipal(e.target.value)}
+                  className="w-full h-20 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Descreva a queixa principal do paciente..."
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Observações
+                </label>
+                <textarea 
+                  value={observacoes}
+                  onChange={(e) => setObservacoes(e.target.value)}
+                  className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Anotações sobre o atendimento..."
+                />
+              </div>
+
+              {/* Resultado da Triagem */}
+              {resultadoTriagem && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h3 className="font-semibold text-blue-800 mb-2">Resultado da Triagem:</h3>
+                  <p className="text-sm text-blue-700">
+                    <strong>Classificação:</strong> {resultadoTriagem.classificacao}
+                  </p>
+                  <p className="text-sm text-blue-700">
+                    <strong>Recomendação:</strong> {resultadoTriagem.recomendacao}
+                  </p>
+                  {resultadoTriagem.resumo && (
+                    <p className="text-sm text-blue-700 mt-2">
+                      <strong>Resumo:</strong> {resultadoTriagem.resumo}
+                    </p>
+                  )}
+                </div>
+              )}
+            </form>
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Observações
-            </label>
-            <textarea 
-              className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Anotações sobre o atendimento..."
-            />
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );

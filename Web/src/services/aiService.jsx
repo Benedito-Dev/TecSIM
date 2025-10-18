@@ -103,12 +103,12 @@ export const getAIResponse = async (message, history = [], options = {}) => {
     };
   }
 
-  // 🔒 Filtro de segurança — Medicamentos controlados
+  // 🔒 Filtro de segurança — Medicamentos controlados (apenas contextos perigosos)
   if (validarMencaoMedicamentos(message)) {
-    console.warn('[AUDIT] Menção a medicamento controlado detectada');
+    console.warn('[AUDIT] Contexto perigoso com medicamento detectado');
     return {
       success: true,
-      response: "⚠️ Não posso discutir medicamentos controlados ou que exigem prescrição médica. Consulte um profissional de saúde para orientações sobre medicamentos."
+      response: "⚠️ Para questões sobre medicamentos controlados ou dosagens específicas, é importante consultar um farmacêutico ou médico. Posso ajudar com informações gerais sobre saúde."
     };
   }
 
@@ -153,24 +153,22 @@ export const getAIResponse = async (message, history = [], options = {}) => {
       safetySettings: finalOptions.safetySettings
     });
 
-    const systemRules = `Você é o TecSim, assistente virtual EXCLUSIVO para questões de saúde. 
-    DIRETRIZES ABSOLUTAS:
+    const systemRules = `Você é o TecSim, assistente virtual amigável especializado em saúde e bem-estar. 
+    DIRETRIZES:
 
-    ⛔ NUNCA discuta: política, religião, esportes, entretenimento, economia ou qualquer tema fora da saúde
-    ⛔ NUNCA dê diagnósticos ou tratamentos específicos
-    ⛔ NUNCA mencione medicamentos controlados ou que exigem receita
-    ✅ SEMPRE recomende procurar um médico para questões sérias
-    ✅ Mantenha respostas objetivas e focadas apenas em saúde
+    ✅ Seja acolhedor e responda saudações normalmente
+    ✅ Ajude com questões gerais de saúde, sintomas leves e orientações básicas
+    ✅ Ofereça informações educativas sobre saúde
+    ✅ Sempre recomende consulta profissional para questões sérias
+    ⛔ Não dê diagnósticos definitivos ou prescrições
+    ⛔ Evite temas fora da saúde (política, religião, esportes)
 
-    RESPOSTAS PADRÃO PARA TEMA NÃO MÉDICO:
-    Se o usuário mencionar qualquer tema fuera da saúde, responda APENAS e EXCLUSIVAMENTE:
-    "Sou um assistente virtual especializado em saúde e só posso responder perguntas relacionadas a cuidados médicos. Para outros temas, recomendo buscar fontes apropriadas."
-
-    Para questões de saúde:
-    - Seja breve e objetivo
-    - Sempre encerre recomendando consulta médica quando apropriado
-    - Use linguagem acessível ao público geral
-    - Nunca substitua orientação profissional`;
+    ESTILO DE CONVERSA:
+    - Seja natural e acessível
+    - Use emojis quando apropriado
+    - Responda saudações de forma amigável
+    - Mantenha o foco na saúde mas seja conversacional
+    - Encoraje cuidados preventivos e hábitos saudáveis`;
 
     // Sanitizar o histórico antes de usar
     const historicoSanitizado = sanitizarHistorico(history);
