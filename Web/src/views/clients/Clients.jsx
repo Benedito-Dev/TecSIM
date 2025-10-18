@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
-  ArrowLeft, 
+  MessageSquare, 
   Users, 
   Search, 
   Plus, 
@@ -12,9 +12,9 @@ import {
   Mail,
   MapPin,
   Edit,
-  Filter,
   Download,
-  Eye
+  Eye,
+  Stethoscope // ← Adicionei este ícone
 } from "lucide-react";
 import Sidebar from "../../components/SideBarr";
 
@@ -109,6 +109,22 @@ export default function Clients() {
     setClienteSelecionado(null);
   };
 
+  // NOVA FUNÇÃO: Iniciar atendimento
+  const handleIniciarAtendimento = (paciente) => {
+    navigate('/atendimento', { 
+      state: { 
+        paciente: paciente // Passa o objeto completo do paciente
+      }
+    });
+  };
+
+  // FUNÇÃO para editar cliente (se quiser implementar depois)
+  const handleEditarCliente = (cliente) => {
+    // Exemplo para edição - você pode implementar depois
+    console.log('Editar cliente:', cliente);
+    // navigate(`/editar-cliente/${cliente.id}`, { state: { cliente } });
+  };
+
   const filtrarClientes = () => {
     let clientesFiltrados = clientes;
 
@@ -135,7 +151,8 @@ export default function Clients() {
 
   const clientesFiltrados = filtrarClientes();
 
-  const CardCliente = ({ cliente }) => (
+  // ATUALIZEI o CardCliente para incluir o botão de atendimento
+  const CardCliente = ({ cliente, onIniciarAtendimento, onVerDetalhes, onEditar }) => (
     <div className="bg-white rounded-xl p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-4 flex-1">
@@ -184,14 +201,27 @@ export default function Clients() {
         </div>
 
         <div className="flex flex-col gap-2">
+          {/* BOTÃO INICIAR ATENDIMENTO - NOVO */}
           <button
-            onClick={() => handleVerDetalhes(cliente)}
+            onClick={() => onIniciarAtendimento(cliente)}
+            className="flex items-center gap-2 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm"
+          >
+            <Stethoscope size={14} />
+            Atendimento
+          </button>
+          
+          <button
+            onClick={() => onVerDetalhes(cliente)}
             className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
           >
             <Eye size={14} />
             Detalhes
           </button>
-          <button className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+          
+          <button 
+            onClick={() => onEditar(cliente)}
+            className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+          >
             <Edit size={14} />
             Editar
           </button>
@@ -200,7 +230,8 @@ export default function Clients() {
     </div>
   );
 
-  const ModalDetalhes = ({ cliente, onClose }) => (
+  // ATUALIZEI o ModalDetalhes para incluir botão de atendimento também
+  const ModalDetalhes = ({ cliente, onClose, onIniciarAtendimento }) => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200">
@@ -322,16 +353,30 @@ export default function Clients() {
           </div>
         </div>
 
-        <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
+        <div className="p-6 border-t border-gray-200 flex justify-between gap-3">
+          {/* BOTÃO INICIAR ATENDIMENTO NO MODAL */}
           <button
-            onClick={onClose}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            onClick={() => {
+              onIniciarAtendimento(cliente);
+              onClose();
+            }}
+            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
           >
-            Fechar
+            <Stethoscope size={16} />
+            Iniciar Atendimento
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-            Imprimir Ficha
-          </button>
+          
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Fechar
+            </button>
+            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              Imprimir Ficha
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -483,8 +528,15 @@ export default function Clients() {
                       {searchTerm && ` para "${searchTerm}"`}
                     </p>
                     
+                    {/* ATUALIZEI o map para passar as funções como props */}
                     {clientesFiltrados.map((cliente) => (
-                      <CardCliente key={cliente.id} cliente={cliente} />
+                      <CardCliente 
+                        key={cliente.id} 
+                        cliente={cliente}
+                        onIniciarAtendimento={handleIniciarAtendimento}
+                        onVerDetalhes={handleVerDetalhes}
+                        onEditar={handleEditarCliente}
+                      />
                     ))}
                   </>
                 )}
@@ -494,11 +546,12 @@ export default function Clients() {
         </div>
       </div>
 
-      {/* Modal de Detalhes */}
+      {/* Modal de Detalhes - ATUALIZEI para passar a função de atendimento */}
       {clienteSelecionado && (
         <ModalDetalhes 
           cliente={clienteSelecionado} 
-          onClose={handleFecharDetalhes} 
+          onClose={handleFecharDetalhes}
+          onIniciarAtendimento={handleIniciarAtendimento}
         />
       )}
     </div>

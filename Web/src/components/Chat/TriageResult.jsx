@@ -1,7 +1,7 @@
 import React from 'react';
-import { AlertTriangle, CheckCircle, Clock, ArrowRight } from 'lucide-react';
+import { AlertTriangle, Clock, CheckCircle } from 'lucide-react';
 
-const TriageResult = ({ classificacao, analise, onClose }) => {
+const TriageResult = ({ classificacao, analise }) => {
   const getIcon = () => {
     switch (classificacao.nivel) {
       case 'EMERGÊNCIA':

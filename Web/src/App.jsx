@@ -8,7 +8,8 @@ import DashboardPage from './views/Dashboard/Dashboard';
 import Medicines from './views/Medicines/Medicines';
 import Profile from './views/Profile/Profile';
 import Lembretes from './views/Lembretes/Lembretes';
-import Chatbot from './views/Chat/Chat';
+import ChatScreen from './views/Chat/Chat-Refatorado';
+import AtendimentoPaciente from './views/Chat/Atendimento'
 import Prescricao from './views/Prescricao/Prescricao';
 import Ajustes from './views/Ajustes/Ajustes';
 import Clients from './views/clients/Clients';
@@ -37,7 +38,8 @@ export default function App() {
                 <Route path="/medicamentos" element={<Medicines />} />
                 <Route path="/perfil" element={<Profile />} />
                 <Route path="/lembretes" element={<Lembretes />} />
-                <Route path="/chatbot" element={<Chatbot />} />
+                <Route path="/chatbot" element={<ChatScreen />} />
+                <Route path="/atendimento" element={<AtendimentoPaciente />} />
                 <Route path="/prescricoes" element={<Prescricao />} />
                 <Route path="ajustes" element={<Ajustes />} />
                 <Route path='/clientes' element={<Clients />} />
