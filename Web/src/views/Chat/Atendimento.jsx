@@ -41,6 +41,9 @@ export default function AtendimentoPaciente() {
 
   const { condicoes, adicionarCondicao, removerCondicao } = usePacienteCondicoes(paciente?.id);
 
+  // Identifica origem do atendimento
+  const isClientePagueMenos = location.state?.origem === 'pague-menos' || paciente?.clientePagueMenos;
+
   // Função para determinar o tipo de gráfico baseado nas condições do paciente
   const getGraficoEspecifico = () => {
     const condicoesPaciente = paciente?.condicoesCronicas || condicoes || [];
@@ -336,8 +339,9 @@ export default function AtendimentoPaciente() {
           />
         </div>
 
-        {/* Resumo Contextual e Gráficos de Acompanhamento */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Resumo Contextual e Gráficos de Acompanhamento - Apenas para clientes Pague Menos */}
+        {isClientePagueMenos && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Resumo Contextual IA */}
           <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
             <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
@@ -554,7 +558,8 @@ export default function AtendimentoPaciente() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
+        )}
 
         {/* Grid com Chat e Formulário */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">

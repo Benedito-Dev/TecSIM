@@ -14,6 +14,7 @@ import AtendimentoPaciente from './views/Chat/Atendimento'
 import Prescricao from './views/Prescricao/Prescricao';
 import Ajustes from './views/Ajustes/Ajustes';
 import Clients from './views/clients/Clients';
+import TriagemInicial from './components/TriagemInicial';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { RegisterProvider } from './context/RegisterContext';
@@ -31,7 +32,8 @@ export default function App() {
 
             <RegisterProvider> 
               <Routes>
-                <Route path="/" element={<Welcome />} />
+                <Route path="/" element={<TriagemInicial />} />
+                <Route path="/welcome" element={<Welcome />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/verify" element={<ConfirmCodePage />} />
@@ -40,6 +42,7 @@ export default function App() {
                 <Route path="/medicamentos" element={<Medicines />} />
                 <Route path="/perfil" element={<Profile />} />
                 <Route path="/lembretes" element={<Lembretes />} />
+                <Route path="/chat-inicial" element={<ChatScreen />} />
                 <Route path="/chatbot" element={<ChatScreen />} />
                 <Route path="/atendimento" element={<AtendimentoPaciente />} />
                 <Route path="/prescricoes" element={<Prescricao />} />
