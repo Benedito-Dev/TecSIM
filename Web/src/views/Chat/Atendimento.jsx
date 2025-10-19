@@ -41,9 +41,6 @@ export default function AtendimentoPaciente() {
 
   const { condicoes, adicionarCondicao, removerCondicao } = usePacienteCondicoes(paciente?.id);
 
-  // Identifica origem do atendimento
-  const isClientePagueMenos = location.state?.origem === 'pague-menos' || paciente?.clientePagueMenos;
-
   // Função para determinar o tipo de gráfico baseado nas condições do paciente
   const getGraficoEspecifico = () => {
     const condicoesPaciente = paciente?.condicoesCronicas || condicoes || [];
@@ -213,7 +210,9 @@ export default function AtendimentoPaciente() {
                 <ArrowLeft className="w-4 h-4" />
                 Voltar
               </button>
-              <button className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
+              <button
+                onClick={() => navigate('/clientes')} 
+                className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
                 <Save className="w-4 h-4" />
                 Salvar Atendimento
               </button>
@@ -330,18 +329,183 @@ export default function AtendimentoPaciente() {
         {/* Integração SUS */}
         <IntegracaoSUS paciente={paciente} />
 
-        {/* Condições Médicas */}
+        {/* Serviços ClinicFarma - Acompanhamento de Adesão */}
         <div className="mb-8">
-          <CondicoesMedicas 
-            paciente={paciente}
-            condicoes={condicoes}
-            onCondicoesUpdate={handleCondicoesUpdate}
-          />
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="bg-gradient-to-r from-teal-500 to-teal-600 px-6 py-4">
+              <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Stethoscope className="w-5 h-5" />
+                Serviços ClinicFarma - Acompanhamento de Adesão
+              </h2>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Monitoramento Glicêmico */}
+                {(tipoGrafico === 'diabetes' || tipoGrafico === 'ambos') && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Droplets className="w-5 h-5 text-blue-600" />
+                      <h3 className="font-semibold text-blue-800">Monitoramento Glicêmico</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-blue-700">Última medição:</span>
+                        <span className="font-medium text-blue-800">há 3 dias</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-blue-700">Adesão mensal:</span>
+                        <span className="font-medium text-green-600">87%</span>
+                      </div>
+                      <div className="mt-3">
+                        <button className="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 px-3 rounded-lg text-sm font-medium transition-colors">
+                          Agendar Consulta
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Controle Pressórico */}
+                {(tipoGrafico === 'hipertensao' || tipoGrafico === 'ambos') && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Heart className="w-5 h-5 text-red-600" />
+                      <h3 className="font-semibold text-red-800">Controle Pressórico</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-red-700">Última aferição:</span>
+                        <span className="font-medium text-red-800">há 5 dias</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-red-700">Meta atingida:</span>
+                        <span className="font-medium text-green-600">92%</span>
+                      </div>
+                      <div className="mt-3">
+                        <button className="w-full bg-red-100 hover:bg-red-200 text-red-800 py-2 px-3 rounded-lg text-sm font-medium transition-colors">
+                          Verificar Pressão
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Adesão Medicamentosa */}
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Pill className="w-5 h-5 text-green-600" />
+                    <h3 className="font-semibold text-green-800">Adesão Medicamentosa</h3>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-green-700">Doses tomadas:</span>
+                      <span className="font-medium text-green-800">28/30</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-green-700">Taxa de adesão:</span>
+                      <span className="font-medium text-green-600">93%</span>
+                    </div>
+                    <div className="mt-3">
+                      <button className="w-full bg-green-100 hover:bg-green-200 text-green-800 py-2 px-3 rounded-lg text-sm font-medium transition-colors">
+                        Revisar Medicações
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Consultas Programadas */}
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Calendar className="w-5 h-5 text-purple-600" />
+                    <h3 className="font-semibold text-purple-800">Consultas Programadas</h3>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-purple-700">Próxima consulta:</span>
+                      <span className="font-medium text-purple-800">15/02</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-purple-700">Comparecimento:</span>
+                      <span className="font-medium text-green-600">95%</span>
+                    </div>
+                    <div className="mt-3">
+                      <button className="w-full bg-purple-100 hover:bg-purple-200 text-purple-800 py-2 px-3 rounded-lg text-sm font-medium transition-colors">
+                        Reagendar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Exames Laboratoriais */}
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Activity className="w-5 h-5 text-orange-600" />
+                    <h3 className="font-semibold text-orange-800">Exames Laboratoriais</h3>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-orange-700">Último exame:</span>
+                      <span className="font-medium text-orange-800">10/01</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-orange-700">Próximo:</span>
+                      <span className="font-medium text-orange-600">10/03</span>
+                    </div>
+                    <div className="mt-3">
+                      <button className="w-full bg-orange-100 hover:bg-orange-200 text-orange-800 py-2 px-3 rounded-lg text-sm font-medium transition-colors">
+                        Solicitar Exames
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Orientação Nutricional */}
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Target className="w-5 h-5 text-yellow-600" />
+                    <h3 className="font-semibold text-yellow-800">Orientação Nutricional</h3>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-yellow-700">Última consulta:</span>
+                      <span className="font-medium text-yellow-800">20/01</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-yellow-700">Adesão dieta:</span>
+                      <span className="font-medium text-green-600">78%</span>
+                    </div>
+                    <div className="mt-3">
+                      <button className="w-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 py-2 px-3 rounded-lg text-sm font-medium transition-colors">
+                        Agendar Nutricionista
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Resumo de Adesão Geral */}
+              <div className="mt-6 bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-gray-800">Resumo de Adesão ao Tratamento</h3>
+                  <span className="text-2xl font-bold text-green-600">{resumoContextual.indicadores.adesao}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-500"
+                    style={{width: `${resumoContextual.indicadores.adesao}%`}}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs text-gray-600 mt-2">
+                  <span>Baixa Adesão</span>
+                  <span>Alta Adesão</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Resumo Contextual e Gráficos de Acompanhamento - Apenas para clientes Pague Menos */}
-        {isClientePagueMenos && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Resumo Contextual e Gráficos de Acompanhamento */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Resumo Contextual IA */}
           <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
             <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
@@ -558,8 +722,7 @@ export default function AtendimentoPaciente() {
               </div>
             </div>
           </div>
-          </div>
-        )}
+        </div>
 
         {/* Grid com Chat e Formulário */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
