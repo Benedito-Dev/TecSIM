@@ -24,7 +24,6 @@ import {
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AtendimentoChat from '../../components/chat/AtendimentoChat';
-import CondicoesMedicas from '../../components/chat/CondicoesMedicas';
 import ProtocoloContinuidade from '../../components/ProtocoloContinuidade';
 import IntegracaoSUS from '../../components/IntegracaoSUS';
 import { usePacienteCondicoes } from '../../hooks/usePacienteCondicoes';

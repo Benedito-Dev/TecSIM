@@ -24,6 +24,8 @@ export default function ChatScreen() {
   const [newMessage, setNewMessage] = useState('');
   const [usuarioInfo, setUsuarioInfo] = useState(null);
   const [protocoloAtivo, setProtocoloAtivo] = useState(null);
+  const [etapaProtocolo, setEtapaProtocolo] = useState(0);
+  const [dadosCliente, setDadosCliente] = useState({});
   
   const {
     messages,
@@ -42,48 +44,194 @@ export default function ChatScreen() {
     processarResposta,
   } = useTriagem();
 
-  // Inicialização para novos usuários
+  // Inicialização automática do protocolo farmacêutico
   useEffect(() => {
-    const { novoUsuario, primeiroContato, cpfTentativa } = location.state || {};
+    // Sempre inicia como farmacêutico
+    setUsuarioInfo({ tipo: 'farmaceutico' });
     
-    if (novoUsuario) {
-      setUsuarioInfo({ 
-        tipo: 'novo', 
-        primeiroContato,
-        cpfTentativa 
-      });
-      
-      // Mensagem de boas-vindas para novos usuários
-      setTimeout(() => {
-        addBotMessage(
-          `👋 **Olá! Bem-vindo ao TecSim**\n\n` +
-          `Sou seu assistente de saúde e vou te ajudar com orientações básicas sobre medicamentos e cuidados.\n\n` +
-          `🔍 **Como funciona:**\n` +
-          `• Descreva seus sintomas ou dúvidas\n` +
-          `• Farei perguntas para entender melhor\n` +
-          `• Te orientarei sobre cuidados básicos\n` +
-          `• Se necessário, te encaminharei para um especialista\n\n` +
-          `⚠️ *Lembre-se: não substituo consulta médica profissional*\n\n` +
-          `**O que você gostaria de saber hoje?**`
-        );
-      }, 1000);
-    }
-  }, [location.state]);
+    // Inicia protocolo automaticamente
+    setTimeout(() => {
+      setEtapaProtocolo(1);
+      addBotMessage(
+        `💊 **TecSim - Protocolo Farmacêutico**\n\n` +
+        `**ETAPA 1: IDENTIFICAÇÃO DO CLIENTE**\n\n` +
+        `🔍 **Pergunte ao cliente:**\n\n` +
+        `📋 **"Qual seu CPF?"** (para buscar no sistema)\n` +
+        `👤 **"Qual seu nome completo?"**\n` +
+        `🎂 **"Qual sua idade?"**\n` +
+        `⚠️ **"Tem alguma alergia conhecida?"**\n` +
+        `💊 **"Toma algum medicamento controlado?"**\n` +
+        `🏥 **"Tem alguma doença crônica?"**\n\n` +
+        `**Digite as informações coletadas ou 'próximo' para continuar**`
+      );
+    }, 1000);
+  }, []);
 
-  // Análise de protocolo generalizado para novos usuários
-  const analisarProtocoloGeneralizado = (mensagem) => {
-    const protocoloDetectado = protocolosGeneralizados.detectarProtocolo(mensagem);
+  // Processamento das etapas do protocolo farmacêutico
+  const processarEtapaProtocolo = async (mensagem) => {
+    const msg = mensagem.toLowerCase();
     
-    if (protocoloDetectado) {
-      setProtocoloAtivo(protocoloDetectado);
-      return {
-        sucesso: true,
-        protocolo: protocoloDetectado,
-        mensagemInicial: protocoloDetectado.mensagemInicial
-      };
+    switch (etapaProtocolo) {
+      case 1: // IDENTIFICAÇÃO
+        if (msg.includes('próximo') || msg.includes('proximo')) {
+          setEtapaProtocolo(2);
+          addBotMessage(
+            `**ETAPA 2: AVALIAÇÃO DOS SINTOMAS**\n\n` +
+            `🤒 **Pergunte ao cliente:**\n\n` +
+            `🔴 **"O que você está sentindo?"** (sintoma principal)\n` +
+            `⏰ **"Há quanto tempo começou?"**\n` +
+            `🌡️ **"Tem febre?"** (medir se possível)\n` +
+            `📊 **"De 1 a 10, qual a intensidade?"**\n` +
+            `💊 **"Já tomou algo para isso?"**\n` +
+            `🔄 **"Já teve isso antes?"**\n` +
+            `➕ **"Tem outros sintomas junto?"**\n\n` +
+            `**Digite os sintomas relatados pelo cliente:**`
+          );
+        } else {
+          setDadosCliente(prev => ({ ...prev, identificacao: mensagem }));
+          addBotMessage(
+            `✅ **Dados do cliente registrados!**\n\n` +
+            `📝 **Informações coletadas:**\n${mensagem}\n\n` +
+            `Digite 'próximo' para continuar para avaliação dos sintomas.`
+          );
+        }
+        return true;
+        
+      case 2: // AVALIAÇÃO DOS SINTOMAS
+        setDadosCliente(prev => ({ ...prev, sintomas: mensagem }));
+        setEtapaProtocolo(3);
+        
+        const contextoAnalise = `
+PROTOCOLO FARMACÊUTICO - ANÁLISE:
+Dados do cliente: ${dadosCliente.identificacao}
+Sintomas relatados: ${mensagem}
+
+Como farmacêutico experiente, forneça:
+
+1. **ELIMINAÇÃO DIFERENCIAL:**
+   - 3 possíveis causas mais prováveis
+   - Causas que devem ser descartadas
+
+2. **PERGUNTAS ADICIONAIS:**
+   - Que perguntas fazer para confirmar/descartar causas
+   - Sinais específicos para observar
+
+3. **SINAIS DE ALERTA:**
+   - Quando encaminhar IMEDIATAMENTE ao médico
+   - Red flags para este sintoma
+
+4. **SUGESTÕES TERAPÊUTICAS:**
+   - Medicamentos de venda livre apropriados
+   - Dosagens seguras
+   - Contraindicações importantes
+
+5. **ORIENTAÇÕES NÃO FARMACOLÓGICAS:**
+   - Medidas caseiras seguras
+   - Quando retornar
+
+Formato: Resposta prática para farmacêutico`;
+        
+        const formattedHistory = getFormattedHistory();
+        const aiResponse = await getAIResponse(contextoAnalise, formattedHistory);
+        
+        if (aiResponse.success) {
+          addBotMessage(
+            `**ETAPA 3: ANÁLISE E ORIENTAÇÃO**\n\n` +
+            `${aiResponse.response}\n\n` +
+            `💊 **Apresente as opções ao cliente conforme orientação acima**\n` +
+            `**Digite 'próximo' quando terminar a apresentação**`
+          );
+        }
+        return true;
+        
+      case 3: // APRESENTAÇÃO DE SOLUÇÕES
+        setEtapaProtocolo(4);
+        addBotMessage(
+          `**ETAPA 4: RESOLUÇÃO DE DÚVIDAS**\n\n` +
+          `🤔 **Esclareça todas as dúvidas do cliente:**\n\n` +
+          `• Como usar o medicamento?\n` +
+          `• Efeitos colaterais possíveis?\n` +
+          `• Interações medicamentosas?\n` +
+          `• Quando retornar se não melhorar?\n\n` +
+          `**Digite as dúvidas do cliente ou 'próximo':**`
+        );
+        return true;
+        
+      case 4: // RESOLUÇÃO DE DÚVIDAS
+        if (!msg.includes('próximo') && !msg.includes('proximo')) {
+          const contextoDuvidas = `
+DÚVIDAS DO CLIENTE:
+${mensagem}
+
+Sintomas originais: ${dadosCliente.sintomas}
+Dados do cliente: ${dadosCliente.identificacao}
+
+Forneça respostas claras e seguras para as dúvidas, sempre priorizando a segurança do paciente.`;
+          
+          const formattedHistory = getFormattedHistory();
+          const aiResponse = await getAIResponse(contextoDuvidas, formattedHistory);
+          
+          if (aiResponse.success) {
+            addBotMessage(
+              `💬 **Respostas para o cliente:**\n\n${aiResponse.response}\n\n` +
+              `Digite 'próximo' para finalizar o atendimento.`
+            );
+          }
+        } else {
+          setEtapaProtocolo(5);
+          addBotMessage(
+            `**ETAPA 5: AÇÃO E ENCERRAMENTO**\n\n` +
+            `🎯 **Próximos passos para o cliente:**\n\n` +
+            `• Finalize a venda se houver\n` +
+            `• Oriente sobre uso correto\n` +
+            `• Informe quando retornar\n` +
+            `• Entregue orientações por escrito\n\n` +
+            `**Digite 'finalizar' para gerar o protocolo:**`
+          );
+        }
+        return true;
+        
+      case 5: // AÇÃO E ENCERRAMENTO
+        setEtapaProtocolo(6);
+        const numeroProtocolo = `TEC${Date.now().toString().slice(-6)}`;
+        
+        addBotMessage(
+          `**ETAPA 6: REGISTRO E ACOMPANHAMENTO**\n\n` +
+          `✅ **ATENDIMENTO FINALIZADO**\n\n` +
+          `📝 **PROTOCOLO: ${numeroProtocolo}**\n\n` +
+          `**RESUMO DO ATENDIMENTO:**\n` +
+          `• Cliente: ${dadosCliente.identificacao || 'Não informado'}\n` +
+          `• Sintomas: ${dadosCliente.sintomas || 'Não informados'}\n` +
+          `• Data: ${new Date().toLocaleDateString('pt-BR')}\n` +
+          `• Horário: ${new Date().toLocaleTimeString('pt-BR')}\n\n` +
+          `📞 **Informe ao cliente:**\n` +
+          `"Seu protocolo é ${numeroProtocolo}. Guarde este número para acompanhamento."\n\n` +
+          `🔄 **Digite 'novo' para iniciar novo atendimento**`
+        );
+        return true;
+        
+      case 6: // REINICIAR
+        if (msg.includes('novo')) {
+          setEtapaProtocolo(1);
+          setDadosCliente({});
+          addBotMessage(
+            `🆕 **NOVO ATENDIMENTO INICIADO**\n\n` +
+            `**ETAPA 1: IDENTIFICAÇÃO DO CLIENTE**\n\n` +
+            `🔍 **Pergunte ao cliente:**\n\n` +
+            `📋 **"Qual seu CPF?"** (para buscar no sistema)\n` +
+            `👤 **"Qual seu nome completo?"**\n` +
+            `🎂 **"Qual sua idade?"**\n` +
+            `⚠️ **"Tem alguma alergia conhecida?"**\n` +
+            `💊 **"Toma algum medicamento controlado?"**\n` +
+            `🏥 **"Tem alguma doença crônica?"**\n\n` +
+            `**Digite as informações coletadas ou 'próximo' para continuar**`
+          );
+        }
+        return true;
+        
+      default:
+        return false;
     }
-    
-    return { sucesso: false };
   };
 
   // Lógica de envio de mensagem
@@ -95,16 +243,10 @@ export default function ChatScreen() {
     setIsLoading(true);
 
     try {
-      // Para novos usuários: protocolo generalizado primeiro
-      if (usuarioInfo?.tipo === 'novo' && !emTriagem && !protocoloAtivo) {
-        const resultadoProtocolo = analisarProtocoloGeneralizado(messageText.trim());
-        
-        if (resultadoProtocolo.sucesso) {
-          addBotMessage(
-            `🎯 **${resultadoProtocolo.protocolo.nome}**\n\n` +
-            `${resultadoProtocolo.mensagemInicial}\n\n` +
-            `${resultadoProtocolo.protocolo.perguntasIniciais[0]}`
-          );
+      // Protocolo estruturado para farmacêuticos
+      if (usuarioInfo?.tipo === 'farmaceutico' && etapaProtocolo > 0 && !emTriagem) {
+        const proximaEtapa = await processarEtapaProtocolo(messageText.trim());
+        if (proximaEtapa) {
           setIsLoading(false);
           return;
         }
@@ -138,8 +280,8 @@ export default function ChatScreen() {
                 `🔸 **Tempo**: ${classificacao.tempo}\n\n` +
                 `**Resumo**: ${response}\n\n`;
               
-              // Para novos usuários, adiciona opções de encaminhamento
-              if (usuarioInfo?.tipo === 'novo') {
+              // Para farmacêuticos, adiciona opções de encaminhamento
+              if (usuarioInfo?.tipo === 'farmaceutico') {
                 mensagemFinal += `\n🏥 **ENCAMINHAMENTOS SUGERIDOS:**\n`;
                 
                 if (classificacao.nivel.includes('URGENTE') || classificacao.nivel.includes('EMERGÊNCIA')) {
@@ -173,7 +315,7 @@ export default function ChatScreen() {
         }
       }
 
-      // Fluxo normal do AI
+      // Fluxo normal da IA (fora do protocolo)
       const formattedHistory = getFormattedHistory();
       const aiResponse = await getAIResponse(messageText.trim(), formattedHistory);
 
@@ -209,7 +351,7 @@ export default function ChatScreen() {
       <Sidebar />
       
       <div className="flex flex-col flex-1 h-screen transition-all duration-300">
-        {usuarioInfo?.tipo === 'novo' ? (
+        {usuarioInfo?.tipo === 'farmaceutico' ? (
           <ChatHeaderNovosUsuarios 
             onGoBack={handleGoBack}
             isLoading={isLoading}
