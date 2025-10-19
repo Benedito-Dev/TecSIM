@@ -20,10 +20,7 @@ export const useChatMessages = () => {
     ]);
   }, []);
 
-  // Scroll automático para novas mensagens
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  // Scroll removido para evitar comportamento indesejado na página
 
   const addMessage = (message) => {
     setMessages(prev => [...prev, {

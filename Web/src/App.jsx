@@ -5,6 +5,7 @@ import LoginPage from './views/Login';
 import ConfirmCodePage from './views/Code';
 
 import DashboardPage from './views/Dashboard/Dashboard';
+import DashboardGeral from './views/Dashboard/DashboardGeral';
 import Medicines from './views/Medicines/Medicines';
 import Profile from './views/Profile/Profile';
 import Lembretes from './views/Lembretes/Lembretes';
@@ -35,6 +36,7 @@ export default function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/verify" element={<ConfirmCodePage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/dashboard-geral" element={<DashboardGeral />} />
                 <Route path="/medicamentos" element={<Medicines />} />
                 <Route path="/perfil" element={<Profile />} />
                 <Route path="/lembretes" element={<Lembretes />} />

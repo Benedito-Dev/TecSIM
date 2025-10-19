@@ -41,6 +41,7 @@ export default function Clients() {
       endereco: "Rua das Flores, 123 - Centro, Fortaleza/CE",
       alergias: ["Penicilina", "Dipirona"],
       medicamentosContinuos: ["Losartana 50mg", "Metformina 850mg"],
+      condicoesCronicas: ["Hipertensão", "Diabetes tipo 2"],
       ultimaCompra: "15/01/2024",
       status: "ativo"
     },
@@ -54,6 +55,7 @@ export default function Clients() {
       endereco: "Av. Beira Mar, 456 - Meireles, Fortaleza/CE",
       alergias: ["Sulfas"],
       medicamentosContinuos: ["Atorvastatina 20mg", "AAS 100mg"],
+      condicoesCronicas: [],
       ultimaCompra: "10/01/2024",
       status: "ativo"
     },
@@ -67,6 +69,7 @@ export default function Clients() {
       endereco: "Rua dos Coqueiros, 789 - Aldeota, Fortaleza/CE",
       alergias: [],
       medicamentosContinuos: ["Anticoncepcional"],
+      condicoesCronicas: [],
       ultimaCompra: "08/01/2024",
       status: "ativo"
     },
@@ -80,8 +83,121 @@ export default function Clients() {
       endereco: "Travessa das Palmeiras, 321 - Jacarecanga, Fortaleza/CE",
       alergias: ["Ibuprofeno"],
       medicamentosContinuos: ["Insulina", "Sinvastatina 40mg", "Propranolol 40mg"],
+      condicoesCronicas: ["Diabetes tipo 1", "Hipertensão"],
       ultimaCompra: "05/01/2024",
       status: "inativo"
+    },
+    {
+      id: 5,
+      nome: "Francisca Almeida Rocha",
+      cpf: "321.654.987-00",
+      telefone: "(85) 95555-7890",
+      email: "francisca.almeida@email.com",
+      dataNascimento: "08/11/1952",
+      endereco: "Rua São José, 567 - Benfica, Fortaleza/CE",
+      alergias: ["Aspirina", "Corantes"],
+      medicamentosContinuos: ["Captopril 25mg", "Hidroclorotiazida 25mg", "Omeprazol 20mg"],
+      condicoesCronicas: ["Hipertensão", "Gastrite crônica"],
+      ultimaCompra: "20/01/2024",
+      status: "ativo"
+    },
+    {
+      id: 6,
+      nome: "Roberto Santos Mendes",
+      cpf: "654.321.789-00",
+      telefone: "(85) 94444-5678",
+      email: "roberto.mendes@email.com",
+      dataNascimento: "25/07/1988",
+      endereco: "Av. Dom Luís, 890 - Meireles, Fortaleza/CE",
+      alergias: [],
+      medicamentosContinuos: ["Gliclazida 80mg", "Metformina 1000mg"],
+      condicoesCronicas: ["Diabetes tipo 2"],
+      ultimaCompra: "18/01/2024",
+      status: "ativo"
+    },
+    {
+      id: 7,
+      nome: "Luiza Fernandes Costa",
+      cpf: "147.258.369-00",
+      telefone: "(85) 93333-9012",
+      email: "luiza.fernandes@email.com",
+      dataNascimento: "14/02/1995",
+      endereco: "Rua Major Facundo, 234 - Centro, Fortaleza/CE",
+      alergias: ["Látex"],
+      medicamentosContinuos: [],
+      condicoesCronicas: ["Asma"],
+      ultimaCompra: "12/01/2024",
+      status: "ativo"
+    },
+    {
+      id: 8,
+      nome: "Antônio José Silva",
+      cpf: "258.369.147-00",
+      telefone: "(85) 92222-3456",
+      email: "antonio.silva@email.com",
+      dataNascimento: "30/09/1960",
+      endereco: "Rua Coronel Correia, 445 - Jacarecanga, Fortaleza/CE",
+      alergias: ["Penicilina", "Sulfa"],
+      medicamentosContinuos: ["Amlodipina 10mg", "Atenolol 50mg", "Sinvastatina 20mg"],
+      condicoesCronicas: ["Hipertensão", "Dislipidemia"],
+      ultimaCompra: "22/01/2024",
+      status: "ativo"
+    },
+    {
+      id: 9,
+      nome: "Cláudia Regina Souza",
+      cpf: "369.147.258-00",
+      telefone: "(85) 91111-7890",
+      email: "claudia.souza@email.com",
+      dataNascimento: "19/06/1975",
+      endereco: "Av. Antônio Sales, 678 - Dionisio Torres, Fortaleza/CE",
+      alergias: [],
+      medicamentosContinuos: ["Levotiroxina 75mcg", "Cálcio + Vitamina D"],
+      condicoesCronicas: ["Hipotireoidismo", "Osteopenia"],
+      ultimaCompra: "16/01/2024",
+      status: "ativo"
+    },
+    {
+      id: 10,
+      nome: "Pedro Henrique Oliveira",
+      cpf: "741.852.963-00",
+      telefone: "(85) 90000-1234",
+      email: "pedro.oliveira@email.com",
+      dataNascimento: "11/04/1992",
+      endereco: "Rua Nogueira Acioli, 123 - Cocó, Fortaleza/CE",
+      alergias: ["Dipirona"],
+      medicamentosContinuos: [],
+      condicoesCronicas: [],
+      ultimaCompra: "25/01/2024",
+      status: "ativo"
+    },
+    {
+      id: 11,
+      nome: "Rosângela Batista Lima",
+      cpf: "852.963.741-00",
+      telefone: "(85) 98765-4321",
+      email: "rosangela.lima@email.com",
+      dataNascimento: "07/12/1968",
+      endereco: "Rua Padre Antônio Tomás, 789 - Aldeota, Fortaleza/CE",
+      alergias: ["Iodo", "Frutos do mar"],
+      medicamentosContinuos: ["Insulina NPH", "Insulina Regular", "Losartana 100mg"],
+      condicoesCronicas: ["Diabetes tipo 1", "Hipertensão", "Nefropatia diabética"],
+      ultimaCompra: "23/01/2024",
+      status: "ativo"
+    },
+    {
+      id: 12,
+      nome: "Márcio Andrade Santos",
+      cpf: "963.741.852-00",
+      telefone: "(85) 97654-3210",
+      email: "marcio.santos@email.com",
+      dataNascimento: "28/01/1983",
+      endereco: "Av. Washington Soares, 1456 - Edson Queiroz, Fortaleza/CE",
+      alergias: [],
+      medicamentosContinuos: ["Fluoxetina 20mg", "Clonazepam 2mg"],
+      condicoesCronicas: ["Depressão", "Ansiedade"],
+      ultimaCompra: "14/01/2024",
+      status: "ativo"
     }
   ];
 
@@ -191,6 +307,13 @@ export default function Clients() {
               </div>
             </div>
 
+            {cliente.condicoesCronicas?.length > 0 && (
+              <div className="mt-2">
+                <span className="text-xs font-medium text-purple-600">🏥 Patologias: </span>
+                <span className="text-xs text-purple-600">{cliente.condicoesCronicas.join(', ')}</span>
+              </div>
+            )}
+
             {cliente.alergias.length > 0 && (
               <div className="mt-2">
                 <span className="text-xs font-medium text-red-600">⚠️ Alergias: </span>
@@ -299,7 +422,22 @@ export default function Clients() {
           {/* Informações Médicas */}
           <div>
             <h3 className="font-semibold text-gray-800 mb-4 text-lg">Informações Médicas</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                <h4 className="font-medium text-purple-800 mb-2">Patologias</h4>
+                {cliente.condicoesCronicas?.length > 0 ? (
+                  <ul className="text-purple-700">
+                    {cliente.condicoesCronicas.map((condicao, index) => (
+                      <li key={index} className="flex items-center gap-2">
+                        <span>•</span> {condicao}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-purple-700">Nenhuma patologia registrada</p>
+                )}
+              </div>
+              
               <div className="p-4 bg-red-50 rounded-lg border border-red-100">
                 <h4 className="font-medium text-red-800 mb-2">Alergias</h4>
                 {cliente.alergias.length > 0 ? (
@@ -492,9 +630,9 @@ export default function Clients() {
               </div>
               <div className="bg-white p-4 rounded-xl border border-gray-100">
                 <div className="text-2xl font-bold text-purple-600">
-                  {clientes.filter(c => c.medicamentosContinuos.length > 0).length}
+                  {clientes.filter(c => c.condicoesCronicas?.length > 0).length}
                 </div>
-                <div className="text-sm text-gray-600">Med. Contínuos</div>
+                <div className="text-sm text-gray-600">Com Patologias</div>
               </div>
             </div>
 

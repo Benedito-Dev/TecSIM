@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Send, Bot, User } from 'lucide-react';
+import { Send, Bot } from 'lucide-react';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useTriagem } from '../../hooks/useTriagem';
 import { useChatMessages } from '../../hooks/useChatMessages';
@@ -7,9 +7,10 @@ import { usePacienteCondicoes } from '../../hooks/usePacienteCondicoes';
 import { getAIResponse } from '../../services/aiService';
 import BouncingDots from './BouncingDots';
 
-const AtendimentoChat = ({ paciente, onTriagemComplete }) => {
+const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
   const { theme } = useContext(ThemeContext);
   const [newMessage, setNewMessage] = useState('');
+  const [mensagemInicialEnviada, setMensagemInicialEnviada] = useState(false);
   
   const {
     messages,
@@ -30,6 +31,31 @@ const AtendimentoChat = ({ paciente, onTriagemComplete }) => {
 
   const { condicoes } = usePacienteCondicoes(paciente?.id);
 
+  // Envia mensagem inicial automaticamente quando o componente carrega
+  React.useEffect(() => {
+    if (mensagemInicial && !mensagemInicialEnviada && paciente) {
+      setTimeout(() => {
+        setNewMessage(mensagemInicial);
+        setMensagemInicialEnviada(true);
+        // Simula o envio da mensagem
+        setTimeout(() => {
+          handleSendMessageAuto(mensagemInicial);
+        }, 500);
+      }, 1000);
+    }
+  }, [mensagemInicial, mensagemInicialEnviada, paciente]);
+
+  const handleSendMessageAuto = async (message) => {
+    if (!message.trim() || isLoading) return;
+
+    addUserMessage(message.trim());
+    const messageText = message.trim();
+    setNewMessage('');
+    setIsLoading(true);
+
+    await processarMensagem(messageText);
+  };
+
   const handleSendMessage = async () => {
     if (!newMessage.trim() || isLoading) return;
 
@@ -37,6 +63,11 @@ const AtendimentoChat = ({ paciente, onTriagemComplete }) => {
     const messageText = newMessage.trim();
     setNewMessage('');
     setIsLoading(true);
+
+    await processarMensagem(messageText);
+  };
+
+  const processarMensagem = async (messageText) => {
 
     try {
       // Contexto do paciente para IA
@@ -118,23 +149,36 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
     }
   };
 
+  const handleQuickButton = (message) => {
+    setNewMessage(message);
+    setTimeout(() => {
+      handleSendMessage();
+    }, 100);
+  };
+
+  const quickButtons = [
+    { 
+      text: "Acompanhamento", 
+      message: "Quero meu acompanhamento farmacêutico",
+      icon: "📋",
+      color: "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+    },
+    { 
+      text: "Miligramas de Medicação", 
+      message: "Preciso verificar as miligramas corretas dos meus medicamentos",
+      icon: "💊",
+      color: "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+    },
+    { 
+      text: "Interações Perigosas", 
+      message: "Quero saber se há interações perigosas entre os meus medicamentos",
+      icon: "⚠️",
+      color: "bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+    }
+  ];
+
   return (
-    <div className="bg-white rounded-lg shadow-sm h-96 flex flex-col">
-      {/* Header do Chat */}
-      <div 
-        className="p-4 border-b rounded-t-lg"
-        style={{ background: theme.primary }}
-      >
-        <div className="flex items-center gap-2 text-white">
-          <Bot size={20} />
-          <h3 className="font-semibold">TecSim - Atendimento {paciente.nome}</h3>
-          {emTriagem && (
-            <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
-              Em Triagem
-            </span>
-          )}
-        </div>
-      </div>
+    <div className="h-96 flex flex-col">
 
       {/* Área de Mensagens */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
@@ -176,8 +220,28 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
             </div>
           </div>
         )}
-        <div ref={messagesEndRef} />
+
       </div>
+
+      {/* Botões Rápidos */}
+      {!emTriagem && messages.length <= 1 && (
+        <div className="px-3 py-2 border-t bg-gray-50">
+          <div className="text-xs text-gray-600 mb-2 font-medium">💊 Consultas Rápidas:</div>
+          <div className="grid grid-cols-3 gap-1">
+            {quickButtons.map((button, index) => (
+              <button
+                key={index}
+                onClick={() => handleQuickButton(button.message)}
+                disabled={isLoading}
+                className={`text-xs px-2 py-2 border rounded-lg transition-colors disabled:opacity-50 text-center flex flex-col items-center gap-1 hover:shadow-sm ${button.color}`}
+              >
+                <span className="text-sm">{button.icon}</span>
+                <span className="leading-tight">{button.text}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Input de Mensagem */}
       <div className="p-4 border-t">
