@@ -32,8 +32,7 @@ export default function App() {
 
             <RegisterProvider> 
               <Routes>
-                <Route path="/" element={<TriagemInicial />} />
-                <Route path="/welcome" element={<Welcome />} />
+                <Route path="/" element={<Welcome />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/verify" element={<ConfirmCodePage />} />
