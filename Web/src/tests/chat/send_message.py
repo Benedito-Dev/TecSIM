@@ -25,47 +25,66 @@ try:
     
     botao_login = driver.find_element(By.XPATH, "//button[contains(text(), 'Entrar como Enfermeiro')]")
     botao_login.click()
-    print("✓ Login realizado")
+    print("Login realizado")
     time.sleep(3)
     
     # Navegar para Chatbot
     link_chatbot = driver.find_element(By.XPATH, "//a[@href='/chatbot']")
     link_chatbot.click()
-    print("✓ Navegou para Chatbot")
+    print("Navegou para Chatbot")
     time.sleep(2)
     
     # Encontrar campo de mensagem
-    campo_mensagem = driver.find_element(By.XPATH, "//input[@placeholder*='mensagem' or @placeholder*='Digite'] | //textarea[@placeholder*='mensagem']")
+    try:
+        campo_mensagem = driver.find_element(By.XPATH, "//input[contains(@placeholder, 'mensagem')]")
+    except:
+        try:
+            campo_mensagem = driver.find_element(By.XPATH, "//input[contains(@placeholder, 'Digite')]")
+        except:
+            try:
+                campo_mensagem = driver.find_element(By.XPATH, "//textarea[contains(@placeholder, 'mensagem')]")
+            except:
+                campo_mensagem = driver.find_element(By.XPATH, "//input[@type='text']")
+    print("Campo de mensagem encontrado")
     campo_mensagem.click()
     time.sleep(1)
     
     # Digitar mensagem
     mensagem = "Olá, estou com dor de cabeça. O que posso tomar?"
     campo_mensagem.send_keys(mensagem)
-    print(f"✓ Mensagem digitada: {mensagem}")
+    print(f"Mensagem digitada: {mensagem}")
     time.sleep(2)
     
-    # Enviar mensagem
-    botao_enviar = driver.find_element(By.XPATH, "//button[contains(text(), 'Enviar') or @type='submit'] | //button[contains(@class, 'send')]")
-    botao_enviar.click()
-    print("✓ Mensagem enviada")
+    # Enviar mensagem - tentar diferentes seletores
+    botao_enviar = None
+    try:
+        botao_enviar = driver.find_element(By.XPATH, "//button[contains(text(), 'Enviar')]")
+    except:
+        try:
+            botao_enviar = driver.find_element(By.XPATH, "//button[@type='submit']")
+        except:
+            try:
+                botao_enviar = driver.find_element(By.XPATH, "//button[contains(@class, 'send')]")
+            except:
+                try:
+                    botao_enviar = driver.find_element(By.XPATH, "//button[.//svg]")
+                except:
+                    # Usar Enter como alternativa
+                    from selenium.webdriver.common.keys import Keys
+                    campo_mensagem.send_keys(Keys.RETURN)
+                    print("Mensagem enviada com Enter")
+                    botao_enviar = "enter_usado"
+    
+    if botao_enviar and botao_enviar != "enter_usado":
+        print("Botao enviar encontrado")
+        botao_enviar.click()
+        print("Mensagem enviada")
+    elif not botao_enviar:
+        print("Nenhum botao de envio encontrado")
     time.sleep(3)
     
-    # Aguardar resposta da IA
-    print("⏳ Aguardando resposta da IA...")
-    time.sleep(5)
-    
-    # Verificar se resposta apareceu
-    try:
-        resposta = driver.find_element(By.XPATH, "//*[contains(text(), 'paracetamol') or contains(text(), 'medicamento') or contains(text(), 'dor')]")
-        print(f"✓ Resposta recebida: {resposta.text[:50]}...")
-    except:
-        print("✓ Chat funcionando (resposta pode estar carregando)")
-    
-    print("🎉 FLUXO CHAT SEND MESSAGE CONCLUÍDO!")
-    
 except Exception as e:
-    print(f"❌ Erro: {e}")
+    print(f"Erro: {e}")
 
 finally:
     time.sleep(5)

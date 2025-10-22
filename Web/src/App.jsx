@@ -22,6 +22,7 @@ import { AuthProvider } from './context/UserContext'
 import { ElderModeProvider } from './context/ElderModeContext'
 import NewClient from './views/clients/NewClient';
 import FormPacient from './views/clients/FormPacient';
+import EditProfile from './views/Profile/EditProfile';
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="/dashboard-geral" element={<DashboardGeral />} />
                 <Route path="/medicamentos" element={<Medicines />} />
                 <Route path="/perfil" element={<Profile />} />
+                <Route path="/perfil/editar" element={<EditProfile />} />
                 <Route path="/lembretes" element={<Lembretes />} />
                 <Route path="/chat-inicial" element={<ChatScreen />} />
                 <Route path="/chatbot" element={<ChatScreen />} />

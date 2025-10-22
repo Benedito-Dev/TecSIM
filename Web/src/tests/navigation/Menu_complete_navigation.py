@@ -26,16 +26,46 @@ try:
     # Aguarda login
     time.sleep(3)
     
-    # Abre sidebar clicando no botão menu
+    # Abre sidebar
     botao_menu = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'p-2 rounded-lg hover:bg-blue-800')]")))
     botao_menu.click()
     time.sleep(1)
     
-    # Clica em Clientes
-    botao_clientes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Clientes']")))
-    botao_clientes.click()
+    # Lista de itens do menu para testar
+    menu_items = [
+        "Dashboard",
+        "Chatbot", 
+        "Medicamentos",
+        "Lembretes",
+        "Clientes",
+        "Perfil",
+        "Ajustes"
+    ]
     
-    print("✓ Clientes listados com sucesso!")
+    # Testar cada item do menu
+    for item in menu_items:
+        try:
+            # Procurar e clicar no item
+            link_item = driver.find_element(By.XPATH, f"//span[text()='{item}']")
+            link_item.click()
+            print(f"Navegou para {item}")
+            time.sleep(2)
+            
+            # Reabrir sidebar para próximo item
+            if item != menu_items[-1]:  # Não reabrir na última iteração
+                botao_menu.click()
+                time.sleep(1)
+                
+        except Exception as e:
+            print(f"Erro ao navegar para {item}: {e}")
+            # Tentar reabrir sidebar se deu erro
+            try:
+                botao_menu.click()
+                time.sleep(1)
+            except:
+                pass
+    
+    print("Navegacao completa do menu concluida!")
     
 except Exception as e:
     print(f"Erro: {e}")

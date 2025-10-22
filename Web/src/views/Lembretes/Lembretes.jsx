@@ -4,7 +4,7 @@ import { ArrowLeft, Pill, Plus } from 'lucide-react';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useElderMode } from "../../context/ElderModeContext";
 import Sidebar from '../../components/SideBarr';
-import { getLembretes } from '../../services/lembretesService';
+import { getLembretes, deleteLembrete } from '../../services/lembretesService';
 
 const Lembretes = () => {
   const navigate = useNavigate();
@@ -112,6 +112,19 @@ const Lembretes = () => {
     ));
   };
 
+  const handleDeleteLembrete = async (id) => {
+    if (window.confirm('Tem certeza que deseja excluir este lembrete?')) {
+      try {
+        await deleteLembrete(id);
+        setLembretes(prev => prev.filter(lembrete => lembrete.id_lembrete !== id));
+        alert('Lembrete excluído com sucesso!');
+      } catch (error) {
+        console.error('Erro ao excluir lembrete:', error);
+        alert('Erro ao excluir lembrete. Tente novamente.');
+      }
+    }
+  };
+
   const getStatusColor = (status) => {
     return status === true ? theme.success : theme.textMuted;
   };
@@ -130,7 +143,7 @@ const Lembretes = () => {
       <div className="flex-1 flex flex-col">
         {/* Header moderno */}
         <div 
-          className="h-24 w-full shadow-lg flex items-center justify-between px-8 sticky top-0 z-10 border-b"
+          className="h-20 w-full shadow-lg flex items-center justify-between px-8 sticky top-0 z-10 border-b"
           style={{ 
             background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
             color: theme.textOnPrimary,
@@ -439,6 +452,16 @@ const Lembretes = () => {
                           }}
                         >
                           ✏️ Editar
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteLembrete(lembrete.id_lembrete)}
+                          className="px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
+                          style={{
+                            background: `linear-gradient(135deg, ${theme.error}, ${theme.error}dd)`,
+                            color: theme.textOnPrimary
+                          }}
+                        >
+                          🗑️ Excluir
                         </button>
                       </div>
                     </div>

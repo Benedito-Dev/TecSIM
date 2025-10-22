@@ -31,11 +31,11 @@ try:
     botao_menu.click()
     time.sleep(1)
     
-    # Clica em Clientes
-    botao_clientes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Clientes']")))
-    botao_clientes.click()
+    # Clica em Lembretes
+    botao_lembretes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Lembretes']")))
+    botao_lembretes.click()
     
-    print("✓ Clientes listados com sucesso!")
+    print("Lembretes listados com sucesso!")
     
 except Exception as e:
     print(f"Erro: {e}")

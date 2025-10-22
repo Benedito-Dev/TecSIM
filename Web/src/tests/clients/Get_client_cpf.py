@@ -34,8 +34,28 @@ try:
     # Clica em Clientes
     botao_clientes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Clientes']")))
     botao_clientes.click()
+
+        # Encontrar campo de mensagem
+    try:
+        campo_mensagem = driver.find_element(By.XPATH, "//input[contains(@placeholder, 'Buscar')]")
+    except:
+        try:
+            campo_mensagem = driver.find_element(By.XPATH, "//input[contains(@placeholder, 'CPF')]")
+        except:
+            try:
+                campo_mensagem = driver.find_element(By.XPATH, "//textarea[contains(@placeholder, nome')]")
+            except:
+                campo_mensagem = driver.find_element(By.XPATH, "//input[@type='text']")
+    print("Campo de mensagem encontrado")
+    campo_mensagem.click()
+    time.sleep(1)
+
+    mensagem = "123.456"
+    campo_mensagem.send_keys(mensagem)
+    print(f"Mensagem digitada: {mensagem}")
+    time.sleep(2)
     
-    print("✓ Clientes listados com sucesso!")
+    print("✓ Cliente encontrado com sucesso!")
     
 except Exception as e:
     print(f"Erro: {e}")

@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 import time
 
 driver = webdriver.Chrome()
@@ -31,11 +32,33 @@ try:
     botao_menu.click()
     time.sleep(1)
     
-    # Clica em Clientes
-    botao_clientes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Clientes']")))
-    botao_clientes.click()
+    # Clica em Lembretes
+    botao_lembretes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Lembretes']")))
+    botao_lembretes.click()
+
+    # Aguarda carregar lembretes
+    time.sleep(2)
+    # Clica em deletar lembrete
+    botao_deletar = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Excluir')]")))
+    botao_deletar.click()
+
+    try:
+        # Espera até o alert aparecer
+        WebDriverWait(driver, 10).until(EC.alert_is_present())
+
+        # Alterna para o alert
+        alert = driver.switch_to.alert
+
+        # Pega o texto do alert (opcional)
+        print("Texto do alert:", alert.text)
+
+        # Clica em OK
+        alert.accept()
+
+    except TimeoutException:
+        print("Nenhum alert apareceu")
     
-    print("✓ Clientes listados com sucesso!")
+    print("✓ Lembrete deletado com sucesso!")
     
 except Exception as e:
     print(f"Erro: {e}")

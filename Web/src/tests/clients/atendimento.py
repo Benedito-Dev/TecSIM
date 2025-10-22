@@ -34,8 +34,11 @@ try:
     # Clica em Clientes
     botao_clientes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Clientes']")))
     botao_clientes.click()
+
+    botao_atendimento = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Atendimento')]")))
+    botao_atendimento.click()
     
-    print("✓ Clientes listados com sucesso!")
+    print("✓ Atendimento realizado com sucesso!")
     
 except Exception as e:
     print(f"Erro: {e}")

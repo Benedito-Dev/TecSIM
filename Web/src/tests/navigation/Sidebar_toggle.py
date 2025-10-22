@@ -26,16 +26,35 @@ try:
     # Aguarda login
     time.sleep(3)
     
-    # Abre sidebar clicando no botão menu
+    # Teste de toggle da sidebar - abrir e fechar múltiplas vezes
     botao_menu = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'p-2 rounded-lg hover:bg-blue-800')]")))
+    
+    # Abrir sidebar
     botao_menu.click()
+    print("Sidebar aberta")
     time.sleep(1)
     
-    # Clica em Clientes
-    botao_clientes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Clientes']")))
-    botao_clientes.click()
+    # Fechar sidebar
+    botao_menu.click()
+    print("Sidebar fechada")
+    time.sleep(1)
     
-    print("✓ Clientes listados com sucesso!")
+    # Abrir novamente
+    botao_menu.click()
+    print("Sidebar aberta novamente")
+    time.sleep(1)
+    
+    # Fechar novamente
+    botao_menu.click()
+    print("Sidebar fechada novamente")
+    time.sleep(1)
+    
+    # Deixar aberta para verificar funcionamento
+    botao_menu.click()
+    print("Sidebar deixada aberta para verificacao")
+    time.sleep(2)
+    
+    print("Teste de toggle da sidebar concluido com sucesso!")
     
 except Exception as e:
     print(f"Erro: {e}")

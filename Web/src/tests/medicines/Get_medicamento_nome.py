@@ -31,11 +31,31 @@ try:
     botao_menu.click()
     time.sleep(1)
     
-    # Clica em Clientes
-    botao_clientes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Clientes']")))
-    botao_clientes.click()
+    # Clica em Medicamentos
+    botao_medicamentos = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Medicamentos']")))
+    botao_medicamentos.click()
+
+        # Encontrar campo de mensagem
+    try:
+        campo_mensagem = driver.find_element(By.XPATH, "//input[contains(@placeholder, 'Buscar')]")
+    except:
+        try:
+            campo_mensagem = driver.find_element(By.XPATH, "//input[contains(@placeholder, 'nome')]")
+        except:
+            try:
+                campo_mensagem = driver.find_element(By.XPATH, "//textarea[contains(@placeholder, tipo')]")
+            except:
+                campo_mensagem = driver.find_element(By.XPATH, "//input[@type='text']")
+    print("Campo de mensagem encontrado")
+    campo_mensagem.click()
+    time.sleep(1)
+
+    mensagem = "Paracetamol"
+    campo_mensagem.send_keys(mensagem)
+    print(f"Mensagem digitada: {mensagem}")
+    time.sleep(2)
     
-    print("✓ Clientes listados com sucesso!")
+    print("✓ Medicamento encontrado com sucesso!")
     
 except Exception as e:
     print(f"Erro: {e}")

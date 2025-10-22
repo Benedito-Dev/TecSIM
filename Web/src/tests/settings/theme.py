@@ -31,11 +31,14 @@ try:
     botao_menu.click()
     time.sleep(1)
     
-    # Clica em Clientes
-    botao_clientes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Clientes']")))
-    botao_clientes.click()
+    # Clica em Ajustes
+    botao_ajustes = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Ajustes']")))
+    botao_ajustes.click()
+    print("Navegou para Ajustes")
+    time.sleep(2)
     
-    print("✓ Clientes listados com sucesso!")
+    botao_tema = WebDriverWait(driver, 10).until( EC.element_to_be_clickable((By.XPATH, "//button[span[contains(@class,'bg-white')]]")))
+    botao_tema.click()
     
 except Exception as e:
     print(f"Erro: {e}")
