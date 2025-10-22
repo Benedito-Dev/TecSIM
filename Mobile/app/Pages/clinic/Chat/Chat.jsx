@@ -11,6 +11,7 @@ import {
   Alert,
   Animated
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../../context/AuthContext';
@@ -87,6 +88,7 @@ const BouncingDots = ({ color = '#00c4cd' }) => {
 
 export default function ChatScreen() {
   const { user } = useAuth();
+  const navigation = useNavigation();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -131,8 +133,69 @@ export default function ChatScreen() {
     };
     
     setMessages(prev => [...prev, userMessage]);
+    const messageText = newMessage;
     setNewMessage('');
     setIsLoading(true);
+
+    // Verifica se é a mensagem para alterar dados pessoais
+    if (messageText.trim() === "Preciso alterar meus dados pessoais") {
+      const redirectMessage = {
+        id: Date.now() + 1,
+        text: "Redirecionando você para a tela de edição de perfil...",
+        isBot: true,
+        time: getCurrentTime()
+      };
+      
+      setMessages(prev => [...prev, redirectMessage]);
+      setIsLoading(false);
+      
+      // Redireciona após 2 segundos
+      setTimeout(() => {
+        navigation.navigate('Profile', { screen: 'EditProfile' });
+      }, 2000);
+      
+      return;
+    }
+
+    // Verifica se é a mensagem sobre medicamentos
+    if (messageText.trim() === "Tenho dúvidas sobre meus medicamentos") {
+      const redirectMessage = {
+        id: Date.now() + 1,
+        text: "Redirecionando você para a tela de medicamentos...",
+        isBot: true,
+        time: getCurrentTime()
+      };
+      
+      setMessages(prev => [...prev, redirectMessage]);
+      setIsLoading(false);
+      
+      // Redireciona após 2 segundos
+      setTimeout(() => {
+        navigation.navigate('Dashboard', { screen: 'Medicamentos' });
+      }, 2000);
+      
+      return;
+    }
+
+    // Verifica se é a mensagem sobre prescrição
+    if (messageText.trim() === "Como solicitar uma nova prescrição médica?") {
+      const redirectMessage = {
+        id: Date.now() + 1,
+        text: "Redirecionando você para a tela de prescrições...",
+        isBot: true,
+        time: getCurrentTime()
+      };
+      
+      setMessages(prev => [...prev, redirectMessage]);
+      setIsLoading(false);
+      
+      // Redireciona após 2 segundos
+      setTimeout(() => {
+        navigation.navigate('Dashboard', { screen: 'Prescricao' });
+      }, 2000);
+      
+      return;
+    }
 
     try {
       // Filtra e formata o histórico corretamente
@@ -143,7 +206,7 @@ export default function ChatScreen() {
           text: msg.text
         }));
 
-      const aiResponse = await getAIResponse(newMessage, apiHistory);
+      const aiResponse = await getAIResponse(messageText, apiHistory);
 
       if (aiResponse.success) {
         const botMessage = {
