@@ -161,6 +161,34 @@ class AuthRoutes {
      */
     this.router.post('/request-otp', otpController.sendOtp);
 
+    // Recovery Password
+    /**
+     * @swagger
+     * /auth/request-otp:
+     *   post:
+     *     summary: Envia o código OTP para o usuário via email
+     *     description: Envia um código OTP para o email informado.
+     *     tags: [Autenticação]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/OTPRequest'
+     *     responses:
+     *       200:
+     *         description: Código OTP enviado com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/OTPResponse'
+     *       400:
+     *         description: Email inválido ou não fornecido
+     *       500:
+     *         description: Erro interno no servidor
+     */
+    this.router.post('/request-otp', otpController.sendOtp);
+
     // Verify OTP
     /**
      * @swagger

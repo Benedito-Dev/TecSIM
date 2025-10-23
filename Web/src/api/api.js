@@ -1,9 +1,10 @@
 import axios from 'axios';
+const IP_HOST = import.meta.env.IP_HOST;
 
 // Usando variáveis de ambiente do Vite
 
 // Para desenvolvimento com backend local
-const API_URL = `http://10.0.30.130:3000`; // Utilizar IP da Maquina ao inves de localhost
+const API_URL = `http://${IP_HOST}:3000`; // Utilizar IP da Maquina ao inves de localhost
 
 // Para Android emulador, use:
 // const API_URL = 'http://10.0.2.2:3000';
