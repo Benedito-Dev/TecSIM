@@ -3,7 +3,8 @@ import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-na
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-import PasswordInput from '../../../../components/Register/EmailInput';
+import PasswordInput from '../../../../components/Register/PasswordInput';
+import InputField from '../../../../components/Register/InputField'
 
 import { styles } from './styles';
 
@@ -11,11 +12,10 @@ export default function ResetPasswordScreen() {
   const [password, setPassword] = useState('');
   const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [confirmPasswordIsValid, setConfirmPasswordIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  const isFormValid = passwordIsValid && confirmPasswordIsValid && password === confirmPassword;
+  const isFormValid = passwordIsValid && password === confirmPassword;
 
   const handleResetPassword = async () => {
     if (!isFormValid) {
@@ -50,10 +50,9 @@ export default function ResetPasswordScreen() {
           onValidityChange={setPasswordIsValid}
           iconName="lock"
         />
-        <PasswordInput
+        <InputField
           label="Confirmar Nova Senha"
           onChangeText={setConfirmPassword}
-          onValidityChange={setConfirmPasswordIsValid}
           iconName="lock"
         />
 
