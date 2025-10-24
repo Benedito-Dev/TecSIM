@@ -40,6 +40,12 @@ class Server {
   }
 
   routes() {
+    // 🔥 NOVA ROTA: Favicon - servindo arquivo real
+    this.app.get('/favicon.ico', (req, res) => {
+      res.sendFile(path.join(__dirname, 'public', 'favicon.ico'));
+    });
+
+    // Todas as outras rotas permanecem EXATAMENTE iguais
     this.app.use('/pacientes', pacientesRoutes);
     this.app.use('/medicos', medicosRoutes);
     this.app.use('/auth', authRoutes);
