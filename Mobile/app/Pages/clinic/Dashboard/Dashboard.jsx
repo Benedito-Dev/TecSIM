@@ -1,23 +1,54 @@
 import React, { useContext } from "react";
-import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator, Linking, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ThemeContext } from "../../../context/ThemeContext";
-import { useElderMode } from "../../../context/ElderModeContext"; // ✅ usa o hook
+import { useElderMode } from "../../../context/ElderModeContext";
 import { getDashboardStyles } from "./styles";
-import { useScale } from '../../../utils/scale'; // ✅ Hook global para escalonamento
+import { useScale } from '../../../utils/scale';
 import { useAuth } from "../../../context/AuthContext";
 import NotificationIcon from "../../../components/Notification";
-import { MessageSquare, Pill, Clock, FileText } from "lucide-react-native";
+import { MessageSquare, Pill, Clock, FileText, AlertTriangle, Phone } from "lucide-react-native";
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
   const { user, loading } = useAuth();
   const { theme } = useContext(ThemeContext);
-  const { fontSize } = useElderMode(); // ✅ acessa os valores do contexto
-  const { scaleIcon } = useScale(fontSize); // ✅ agora pegamos a função direto do utils
+  const { fontSize } = useElderMode();
+  const { scaleIcon } = useScale(fontSize);
 
-  // Passa fontSize para o style
   const styles = getDashboardStyles(theme, fontSize);
+
+  // Função para ligar para o SAMU
+  const callSamu = async () => {
+    const samuNumber = "tel:192";
+    
+    Alert.alert(
+      "Ligar para o SAMU",
+      "Você está prestes a ligar para o Serviço de Atendimento Móvel de Urgência (SAMU) no número 192. Deseja continuar?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Ligar",
+          onPress: async () => {
+            try {
+              const canOpen = await Linking.canOpenURL(samuNumber);
+              if (canOpen) {
+                await Linking.openURL(samuNumber);
+              } else {
+                Alert.alert("Erro", "Não foi possível realizar a chamada");
+              }
+            } catch (error) {
+              console.error("Erro ao ligar para SAMU:", error);
+              Alert.alert("Erro", "Não foi possível realizar a chamada");
+            }
+          }
+        }
+      ]
+    );
+  };
 
   if (loading || !user) {
     return (
@@ -74,6 +105,13 @@ export default function DashboardScreen() {
             <FileText color={theme.primary} size={scaleIcon(28)} />
             <Text style={styles.toolCardTitle}>Minhas Prescrições</Text>
             <Text style={styles.toolCardDescription}>Acesse suas receitas médicas</Text>
+          </TouchableOpacity>
+
+          {/* Botão de Pânico - Agora chama a função callSamu */}
+          <TouchableOpacity style={styles.PanicCard} onPress={callSamu}>
+            <AlertTriangle color={theme.error} size={scaleIcon(28)} />
+            <Text style={styles.toolCardTitle}>Botão de Pânico</Text>
+            <Text style={styles.toolCardDescription}>Ligar para o SAMU - 192</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
