@@ -63,7 +63,12 @@ export default function DashboardScreen() {
       {/* Cabeçalho */}
       <View style={styles.header}>
         <Text style={styles.logoText}>TecSIM</Text>
-        <NotificationIcon initialCount={3} iconSize={scaleIcon(22)} />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
+          <TouchableOpacity onPress={callSamu}>
+            <AlertTriangle color={theme.error} size={scaleIcon(22)} />
+          </TouchableOpacity>
+          <NotificationIcon initialCount={3} iconSize={scaleIcon(22)} />
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
