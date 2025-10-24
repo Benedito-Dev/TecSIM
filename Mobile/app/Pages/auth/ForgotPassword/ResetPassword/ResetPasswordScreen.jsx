@@ -6,14 +6,18 @@ import Icon from 'react-native-vector-icons/Feather';
 import PasswordInput from '../../../../components/Register/PasswordInput';
 import InputField from '../../../../components/Register/InputField'
 
+import { resetPassword } from '../../../../services/auth/authService';
+
 import { styles } from './styles';
 
-export default function ResetPasswordScreen() {
+export default function ResetPasswordScreen({ route }) {
   const [password, setPassword] = useState('');
   const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+
+  const { email = 'seu@email.com' } = route.params;
 
   const isFormValid = passwordIsValid && password === confirmPassword;
 
@@ -25,7 +29,7 @@ export default function ResetPasswordScreen() {
 
     setLoading(true);
     try {
-      await resetPassword(password);
+      await resetPassword(email, password);
       Alert.alert('Sucesso', 'Senha redefinida com sucesso! Faça login com sua nova senha.');
       navigation.replace('Login');
     } catch (error) {

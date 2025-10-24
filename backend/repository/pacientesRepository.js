@@ -151,6 +151,18 @@ class PacienteRepository {
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 
+  async esqueciSenha(email, novaSenha) {
+    const novaSenhaHash = await bcrypt.hash(novaSenha, SALT_ROUNDS);
+
+    const result = await db.query(`
+      UPDATE paciente SET senha = $1 
+      WHERE email = $2 
+      RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro
+    `, [novaSenhaHash, email]);
+
+    return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
   async remove(id) {
     const result = await db.query(`
       DELETE FROM paciente 

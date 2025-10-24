@@ -144,6 +144,22 @@ class PacienteService {
     return { message: 'Foto atualizada com sucesso' };
   }
 
+  static async esqueciSenha(email, novaSenha) {
+    if (!email || !isValidEmail(email)) {
+      throw new ValidationError('Email inválido.');
+    }
+
+    if (!novaSenha || novaSenha.length < 6) {
+      throw new ValidationError('Nova senha deve ter pelo menos 6 caracteres.');
+    }
+
+    const paciente = await repository.findByEmail(email);
+    if (!paciente) throw new NotFoundError('Email não encontrado.');
+
+    const resultado = await repository.esqueciSenha(email, novaSenha);
+    return resultado;
+  }
+
   static async verifyCredentials(email, senha) {
     const usuario = await repository.verifyCredentials(email);
     if (!usuario) throw new Error('Credenciais inválidas');
