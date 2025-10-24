@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import EmailInput from '../../../components/Register/EmailInput'; // Ajustado para pasta components
+import { verifyOtp, requestOtp } from '../../../services/auth/otpService';
 import { styles } from './styles';
 
 export default function ForgotPasswordScreen() {
@@ -20,9 +21,9 @@ export default function ForgotPasswordScreen() {
 
     setLoading(true);
     try {
-      await sendPasswordResetEmail(email);
+      await requestOtp(email);
       Alert.alert('Sucesso', 'Email de recuperação enviado! Verifique sua caixa de entrada.');
-      navigation.navigate('ResetPassword');
+      navigation.navigate('VerifyOtp', { email });
     } catch (error) {
       Alert.alert('Erro', error.message || 'Falha ao enviar email de recuperação.');
     } finally {

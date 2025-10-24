@@ -3,7 +3,11 @@ import { IP_HOST } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Para desenvolvimento com backend local
+<<<<<<< HEAD
 const API_URL = 'https://tec-sim.vercel.app'; // Utilizar IP da Maquina ao inves de localhost
+=======
+const API_URL = `http://${IP_HOST}:3000`; // Utilizar IP da Maquina ao inves de localhost
+>>>>>>> develop
 
 // Para Android emulador, use:
 // const API_URL = 'http://10.0.2.2:3000';

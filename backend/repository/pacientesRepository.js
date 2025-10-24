@@ -7,7 +7,7 @@ const SALT_ROUNDS = 10;
 class PacienteRepository {
   async findAll() {
     const result = await db.query(`
-      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro 
+      SELECT id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro, ativo, alergias, medicacoes, condicoes
       FROM paciente
     `);
     return result.rows.map(row => new Paciente(row));
@@ -148,6 +148,18 @@ class PacienteRepository {
       'UPDATE paciente SET ativo = TRUE WHERE id = $1 RETURNING *',
       [id]
     );
+    return result.rows[0] ? new Paciente(result.rows[0]) : null;
+  }
+
+  async esqueciSenha(email, novaSenha) {
+    const novaSenhaHash = await bcrypt.hash(novaSenha, SALT_ROUNDS);
+
+    const result = await db.query(`
+      UPDATE paciente SET senha = $1 
+      WHERE email = $2 
+      RETURNING id, cpf, nome, email, data_nascimento, peso_kg, genero, aceite_termos, data_cadastro
+    `, [novaSenhaHash, email]);
+
     return result.rows[0] ? new Paciente(result.rows[0]) : null;
   }
 

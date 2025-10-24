@@ -59,6 +59,25 @@ export const logout = async () => {
   }
 };
 
+export const resetPassword = async (email, novaSenha) => {
+  try {
+    const response = await api.patch('/pacientes/esqueci-senha', { email, novaSenha });
+    return response.data;
+  } catch (error) {
+    let errorMessage = 'Erro ao redefinir senha';
+
+    if (error.response) {
+      errorMessage = error.response.data?.error || errorMessage;
+    } else if (error.request) {
+      errorMessage = 'Sem resposta do servidor';
+    } else {
+      errorMessage = error.message || errorMessage;
+    }
+
+    throw new Error(errorMessage);
+  }
+};
+
 // Opcional: Função para atualizar o token
 export const refreshToken = async () => {
   try {

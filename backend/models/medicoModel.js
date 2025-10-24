@@ -41,7 +41,7 @@ constructor({ id, nome, crm, especialidade, email, senha, data_cadastro, ativo }
 
   // Validação básica do CRM (pode ser expandida)
   validarCRM() {
-    return this.crm && this.crm.length >= 4; // Validação simplificada
+    return !!(this.crm && this.crm.length >= 4); // ✅ Retorna boolean
   }
 }
 

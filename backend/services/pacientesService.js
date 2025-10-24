@@ -11,7 +11,10 @@ class PacienteService {
   }
 
   static async getById(id) {
-    if (isNaN(id)) throw new ValidationError('ID inválido. Informe um número válido.');
+    // Validação mais robusta
+    if (id === null || id === undefined || id === '' || isNaN(Number(id))) {
+      throw new ValidationError('ID inválido. Informe um número válido.');
+    }
     
     const paciente = await repository.findById(id);
     if (!paciente) throw new NotFoundError('Paciente não encontrado.');
@@ -139,6 +142,22 @@ class PacienteService {
 
     await repository.atualizarFoto(id, caminhoImagem);
     return { message: 'Foto atualizada com sucesso' };
+  }
+
+  static async esqueciSenha(email, novaSenha) {
+    if (!email || !isValidEmail(email)) {
+      throw new ValidationError('Email inválido.');
+    }
+
+    if (!novaSenha || novaSenha.length < 6) {
+      throw new ValidationError('Nova senha deve ter pelo menos 6 caracteres.');
+    }
+
+    const paciente = await repository.findByEmail(email);
+    if (!paciente) throw new NotFoundError('Email não encontrado.');
+
+    const resultado = await repository.esqueciSenha(email, novaSenha);
+    return resultado;
   }
 
   static async verifyCredentials(email, senha) {

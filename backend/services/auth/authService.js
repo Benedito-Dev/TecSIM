@@ -2,10 +2,11 @@ const rateLimiter = require('../../utils/rateLimiter');
 const jwt = require('jsonwebtoken');
 const authConfig = require('../../config/auth');
 const pacienteRepository = require('../../repository/pacientesRepository');
+const enfermeirosRepository = require('../../repository/enfermeirosRepository');
 
 class AuthService {
-  async login(email, senha, ip) {
-    console.log('Tentativa de login:', email, 'IP:', ip);
+  async login(email, senha, ip, tipo = 'paciente') {
+    console.log('Tentativa de login:', email, 'Tipo:', tipo, 'IP:', ip);
 
     // 1️⃣ Verifica se o usuário está bloqueado
     const { blocked, cooldown } = await rateLimiter.check(email, ip);
@@ -17,38 +18,71 @@ class AuthService {
     }
 
     try {
-      // 2️⃣ Verifica credenciais
-      const usuario = await pacienteRepository.verifyCredentials(email, senha);
+      let usuario;
+      
+      // 2️⃣ Verifica credenciais baseado no tipo
+      if (tipo === 'enfermeiro') {
+        usuario = await enfermeirosRepository.verifyCredentials(email, senha);
+      } else {
+        usuario = await pacienteRepository.verifyCredentials(email, senha);
+      }
 
       // 3️⃣ Login sucesso → resetar tentativas
       await rateLimiter.reset(email);
 
-      // 4️⃣ Calcular idade
-      const idade = this.calcularIdade(usuario.data_nascimento);
+      // 4️⃣ Preparar dados do usuário
+      let usuarioData = {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+        tipo: tipo
+      };
 
-      // 5️⃣ Reativar conta se estiver desativada
-      if (usuario.ativo === false) {
-        await pacienteRepository.reativar(usuario.id_usuario);
-      }
-
-      // 6️⃣ Gerar JWT
-      const token = jwt.sign(
-        { id: usuario.id_usuario },
-        authConfig.secret,
-        { expiresIn: authConfig.expiresIn }
-      );
-
-      return {
-        usuario: {
-          id: usuario.id,
-          nome: usuario.nome,
-          email: usuario.email,
+      // 5️⃣ Adicionar campos específicos por tipo
+      if (tipo === 'paciente') {
+        const idade = this.calcularIdade(usuario.data_nascimento);
+        usuarioData = {
+          ...usuarioData,
           idade,
           genero: usuario.genero,
           alergias: usuario.alergias,
           medicacoes: usuario.medicacoes,
           condicoes: usuario.condicoes
+        };
+
+        // Reativar conta se estiver desativada
+        if (usuario.ativo === false) {
+          await pacienteRepository.reativar(usuario.id);
+        }
+      } else if (tipo === 'enfermeiro') {
+        usuarioData = {
+          ...usuarioData,
+          registro_coren: usuario.registro_coren,
+          cargo: usuario.cargo,
+          unidade: usuario.unidade,
+          especialidade: usuario.especialidade,
+          status: usuario.status
+        };
+
+        // Reativar conta se estiver desativada
+        if (usuario.ativo === false) {
+          await enfermeirosRepository.reativar(usuario.id);
+        }
+      }
+
+      // 6️⃣ Gerar JWT (inclui tipo no payload)
+      const token = jwt.sign(
+        { 
+          id: usuario.id,
+          tipo: tipo,
+          email: usuario.email
         },
+        authConfig.secret,
+        { expiresIn: authConfig.expiresIn }
+      );
+
+      return {
+        usuario: usuarioData,
         token
       };
 
@@ -60,7 +94,6 @@ class AuthService {
       
       // 🔹 IMPORTANTE: Preserva o código e a mensagem original do erro
       if (error.code) {
-        // Mantém o erro original com código e mensagem
         throw error;
       }
       
@@ -87,7 +120,14 @@ class AuthService {
   async verifyToken(token) {
     try {
       const decoded = jwt.verify(token, authConfig.secret);
-      const usuario = await pacienteRepository.findById(decoded.id);
+      let usuario;
+      
+      // Buscar usuário baseado no tipo
+      if (decoded.tipo === 'enfermeiro') {
+        usuario = await enfermeirosRepository.findById(decoded.id);
+      } else {
+        usuario = await pacienteRepository.findById(decoded.id);
+      }
       
       if (!usuario) {
         const error = new Error('Usuário não encontrado');
@@ -101,7 +141,11 @@ class AuthService {
         throw error;
       }
       
-      return usuario;
+      // Adicionar tipo ao retorno
+      return {
+        ...usuario,
+        tipo: decoded.tipo || 'paciente'
+      };
     } catch (error) {
       // Preserva códigos de erro existentes
       if (error.code) {

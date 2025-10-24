@@ -257,6 +257,40 @@ class PacientesRoutes {
 
     /**
      * @swagger
+     * /pacientes/esqueci-senha:
+     *   patch:
+     *     summary: Redefine a senha do paciente usando email
+     *     tags: [Pacientes]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - email
+     *               - novaSenha
+     *             properties:
+     *               email:
+     *                 type: string
+     *                 format: email
+     *                 example: "usuario@email.com"
+     *               novaSenha:
+     *                 type: string
+     *                 minLength: 8
+     *                 example: "NovaSenha@123"
+     *     responses:
+     *       200:
+     *         description: Senha redefinida com sucesso
+     *       400:
+     *         description: Dados inválidos
+     *       404:
+     *         description: Email não encontrado
+     */
+    this.router.patch('/esqueci-senha', controller.esqueciSenha);
+
+    /**
+     * @swagger
      * /pacientes/{id}:
      *   delete:
      *     summary: Remove um paciente

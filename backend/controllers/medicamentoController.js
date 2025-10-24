@@ -68,7 +68,7 @@ class MedicamentoController {
   async findById(req, res) {
     const { id } = req.params;
     try {
-      if (!id || isNaN(Number(id))) {
+      if (!id || !/^\d+$/.test(id)) {
         return res.status(400).json({ error: 'ID inválido. Deve ser um número.' });
       }
 

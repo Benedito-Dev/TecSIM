@@ -1,16 +1,14 @@
-/**
- * Classes de erro customizadas para o backend
- */
-
 class AppError extends Error {
   constructor(message, statusCode) {
     super(message);
-    this.statusCode = statusCode;
+    this.name = this.constructor.name; // ← NOME CORRETO
+    this.statusCode = statusCode || 500; // ← VALOR PADRÃO
     this.isOperational = true;
     Error.captureStackTrace(this, this.constructor);
   }
 }
 
+// As outras classes permanecem iguais
 class ValidationError extends AppError {
   constructor(message) {
     super(message, 400);
@@ -41,9 +39,6 @@ class ForbiddenError extends AppError {
   }
 }
 
-/**
- * Para erros inesperados no banco ou gerais do servidor
- */
 class DatabaseError extends AppError {
   constructor(message) {
     super(message, 500);

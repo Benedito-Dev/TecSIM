@@ -3,9 +3,17 @@ const authService = require('../../services/auth/authService');
 class AuthController {
   async login(req, res) {
     try {
-      const { email, senha } = req.body;
+      const { email, senha, tipo = 'paciente' } = req.body;
       const ip = req.ip;
-      const result = await authService.login(email, senha, ip);
+      
+      // Validar tipo
+      if (tipo && !['paciente', 'enfermeiro'].includes(tipo)) {
+        return res.status(400).json({ 
+          message: 'Tipo de usuário inválido. Use "paciente" ou "enfermeiro".' 
+        });
+      }
+      
+      const result = await authService.login(email, senha, ip, tipo);
       return res.status(200).json(result);
     } catch (error) {
       // Tratamento específico por código de erro
