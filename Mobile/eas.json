@@ -1,0 +1,40 @@
+{
+  "cli": {
+    "version": ">= 16.17.4",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "distribution": "internal",
+      "env": {
+        "API_KEY": "@API_KEY",
+        "GOOGLE_API_KEY": "@GOOGLE_API_KEY",
+        "REACT_APP_GOOGLE_API_KEY": "@REACT_APP_GOOGLE_API_KEY",
+        "API_URL": "@API_URL"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview",
+      "env": {
+        "API_KEY": "@API_KEY",
+        "GOOGLE_API_KEY": "@GOOGLE_API_KEY",
+        "REACT_APP_GOOGLE_API_KEY": "@REACT_APP_GOOGLE_API_KEY",
+        "API_URL": "@API_URL"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "distribution": "store",
+      "env": {
+        "API_KEY": "@API_KEY",
+        "GOOGLE_API_KEY": "@GOOGLE_API_KEY",
+        "REACT_APP_GOOGLE_API_KEY": "@REACT_APP_GOOGLE_API_KEY",
+        "API_URL": "@API_URL"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
