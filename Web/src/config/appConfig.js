@@ -49,8 +49,8 @@ export const validateConfig = () => {
     errors.push('VITE_GOOGLE_API_KEY não configurada');
   }
 
-  if (!APP_CONFIG.API.BASE_URL.includes('localhost') && !APP_CONFIG.API.BASE_URL.includes('192.168')) {
-    errors.push('VITE_IP_HOST pode não estar configurado corretamente');
+  if (!import.meta.env.VITE_IP_HOST) {
+    errors.push('VITE_IP_HOST não configurado');
   }
 
   return {

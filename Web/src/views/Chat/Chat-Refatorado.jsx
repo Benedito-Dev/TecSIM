@@ -2,10 +2,10 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Sidebar from '../../components/SideBarr';
-import ChatHeader from '../../components/chat/ChatHeader';
-import MessageList from '../../components/chat/MessageList';
-import QuickActions from '../../components/chat/QuickActions';
-import ChatInput from '../../components/chat/ChatInput';
+import ChatHeader from '../../components/Chat/ChatHeader';
+import MessageList from '../../components/Chat/MessageList';
+import QuickActions from '../../components/Chat/QuickActions';
+import ChatInput from '../../components/Chat/ChatInput';
 
 import { useAuth } from '../../context/UserContext';
 import { ThemeContext } from '../../context/ThemeContext';
@@ -40,16 +40,25 @@ export default function ChatScreen() {
 
   const { apiStatus, isHealthy } = useAPIHealth();
 
-  // Monitora status da API
+  // Mensagem de boas-vindas genérica e monitoramento da API
   useEffect(() => {
-    if (!apiStatus.checking && !isHealthy) {
+    // Mensagem de boas-vindas genérica (apenas uma vez)
+    if (messages.length === 0) {
+      setTimeout(() => {
+        const mensagemBoasVindas = `Olá! 👋\n\nSou o TecSim, seu assistente de IA especializado em saúde. Posso ajudá-lo com:\n\n• Orientações gerais sobre medicamentos\n• Informações sobre sintomas comuns\n• Dicas de cuidados básicos de saúde\n• Esclarecimento de dúvidas médicas gerais\n\n⚠️ **Importante**: Minhas orientações são educativas e não substituem consulta médica profissional.\n\nComo posso ajudá-lo hoje?`;
+        addBotMessage(mensagemBoasVindas);
+      }, 1000);
+    }
+    
+    // Monitora status da API
+    if (!apiStatus.checking && !isHealthy && messages.length > 0) {
       addBotMessage(
         `⚠️ **Aviso de Sistema**\n\n` +
         `Problema detectado na conexão com a IA: ${apiStatus.message}\n\n` +
         `O sistema pode funcionar com limitações. Verifique sua conexão ou tente mais tarde.`
       );
     }
-  }, [apiStatus.checking, isHealthy, apiStatus.message, addBotMessage]);
+  }, [apiStatus.checking, isHealthy, apiStatus.message, addBotMessage, messages.length]);
 
   // Lógica de envio de mensagem - SIMPLIFICADA como no Mobile
   const handleSendMessage = async (messageText = newMessage) => {

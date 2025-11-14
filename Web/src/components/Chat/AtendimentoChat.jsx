@@ -31,19 +31,28 @@ const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
 
   const { condicoes } = usePacienteCondicoes(paciente?.id);
 
-  // Envia mensagem inicial automaticamente quando o componente carrega
+  // Envia mensagem de boas-vindas personalizada quando carregado na tela de atendimento
   React.useEffect(() => {
+    if (paciente && !mensagemInicialEnviada) {
+      setTimeout(() => {
+        const mensagemBoasVindas = `Olá, ${paciente.nome}! 👋\n\nSou seu assistente de IA personalizado para este atendimento. Tenho acesso ao seu histórico médico e posso ajudá-lo com:\n\n• Orientações sobre seus medicamentos\n• Verificação de interações medicamentosas\n• Acompanhamento farmacêutico\n• Esclarecimento de dúvidas sobre saúde\n\nComo posso ajudá-lo hoje?`;
+        
+        addBotMessage(mensagemBoasVindas);
+        setMensagemInicialEnviada(true);
+      }, 1000);
+    }
+    
+    // Mantém a funcionalidade original para mensagens iniciais específicas
     if (mensagemInicial && !mensagemInicialEnviada && paciente) {
       setTimeout(() => {
         setNewMessage(mensagemInicial);
         setMensagemInicialEnviada(true);
-        // Simula o envio da mensagem
         setTimeout(() => {
           handleSendMessageAuto(mensagemInicial);
         }, 500);
-      }, 1000);
+      }, 1500);
     }
-  }, [mensagemInicial, mensagemInicialEnviada, paciente]);
+  }, [paciente, mensagemInicial, mensagemInicialEnviada, addBotMessage]);
 
   const handleSendMessageAuto = async (message) => {
     if (!message.trim() || isLoading) return;
@@ -67,19 +76,36 @@ const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
     await processarMensagem(messageText);
   };
 
+  // Função para criar contexto personalizado do paciente para a IA
+  const criarContextoPaciente = () => {
+    const condicoesTexto = condicoes.map(c => `${c.condicao} (${c.severidade})`).join(', ');
+    
+    return {
+      paciente: {
+        nome: paciente.nome,
+        cpf: paciente.cpf,
+        telefone: paciente.telefone,
+        email: paciente.email,
+        endereco: paciente.endereco,
+        dataNascimento: paciente.dataNascimento,
+        idade: paciente.idade || 'Não informado',
+        medicamentosContinuos: paciente.medicamentosContinuos || [],
+        alergias: paciente.alergias || [],
+        condicoesCronicas: paciente.condicoesCronicas || [],
+        condicoesAtuais: condicoes || [],
+        ultimaCompra: paciente.ultimaCompra || 'Não informado',
+        status: paciente.status || 'ativo'
+      },
+      contextoAtendimento: {
+        data: new Date().toLocaleString('pt-BR'),
+        tipo: 'Atendimento Farmacêutico Personalizado',
+        farmacia: 'TecSim - Sistema Inteligente'
+      }
+    };
+  };
+
   const processarMensagem = async (messageText) => {
-
     try {
-      // Contexto do paciente para IA
-      const condicoesTexto = condicoes.map(c => `${c.condicao} (${c.severidade})`).join(', ');
-      const contextoAtendimento = `
-ATENDIMENTO FARMACÊUTICO - PAGUE MENOS
-Paciente: ${paciente.nome}
-Condições Médicas: ${condicoesTexto || 'Nenhuma'}
-Alergias: ${paciente.alergias?.join(', ') || 'Nenhuma'}
-Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
-`;
-
       // Verifica se deve iniciar triagem
       if (!emTriagem) {
         const resultadoTriagem = iniciarProcessoTriagem(messageText, condicoes);
@@ -100,7 +126,6 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
           if (resultado.finalizada) {
             const { classificacao, response } = resultado.analise;
             
-            // Notifica componente pai sobre conclusão da triagem
             onTriagemComplete?.({
               classificacao: classificacao.nivel,
               recomendacao: classificacao.recomendacao,
@@ -123,20 +148,39 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
         }
       }
 
-      // Fluxo normal com contexto do paciente
-      const formattedHistory = getFormattedHistory();
-      const promptComContexto = `${contextoAtendimento}\n\nPergunta do cliente: ${messageText}`;
+      // Cria contexto personalizado do paciente
+      const contextoPaciente = criarContextoPaciente();
       
-      const aiResponse = await getAIResponse(promptComContexto, formattedHistory);
+      // Prompt personalizado para a IA
+      const promptPersonalizado = `Você é um assistente farmacêutico especializado da TecSim, atendendo especificamente o paciente ${paciente.nome}.
+
+DADOS DO PACIENTE:
+${JSON.stringify(contextoPaciente, null, 2)}
+
+INSTRUÇÕES:
+- Você tem acesso completo ao histórico médico deste paciente
+- Seja natural, empático e personalizado nas respostas
+- Use o nome do paciente quando apropriado
+- Baseie suas respostas nos dados específicos dele
+- Sempre priorize a segurança e oriente procurar profissionais quando necessário
+- Seja conversacional, não robotizado
+- Se não souber algo específico, seja honesto mas ofereça ajuda alternativa
+
+Pergunta do paciente: ${messageText}`;
+
+      // Envia para a IA com contexto personalizado
+      const formattedHistory = getFormattedHistory();
+      const aiResponse = await getAIResponse(promptPersonalizado, formattedHistory);
 
       if (aiResponse.success) {
         addBotMessage(aiResponse.response);
       } else {
         throw new Error(aiResponse.error);
       }
+      
     } catch (err) {
       console.error('Erro:', err);
-      addBotMessage('⚠️ Erro no atendimento. Tente novamente ou chame um supervisor.');
+      addBotMessage(`Desculpe, ${paciente.nome}, tive um problema técnico. Pode repetir sua pergunta? Estou aqui para ajudá-lo com suas dúvidas sobre medicamentos, alergias e cuidados de saúde.`);
     } finally {
       setIsLoading(false);
     }
@@ -158,22 +202,22 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
 
   const quickButtons = [
     { 
-      text: "Acompanhamento", 
-      message: "Quero meu acompanhamento farmacêutico",
-      icon: "📋",
+      text: "Meus Medicamentos", 
+      message: "Quais são os meus medicamentos?",
+      icon: "💊",
       color: "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
     },
     { 
-      text: "Miligramas de Medicação", 
-      message: "Preciso verificar as miligramas corretas dos meus medicamentos",
-      icon: "💊",
-      color: "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
-    },
-    { 
-      text: "Interações Perigosas", 
-      message: "Quero saber se há interações perigosas entre os meus medicamentos",
+      text: "Minhas Alergias", 
+      message: "Quais são as minhas alergias?",
       icon: "⚠️",
       color: "bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+    },
+    { 
+      text: "Interações", 
+      message: "Há interações entre meus medicamentos?",
+      icon: "🔍",
+      color: "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
     }
   ];
 
@@ -204,7 +248,7 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
               {msg.isBot && (
                 <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
                   <Bot size={12} />
-                  {msg.isTriage ? 'Triagem' : 'TecSim'}
+                  {msg.isTriage ? 'Triagem' : paciente ? `TecSim - ${paciente.nome}` : 'TecSim'}
                 </div>
               )}
               <div className="whitespace-pre-wrap">{msg.text}</div>

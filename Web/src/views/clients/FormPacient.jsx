@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FileText, CheckCircle, UserPlus, Heart } from "lucide-react";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const FormPacient = ({
   currentStep,
@@ -13,9 +14,10 @@ const FormPacient = ({
   onCancel,
   onSave
 }) => {
+  const { theme } = useContext(ThemeContext);
   // 🎯 Componente de Progresso
   const StepProgress = () => (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 mb-6">
+    <div className="p-6 rounded-2xl mb-6" style={{ backgroundColor: theme.backgroundCard, border: `1px solid ${theme.border}` }}>
       <div className="flex items-center justify-between max-w-3xl mx-auto">
         {[1, 2, 3, 4].map((step) => (
           <div key={step} className="flex items-center">
@@ -27,9 +29,7 @@ const FormPacient = ({
               {currentStep > step ? <CheckCircle size={20} /> : step}
             </div>
             <div className="ml-3">
-              <div className={`text-sm font-medium ${
-                currentStep >= step ? "text-blue-600" : "text-gray-500"
-              }`}>
+              <div className="text-sm font-medium" style={{ color: currentStep >= step ? theme.primary : theme.textMuted }}>
                 {step === 1 && "Dados Pessoais"}
                 {step === 2 && "Dados de Saúde"}
                 {step === 3 && "Termo LGPD"}
@@ -37,9 +37,7 @@ const FormPacient = ({
               </div>
             </div>
             {step < 4 && (
-              <div className={`w-12 h-0.5 mx-4 ${
-                currentStep > step ? "bg-blue-600" : "bg-gray-300"
-              }`} />
+              <div className="w-12 h-0.5 mx-4" style={{ backgroundColor: currentStep > step ? theme.primary : theme.border }} />
             )}
           </div>
         ))}
@@ -602,7 +600,12 @@ const FormPacient = ({
           <button
             type="button"
             onClick={currentStep === 1 ? onCancel : onBack}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="px-6 py-3 rounded-lg transition-colors font-medium"
+            style={{
+              border: `1px solid ${theme.border}`,
+              color: theme.textPrimary,
+              backgroundColor: theme.backgroundCard
+            }}
           >
             {currentStep === 1 ? "Cancelar" : "Anterior"}
           </button>
@@ -612,7 +615,8 @@ const FormPacient = ({
               <button
                 type="button"
                 onClick={onNext}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="px-6 py-3 text-white rounded-lg transition-colors font-medium"
+                style={{ backgroundColor: theme.primary }}
               >
                 Próximo
               </button>
@@ -621,7 +625,8 @@ const FormPacient = ({
                 type="button"
                 onClick={onSave}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-3 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                style={{ backgroundColor: theme.success }}
               >
                 <FileText size={18} />
                 <span>{isSubmitting ? "Salvando..." : "Finalizar Cadastro"}</span>
@@ -636,11 +641,12 @@ const FormPacient = ({
 
 // 📦 Componente de Seção
 function Section({ title, subtitle, children }) {
+  const { theme } = useContext(ThemeContext);
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100">
+    <div className="p-6 rounded-2xl" style={{ backgroundColor: theme.backgroundCard, border: `1px solid ${theme.border}` }}>
       <div className="mb-6">
-        <h2 className="font-semibold text-2xl text-gray-800 mb-2">{title}</h2>
-        {subtitle && <p className="text-gray-600">{subtitle}</p>}
+        <h2 className="font-semibold text-2xl mb-2" style={{ color: theme.textPrimary }}>{title}</h2>
+        {subtitle && <p style={{ color: theme.textSecondary }}>{subtitle}</p>}
       </div>
       {children}
     </div>
@@ -649,11 +655,12 @@ function Section({ title, subtitle, children }) {
 
 // 📦 Componente de Input reutilizável
 function InputField({ label, name, value, onChange, type = "text", placeholder, error, required = false }) {
+  const { theme } = useContext(ThemeContext);
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label className="block text-sm font-medium mb-1" style={{ color: theme.textPrimary }}>
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span style={{ color: theme.error }} className="ml-1">*</span>}
       </label>
       <input
         type={type}
@@ -661,11 +668,15 @@ function InputField({ label, name, value, onChange, type = "text", placeholder, 
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
-          error ? "border-red-500 bg-red-50" : "border-gray-300"
-        }`}
+        className="w-full rounded-lg p-3 focus:ring-2 focus:border-transparent outline-none transition"
+        style={{
+          border: `1px solid ${error ? theme.error : theme.border}`,
+          backgroundColor: error ? `${theme.error}20` : theme.backgroundCard,
+          color: theme.textPrimary,
+          focusRingColor: theme.primary
+        }}
       />
-      {error && <span className="text-red-600 text-sm mt-1 block">{error}</span>}
+      {error && <span className="text-sm mt-1 block" style={{ color: theme.error }}>{error}</span>}
     </div>
   );
 }

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/SideBarr";
-import { ArrowLeft, UserPlus } from "lucide-react";
+import { ArrowLeft, UserPlus, Sun, Moon } from "lucide-react";
+import { ThemeContext } from "../../context/ThemeContext";
 import FormPacient from "./FormPacient";
 
 export default function NewClient() {
   const navigate = useNavigate();
+  const { theme, toggleTheme, isDark } = useContext(ThemeContext);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -236,12 +238,12 @@ export default function NewClient() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen" style={{ backgroundColor: theme.background }}>
       <Sidebar />
 
       <div className="flex-1 flex flex-col">
         {/* 🔹 Navbar */}
-        <div className="h-20 bg-sky-600 shadow flex items-center justify-between px-6 sticky top-0 z-10">
+        <div className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10" style={{ backgroundColor: theme.primary }}>
           <div className="flex items-center gap-3">
             <button
               onClick={handleCancelar}
@@ -255,8 +257,18 @@ export default function NewClient() {
             </h1>
           </div>
 
-          <div className="text-white text-sm">
-            Etapa {currentStep} de 4
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg transition-colors text-white"
+              style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+              title={isDark ? "Modo Claro" : "Modo Escuro"}
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <div className="text-white text-sm">
+              Etapa {currentStep} de 4
+            </div>
           </div>
         </div>
 

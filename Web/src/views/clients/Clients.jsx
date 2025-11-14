@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   MessageSquare, 
@@ -14,14 +14,18 @@ import {
   Edit,
   Download,
   Eye,
-  Stethoscope // ← Adicionei este ícone
+  Stethoscope,
+  Sun,
+  Moon
 } from "lucide-react";
 import Sidebar from "../../components/SideBarr";
+import { ThemeContext } from "../../context/ThemeContext";
 
 import { getPacientes } from '../../services/pacienteService'
 
 export default function Clients() {
   const navigate = useNavigate();
+  const { theme, toggleTheme, isDark } = useContext(ThemeContext);
   
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -269,16 +273,16 @@ export default function Clients() {
 
   // ATUALIZEI o CardCliente para incluir o botão de atendimento
   const CardCliente = ({ cliente, onIniciarAtendimento, onVerDetalhes, onEditar }) => (
-    <div className="bg-white rounded-xl p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+    <div className="rounded-xl p-6 border hover:shadow-md transition-all duration-200" style={{ backgroundColor: theme.backgroundCard, borderColor: theme.border }}>
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-4 flex-1">
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold" style={{ backgroundColor: theme.primaryLight, color: theme.primary }}>
             {cliente.nome.split(' ').map(n => n[0]).join('').substring(0, 2)}
           </div>
           
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h3 className="font-bold text-gray-800 text-lg">{cliente.nome}</h3>
+              <h3 className="font-bold text-lg" style={{ color: theme.textPrimary }}>{cliente.nome}</h3>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                 cliente.status === 'ativo' 
                   ? 'bg-green-100 text-green-800' 
@@ -288,7 +292,7 @@ export default function Clients() {
               </span>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm" style={{ color: theme.textSecondary }}>
               <div className="flex items-center gap-2">
                 <span className="font-medium">CPF:</span>
                 <span>{cliente.cpf}</span>
@@ -309,15 +313,15 @@ export default function Clients() {
 
             {cliente.condicoesCronicas?.length > 0 && (
               <div className="mt-2">
-                <span className="text-xs font-medium text-purple-600">🏥 Patologias: </span>
-                <span className="text-xs text-purple-600">{cliente.condicoesCronicas.join(', ')}</span>
+                <span className="text-xs font-medium" style={{ color: theme.warning }}>🏥 Patologias: </span>
+                <span className="text-xs" style={{ color: theme.warning }}>{cliente.condicoesCronicas.join(', ')}</span>
               </div>
             )}
 
             {cliente.alergias.length > 0 && (
               <div className="mt-2">
-                <span className="text-xs font-medium text-red-600">⚠️ Alergias: </span>
-                <span className="text-xs text-red-600">{cliente.alergias.join(', ')}</span>
+                <span className="text-xs font-medium" style={{ color: theme.error }}>⚠️ Alergias: </span>
+                <span className="text-xs" style={{ color: theme.error }}>{cliente.alergias.join(', ')}</span>
               </div>
             )}
           </div>
@@ -355,14 +359,15 @@ export default function Clients() {
 
   // ATUALIZEI o ModalDetalhes para incluir botão de atendimento também
   const ModalDetalhes = ({ cliente, onClose, onIniciarAtendimento }) => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: theme.overlay }}>
+      <div className="rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" style={{ backgroundColor: theme.backgroundCard }}>
+        <div className="p-6" style={{ borderBottom: `1px solid ${theme.border}` }}>
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-800">Detalhes do Cliente</h2>
+            <h2 className="text-xl font-bold" style={{ color: theme.textPrimary }}>Detalhes do Cliente</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="transition-colors"
+              style={{ color: theme.textMuted }}
             >
               ✕
             </button>
@@ -372,48 +377,48 @@ export default function Clients() {
         <div className="p-6 space-y-6">
           {/* Informações Pessoais */}
           <div>
-            <h3 className="font-semibold text-gray-800 mb-4 text-lg">Informações Pessoais</h3>
+            <h3 className="font-semibold mb-4 text-lg" style={{ color: theme.textPrimary }}>Informações Pessoais</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Users size={20} className="text-blue-600" />
+              <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: theme.backgroundSecondary }}>
+                <Users size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Nome Completo</p>
-                  <p className="font-medium">{cliente.nome}</p>
+                  <p className="text-sm" style={{ color: theme.textMuted }}>Nome Completo</p>
+                  <p className="font-medium" style={{ color: theme.textPrimary }}>{cliente.nome}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <FileText size={20} className="text-blue-600" />
+              <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: theme.backgroundSecondary }}>
+                <FileText size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">CPF</p>
-                  <p className="font-medium">{cliente.cpf}</p>
+                  <p className="text-sm" style={{ color: theme.textMuted }}>CPF</p>
+                  <p className="font-medium" style={{ color: theme.textPrimary }}>{cliente.cpf}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Calendar size={20} className="text-blue-600" />
+              <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: theme.backgroundSecondary }}>
+                <Calendar size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Data de Nascimento</p>
-                  <p className="font-medium">{cliente.dataNascimento}</p>
+                  <p className="text-sm" style={{ color: theme.textMuted }}>Data de Nascimento</p>
+                  <p className="font-medium" style={{ color: theme.textPrimary }}>{cliente.dataNascimento}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Phone size={20} className="text-blue-600" />
+              <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: theme.backgroundSecondary }}>
+                <Phone size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Telefone</p>
-                  <p className="font-medium">{cliente.telefone}</p>
+                  <p className="text-sm" style={{ color: theme.textMuted }}>Telefone</p>
+                  <p className="font-medium" style={{ color: theme.textPrimary }}>{cliente.telefone}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Mail size={20} className="text-blue-600" />
+              <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: theme.backgroundSecondary }}>
+                <Mail size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">{cliente.email}</p>
+                  <p className="text-sm" style={{ color: theme.textMuted }}>Email</p>
+                  <p className="font-medium" style={{ color: theme.textPrimary }}>{cliente.email}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg md:col-span-2">
-                <MapPin size={20} className="text-blue-600" />
+              <div className="flex items-center gap-3 p-3 rounded-lg md:col-span-2" style={{ backgroundColor: theme.backgroundSecondary }}>
+                <MapPin size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Endereço</p>
-                  <p className="font-medium">{cliente.endereco}</p>
+                  <p className="text-sm" style={{ color: theme.textMuted }}>Endereço</p>
+                  <p className="font-medium" style={{ color: theme.textPrimary }}>{cliente.endereco}</p>
                 </div>
               </div>
             </div>
@@ -421,7 +426,7 @@ export default function Clients() {
 
           {/* Informações Médicas */}
           <div>
-            <h3 className="font-semibold text-gray-800 mb-4 text-lg">Informações Médicas</h3>
+            <h3 className="font-semibold mb-4 text-lg" style={{ color: theme.textPrimary }}>Informações Médicas</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
                 <h4 className="font-medium text-purple-800 mb-2">Patologias</h4>
@@ -472,12 +477,12 @@ export default function Clients() {
 
           {/* Histórico */}
           <div>
-            <h3 className="font-semibold text-gray-800 mb-4 text-lg">Histórico</h3>
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
-              <p className="text-blue-700">
+            <h3 className="font-semibold mb-4 text-lg" style={{ color: theme.textPrimary }}>Histórico</h3>
+            <div className="p-4 rounded-lg" style={{ backgroundColor: theme.primaryLight, border: `1px solid ${theme.border}` }}>
+              <p style={{ color: theme.textPrimary }}>
                 <strong>Última compra:</strong> {cliente.ultimaCompra}
               </p>
-              <p className="text-blue-700 mt-2">
+              <p style={{ color: theme.textPrimary }} className="mt-2">
                 <strong>Status:</strong> 
                 <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
                   cliente.status === 'ativo' 
@@ -491,14 +496,15 @@ export default function Clients() {
           </div>
         </div>
 
-        <div className="p-6 border-t border-gray-200 flex justify-between gap-3">
+        <div className="p-6 flex justify-between gap-3" style={{ borderTop: `1px solid ${theme.border}` }}>
           {/* BOTÃO INICIAR ATENDIMENTO NO MODAL */}
           <button
             onClick={() => {
               onIniciarAtendimento(cliente);
               onClose();
             }}
-            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors"
+            style={{ backgroundColor: theme.success }}
           >
             <Stethoscope size={16} />
             Iniciar Atendimento
@@ -507,11 +513,16 @@ export default function Clients() {
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 rounded-lg transition-colors"
+              style={{ 
+                border: `1px solid ${theme.border}`, 
+                color: theme.textPrimary,
+                backgroundColor: theme.backgroundCard
+              }}
             >
               Fechar
             </button>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button className="px-4 py-2 text-white rounded-lg transition-colors" style={{ backgroundColor: theme.primary }}>
               Imprimir Ficha
             </button>
           </div>
@@ -521,7 +532,7 @@ export default function Clients() {
   );
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen" style={{ backgroundColor: theme.background }}>
       {/* Sidebar */}
       <Sidebar />
 
@@ -529,7 +540,7 @@ export default function Clients() {
       <div className="flex-1 flex flex-col transition-all duration-300">
         
         {/* Navbar */}
-        <div className="h-20 bg-sky-600 shadow flex items-center justify-between px-6 sticky top-0 z-10">
+        <div className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10" style={{ backgroundColor: theme.primary }}>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               <Users size={28} className="text-white" />
@@ -537,13 +548,29 @@ export default function Clients() {
             </div>
           </div>
 
-          <button 
-            onClick={handleNovoCliente}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            <Plus size={18} />
-            <span>Novo Cliente</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg transition-colors"
+              style={{ 
+                backgroundColor: theme.backgroundCard, 
+                color: theme.textPrimary,
+                border: `1px solid ${theme.border}`
+              }}
+              title={isDark ? "Modo Claro" : "Modo Escuro"}
+            >
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            
+            <button 
+              onClick={handleNovoCliente}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg transition text-white"
+              style={{ backgroundColor: theme.primary }}
+            >
+              <Plus size={18} />
+              <span>Novo Cliente</span>
+            </button>
+          </div>
         </div>
 
         {/* Conteúdo */}
@@ -551,7 +578,7 @@ export default function Clients() {
           <div className="max-w-7xl mx-auto">
             
             {/* Barra de Ferramentas */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 mb-6">
+            <div className="rounded-2xl p-6 mb-6" style={{ backgroundColor: theme.backgroundCard, border: `1px solid ${theme.border}` }}>
               <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                 {/* Busca */}
                 <div className="relative flex-1 max-w-md">
@@ -563,46 +590,55 @@ export default function Clients() {
                     placeholder="Buscar por nome, CPF, telefone..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent"
+                    style={{ 
+                      backgroundColor: theme.backgroundCard,
+                      border: `1px solid ${theme.border}`,
+                      color: theme.textPrimary,
+                      focusRingColor: theme.primary
+                    }}
                   />
                 </div>
 
                 {/* Filtros */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                  <div className="flex items-center gap-2 rounded-lg p-1" style={{ backgroundColor: theme.backgroundSecondary }}>
                     <button
                       onClick={() => setFiltroAtivo("todos")}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        filtroAtivo === "todos" 
-                          ? "bg-white text-blue-600 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-800"
-                      }`}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition-colors"
+                      style={{
+                        backgroundColor: filtroAtivo === "todos" ? theme.backgroundCard : 'transparent',
+                        color: filtroAtivo === "todos" ? theme.primary : theme.textSecondary,
+                        boxShadow: filtroAtivo === "todos" ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                      }}
                     >
                       Todos
                     </button>
                     <button
                       onClick={() => setFiltroAtivo("ativo")}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        filtroAtivo === "ativo" 
-                          ? "bg-white text-green-600 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-800"
-                      }`}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition-colors"
+                      style={{
+                        backgroundColor: filtroAtivo === "ativo" ? theme.backgroundCard : 'transparent',
+                        color: filtroAtivo === "ativo" ? theme.success : theme.textSecondary,
+                        boxShadow: filtroAtivo === "ativo" ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                      }}
                     >
                       Ativos
                     </button>
                     <button
                       onClick={() => setFiltroAtivo("inativo")}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        filtroAtivo === "inativo" 
-                          ? "bg-white text-gray-600 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-800"
-                      }`}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition-colors"
+                      style={{
+                        backgroundColor: filtroAtivo === "inativo" ? theme.backgroundCard : 'transparent',
+                        color: filtroAtivo === "inativo" ? theme.textPrimary : theme.textSecondary,
+                        boxShadow: filtroAtivo === "inativo" ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+                      }}
                     >
                       Inativos
                     </button>
                   </div>
 
-                  <button className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors" style={{ backgroundColor: theme.backgroundSecondary, color: theme.textPrimary }}>
                     <Download size={16} />
                     Exportar
                   </button>
@@ -612,27 +648,27 @@ export default function Clients() {
 
             {/* Estatísticas Rápidas */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
-                <div className="text-2xl font-bold text-blue-600">{clientes.length}</div>
-                <div className="text-sm text-gray-600">Total de Clientes</div>
+              <div className="p-4 rounded-xl" style={{ backgroundColor: theme.backgroundCard, border: `1px solid ${theme.border}` }}>
+                <div className="text-2xl font-bold" style={{ color: theme.primary }}>{clientes.length}</div>
+                <div className="text-sm" style={{ color: theme.textSecondary }}>Total de Clientes</div>
               </div>
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
-                <div className="text-2xl font-bold text-green-600">
+              <div className="p-4 rounded-xl" style={{ backgroundColor: theme.backgroundCard, border: `1px solid ${theme.border}` }}>
+                <div className="text-2xl font-bold" style={{ color: theme.success }}>
                   {clientes.filter(c => c.status === 'ativo').length}
                 </div>
-                <div className="text-sm text-gray-600">Clientes Ativos</div>
+                <div className="text-sm" style={{ color: theme.textSecondary }}>Clientes Ativos</div>
               </div>
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
-                <div className="text-2xl font-bold text-orange-600">
+              <div className="p-4 rounded-xl" style={{ backgroundColor: theme.backgroundCard, border: `1px solid ${theme.border}` }}>
+                <div className="text-2xl font-bold" style={{ color: theme.warning }}>
                   {clientes.filter(c => c.alergias.length > 0).length}
                 </div>
-                <div className="text-sm text-gray-600">Com Alergias</div>
+                <div className="text-sm" style={{ color: theme.textSecondary }}>Com Alergias</div>
               </div>
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
-                <div className="text-2xl font-bold text-purple-600">
+              <div className="p-4 rounded-xl" style={{ backgroundColor: theme.backgroundCard, border: `1px solid ${theme.border}` }}>
+                <div className="text-2xl font-bold" style={{ color: theme.info }}>
                   {clientes.filter(c => c.condicoesCronicas?.length > 0).length}
                 </div>
-                <div className="text-sm text-gray-600">Com Patologias</div>
+                <div className="text-sm" style={{ color: theme.textSecondary }}>Com Patologias</div>
               </div>
             </div>
 
@@ -645,15 +681,16 @@ export default function Clients() {
             ) : (
               <div className="space-y-4">
                 {clientesFiltrados.length === 0 ? (
-                  <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
-                    <Users className="text-gray-300 text-6xl mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg mb-4">
+                  <div className="text-center py-12 rounded-2xl" style={{ backgroundColor: theme.backgroundCard, border: `1px solid ${theme.border}` }}>
+                    <Users className="text-6xl mx-auto mb-4" style={{ color: theme.textMuted }} />
+                    <p className="text-lg mb-4" style={{ color: theme.textSecondary }}>
                       {searchTerm ? "Nenhum cliente encontrado para sua busca." : "Nenhum cliente cadastrado."}
                     </p>
                     {searchTerm && (
                       <button 
                         onClick={() => setSearchTerm("")}
-                        className="text-blue-600 hover:text-blue-700 underline"
+                        className="underline"
+                        style={{ color: theme.primary }}
                       >
                         Limpar busca
                       </button>
@@ -661,7 +698,7 @@ export default function Clients() {
                   </div>
                 ) : (
                   <>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-sm" style={{ color: theme.textSecondary }}>
                       {clientesFiltrados.length} cliente(s) encontrado(s)
                       {searchTerm && ` para "${searchTerm}"`}
                     </p>

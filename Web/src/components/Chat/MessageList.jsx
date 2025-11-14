@@ -61,7 +61,7 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
                   : theme.textSecondary
               }}
             >
-              {isTriage ? '🔍 TecSim - Triagem' : 'TecSim'}
+              {isTriage ? '🔍 TecSim - Triagem' : 'TecSim - Assistente Geral'}
               {isTriage && !msg.isTriageResult && (
                 <span 
                   className="text-xs px-2 py-1 rounded-full"
