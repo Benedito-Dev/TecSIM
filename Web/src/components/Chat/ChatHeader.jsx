@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useElderMode } from '../../context/ElderModeContext';
 import { ThemeContext } from '../../context/ThemeContext';
+import APIStatus from './APIStatus';
 
 const ChatHeader = ({ onGoBack, isLoading, emTriagem }) => {
   const { fontSize } = useElderMode();
@@ -39,16 +40,19 @@ const ChatHeader = ({ onGoBack, isLoading, emTriagem }) => {
             >
               Chat - TecSim {emTriagem && '🔍'}
             </h1>
-            <div className="flex items-center space-x-1" style={{ fontSize: `${fontSize * 0.85}px` }}>
-              <div 
-                className={`w-2 h-2 rounded-full ${isLoading ? 'animate-pulse' : ''}`}
-                style={{
-                  backgroundColor: isLoading ? theme.warning : theme.success
-                }}
-              />
-              <span className="font-medium">
-                {isLoading ? 'Processando...' : emTriagem ? 'Em Triagem' : 'Online'}
-              </span>
+            <div className="flex items-center space-x-2" style={{ fontSize: `${fontSize * 0.85}px` }}>
+              <div className="flex items-center space-x-1">
+                <div 
+                  className={`w-2 h-2 rounded-full ${isLoading ? 'animate-pulse' : ''}`}
+                  style={{
+                    backgroundColor: isLoading ? theme.warning : theme.success
+                  }}
+                />
+                <span className="font-medium">
+                  {isLoading ? 'Processando...' : emTriagem ? 'Em Triagem' : 'Online'}
+                </span>
+              </div>
+              <APIStatus />
             </div>
           </div>
 

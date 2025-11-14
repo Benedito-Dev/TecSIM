@@ -1,16 +1,18 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { verificarGatilhoCritico, detectarTemaForaDaSaude, validarMencaoMedicamentos } from '../utils/filters';
+import { APP_CONFIG, validateConfig } from '../config/appConfig';
 
-// ✅ Configuração correta para React puro
-const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
-
-if (!API_KEY) {
-  throw new Error("Chave de API não configurada. Configure a variável VITE_GOOGLE_API_KEY no arquivo .env");
+// Validação de configuração
+const configValidation = validateConfig();
+if (!configValidation.isValid) {
+  throw new Error(`Configuração inválida: ${configValidation.errors.join(', ')}`);
 }
+
+const FINAL_API_KEY = APP_CONFIG.API.GOOGLE_API_KEY;
 
 // Cache para modelos disponíveis
 let cachedModels = null;
-const CACHE_EXPIRATION_MS = 3600000; // 1 hora
+const CACHE_EXPIRATION_MS = APP_CONFIG.AI.CACHE_EXPIRATION;
 
 // Função para sanitizar o histórico de conversa
 const sanitizarHistorico = (historico) => {
@@ -35,7 +37,7 @@ export const listAvailableModels = async () => {
       };
     }
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${FINAL_API_KEY}`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -90,7 +92,7 @@ export const getAIResponse = async (message, history = [], options = {}) => {
     console.warn('[AUDIT] Gatilho crítico detectado');
     return {
       success: true,
-      response: "⚠️ Com base no que você relatou, é muito importante que procure imediatamente um médico ou profissional de saúde qualificado."
+      response: APP_CONFIG.SECURITY.CRITICAL_TRIGGER_RESPONSE
     };
   }
 
@@ -99,26 +101,27 @@ export const getAIResponse = async (message, history = [], options = {}) => {
     console.warn('[AUDIT] Tema proibido detectado:', message);
     return {
       success: true,
-      response: "⚠️ Sou um assistente virtual de saúde e só posso responder perguntas relacionadas a cuidados médicos. Para outros temas, recomendo buscar fontes apropriadas."
+      response: APP_CONFIG.SECURITY.BLOCKED_TOPICS_RESPONSE
     };
   }
 
-  // 🔒 Filtro de segurança — Medicamentos controlados (apenas contextos perigosos)
+  // 🔒 Filtro de segurança — Medicamentos controlados
   if (validarMencaoMedicamentos(message)) {
-    console.warn('[AUDIT] Contexto perigoso com medicamento detectado');
+    console.warn('[AUDIT] Menção a medicamento controlado detectada');
     return {
       success: true,
-      response: "⚠️ Para questões sobre medicamentos controlados ou dosagens específicas, é importante consultar um farmacêutico ou médico. Posso ajudar com informações gerais sobre saúde."
+      response: APP_CONFIG.SECURITY.CONTROLLED_MEDICATION_RESPONSE
     };
   }
 
   try {
     const defaultOptions = {
-      modelName: "gemini-2.0-flash-exp",
-      maxOutputTokens: 1000,
-      temperature: 0.7,
-      topP: 0.9,
-      topK: 40,
+      modelName: APP_CONFIG.AI.DEFAULT_MODEL,
+      apiVersion: "v1",
+      maxOutputTokens: APP_CONFIG.AI.MAX_OUTPUT_TOKENS,
+      temperature: APP_CONFIG.AI.TEMPERATURE,
+      topP: APP_CONFIG.AI.TOP_P,
+      topK: APP_CONFIG.AI.TOP_K,
       safetySettings: [
         {
           category: "HARM_CATEGORY_HARASSMENT",
@@ -141,7 +144,8 @@ export const getAIResponse = async (message, history = [], options = {}) => {
 
     const finalOptions = { ...defaultOptions, ...options };
 
-    const genAI = new GoogleGenerativeAI(API_KEY);
+    // ✅ CORREÇÃO: Usar a instância única do GoogleGenerativeAI
+    const genAI = new GoogleGenerativeAI(FINAL_API_KEY);
     const model = genAI.getGenerativeModel({
       model: finalOptions.modelName,
       generationConfig: {
@@ -153,22 +157,24 @@ export const getAIResponse = async (message, history = [], options = {}) => {
       safetySettings: finalOptions.safetySettings
     });
 
-    const systemRules = `Você é o TecSim, assistente virtual amigável especializado em saúde e bem-estar. 
-    DIRETRIZES:
+    const systemRules = `Você é o TecSim, assistente virtual EXCLUSIVO para questões de saúde. 
+DIRETRIZES ABSOLUTAS:
 
-    ✅ Seja acolhedor e responda saudações normalmente
-    ✅ Ajude com questões gerais de saúde, sintomas leves e orientações básicas
-    ✅ Ofereça informações educativas sobre saúde
-    ✅ Sempre recomende consulta profissional para questões sérias
-    ⛔ Não dê diagnósticos definitivos ou prescrições
-    ⛔ Evite temas fora da saúde (política, religião, esportes)
+⛔ NUNCA discuta: política, religião, esportes, entretenimento, economia ou qualquer tema fora da saúde
+⛔ NUNCA dê diagnósticos ou tratamentos específicos
+⛔ NUNCA mencione medicamentos controlados ou que exigem receita
+✅ SEMPRE recomende procurar um médico para questões sérias
+✅ Mantenha respostas objetivas e focadas apenas em saúde
 
-    ESTILO DE CONVERSA:
-    - Seja natural e acessível
-    - Use emojis quando apropriado
-    - Responda saudações de forma amigável
-    - Mantenha o foco na saúde mas seja conversacional
-    - Encoraje cuidados preventivos e hábitos saudáveis`;
+RESPOSTAS PADRÃO PARA TEMA NÃO MÉDICO:
+Se o usuário mencionar qualquer tema fuera da saúde, responda APENAS e EXCLUSIVAMENTE:
+"Sou um assistente virtual especializado em saúde e só posso responder perguntas relacionadas a cuidados médicos. Para outros temas, recomendo buscar fontes apropriadas."
+
+Para questões de saúde:
+- Seja breve e objetivo
+- Sempre encerre recomendando consulta médica quando apropriado
+- Use linguagem acessível ao público geral
+- Nunca substitua orientação profissional`;
 
     // Sanitizar o histórico antes de usar
     const historicoSanitizado = sanitizarHistorico(history);
@@ -185,6 +191,7 @@ export const getAIResponse = async (message, history = [], options = {}) => {
       history: chatHistory
     });
 
+    // 🔥 MUDANÇA CRÍTICA: System rules SEMPRE incluído
     const userMessageContent = systemRules + "\n\nMensagem do usuário: " + message.trim();
 
     const result = await chat.sendMessage(userMessageContent);
@@ -195,7 +202,7 @@ export const getAIResponse = async (message, history = [], options = {}) => {
       console.warn('[AUDIT] Resposta do modelo contém conteúdo proibido');
       return {
         success: true,
-        response: "Sou um assistente virtual especializado em saúde e só posso responder perguntas relacionadas a cuidados médicos."
+        response: APP_CONFIG.SECURITY.BLOCKED_TOPICS_RESPONSE
       };
     }
 
@@ -210,10 +217,6 @@ export const getAIResponse = async (message, history = [], options = {}) => {
     let errorMessage = "Erro ao processar sua solicitação";
     if (error.message?.includes('not found for API version')) {
       errorMessage = "Modelo não disponível. Tente usar 'gemini-pro'";
-    } else if (error.message?.includes('API key not valid')) {
-      errorMessage = "Chave de API inválida. Verifique sua configuração.";
-    } else if (error.message?.includes('Quota exceeded')) {
-      errorMessage = "Limite de requisições excedido. Tente novamente mais tarde.";
     }
 
     return {
@@ -248,86 +251,4 @@ export const checkAPIHealth = async () => {
       error: error.message
     };
   }
-};
-
-// Função específica para triagem
-export const getTriageResponse = async (message, triagemState, history = []) => {
-  const protocolo = triagemState.protocoloAtivo;
-  
-  if (!protocolo) {
-    return {
-      success: false,
-      error: "Protocolo de triagem não identificado"
-    };
-  }
-
-  // Prepara contexto especializado para triagem
-  const systemRulesTriagem = `
-Você é um assistente de TRIAGEM médica para farmacêuticos.
-
-CONTEXTO ATUAL:
-- Protocolo: ${protocolo.nome}
-- Etapa: ${triagemState.etapa}
-- Perguntas realizadas: ${triagemState.perguntasRealizadas}
-- Risco atual: ${triagemState.risco}
-
-DIRETRIZES:
-- Faça APENAS 1 pergunta por vez
-- Foque em identificar sinais de alerta
-- Use linguagem clara e acessível
-- Mantenha o foco no protocolo atual
-
-PRÓXIMA PERGUNTA DO PROTOCOLO: "${protocolo.perguntas[triagemState.perguntasRealizadas]?.pergunta}"
-
-RESPONDA APENAS COM:
-1. A próxima pergunta do protocolo OU
-2. A classificação final se todas as perguntas foram respondidas
-
-NUNCA dê diagnósticos ou tratamentos.
-  `;
-
-  try {
-    const result = await getAIResponse(systemRulesTriagem + "\n\nHistórico: " + message, history, {
-      temperature: 0.2, // Baixa criatividade para maior precisão
-      maxOutputTokens: 300
-    });
-
-    return result;
-  } catch (error) {
-    console.error('Erro na triagem:', error);
-    return {
-      success: false,
-      error: "Falha na triagem automática"
-    };
-  }
-};
-
-// Função para análise final da triagem
-export const getTriageAnalysis = async (triagemState) => {
-  const classificacao = classificarTriagemFinal(triagemState);
-  
-  const analysisPrompt = `
-Com base na triagem realizada, forneça um resumo profissional:
-
-PROTOCOLO: ${triagemState.protocoloAtivo.nome}
-RESPOSTAS COLETADAS: ${JSON.stringify(triagemState.historicoRespostas)}
-CLASSIFICAÇÃO: ${classificacao.nivel}
-
-Forneça um resumo conciso para o farmacêutico com:
-1. Principais achados
-2. Sinais de alerta identificados
-3. Recomendação de encaminhamento
-
-Mantenha o texto objetivo e profissional.
-  `;
-
-  const result = await getAIResponse(analysisPrompt, [], {
-    temperature: 0.3,
-    maxOutputTokens: 500
-  });
-
-  return {
-    ...result,
-    classificacao
-  };
 };

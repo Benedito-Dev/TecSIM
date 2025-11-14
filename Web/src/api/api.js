@@ -1,5 +1,5 @@
 import axios from 'axios';
-const IP_HOST = import.meta.env.IP_HOST;
+const IP_HOST = import.meta.env.VITE_IP_HOST || 'localhost';
 
 // Usando variáveis de ambiente do Vite
 

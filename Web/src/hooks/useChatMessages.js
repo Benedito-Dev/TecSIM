@@ -13,7 +13,7 @@ export const useChatMessages = () => {
     setMessages([
       {
         id: 1,
-        text: 'Olá! 👋 Sou o TecSim, seu assistente virtual de saúde. Como posso ajudar hoje?\n\nPosso ajudar com uma triagem inicial dos seus sintomas? Descreva brevemente o que está sentindo.',
+        text: 'Olá! Sou o TecSim, seu assistente virtual de saúde.',
         isBot: true,
         time: getCurrentTime(),
       },
