@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Sidebar from '../../components/SideBarr';
 import AtendimentoChat from '../../components/Chat/AtendimentoChat';
 import ProtocoloContinuidade from '../../components/ProtocoloContinuidade';
 import IntegracaoSUS from '../../components/IntegracaoSUS';
@@ -171,56 +172,63 @@ export default function AtendimentoPaciente() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 overflow-x-hidden">
-      {/* Header Moderno */}
-      <div className="bg-white shadow-lg border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                <Stethoscope className="w-6 h-6 text-white" />
+    <div className="flex h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Sidebar */}
+      <Sidebar />
+      
+      {/* Conteúdo principal */}
+      <div className="flex-1 flex flex-col transition-all duration-300">
+        {/* Header Moderno */}
+        <div className="bg-white shadow-lg border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                  <Stethoscope className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Atendimento Médico
+                  </h1>
+                  <p className="text-sm text-gray-500 flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    {paciente.nome} • CPF: {paciente.cpf}
+                    {emTriagem && (
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium ml-2">
+                        Em Triagem
+                      </span>
+                    )}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Atendimento Médico
-                </h1>
-                <p className="text-sm text-gray-500 flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  {paciente.nome} • CPF: {paciente.cpf}
-                  {emTriagem && (
-                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium ml-2">
-                      Em Triagem
-                    </span>
-                  )}
-                </p>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">Data/Hora</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {new Date().toLocaleString('pt-BR')}
+                  </p>
+                </div>
+                <button 
+                  onClick={() => navigate('/clientes')}
+                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Voltar
+                </button>
+                <button
+                  onClick={() => navigate('/clientes')} 
+                  className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
+                  <Save className="w-4 h-4" />
+                  Salvar Atendimento
+                </button>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-sm text-gray-500">Data/Hora</p>
-                <p className="text-sm font-medium text-gray-900">
-                  {new Date().toLocaleString('pt-BR')}
-                </p>
-              </div>
-              <button 
-                onClick={() => navigate('/clientes')}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Voltar
-              </button>
-              <button
-                onClick={() => navigate('/clientes')} 
-                className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
-                <Save className="w-4 h-4" />
-                Salvar Atendimento
-              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8 scroll-smooth">
+        {/* Conteúdo com margem para sidebar */}
+        <div className="flex-1 overflow-y-auto ml-20 lg:ml-60">
+          <div className="max-w-7xl mx-auto px-6 py-8 scroll-smooth">
 
         {/* Cards de Informações do Paciente */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -817,6 +825,8 @@ export default function AtendimentoPaciente() {
                 </div>
               </form>
             </div>
+          </div>
+        </div>
           </div>
         </div>
       </div>
