@@ -1,33 +1,36 @@
-version: "3.9"
-
 services:
   backend:
     build: ./backend
-    container_name: backend
+    container_name: tecsim-backend
     ports:
       - "3000:3000"
     environment:
-      POSTGRES_URI: ${DATABASE_URL}       # Neon Postgres (banco externo AWS)
-      DATABASE_URL_MONGO: ${MONGODB_URI}    # Caso use Mongo também
+      DATABASE_URL: ${DATABASE_URL}
+      MONGODB_URI: ${MONGODB_URI}
       JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      API_KEY: ${API_KEY}
     networks:
       - app-network
 
-  frontend:
-    build: ./mobile
-    container_name: tecsim-frontend
+  mobile:
+    build: ./Mobile
+    container_name: tecsim-mobile
     ports:
       - "8081:8081"   # Metro Bundler
       - "19000:19000" # Expo Go (LAN)
       - "19001:19001" # Debugger
       - "19002:19002" # Expo DevTools (web)
     volumes:
-      - ./mobile:/app
+      - ./Mobile:/app
       - /app/node_modules 
     environment:
-      # ⚠️ Atenção: este endereço só funciona dentro da rede Docker.
-      # Para rodar no dispositivo físico, usar o IP da sua máquina na rede.
-      API_URL: http://${IP_HOST}:3000
+      API_KEY: ${API_KEY}
+      GOOGLE_API_KEY: ${API_KEY}
+      REACT_APP_GOOGLE_API_KEY: ${API_KEY}
+      IP_HOST: backend
     stdin_open: true
     tty: true
     depends_on:
@@ -35,12 +38,16 @@ services:
     networks:
       - app-network
 
-  db-init:
-    build: ./db-init
-    container_name: db-init
+  web:
+    build: ./Web
+    container_name: tecsim-web
+    ports:
+      - "5173:5173"
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-    command: ["node", "createTables.js"]  # comando padrão para criar tabelas
+      VITE_GOOGLE_API_KEY: ${API_KEY}
+      VITE_IP_HOST: tecsim-backend
+    depends_on:
+      - backend
     networks:
       - app-network
 

@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import AtendimentoChat from '../../components/chat/AtendimentoChat';
+import AtendimentoChat from '../../components/Chat/AtendimentoChat';
 import ProtocoloContinuidade from '../../components/ProtocoloContinuidade';
 import IntegracaoSUS from '../../components/IntegracaoSUS';
 import { usePacienteCondicoes } from '../../hooks/usePacienteCondicoes';

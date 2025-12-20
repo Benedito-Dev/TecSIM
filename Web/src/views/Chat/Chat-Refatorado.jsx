@@ -2,10 +2,10 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Sidebar from '../../components/SideBarr';
-import ChatHeader from '../../components/chat/ChatHeader';
-import MessageList from '../../components/chat/MessageList';
-import QuickActions from '../../components/chat/QuickActions';
-import ChatInput from '../../components/chat/ChatInput';
+import ChatHeader from '../../components/Chat/ChatHeader';
+import MessageList from '../../components/Chat/MessageList';
+import QuickActions from '../../components/Chat/QuickActions';
+import ChatInput from '../../components/Chat/ChatInput';
 
 import { useAuth } from '../../context/UserContext';
 import { ThemeContext } from '../../context/ThemeContext';

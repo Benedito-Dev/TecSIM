@@ -1,11 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { verificarGatilhoCritico, detectarTemaForaDaSaude, validarMencaoMedicamentos } from '../utils/filters';
-import { APP_CONFIG, validateConfig } from '../config/appConfig';
+import { APP_CONFIG } from '../config/appConfig';
 
-// Validação de configuração
-const configValidation = validateConfig();
-if (!configValidation.isValid) {
-  throw new Error(`Configuração inválida: ${configValidation.errors.join(', ')}`);
+// Validação simplificada - só verifica se tem API key
+if (!APP_CONFIG.API.GOOGLE_API_KEY) {
+  throw new Error('VITE_GOOGLE_API_KEY não configurada');
 }
 
 const FINAL_API_KEY = APP_CONFIG.API.GOOGLE_API_KEY;

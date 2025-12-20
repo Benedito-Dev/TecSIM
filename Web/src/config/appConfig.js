@@ -49,7 +49,7 @@ export const validateConfig = () => {
     errors.push('VITE_GOOGLE_API_KEY não configurada');
   }
 
-  if (!APP_CONFIG.API.BASE_URL.includes('localhost') && !APP_CONFIG.API.BASE_URL.includes('192.168')) {
+  if (!APP_CONFIG.API.BASE_URL.includes('localhost') && !APP_CONFIG.API.BASE_URL.includes('192.168') && !APP_CONFIG.API.BASE_URL.includes('tecsim-backend')) {
     errors.push('VITE_IP_HOST pode não estar configurado corretamente');
   }
 
