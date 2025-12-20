@@ -19,10 +19,10 @@ services:
     build: ./Mobile
     container_name: tecsim-mobile
     ports:
-      - "8081:8081"   # Metro Bundler
-      - "19000:19000" # Expo Go (LAN)
-      - "19001:19001" # Debugger
-      - "19002:19002" # Expo DevTools (web)
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
     volumes:
       - ./Mobile:/app
       - /app/node_modules 
@@ -45,7 +45,6 @@ services:
       - "5173:5173"
     environment:
       VITE_GOOGLE_API_KEY: ${API_KEY}
-      VITE_IP_HOST: tecsim-backend
     depends_on:
       - backend
     networks:
