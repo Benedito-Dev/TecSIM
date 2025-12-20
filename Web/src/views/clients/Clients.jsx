@@ -14,14 +14,16 @@ import {
   Edit,
   Download,
   Eye,
-  Stethoscope // ← Adicionei este ícone
+  Stethoscope
 } from "lucide-react";
 import Sidebar from "../../components/SideBarr";
+import { useTheme } from "../../context/ThemeContext";
 
 import { getPacientes } from '../../services/pacienteService'
 
 export default function Clients() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -269,65 +271,111 @@ export default function Clients() {
 
   // ATUALIZEI o CardCliente para incluir o botão de atendimento
   const CardCliente = ({ cliente, onIniciarAtendimento, onVerDetalhes, onEditar }) => (
-    <div className="bg-white rounded-xl p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+    <div 
+      className="rounded-xl p-6 border hover:shadow-md transition-all duration-200"
+      style={{
+        background: theme.backgroundCard,
+        borderColor: theme.border
+      }}
+    >
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-4 flex-1">
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+          <div 
+            className="w-12 h-12 rounded-full flex items-center justify-center font-bold"
+            style={{
+              background: theme.primaryLight + '20',
+              color: theme.primary
+            }}
+          >
             {cliente.nome.split(' ').map(n => n[0]).join('').substring(0, 2)}
           </div>
           
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h3 className="font-bold text-gray-800 text-lg">{cliente.nome}</h3>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                cliente.status === 'ativo' 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
+              <h3 
+                className="font-bold text-lg"
+                style={{ color: theme.textPrimary }}
+              >
+                {cliente.nome}
+              </h3>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium`}
+                style={{
+                  background: cliente.status === 'ativo' ? theme.success + '20' : theme.textMuted + '20',
+                  color: cliente.status === 'ativo' ? theme.success : theme.textMuted
+                }}
+              >
                 {cliente.status === 'ativo' ? 'Ativo' : 'Inativo'}
               </span>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
               <div className="flex items-center gap-2">
-                <span className="font-medium">CPF:</span>
-                <span>{cliente.cpf}</span>
+                <span 
+                  className="font-medium"
+                  style={{ color: theme.textSecondary }}
+                >
+                  CPF:
+                </span>
+                <span style={{ color: theme.textPrimary }}>{cliente.cpf}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone size={14} />
-                <span>{cliente.telefone}</span>
+                <Phone size={14} style={{ color: theme.textMuted }} />
+                <span style={{ color: theme.textPrimary }}>{cliente.telefone}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar size={14} />
-                <span>Última compra: {cliente.ultimaCompra}</span>
+                <Calendar size={14} style={{ color: theme.textMuted }} />
+                <span style={{ color: theme.textPrimary }}>Última compra: {cliente.ultimaCompra}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Pill size={14} />
-                <span>{cliente.medicamentosContinuos.length} med. contínuos</span>
+                <Pill size={14} style={{ color: theme.textMuted }} />
+                <span style={{ color: theme.textPrimary }}>{cliente.medicamentosContinuos.length} med. contínuos</span>
               </div>
             </div>
 
             {cliente.condicoesCronicas?.length > 0 && (
               <div className="mt-2">
-                <span className="text-xs font-medium text-purple-600">🏥 Patologias: </span>
-                <span className="text-xs text-purple-600">{cliente.condicoesCronicas.join(', ')}</span>
+                <span 
+                  className="text-xs font-medium"
+                  style={{ color: theme.info }}
+                >
+                  🏥 Patologias: 
+                </span>
+                <span 
+                  className="text-xs"
+                  style={{ color: theme.info }}
+                >
+                  {cliente.condicoesCronicas.join(', ')}
+                </span>
               </div>
             )}
 
             {cliente.alergias.length > 0 && (
               <div className="mt-2">
-                <span className="text-xs font-medium text-red-600">⚠️ Alergias: </span>
-                <span className="text-xs text-red-600">{cliente.alergias.join(', ')}</span>
+                <span 
+                  className="text-xs font-medium"
+                  style={{ color: theme.error }}
+                >
+                  ⚠️ Alergias: 
+                </span>
+                <span 
+                  className="text-xs"
+                  style={{ color: theme.error }}
+                >
+                  {cliente.alergias.join(', ')}
+                </span>
               </div>
             )}
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          {/* BOTÃO INICIAR ATENDIMENTO - NOVO */}
           <button
             onClick={() => onIniciarAtendimento(cliente)}
-            className="flex items-center gap-2 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:opacity-90 transition-colors text-sm"
+            style={{
+              background: theme.success,
+              color: theme.textOnSuccess
+            }}
           >
             <Stethoscope size={14} />
             Atendimento
@@ -335,7 +383,11 @@ export default function Clients() {
           
           <button
             onClick={() => onVerDetalhes(cliente)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:opacity-90 transition-colors text-sm"
+            style={{
+              background: theme.primary,
+              color: theme.textOnPrimary
+            }}
           >
             <Eye size={14} />
             Detalhes
@@ -343,7 +395,11 @@ export default function Clients() {
           
           <button 
             onClick={() => onEditar(cliente)}
-            className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:opacity-80 transition-colors text-sm"
+            style={{
+              background: theme.backgroundSecondary,
+              color: theme.textPrimary
+            }}
           >
             <Edit size={14} />
             Editar
@@ -356,13 +412,25 @@ export default function Clients() {
   // ATUALIZEI o ModalDetalhes para incluir botão de atendimento também
   const ModalDetalhes = ({ cliente, onClose, onIniciarAtendimento }) => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
+      <div 
+        className="rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        style={{ background: theme.backgroundCard }}
+      >
+        <div 
+          className="p-6 border-b"
+          style={{ borderColor: theme.border }}
+        >
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-800">Detalhes do Cliente</h2>
+            <h2 
+              className="text-xl font-bold"
+              style={{ color: theme.textPrimary }}
+            >
+              Detalhes do Cliente
+            </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="hover:opacity-60 transition-colors"
+              style={{ color: theme.textMuted }}
             >
               ✕
             </button>
@@ -372,48 +440,131 @@ export default function Clients() {
         <div className="p-6 space-y-6">
           {/* Informações Pessoais */}
           <div>
-            <h3 className="font-semibold text-gray-800 mb-4 text-lg">Informações Pessoais</h3>
+            <h3 
+              className="font-semibold mb-4 text-lg"
+              style={{ color: theme.textPrimary }}
+            >
+              Informações Pessoais
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Users size={20} className="text-blue-600" />
+              <div 
+                className="flex items-center gap-3 p-3 rounded-lg"
+                style={{ background: theme.backgroundSecondary }}
+              >
+                <Users size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Nome Completo</p>
-                  <p className="font-medium">{cliente.nome}</p>
+                  <p 
+                    className="text-sm"
+                    style={{ color: theme.textSecondary }}
+                  >
+                    Nome Completo
+                  </p>
+                  <p 
+                    className="font-medium"
+                    style={{ color: theme.textPrimary }}
+                  >
+                    {cliente.nome}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <FileText size={20} className="text-blue-600" />
+              <div 
+                className="flex items-center gap-3 p-3 rounded-lg"
+                style={{ background: theme.backgroundSecondary }}
+              >
+                <FileText size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">CPF</p>
-                  <p className="font-medium">{cliente.cpf}</p>
+                  <p 
+                    className="text-sm"
+                    style={{ color: theme.textSecondary }}
+                  >
+                    CPF
+                  </p>
+                  <p 
+                    className="font-medium"
+                    style={{ color: theme.textPrimary }}
+                  >
+                    {cliente.cpf}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Calendar size={20} className="text-blue-600" />
+              <div 
+                className="flex items-center gap-3 p-3 rounded-lg"
+                style={{ background: theme.backgroundSecondary }}
+              >
+                <Calendar size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Data de Nascimento</p>
-                  <p className="font-medium">{cliente.dataNascimento}</p>
+                  <p 
+                    className="text-sm"
+                    style={{ color: theme.textSecondary }}
+                  >
+                    Data de Nascimento
+                  </p>
+                  <p 
+                    className="font-medium"
+                    style={{ color: theme.textPrimary }}
+                  >
+                    {cliente.dataNascimento}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Phone size={20} className="text-blue-600" />
+              <div 
+                className="flex items-center gap-3 p-3 rounded-lg"
+                style={{ background: theme.backgroundSecondary }}
+              >
+                <Phone size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Telefone</p>
-                  <p className="font-medium">{cliente.telefone}</p>
+                  <p 
+                    className="text-sm"
+                    style={{ color: theme.textSecondary }}
+                  >
+                    Telefone
+                  </p>
+                  <p 
+                    className="font-medium"
+                    style={{ color: theme.textPrimary }}
+                  >
+                    {cliente.telefone}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Mail size={20} className="text-blue-600" />
+              <div 
+                className="flex items-center gap-3 p-3 rounded-lg"
+                style={{ background: theme.backgroundSecondary }}
+              >
+                <Mail size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">{cliente.email}</p>
+                  <p 
+                    className="text-sm"
+                    style={{ color: theme.textSecondary }}
+                  >
+                    Email
+                  </p>
+                  <p 
+                    className="font-medium"
+                    style={{ color: theme.textPrimary }}
+                  >
+                    {cliente.email}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg md:col-span-2">
-                <MapPin size={20} className="text-blue-600" />
+              <div 
+                className="flex items-center gap-3 p-3 rounded-lg md:col-span-2"
+                style={{ background: theme.backgroundSecondary }}
+              >
+                <MapPin size={20} style={{ color: theme.primary }} />
                 <div>
-                  <p className="text-sm text-gray-500">Endereço</p>
-                  <p className="font-medium">{cliente.endereco}</p>
+                  <p 
+                    className="text-sm"
+                    style={{ color: theme.textSecondary }}
+                  >
+                    Endereço
+                  </p>
+                  <p 
+                    className="font-medium"
+                    style={{ color: theme.textPrimary }}
+                  >
+                    {cliente.endereco}
+                  </p>
                 </div>
               </div>
             </div>
@@ -421,12 +572,28 @@ export default function Clients() {
 
           {/* Informações Médicas */}
           <div>
-            <h3 className="font-semibold text-gray-800 mb-4 text-lg">Informações Médicas</h3>
+            <h3 
+              className="font-semibold mb-4 text-lg"
+              style={{ color: theme.textPrimary }}
+            >
+              Informações Médicas
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
-                <h4 className="font-medium text-purple-800 mb-2">Patologias</h4>
+              <div 
+                className="p-4 rounded-lg border"
+                style={{
+                  background: theme.info + '20',
+                  borderColor: theme.info
+                }}
+              >
+                <h4 
+                  className="font-medium mb-2"
+                  style={{ color: theme.info }}
+                >
+                  Patologias
+                </h4>
                 {cliente.condicoesCronicas?.length > 0 ? (
-                  <ul className="text-purple-700">
+                  <ul style={{ color: theme.info }}>
                     {cliente.condicoesCronicas.map((condicao, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <span>•</span> {condicao}
@@ -434,14 +601,25 @@ export default function Clients() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-purple-700">Nenhuma patologia registrada</p>
+                  <p style={{ color: theme.info }}>Nenhuma patologia registrada</p>
                 )}
               </div>
               
-              <div className="p-4 bg-red-50 rounded-lg border border-red-100">
-                <h4 className="font-medium text-red-800 mb-2">Alergias</h4>
+              <div 
+                className="p-4 rounded-lg border"
+                style={{
+                  background: theme.error + '20',
+                  borderColor: theme.error
+                }}
+              >
+                <h4 
+                  className="font-medium mb-2"
+                  style={{ color: theme.error }}
+                >
+                  Alergias
+                </h4>
                 {cliente.alergias.length > 0 ? (
-                  <ul className="text-red-700">
+                  <ul style={{ color: theme.error }}>
                     {cliente.alergias.map((alergia, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <span>•</span> {alergia}
@@ -449,14 +627,25 @@ export default function Clients() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-red-700">Nenhuma alergia registrada</p>
+                  <p style={{ color: theme.error }}>Nenhuma alergia registrada</p>
                 )}
               </div>
 
-              <div className="p-4 bg-green-50 rounded-lg border border-green-100">
-                <h4 className="font-medium text-green-800 mb-2">Medicamentos Contínuos</h4>
+              <div 
+                className="p-4 rounded-lg border"
+                style={{
+                  background: theme.success + '20',
+                  borderColor: theme.success
+                }}
+              >
+                <h4 
+                  className="font-medium mb-2"
+                  style={{ color: theme.success }}
+                >
+                  Medicamentos Contínuos
+                </h4>
                 {cliente.medicamentosContinuos.length > 0 ? (
-                  <ul className="text-green-700">
+                  <ul style={{ color: theme.success }}>
                     {cliente.medicamentosContinuos.map((medicamento, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <Pill size={14} /> {medicamento}
@@ -464,7 +653,7 @@ export default function Clients() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-green-700">Nenhum medicamento contínuo</p>
+                  <p style={{ color: theme.success }}>Nenhum medicamento contínuo</p>
                 )}
               </div>
             </div>
@@ -472,18 +661,33 @@ export default function Clients() {
 
           {/* Histórico */}
           <div>
-            <h3 className="font-semibold text-gray-800 mb-4 text-lg">Histórico</h3>
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
-              <p className="text-blue-700">
+            <h3 
+              className="font-semibold mb-4 text-lg"
+              style={{ color: theme.textPrimary }}
+            >
+              Histórico
+            </h3>
+            <div 
+              className="p-4 rounded-lg border"
+              style={{
+                background: theme.primary + '20',
+                borderColor: theme.primary
+              }}
+            >
+              <p style={{ color: theme.primary }}>
                 <strong>Última compra:</strong> {cliente.ultimaCompra}
               </p>
-              <p className="text-blue-700 mt-2">
+              <p 
+                className="mt-2"
+                style={{ color: theme.primary }}
+              >
                 <strong>Status:</strong> 
-                <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                  cliente.status === 'ativo' 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-gray-100 text-gray-800'
-                }`}>
+                <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium`}
+                  style={{
+                    background: cliente.status === 'ativo' ? theme.success + '20' : theme.textMuted + '20',
+                    color: cliente.status === 'ativo' ? theme.success : theme.textMuted
+                  }}
+                >
                   {cliente.status === 'ativo' ? 'Cliente Ativo' : 'Cliente Inativo'}
                 </span>
               </p>
@@ -491,14 +695,20 @@ export default function Clients() {
           </div>
         </div>
 
-        <div className="p-6 border-t border-gray-200 flex justify-between gap-3">
-          {/* BOTÃO INICIAR ATENDIMENTO NO MODAL */}
+        <div 
+          className="p-6 border-t flex justify-between gap-3"
+          style={{ borderColor: theme.border }}
+        >
           <button
             onClick={() => {
               onIniciarAtendimento(cliente);
               onClose();
             }}
-            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg hover:opacity-90 transition-colors"
+            style={{
+              background: theme.success,
+              color: theme.textOnSuccess
+            }}
           >
             <Stethoscope size={16} />
             Iniciar Atendimento
@@ -507,11 +717,21 @@ export default function Clients() {
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border rounded-lg hover:opacity-80 transition-colors"
+              style={{
+                borderColor: theme.border,
+                color: theme.textPrimary
+              }}
             >
               Fechar
             </button>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button 
+              className="px-4 py-2 rounded-lg hover:opacity-90 transition-colors"
+              style={{
+                background: theme.primary,
+                color: theme.textOnPrimary
+              }}
+            >
               Imprimir Ficha
             </button>
           </div>
@@ -521,7 +741,10 @@ export default function Clients() {
   );
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div 
+      className="flex h-screen"
+      style={{ background: theme.background }}
+    >
       {/* Sidebar */}
       <Sidebar />
 
@@ -529,17 +752,27 @@ export default function Clients() {
       <div className="flex-1 flex flex-col transition-all duration-300">
         
         {/* Navbar */}
-        <div className="h-20 bg-sky-600 shadow flex items-center justify-between px-6 sticky top-0 z-10">
+        <div 
+          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
+          style={{ 
+            background: theme.primary,
+            color: theme.textOnPrimary
+          }}
+        >
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <Users size={28} className="text-white" />
-              <h1 className="text-2xl font-bold text-white">Gestão de Clientes</h1>
+              <Users size={28} />
+              <h1 className="text-2xl font-bold">Gestão de Clientes</h1>
             </div>
           </div>
 
           <button 
             onClick={handleNovoCliente}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg hover:opacity-90 transition"
+            style={{
+              background: theme.backgroundCard,
+              color: theme.primary
+            }}
           >
             <Plus size={18} />
             <span>Novo Cliente</span>
@@ -547,11 +780,20 @@ export default function Clients() {
         </div>
 
         {/* Conteúdo */}
-        <div className="flex-1 ml-20 lg:ml-60 overflow-y-auto p-6">
+        <div 
+          className="flex-1 ml-20 lg:ml-60 overflow-y-auto p-6"
+          style={{ color: theme.textPrimary }}
+        >
           <div className="max-w-7xl mx-auto">
             
             {/* Barra de Ferramentas */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 mb-6">
+            <div 
+              className="rounded-2xl p-6 border mb-6"
+              style={{
+                background: theme.backgroundCard,
+                borderColor: theme.border
+              }}
+            >
               <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                 {/* Busca */}
                 <div className="relative flex-1 max-w-md">
@@ -563,46 +805,60 @@ export default function Clients() {
                     placeholder="Buscar por nome, CPF, telefone..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    style={{
+                      background: theme.background,
+                      border: `1px solid ${theme.border}`,
+                      color: theme.textPrimary
+                    }}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent"
                   />
                 </div>
 
                 {/* Filtros */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                  <div 
+                  className="flex items-center gap-2 rounded-lg p-1"
+                  style={{ background: theme.backgroundSecondary }}
+                >
                     <button
                       onClick={() => setFiltroAtivo("todos")}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        filtroAtivo === "todos" 
-                          ? "bg-white text-blue-600 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-800"
-                      }`}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition-colors"
+                      style={{
+                        background: filtroAtivo === "todos" ? theme.backgroundCard : 'transparent',
+                        color: filtroAtivo === "todos" ? theme.primary : theme.textSecondary
+                      }}
                     >
                       Todos
                     </button>
                     <button
                       onClick={() => setFiltroAtivo("ativo")}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        filtroAtivo === "ativo" 
-                          ? "bg-white text-green-600 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-800"
-                      }`}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition-colors"
+                      style={{
+                        background: filtroAtivo === "ativo" ? theme.backgroundCard : 'transparent',
+                        color: filtroAtivo === "ativo" ? theme.success : theme.textSecondary
+                      }}
                     >
                       Ativos
                     </button>
                     <button
                       onClick={() => setFiltroAtivo("inativo")}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        filtroAtivo === "inativo" 
-                          ? "bg-white text-gray-600 shadow-sm" 
-                          : "text-gray-600 hover:text-gray-800"
-                      }`}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition-colors"
+                      style={{
+                        background: filtroAtivo === "inativo" ? theme.backgroundCard : 'transparent',
+                        color: filtroAtivo === "inativo" ? theme.textMuted : theme.textSecondary
+                      }}
                     >
                       Inativos
                     </button>
                   </div>
 
-                  <button className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                  <button 
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:opacity-80 transition-colors"
+                    style={{
+                      background: theme.backgroundSecondary,
+                      color: theme.textPrimary
+                    }}
+                  >
                     <Download size={16} />
                     Exportar
                   </button>
@@ -612,27 +868,85 @@ export default function Clients() {
 
             {/* Estatísticas Rápidas */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
-                <div className="text-2xl font-bold text-blue-600">{clientes.length}</div>
-                <div className="text-sm text-gray-600">Total de Clientes</div>
+              <div 
+                className="p-4 rounded-xl border"
+                style={{
+                  background: theme.backgroundCard,
+                  borderColor: theme.border
+                }}
+              >
+                <div 
+                  className="text-2xl font-bold"
+                  style={{ color: theme.primary }}
+                >
+                  {clientes.length}
+                </div>
+                <div 
+                  className="text-sm"
+                  style={{ color: theme.textSecondary }}
+                >
+                  Total de Clientes
+                </div>
               </div>
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
-                <div className="text-2xl font-bold text-green-600">
+              <div 
+                className="p-4 rounded-xl border"
+                style={{
+                  background: theme.backgroundCard,
+                  borderColor: theme.border
+                }}
+              >
+                <div 
+                  className="text-2xl font-bold"
+                  style={{ color: theme.success }}
+                >
                   {clientes.filter(c => c.status === 'ativo').length}
                 </div>
-                <div className="text-sm text-gray-600">Clientes Ativos</div>
+                <div 
+                  className="text-sm"
+                  style={{ color: theme.textSecondary }}
+                >
+                  Clientes Ativos
+                </div>
               </div>
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
-                <div className="text-2xl font-bold text-orange-600">
+              <div 
+                className="p-4 rounded-xl border"
+                style={{
+                  background: theme.backgroundCard,
+                  borderColor: theme.border
+                }}
+              >
+                <div 
+                  className="text-2xl font-bold"
+                  style={{ color: theme.warning }}
+                >
                   {clientes.filter(c => c.alergias.length > 0).length}
                 </div>
-                <div className="text-sm text-gray-600">Com Alergias</div>
+                <div 
+                  className="text-sm"
+                  style={{ color: theme.textSecondary }}
+                >
+                  Com Alergias
+                </div>
               </div>
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
-                <div className="text-2xl font-bold text-purple-600">
+              <div 
+                className="p-4 rounded-xl border"
+                style={{
+                  background: theme.backgroundCard,
+                  borderColor: theme.border
+                }}
+              >
+                <div 
+                  className="text-2xl font-bold"
+                  style={{ color: theme.info }}
+                >
                   {clientes.filter(c => c.condicoesCronicas?.length > 0).length}
                 </div>
-                <div className="text-sm text-gray-600">Com Patologias</div>
+                <div 
+                  className="text-sm"
+                  style={{ color: theme.textSecondary }}
+                >
+                  Com Patologias
+                </div>
               </div>
             </div>
 
@@ -645,15 +959,25 @@ export default function Clients() {
             ) : (
               <div className="space-y-4">
                 {clientesFiltrados.length === 0 ? (
-                  <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
-                    <Users className="text-gray-300 text-6xl mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg mb-4">
+                  <div 
+                    className="text-center py-12 rounded-2xl border"
+                    style={{
+                      background: theme.backgroundCard,
+                      borderColor: theme.border
+                    }}
+                  >
+                    <Users className="text-6xl mx-auto mb-4" style={{ color: theme.textMuted }} />
+                    <p 
+                      className="text-lg mb-4"
+                      style={{ color: theme.textSecondary }}
+                    >
                       {searchTerm ? "Nenhum cliente encontrado para sua busca." : "Nenhum cliente cadastrado."}
                     </p>
                     {searchTerm && (
                       <button 
                         onClick={() => setSearchTerm("")}
-                        className="text-blue-600 hover:text-blue-700 underline"
+                        className="hover:opacity-80 underline"
+                        style={{ color: theme.primary }}
                       >
                         Limpar busca
                       </button>
@@ -661,7 +985,10 @@ export default function Clients() {
                   </div>
                 ) : (
                   <>
-                    <p className="text-gray-600 text-sm">
+                    <p 
+                      className="text-sm"
+                      style={{ color: theme.textSecondary }}
+                    >
                       {clientesFiltrados.length} cliente(s) encontrado(s)
                       {searchTerm && ` para "${searchTerm}"`}
                     </p>
