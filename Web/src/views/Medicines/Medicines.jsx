@@ -1,7 +1,7 @@
 // src/pages/Medicamentos.jsx
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/SideBarr";
-import { FaPills, FaSearch, FaSpinner } from "react-icons/fa";
+import { FaPills, FaSearch, FaSpinner, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { getMedicamentos } from '../../services/medicamentosService';
 
@@ -10,6 +10,8 @@ const Medicamentos = () => {
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const { theme, mode } = useTheme();
 
   useEffect(() => {
@@ -41,6 +43,26 @@ const Medicamentos = () => {
       med.tipo.toLowerCase().includes(search.toLowerCase()) ||
       med.descricao.toLowerCase().includes(search.toLowerCase())
   );
+
+  // Cálculos de paginação
+  const totalPages = Math.ceil(filteredMedicamentos.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMedicamentos = filteredMedicamentos.slice(startIndex, endIndex);
+
+  // Reset página quando filtro muda
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, itemsPerPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (value) => {
+    setItemsPerPage(value);
+    setCurrentPage(1);
+  };
 
   const formatPrice = (medicamento) => {
     const priceMap = {
@@ -163,16 +185,87 @@ const Medicamentos = () => {
 
           {/* Lista de Medicamentos */}
           {!isLoading && !error && filteredMedicamentos.length > 0 && (
-            <div className="space-y-4">
-              <p 
-                className="text-sm"
-                style={{ color: theme.textSecondary }}
-              >
-                {filteredMedicamentos.length} medicamento(s) encontrado(s)
-                {search && ` para "${search}"`}
-              </p>
+            <div className="space-y-6">
+              {/* Controles de paginação superior */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex items-center gap-4">
+                  <p 
+                    className="text-sm"
+                    style={{ color: theme.textSecondary }}
+                  >
+                    {filteredMedicamentos.length} medicamento(s) encontrado(s)
+                    {search && ` para "${search}"`}
+                  </p>
+                  
+                  <div className="flex items-center gap-2">
+                    <span 
+                      className="text-sm font-medium"
+                      style={{ color: theme.textPrimary }}
+                    >
+                      Itens por página:
+                    </span>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                      style={{
+                        background: theme.backgroundCard,
+                        border: `1px solid ${theme.border}`,
+                        color: theme.textPrimary
+                      }}
+                      className="px-3 py-1 rounded-lg text-sm focus:outline-none focus:ring-2 transition-all"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={30}>30</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Indicador de página */}
+                <div className="flex items-center gap-4">
+                  <span 
+                    className="text-sm"
+                    style={{ color: theme.textSecondary }}
+                  >
+                    Página {currentPage} de {totalPages}
+                  </span>
+                  
+                  {/* Botões de navegação */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      style={{
+                        background: currentPage === 1 ? theme.backgroundSecondary : theme.primary,
+                        color: currentPage === 1 ? theme.textMuted : theme.textOnPrimary,
+                        opacity: currentPage === 1 ? 0.5 : 1
+                      }}
+                      className="p-2 rounded-lg transition-all duration-200 hover:opacity-80 disabled:cursor-not-allowed"
+                    >
+                      <FaChevronLeft size={14} />
+                    </button>
+                    
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      style={{
+                        background: currentPage === totalPages ? theme.backgroundSecondary : theme.primary,
+                        color: currentPage === totalPages ? theme.textMuted : theme.textOnPrimary,
+                        opacity: currentPage === totalPages ? 0.5 : 1
+                      }}
+                      className="p-2 rounded-lg transition-all duration-200 hover:opacity-80 disabled:cursor-not-allowed"
+                    >
+                      <FaChevronRight size={14} />
+                    </button>
+                  </div>
+                </div>
+              </div>
               
-              {filteredMedicamentos.map((med) => (
+              {/* Lista paginada */}
+              <div className="space-y-4">
+                {currentMedicamentos.map((med) => (
                 <div
                   key={med.id_medicamento}
                   style={{
@@ -286,6 +379,64 @@ const Medicamentos = () => {
                   </div>
                 </div>
               ))}
+              </div>
+
+              {/* Controles de paginação inferior */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 pt-6">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    style={{
+                      background: currentPage === 1 ? theme.backgroundSecondary : theme.primary,
+                      color: currentPage === 1 ? theme.textMuted : theme.textOnPrimary,
+                      opacity: currentPage === 1 ? 0.5 : 1
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 disabled:cursor-not-allowed"
+                  >
+                    <FaChevronLeft size={14} />
+                    Anterior
+                  </button>
+                  
+                  <div className="flex items-center gap-2">
+                    <span 
+                      className="text-sm font-medium"
+                      style={{ color: theme.textPrimary }}
+                    >
+                      Página
+                    </span>
+                    <span 
+                      className="px-3 py-1 rounded-lg font-bold"
+                      style={{
+                        background: theme.primary,
+                        color: theme.textOnPrimary
+                      }}
+                    >
+                      {currentPage}
+                    </span>
+                    <span 
+                      className="text-sm"
+                      style={{ color: theme.textSecondary }}
+                    >
+                      de {totalPages}
+                    </span>
+                  </div>
+                  
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    style={{
+                      background: currentPage === totalPages ? theme.backgroundSecondary : theme.primary,
+                      color: currentPage === totalPages ? theme.textMuted : theme.textOnPrimary,
+                      opacity: currentPage === totalPages ? 0.5 : 1
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 hover:opacity-80 disabled:cursor-not-allowed"
+                  >
+                    Próxima
+                    <FaChevronRight size={14} />
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
