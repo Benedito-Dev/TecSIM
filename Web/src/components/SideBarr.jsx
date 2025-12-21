@@ -10,16 +10,20 @@ import {
   FileText, 
   Clock,
   Settings,
-  Users
+  Users,
+  Sun,
+  Moon
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/UserContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { Logout } = useAuth();
+  const { theme, toggleTheme, isDark } = useTheme();
 
   const navItems = [
     { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
@@ -79,8 +83,18 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Logout - FIXADO NO FINAL */}
-      <div className="mt-auto p-4 border-t border-blue-600 bg-blue-700">
+      {/* Logout e Tema - FIXADO NO FINAL */}
+      <div className="mt-auto p-4 border-t border-blue-600 bg-blue-700 space-y-2">
+        {/* Botão de troca de tema */}
+        <button 
+          onClick={toggleTheme}
+          className="flex items-center justify-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-blue-800 transition-all text-blue-100 hover:text-white font-medium"
+        >
+          {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          {isOpen && <span>{isDark ? 'Tema Claro' : 'Tema Escuro'}</span>}
+        </button>
+        
+        {/* Botão de logout */}
         <button 
           onClick={handleLogout}
           className="flex items-center justify-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-red-600 transition-all text-red-100 hover:text-white font-medium"

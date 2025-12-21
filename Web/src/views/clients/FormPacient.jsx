@@ -1,5 +1,6 @@
 import React from "react";
 import { FileText, CheckCircle, UserPlus, Heart } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
 
 const FormPacient = ({
   currentStep,
@@ -13,23 +14,37 @@ const FormPacient = ({
   onCancel,
   onSave
 }) => {
+  const { theme } = useTheme();
   // 🎯 Componente de Progresso
   const StepProgress = () => (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 mb-6">
+    <div 
+      className="p-6 rounded-2xl border mb-6"
+      style={{
+        background: theme.backgroundCard,
+        borderColor: theme.border
+      }}
+    >
       <div className="flex items-center justify-between max-w-3xl mx-auto">
         {[1, 2, 3, 4].map((step) => (
           <div key={step} className="flex items-center">
             <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
               currentStep >= step 
-                ? "bg-blue-600 border-blue-600 text-white" 
-                : "border-gray-300 text-gray-500"
-            } font-semibold`}>
+                ? "text-white" 
+                : "text-gray-500"
+            } font-semibold`}
+            style={{
+              background: currentStep >= step ? theme.primary : 'transparent',
+              borderColor: currentStep >= step ? theme.primary : theme.border
+            }}
+            >
               {currentStep > step ? <CheckCircle size={20} /> : step}
             </div>
             <div className="ml-3">
-              <div className={`text-sm font-medium ${
-                currentStep >= step ? "text-blue-600" : "text-gray-500"
-              }`}>
+              <div className={`text-sm font-medium`}
+                style={{
+                  color: currentStep >= step ? theme.primary : theme.textSecondary
+                }}
+              >
                 {step === 1 && "Dados Pessoais"}
                 {step === 2 && "Dados de Saúde"}
                 {step === 3 && "Termo LGPD"}
@@ -37,9 +52,11 @@ const FormPacient = ({
               </div>
             </div>
             {step < 4 && (
-              <div className={`w-12 h-0.5 mx-4 ${
-                currentStep > step ? "bg-blue-600" : "bg-gray-300"
-              }`} />
+              <div className={`w-12 h-0.5 mx-4`}
+                style={{
+                  background: currentStep > step ? theme.primary : theme.border
+                }}
+              />
             )}
           </div>
         ))}
@@ -636,11 +653,27 @@ const FormPacient = ({
 
 // 📦 Componente de Seção
 function Section({ title, subtitle, children }) {
+  const { theme } = useTheme();
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100">
+    <div 
+      className="p-6 rounded-2xl border"
+      style={{
+        background: theme.backgroundCard,
+        borderColor: theme.border
+      }}
+    >
       <div className="mb-6">
-        <h2 className="font-semibold text-2xl text-gray-800 mb-2">{title}</h2>
-        {subtitle && <p className="text-gray-600">{subtitle}</p>}
+        <h2 
+          className="font-semibold text-2xl mb-2"
+          style={{ color: theme.textPrimary }}
+        >
+          {title}
+        </h2>
+        {subtitle && (
+          <p style={{ color: theme.textSecondary }}>
+            {subtitle}
+          </p>
+        )}
       </div>
       {children}
     </div>
@@ -649,9 +682,13 @@ function Section({ title, subtitle, children }) {
 
 // 📦 Componente de Input reutilizável
 function InputField({ label, name, value, onChange, type = "text", placeholder, error, required = false }) {
+  const { theme } = useTheme();
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label 
+        className="block text-sm font-medium mb-1"
+        style={{ color: theme.textPrimary }}
+      >
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
@@ -661,8 +698,13 @@ function InputField({ label, name, value, onChange, type = "text", placeholder, 
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
-          error ? "border-red-500 bg-red-50" : "border-gray-300"
+        style={{
+          background: theme.background,
+          border: `1px solid ${error ? theme.error : theme.border}`,
+          color: theme.textPrimary
+        }}
+        className={`w-full rounded-lg p-3 focus:ring-2 focus:border-transparent outline-none transition ${
+          error ? "bg-red-50" : ""
         }`}
       />
       {error && <span className="text-red-600 text-sm mt-1 block">{error}</span>}
@@ -672,6 +714,7 @@ function InputField({ label, name, value, onChange, type = "text", placeholder, 
 
 // 📦 Componente de TextArea
 function TextAreaField({ name, value, onChange, placeholder, rows = 3, error }) {
+  const { theme } = useTheme();
   return (
     <div>
       <textarea
@@ -680,8 +723,13 @@ function TextAreaField({ name, value, onChange, placeholder, rows = 3, error }) 
         onChange={onChange}
         placeholder={placeholder}
         rows={rows}
-        className={`w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
-          error ? "border-red-500 bg-red-50" : "border-gray-300"
+        style={{
+          background: theme.background,
+          border: `1px solid ${error ? theme.error : theme.border}`,
+          color: theme.textPrimary
+        }}
+        className={`w-full rounded-lg p-3 focus:ring-2 focus:border-transparent outline-none transition ${
+          error ? "bg-red-50" : ""
         }`}
       />
       {error && <span className="text-red-600 text-sm mt-1 block">{error}</span>}
@@ -691,9 +739,13 @@ function TextAreaField({ name, value, onChange, placeholder, rows = 3, error }) 
 
 // 📦 Componente de Select
 function SelectField({ label, name, value, onChange, options, error, required = false }) {
+  const { theme } = useTheme();
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label 
+        className="block text-sm font-medium mb-1"
+        style={{ color: theme.textPrimary }}
+      >
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
@@ -701,8 +753,13 @@ function SelectField({ label, name, value, onChange, options, error, required = 
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
-          error ? "border-red-500 bg-red-50" : "border-gray-300"
+        style={{
+          background: theme.background,
+          border: `1px solid ${error ? theme.error : theme.border}`,
+          color: theme.textPrimary
+        }}
+        className={`w-full rounded-lg p-3 focus:ring-2 focus:border-transparent outline-none transition ${
+          error ? "bg-red-50" : ""
         }`}
       >
         {options.map((option) => (
@@ -718,9 +775,15 @@ function SelectField({ label, name, value, onChange, options, error, required = 
 
 // 📦 Componente de Radio Group
 function RadioGroup({ label, name, value, onChange, options }) {
+  const { theme } = useTheme();
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-3">{label}</label>
+      <label 
+        className="block text-sm font-medium mb-3"
+        style={{ color: theme.textPrimary }}
+      >
+        {label}
+      </label>
       <div className="space-y-2">
         {options.map((option) => (
           <label key={option.value} className="flex items-center gap-3">
@@ -730,9 +793,12 @@ function RadioGroup({ label, name, value, onChange, options }) {
               value={option.value}
               checked={value === option.value}
               onChange={onChange}
-              className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+              className="w-4 h-4 focus:ring-2"
+              style={{ color: theme.primary }}
             />
-            <span className="text-gray-700">{option.label}</span>
+            <span style={{ color: theme.textPrimary }}>
+              {option.label}
+            </span>
           </label>
         ))}
       </div>
@@ -742,10 +808,21 @@ function RadioGroup({ label, name, value, onChange, options }) {
 
 // 📦 Componente para exibir informações na etapa de confirmação
 function InfoField({ label, value }) {
+  const { theme } = useTheme();
   return (
     <div>
-      <span className="text-sm text-gray-500 block mb-1">{label}</span>
-      <span className="font-medium text-gray-800 block">{value || "Não informado"}</span>
+      <span 
+        className="text-sm block mb-1"
+        style={{ color: theme.textSecondary }}
+      >
+        {label}
+      </span>
+      <span 
+        className="font-medium block"
+        style={{ color: theme.textPrimary }}
+      >
+        {value || "Não informado"}
+      </span>
     </div>
   );
 }

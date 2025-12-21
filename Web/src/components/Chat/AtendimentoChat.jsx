@@ -225,8 +225,8 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
 
       {/* Botões Rápidos */}
       {!emTriagem && messages.length <= 1 && (
-        <div className="px-3 py-2 border-t bg-gray-50">
-          <div className="text-xs text-gray-600 mb-2 font-medium">💊 Consultas Rápidas:</div>
+        <div className="px-3 py-2" style={{ background: theme.backgroundCard }}>
+          <div className="text-xs mb-2 font-medium" style={{ color: theme.textPrimary }}>💊 Consultas Rápidas:</div>
           <div className="grid grid-cols-3 gap-1">
             {quickButtons.map((button, index) => (
               <button
