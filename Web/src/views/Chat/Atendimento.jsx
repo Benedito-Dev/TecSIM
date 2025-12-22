@@ -18,8 +18,7 @@ import {
   Heart,
   Calendar,
   Target,
-  Droplets,
-  Zap
+  Droplets
 } from "lucide-react";
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -41,7 +40,7 @@ export default function AtendimentoPaciente() {
   const [resultadoTriagem, setResultadoTriagem] = useState(null);
   const [emTriagem, setEmTriagem] = useState(false);
 
-  const { condicoes, adicionarCondicao, removerCondicao } = usePacienteCondicoes(paciente?.id);
+  const { condicoes } = usePacienteCondicoes(paciente?.id);
 
   // Função para determinar o tipo de gráfico baseado nas condições do paciente
   const getGraficoEspecifico = () => {
@@ -138,18 +137,6 @@ export default function AtendimentoPaciente() {
     setResultadoTriagem(resultado);
     if (!queixaPrincipal) {
       setQueixaPrincipal(`Triagem realizada: ${resultado.classificacao}`);
-    }
-  };
-
-  const handleCondicoesUpdate = async (acao, dados) => {
-    try {
-      if (acao === 'adicionar') {
-        await adicionarCondicao({ ...dados, id_paciente: paciente.id });
-      } else if (acao === 'remover') {
-        await removerCondicao(dados);
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar condições:', error);
     }
   };
 

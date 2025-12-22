@@ -22,11 +22,12 @@ function RotaProtegida() {
         }
 
         // Faz a requisição ao backend usando JWT no header Authorization
-        const response = await fetch("http://localhost:3000/auth/me", {
+        const API_BASE_URL = "http://localhost:3000";
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -37,10 +38,9 @@ function RotaProtegida() {
         }
 
         const dados = await response.json();
-        
 
-        // Espera-se que o backend retorne o usuário diretamente
-        if (dados && dados.id_usuario) {
+        // Verifica se o usuário é válido
+        if (dados?.id_usuario) {
           setUsuario(dados);
           setAutorizado(true);
         } else {
@@ -48,7 +48,8 @@ function RotaProtegida() {
         }
 
       } catch (error) {
-        console.error("Erro de autenticação:", error.message || error);
+        console.error("Erro de autenticação:", error.message);
+        localStorage.removeItem("token");
         setAutorizado(false);
         navigate("/login");
       } finally {

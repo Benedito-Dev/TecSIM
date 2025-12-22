@@ -14,7 +14,6 @@ import AtendimentoPaciente from './views/Chat/Atendimento'
 import Prescricao from './views/Prescricao/Prescricao';
 import Ajustes from './views/Ajustes/Ajustes';
 import Clients from './views/clients/Clients';
-import TriagemInicial from './components/TriagemInicial';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { RegisterProvider } from './context/RegisterContext';

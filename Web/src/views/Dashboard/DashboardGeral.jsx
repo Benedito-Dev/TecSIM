@@ -1,10 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/SideBarr';
-import DashboardImpacto from '../../components/DashboardImpacto';
-import AlertasProtocolo from '../../components/AlertasProtocolo';
 import IntegracaoSUS from '../../components/IntegracaoSUS';
-import MetricasContinuidade from '../../components/MetricasContinuidade';
 import { BarChart3, ArrowRight } from 'lucide-react';
 
 const DashboardGeral = () => {
@@ -38,17 +35,8 @@ const DashboardGeral = () => {
         <div className="flex-1 ml-20 lg:ml-60 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto space-y-8">
             
-            {/* Dashboard de Impacto */}
-            <DashboardImpacto />
-            
-            {/* Alertas de Protocolo */}
-            <AlertasProtocolo />
-            
-            {/* Grid com Integração SUS e Métricas */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-              <IntegracaoSUS paciente={{nome: "Sistema Integrado"}} />
-              <MetricasContinuidade />
-            </div>
+            {/* Integração SUS */}
+            <IntegracaoSUS paciente={{nome: "Sistema Integrado"}} />
             
             {/* Call to Action */}
             <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white p-8 rounded-xl text-center">

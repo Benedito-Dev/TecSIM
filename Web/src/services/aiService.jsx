@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { verificarGatilhoCritico, detectarTemaForaDaSaude, validarMencaoMedicamentos } from '../utils/filters';
 import { APP_CONFIG } from '../config/appConfig';
 
 // Validação simplificada - só verifica se tem API key
@@ -16,14 +15,7 @@ const CACHE_EXPIRATION_MS = APP_CONFIG.AI.CACHE_EXPIRATION;
 // Função para sanitizar o histórico de conversa
 const sanitizarHistorico = (historico) => {
   if (!Array.isArray(historico)) return [];
-  
-  return historico.filter(msg => {
-    if (msg.isBot) {
-      // Remove mensagens do bot que contenham temas proibidos
-      return !detectarTemaForaDaSaude(msg.text);
-    }
-    return true; // Mantém todas as mensagens do usuário
-  });
+  return historico.filter(msg => msg && msg.text);
 };
 
 export const listAvailableModels = async () => {
@@ -83,33 +75,6 @@ export const getAIResponse = async (message, history = [], options = {}) => {
     return {
       success: false,
       error: "A mensagem não pode estar vazia"
-    };
-  }
-
-  // 🔒 Filtro de segurança — Gatilhos críticos
-  if (verificarGatilhoCritico(message)) {
-    console.warn('[AUDIT] Gatilho crítico detectado');
-    return {
-      success: true,
-      response: APP_CONFIG.SECURITY.CRITICAL_TRIGGER_RESPONSE
-    };
-  }
-
-  // 🔒 Filtro de segurança — Temas fora da saúde
-  if (detectarTemaForaDaSaude(message)) {
-    console.warn('[AUDIT] Tema proibido detectado:', message);
-    return {
-      success: true,
-      response: APP_CONFIG.SECURITY.BLOCKED_TOPICS_RESPONSE
-    };
-  }
-
-  // 🔒 Filtro de segurança — Medicamentos controlados
-  if (validarMencaoMedicamentos(message)) {
-    console.warn('[AUDIT] Menção a medicamento controlado detectada');
-    return {
-      success: true,
-      response: APP_CONFIG.SECURITY.CONTROLLED_MEDICATION_RESPONSE
     };
   }
 
@@ -195,15 +160,6 @@ Para questões de saúde:
 
     const result = await chat.sendMessage(userMessageContent);
     const responseText = await result.response.text();
-
-    // 🔒 Verificação final da resposta do modelo
-    if (detectarTemaForaDaSaude(responseText) || validarMencaoMedicamentos(responseText)) {
-      console.warn('[AUDIT] Resposta do modelo contém conteúdo proibido');
-      return {
-        success: true,
-        response: APP_CONFIG.SECURITY.BLOCKED_TOPICS_RESPONSE
-      };
-    }
 
     return {
       success: true,
