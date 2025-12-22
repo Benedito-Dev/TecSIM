@@ -55,10 +55,12 @@ export default function Prescricao() {
               <h1 className="text-2xl font-bold">Prescrições</h1>
             </div>
             <button 
-              className="px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90 transition-colors"
-              style={{
-                background: theme.backgroundCard,
-                color: theme.primary
+              className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              style={{ 
+                background: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: theme.textOnPrimary
               }}
             >
               <Plus size={20} />
