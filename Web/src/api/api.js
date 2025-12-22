@@ -1,13 +1,14 @@
 import axios from 'axios';
 
-// Usando proxy reverso - sem necessidade de IP específico
-const API_URL = '/api'; // Proxy vai redirecionar para o backend
+// Configuração da API
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+const REQUEST_TIMEOUT = 10000;
 
 // Para Android emulador, use:
-// const API_URL = 'http://10.0.2.2:3000';
+// const API_BASE_URL = 'http://10.0.2.2:3000';
 
 // Para iOS simulador ou dispositivo físico, use seu IP local:
-// const API_URL = 'http://192.168.x.x:3000';
+// const API_BASE_URL = 'http://192.168.x.x:3000';
 
 // Utilitário para localStorage
 const storage = {
@@ -38,8 +39,8 @@ const storage = {
 };
 
 const api = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
+  baseURL: API_BASE_URL,
+  timeout: REQUEST_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -51,6 +52,18 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  
+  // Adiciona proteção CSRF para requisições que modificam dados
+  if (['post', 'put', 'patch', 'delete'].includes(config.method?.toLowerCase())) {
+    // Gera token CSRF se não existir
+    let csrfToken = storage.getItem('@CSRF:token');
+    if (!csrfToken) {
+      csrfToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      storage.setItem('@CSRF:token', csrfToken);
+    }
+    config.headers['X-CSRF-Token'] = csrfToken;
+  }
+  
   return config;
 });
 
@@ -62,6 +75,7 @@ api.interceptors.response.use(
       // Token inválido - faz logout
       storage.removeItem('@Auth:token');
       storage.removeItem('@Auth:user');
+      storage.removeItem('@CSRF:token');
       
       // Redireciona para a tela de login se estiver no navegador
       if (typeof window !== 'undefined') {

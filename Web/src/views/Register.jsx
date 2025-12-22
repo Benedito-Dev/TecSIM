@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRegister } from '../context/RegisterContext';
 // Mantenha todos os seus imports
@@ -15,7 +15,6 @@ import { lightTheme } from '../constants/temas';
 import logoImage from '../assets/images/logo.png';
 
 import { requestOtp } from '../services/auth/otpService';
-
 
 export default function RegisterPage() {
     // --- States de Dados ---
@@ -44,11 +43,11 @@ export default function RegisterPage() {
     // Validação geral: agora inclui o validGender
     const allValid =  validCpf && validEmail && validPassword && validWeight && validDate && validGender;
 
-    const handleCreateAccount = () => {
+    const handleCreateAccount = useCallback(() => {
         setShowTerms(true);
-    };
+    }, []);
 
-    const handleAcceptTerms = async () => {
+    const handleAcceptTerms = useCallback(async () => {
         setShowTerms(false);
 
         if (!allValid) {
@@ -79,6 +78,7 @@ export default function RegisterPage() {
             alert('Falha ao enviar código de verificação.');
         }
         };
+    }, [allValid, email, cpf, nome, senha, data_nascimento, peso_kg, genero, aceite_termos, setRegisterData, navigate]);
 
     return (
         // Fundo clean: Quase branco com um toque suave de azul

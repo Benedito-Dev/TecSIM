@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/SideBarr";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import FormPacient from "./FormPacient";
 import { useTheme } from "../../context/ThemeContext";
+
+const CPF_MAX_LENGTH = 14;
+const PHONE_MAX_LENGTH = 15;
+const CEP_MAX_LENGTH = 9;
+const CEP_COMPLETE_LENGTH = 9;
+const VIACEP_API_URL = 'https://viacep.com.br/ws';
 
 export default function NewClient() {
   const navigate = useNavigate();
@@ -68,7 +74,7 @@ export default function NewClient() {
         .replace(/(\d{3})(\d)/, "$1.$2")
         .replace(/(\d{3})(\d)/, "$1.$2")
         .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
-        .slice(0, 14);
+        .slice(0, CPF_MAX_LENGTH);
       
       setPatientData((prev) => ({
         ...prev,
@@ -83,7 +89,7 @@ export default function NewClient() {
         .replace(/\D/g, "")
         .replace(/(\d{2})(\d)/, "($1) $2")
         .replace(/(\d{5})(\d)/, "$1-$2")
-        .slice(0, 15);
+        .slice(0, PHONE_MAX_LENGTH);
       
       setPatientData((prev) => ({
         ...prev,
@@ -97,7 +103,7 @@ export default function NewClient() {
       const formattedCEP = value
         .replace(/\D/g, "")
         .replace(/(\d{5})(\d)/, "$1-$2")
-        .slice(0, 9);
+        .slice(0, CEP_MAX_LENGTH);
       
       setPatientData((prev) => ({
         ...prev,
@@ -105,7 +111,7 @@ export default function NewClient() {
       }));
 
       // Busca automática do CEP quando completo
-      if (formattedCEP.length === 9) {
+      if (formattedCEP.length === CEP_COMPLETE_LENGTH) {
         handleCEPSearch(formattedCEP);
       }
       return;
@@ -123,7 +129,7 @@ export default function NewClient() {
       const cleanCEP = cep.replace(/\D/g, "");
       if (cleanCEP.length !== 8) return;
 
-      const response = await fetch(`https://viacep.com.br/ws/${cleanCEP}/json/`);
+      const response = await fetch(`${VIACEP_API_URL}/${cleanCEP}/json/`);
       const data = await response.json();
 
       if (!data.erro) {

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+
 export const usePacienteCondicoes = (pacienteId) => {
   const [condicoes, setCondicoes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -12,7 +14,7 @@ export const usePacienteCondicoes = (pacienteId) => {
     setError(null);
     
     try {
-      const response = await fetch(`/api/pacientes/${pacienteId}/condicoes`);
+      const response = await fetch(`${API_BASE_URL}/pacientes/${pacienteId}/condicoes`);
       if (!response.ok) throw new Error('Erro ao carregar condições');
       
       const data = await response.json();
@@ -30,7 +32,7 @@ export const usePacienteCondicoes = (pacienteId) => {
     setError(null);
     
     try {
-      const response = await fetch(`/api/pacientes/${pacienteId}/condicoes`, {
+      const response = await fetch(`${API_BASE_URL}/pacientes/${pacienteId}/condicoes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novaCondicao)
@@ -55,7 +57,7 @@ export const usePacienteCondicoes = (pacienteId) => {
     setError(null);
     
     try {
-      const response = await fetch(`/api/pacientes/condicoes/${idCondicao}`, {
+      const response = await fetch(`${API_BASE_URL}/pacientes/condicoes/${idCondicao}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosAtualizados)
@@ -82,7 +84,7 @@ export const usePacienteCondicoes = (pacienteId) => {
     setError(null);
     
     try {
-      const response = await fetch(`/api/pacientes/condicoes/${idCondicao}`, {
+      const response = await fetch(`${API_BASE_URL}/pacientes/condicoes/${idCondicao}`, {
         method: 'DELETE'
       });
       

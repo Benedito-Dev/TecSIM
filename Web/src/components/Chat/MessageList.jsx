@@ -1,13 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { useElderMode } from '../../context/ElderModeContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import BouncingDots from './BouncingDots';
+
+const MAX_MESSAGE_WIDTH_MOBILE = '80%';
+const MAX_MESSAGE_WIDTH_DESKTOP = 'xl';
+const MESSAGES_HEIGHT = 'calc(100vh-14rem)';
 
 const MessageList = ({ messages, isLoading, messagesEndRef }) => {
   const { fontSize } = useElderMode();
   const { theme } = useContext(ThemeContext);
 
-  const renderMessage = (msg) => {
+  const renderMessage = useCallback((msg) => {
     const isTriage = msg.isTriage || msg.isTriageResult;
     
     return (
@@ -16,7 +20,7 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
         className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
       >
         <div
-          className={`max-w-[80%] md:max-w-xl rounded-2xl p-4 shadow-md ${
+          className={`max-w-[${MAX_MESSAGE_WIDTH_MOBILE}] md:max-w-${MAX_MESSAGE_WIDTH_DESKTOP} rounded-2xl p-4 shadow-md ${
             msg.isBot 
               ? isTriage 
                 ? msg.isTriageResult
@@ -90,11 +94,11 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
         </div>
       </div>
     );
-  };
+  }, [fontSize, theme]);
 
   return (
     <div 
-      className="flex-1 overflow-y-auto px-4 py-4 w-full h-[calc(100vh-14rem)]"
+      className="flex-1 overflow-y-auto px-4 py-4 w-full h-[${MESSAGES_HEIGHT}]"
       style={{ background: theme.background }}
     >
       <div className="space-y-4 max-w-4xl mx-auto">

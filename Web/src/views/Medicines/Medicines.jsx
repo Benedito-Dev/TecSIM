@@ -1,5 +1,5 @@
 // src/pages/Medicamentos.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Sidebar from "../../components/SideBarr";
 import { FaPills, FaSearch, FaSpinner, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
@@ -55,14 +55,14 @@ const Medicamentos = () => {
     setCurrentPage(1);
   }, [search, itemsPerPage]);
 
-  const handlePageChange = (page) => {
+  const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
-  };
+  }, []);
 
-  const handleItemsPerPageChange = (value) => {
+  const handleItemsPerPageChange = useCallback((value) => {
     setItemsPerPage(value);
     setCurrentPage(1);
-  };
+  }, []);
 
   const formatPrice = (medicamento) => {
     const priceMap = {
@@ -74,10 +74,10 @@ const Medicamentos = () => {
     return priceMap[medicamento.tipo] || "R$ 20,00";
   };
 
-  const handleAddMedicamento = (medicamento) => {
+  const handleAddMedicamento = useCallback((medicamento) => {
     console.log("Medicamento adicionado:", medicamento);
     alert(`${medicamento.nome} adicionado à sua lista!`);
-  };
+  }, []);
 
   return (
     <div 

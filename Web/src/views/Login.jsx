@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EmailInput from '../components/Inputs/EmailInput';
 import PasswordInput from '../components/Inputs/PasswordInput';
@@ -8,6 +8,10 @@ import logoImage from '../assets/images/logo.png';
 import { login, getCurrentUser } from '../services/auth/authService';
 
 import { useAuth } from '../context/UserContext';
+
+const COOLDOWN_TIMER_INTERVAL = 1000;
+const SUCCESS_REDIRECT_DELAY = 1000;
+const DEFAULT_COOLDOWN_SECONDS = 10;
 
 export default function LoginEnfermeiroPage() {
   const [email, setEmail] = useState('');
@@ -31,7 +35,7 @@ export default function LoginEnfermeiroPage() {
     
     // Contador regressivo do cooldown
     if (cooldown > 0) {
-      timerRef.current = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      timerRef.current = setTimeout(() => setCooldown(cooldown - 1), COOLDOWN_TIMER_INTERVAL);
     }
     return () => {
       console.log('🔄 LoginEnfermeiroPage desmontou');
@@ -84,7 +88,7 @@ export default function LoginEnfermeiroPage() {
       console.log('🟡 Navegando para dashboard de enfermeiro...');
       setTimeout(() => {
         navigate('/dashboard'); // Rota específica para enfermeiros
-      }, 1000);
+      }, SUCCESS_REDIRECT_DELAY);
 
     } catch (error) {
       console.log('🔴 Erro no login de enfermeiro:', error);
@@ -95,7 +99,7 @@ export default function LoginEnfermeiroPage() {
         msg = 'Acesso permitido apenas para enfermeiros cadastrados.';
       }
       
-      let seconds = error.cooldown || 10;
+      let seconds = error.cooldown || DEFAULT_COOLDOWN_SECONDS;
 
       setCooldown(seconds);
       msg += ` Aguarde ${seconds} segundo${seconds > 1 ? 's' : ''} antes de tentar novamente.`;

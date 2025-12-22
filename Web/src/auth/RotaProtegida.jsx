@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
+
 function RotaProtegida() {
   const [autorizado, setAutorizado] = useState(false);
   const [carregando, setCarregando] = useState(true);
@@ -22,7 +24,6 @@ function RotaProtegida() {
         }
 
         // Faz a requisição ao backend usando JWT no header Authorization
-        const API_BASE_URL = "http://localhost:3000";
         const response = await fetch(`${API_BASE_URL}/auth/me`, {
           method: "GET",
           headers: {
@@ -61,10 +62,18 @@ function RotaProtegida() {
   }, [navigate]);
 
   if (carregando) {
-    return <div>Carregando...</div>;
+    return (
+      <div role="status" aria-live="polite">
+        Carregando...
+      </div>
+    );
   }
 
-  return autorizado ? <Outlet context={{ usuario }} /> : null;
+  if (!autorizado) {
+    return null;
+  }
+
+  return <Outlet context={{ usuario }} />;
 }
 
 export default RotaProtegida;

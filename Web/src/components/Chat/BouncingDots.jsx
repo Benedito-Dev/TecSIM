@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Dot } from 'lucide-react';
 
-const BouncingDots = ({ color = '#00c4cd' }) => {
+const ANIMATION_INTERVAL = 100;
+const DEFAULT_COLOR = '#00c4cd';
+
+const BouncingDots = ({ color = DEFAULT_COLOR }) => {
   const [dots, setDots] = useState([0, 0, 0]);
 
   useEffect(() => {
@@ -9,7 +12,7 @@ const BouncingDots = ({ color = '#00c4cd' }) => {
       setDots(prev => prev.map((dot, index) => 
         Math.sin(Date.now() / 300 + index * 0.5) > 0 ? -6 : 0
       ));
-    }, 100);
+    }, ANIMATION_INTERVAL);
 
     return () => clearInterval(interval);
   }, []);

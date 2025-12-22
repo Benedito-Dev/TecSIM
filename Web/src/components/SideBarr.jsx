@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { 
   Home, 
   User, 
@@ -18,6 +18,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/UserContext";
 import { useTheme } from "../context/ThemeContext";
 
+const ICON_SIZE = 20;
+const MENU_ICON_SIZE = 22;
+const SIDEBAR_WIDTH_OPEN = "w-60";
+const SIDEBAR_WIDTH_CLOSED = "w-20";
+
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -26,25 +31,25 @@ export default function Sidebar() {
   const { theme, toggleTheme, isDark } = useTheme();
 
   const navItems = [
-    { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
-    { name: "Chatbot", icon: <MessageSquare size={20} />, path: "/chatbot" },
-    { name: "Medicamentos", icon: <Pill size={20} />, path: "/medicamentos" },
-    { name: "Prescrições", icon: <FileText size={20} />, path: "/prescricoes" },
-    { name: "Lembretes", icon: <Clock size={20} />, path: "/lembretes" },
-    { name: "Clientes", icon: <Users size={20} />, path: "/clientes" },
-    { name: "Perfil", icon: <User size={20} />, path: "/perfil" },
-    { name: "Ajustes", icon: <Settings size={20} />, path: "/ajustes" },
+    { name: "Dashboard", icon: <Home size={ICON_SIZE} />, path: "/dashboard" },
+    { name: "Chatbot", icon: <MessageSquare size={ICON_SIZE} />, path: "/chatbot" },
+    { name: "Medicamentos", icon: <Pill size={ICON_SIZE} />, path: "/medicamentos" },
+    { name: "Prescrições", icon: <FileText size={ICON_SIZE} />, path: "/prescricoes" },
+    { name: "Lembretes", icon: <Clock size={ICON_SIZE} />, path: "/lembretes" },
+    { name: "Clientes", icon: <Users size={ICON_SIZE} />, path: "/clientes" },
+    { name: "Perfil", icon: <User size={ICON_SIZE} />, path: "/perfil" },
+    { name: "Ajustes", icon: <Settings size={ICON_SIZE} />, path: "/ajustes" },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     Logout();
     navigate('/login');
-  };
+  }, [Logout, navigate]);
 
   return (
     <div
       className={`fixed top-20 left-0 h-[calc(100vh-5rem)] bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300 ease-in-out z-50 ${
-        isOpen ? "w-60" : "w-20"
+        isOpen ? SIDEBAR_WIDTH_OPEN : SIDEBAR_WIDTH_CLOSED
       }`}
     >
       {/* Topo com botão de menu */}
@@ -56,7 +61,7 @@ export default function Sidebar() {
           onClick={() => setIsOpen(!isOpen)}
           className="p-2 rounded-lg hover:bg-blue-800 transition-all"
         >
-          {isOpen ? <X size={22} /> : <Menu size={22} />}
+          {isOpen ? <X size={MENU_ICON_SIZE} /> : <Menu size={MENU_ICON_SIZE} />}
         </button>
       </div>
 
@@ -90,7 +95,7 @@ export default function Sidebar() {
           onClick={toggleTheme}
           className="flex items-center justify-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-blue-800 transition-all text-blue-100 hover:text-white font-medium"
         >
-          {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          {isDark ? <Sun size={ICON_SIZE} /> : <Moon size={ICON_SIZE} />}
           {isOpen && <span>{isDark ? 'Tema Claro' : 'Tema Escuro'}</span>}
         </button>
         
@@ -99,7 +104,7 @@ export default function Sidebar() {
           onClick={handleLogout}
           className="flex items-center justify-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-red-600 transition-all text-red-100 hover:text-white font-medium"
         >
-          <LogOut size={20} />
+          <LogOut size={ICON_SIZE} />
           {isOpen && <span>Sair</span>}
         </button>
       </div>

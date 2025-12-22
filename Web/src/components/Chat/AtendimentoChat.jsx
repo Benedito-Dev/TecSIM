@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { Send, Bot } from 'lucide-react';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useTriagem } from '../../hooks/useTriagem';
@@ -6,6 +6,9 @@ import { useChatMessages } from '../../hooks/useChatMessages';
 import { usePacienteCondicoes } from '../../hooks/usePacienteCondicoes';
 import { getAIResponse } from '../../services/aiService';
 import BouncingDots from './BouncingDots';
+
+const INITIAL_MESSAGE_DELAY = 1000;
+const AUTO_SEND_DELAY = 500;
 
 const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
   const { theme } = useContext(ThemeContext);
@@ -40,12 +43,12 @@ const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
         // Simula o envio da mensagem
         setTimeout(() => {
           handleSendMessageAuto(mensagemInicial);
-        }, 500);
-      }, 1000);
+        }, AUTO_SEND_DELAY);
+      }, INITIAL_MESSAGE_DELAY);
     }
   }, [mensagemInicial, mensagemInicialEnviada, paciente]);
 
-  const handleSendMessageAuto = async (message) => {
+  const handleSendMessageAuto = useCallback(async (message) => {
     if (!message.trim() || isLoading) return;
 
     addUserMessage(message.trim());
@@ -54,9 +57,9 @@ const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
     setIsLoading(true);
 
     await processarMensagem(messageText);
-  };
+  }, [isLoading, addUserMessage, setIsLoading]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
     if (!newMessage.trim() || isLoading) return;
 
     addUserMessage(newMessage.trim());
@@ -65,7 +68,7 @@ const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
     setIsLoading(true);
 
     await processarMensagem(messageText);
-  };
+  }, [newMessage, isLoading, addUserMessage, setIsLoading]);
 
   const processarMensagem = async (messageText) => {
 
@@ -149,12 +152,12 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
     }
   };
 
-  const handleQuickButton = (message) => {
+  const handleQuickButton = useCallback((message) => {
     setNewMessage(message);
     setTimeout(() => {
       handleSendMessage();
     }, 100);
-  };
+  }, [handleSendMessage]);
 
   const quickButtons = [
     { 

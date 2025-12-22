@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { checkAPIHealth } from '../services/aiService';
 
-export const useAPIHealth = (checkInterval = 300000) => { // 5 minutos
+const DEFAULT_CHECK_INTERVAL = 300000; // 5 minutos
+
+export const useAPIHealth = (checkInterval = DEFAULT_CHECK_INTERVAL) => {
   const [apiStatus, setApiStatus] = useState({
     healthy: true,
     checking: true,

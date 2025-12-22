@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { checkAPIHealth } from '../../services/aiService';
+import { APP_CONFIG } from '../../config/appConfig';
 
 const APIStatus = ({ onStatusChange }) => {
   const [status, setStatus] = useState({ healthy: true, checking: true });
@@ -22,8 +23,8 @@ const APIStatus = ({ onStatusChange }) => {
 
     checkStatus();
     
-    // Verifica a cada 5 minutos
-    const interval = setInterval(checkStatus, 300000);
+    // Verifica periodicamente
+    const interval = setInterval(checkStatus, APP_CONFIG.API.HEALTH_CHECK_INTERVAL);
     return () => clearInterval(interval);
   }, [onStatusChange]);
 

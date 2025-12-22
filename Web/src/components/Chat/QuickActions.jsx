@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { Clock, FileText, User, Pill } from 'lucide-react';
 import { useElderMode } from '../../context/ElderModeContext';
 import { ThemeContext } from '../../context/ThemeContext';
+
+const BUTTON_PRESS_DELAY = 100;
 
 const QuickActions = ({ onButtonPress, isLoading }) => {
   const { fontSize } = useElderMode();
@@ -61,11 +63,11 @@ const QuickActions = ({ onButtonPress, isLoading }) => {
     }
   ];
 
-  const handlePress = (message) => {
+  const handlePress = useCallback((message) => {
     if (!isLoading) {
       onButtonPress(message);
     }
-  };
+  }, [isLoading, onButtonPress]);
 
   const buttonStyle = {
     background: theme.backgroundCard,

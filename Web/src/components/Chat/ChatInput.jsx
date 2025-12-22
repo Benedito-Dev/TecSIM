@@ -1,7 +1,11 @@
-import React, { useRef, useContext } from 'react';
+import React, { useRef, useContext, useCallback } from 'react';
 import { Send } from 'lucide-react';
 import { useElderMode } from '../../context/ElderModeContext';
 import { ThemeContext } from '../../context/ThemeContext';
+
+const MIN_INPUT_HEIGHT = '48px';
+const MAX_INPUT_HEIGHT = '100px';
+const BUTTON_SIZE = '48px';
 
 const ChatInput = ({ 
   message, 
@@ -14,17 +18,17 @@ const ChatInput = ({
   const { fontSize } = useElderMode();
   const { theme } = useContext(ThemeContext);
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = useCallback((e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       onSend();
     }
-  };
+  }, [onSend]);
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     onSend();
     inputRef.current?.focus();
-  };
+  }, [onSend]);
 
   return (
     <div className="p-4 w-full"> 
@@ -40,8 +44,8 @@ const ChatInput = ({
           className="flex-1 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed resize-none"
           style={{ 
             fontSize: `${fontSize}px`, 
-            minHeight: '48px', 
-            maxHeight: '100px',
+            minHeight: MIN_INPUT_HEIGHT, 
+            maxHeight: MAX_INPUT_HEIGHT,
             background: theme.backgroundCard,
             borderColor: theme.border,
             color: theme.textPrimary
@@ -52,8 +56,8 @@ const ChatInput = ({
           disabled={!message.trim() || isLoading}
           className="px-6 py-3 text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center h-full"
           style={{ 
-            minWidth: '48px', 
-            height: '48px',
+            minWidth: BUTTON_SIZE, 
+            height: BUTTON_SIZE,
             background: theme.primary
           }} 
         >
