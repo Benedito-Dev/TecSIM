@@ -13,13 +13,13 @@ import {
   Users
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/UserContext";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { Logout } = useAuth();
+  const { logout } = useAuth();
 
   const navItems = [
     { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
@@ -33,7 +33,7 @@ export default function Sidebar() {
   ];
 
   const handleLogout = () => {
-    Logout();
+    logout();
     navigate('/login');
   };
 

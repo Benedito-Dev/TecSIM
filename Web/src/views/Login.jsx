@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import EmailInput from '../components/Inputs/EmailInput';
 import PasswordInput from '../components/Inputs/PasswordInput';
 import { lightTheme } from '../constants/temas';
+import { useAuth } from '../hooks/useAuth';
 
 import logoImage from '../assets/images/logo.png';
-import { login, getCurrentUser } from '../services/auth/authService';
 
-import { useAuth } from '../context/UserContext';
-
-export default function LoginEnfermeiroPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState('paciente');
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
@@ -24,29 +24,28 @@ export default function LoginEnfermeiroPage() {
   const timerRef = useRef(null);
 
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { login: secureLogin } = useAuth();
 
   useEffect(() => {
-    console.log('✅ LoginEnfermeiroPage montou');
+    console.log('✅ LoginPage montou');
     
     // Contador regressivo do cooldown
     if (cooldown > 0) {
       timerRef.current = setTimeout(() => setCooldown(cooldown - 1), 1000);
     }
     return () => {
-      console.log('🔄 LoginEnfermeiroPage desmontou');
+      console.log('🔄 LoginPage desmontou');
       clearTimeout(timerRef.current);
     };
   }, [cooldown]);
 
   const handleLogin = async (e) => {
-    // Previne qualquer comportamento padrão
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     
-    console.log('🟡 handleLogin chamado - ENFERMEIRO');
+    console.log(`🟡 handleLogin chamado - ${userType.toUpperCase()}`);
 
     if (!allValid) {
       console.log('🔴 Campos inválidos');
@@ -64,36 +63,23 @@ export default function LoginEnfermeiroPage() {
     setSuccessMessage('');
 
     try {
-      console.log('🟡 Fazendo requisição de login como ENFERMEIRO...');
+      console.log(`🟡 Fazendo login seguro como ${userType.toUpperCase()}...`);
       
-      // Login específico para enfermeiros
-      const response = await login(email, password, 'enfermeiro');
-      const userData = await getCurrentUser();
+      // Login com funcionalidade "lembrar-me"
+      const response = await secureLogin(email, password, userType, rememberMe);
       
-      // Verifica se o usuário retornado é realmente um enfermeiro
-      if (userData.tipo !== 'enfermeiro') {
-        throw new Error('Acesso permitido apenas para enfermeiros');
-      }
-      
-      setUser(userData);
-
-      console.log('✅ Login de enfermeiro bem-sucedido:', response);
+      console.log(`✅ Login de ${userType} realizado com sucesso`);
 
       setSuccessMessage('Login realizado com sucesso!');
       
-      console.log('🟡 Navegando para dashboard de enfermeiro...');
+      console.log('🟡 Navegando para dashboard...');
       setTimeout(() => {
-        navigate('/dashboard'); // Rota específica para enfermeiros
+        navigate('/dashboard');
       }, 1000);
 
     } catch (error) {
-      console.log('🔴 Erro no login de enfermeiro:', error);
+      console.log(`🔴 Erro no login de ${userType}:`, error);
       let msg = error.message || 'Erro ao realizar login.';
-      
-      // Tratamento específico para erro de tipo de usuário
-      if (msg.includes('enfermeiro') || msg.includes('tipo') || msg.includes('permitido')) {
-        msg = 'Acesso permitido apenas para enfermeiros cadastrados.';
-      }
       
       let seconds = error.cooldown || 10;
 
@@ -105,29 +91,22 @@ export default function LoginEnfermeiroPage() {
     }
   };
 
-  // Teste: função simples sem API
-  const handleTest = (e) => {
-    if (e) e.preventDefault();
-    console.log('🧪 Teste de clique - sem API');
-    setErrorMessage('Mensagem de teste - sem recarregar');
-  };
-
-  // Função para redirecionar para login de paciente
-  const handleRedirectToPaciente = () => {
-    navigate('/login'); // Rota padrão de login (pacientes)
-  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-blue-50 to-blue-100 relative">
 
-      {/* Faixa azul escuro no topo (diferente do paciente) */}
-      <div className="absolute top-0 left-0 w-full h-40 bg-blue-700 rounded-b-3xl shadow-md z-0"></div>
+      {/* Faixa colorida no topo */}
+      <div className={`absolute top-0 left-0 w-full h-40 rounded-b-3xl shadow-md z-0 ${
+        userType === 'enfermeiro' ? 'bg-blue-700' : 'bg-green-600'
+      }`}></div>
 
       {/* Container principal */}
       <div className="flex flex-col items-center w-full max-w-md z-10 mt-16 px-4">
 
         {/* Logo */}
-        <div className="bg-white p-4 rounded-full shadow-lg mb-6 border-2 border-blue-200">
+        <div className={`bg-white p-4 rounded-full shadow-lg mb-6 border-2 ${
+          userType === 'enfermeiro' ? 'border-blue-200' : 'border-green-200'
+        }`}>
           <img
             src={logoImage}
             alt="Logo do Sistema"
@@ -136,29 +115,56 @@ export default function LoginEnfermeiroPage() {
         </div>
 
         {/* Card de Inputs */}
-        <div className="w-full bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center space-y-6 border border-blue-100">
+        <div className={`w-full bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center space-y-6 border ${
+          userType === 'enfermeiro' ? 'border-blue-100' : 'border-green-100'
+        }`}>
           <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-4">
-            Área do Enfermeiro
+            {userType === 'enfermeiro' ? 'Área do Enfermeiro' : 'Área do Paciente'}
           </h1>
           <p className="text-gray-600 text-center mb-6">
             Entre com seu e-mail e senha para acessar o sistema
           </p>
 
+          {/* Seletor de tipo de usuário */}
           <div className="w-full">
-            <label className="block text-sm font-medium text-blue-700 mb-2">
-              E-mail Profissional
+            <label className={`block text-sm font-medium mb-2 ${
+              userType === 'enfermeiro' ? 'text-blue-700' : 'text-green-700'
+            }`}>
+              Tipo de Usuário
+            </label>
+            <select
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+              className={`w-full p-3 border-2 rounded-lg focus:outline-none focus:ring-2 ${
+                userType === 'enfermeiro' 
+                  ? 'border-blue-200 focus:border-blue-500 focus:ring-blue-200' 
+                  : 'border-green-200 focus:border-green-500 focus:ring-green-200'
+              }`}
+            >
+              <option value="paciente">Paciente</option>
+              <option value="enfermeiro">Enfermeiro</option>
+            </select>
+          </div>
+
+          <div className="w-full">
+            <label className={`block text-sm font-medium mb-2 ${
+              userType === 'enfermeiro' ? 'text-blue-700' : 'text-green-700'
+            }`}>
+              {userType === 'enfermeiro' ? 'E-mail Profissional' : 'E-mail'}
             </label>
             <EmailInput
               value={email}
               onChangeText={setEmail}
               onValidityChange={setValidEmail}
               theme={lightTheme}
-              placeholder="seu.email@hospital.com"
+              placeholder={userType === 'enfermeiro' ? 'seu.email@hospital.com' : 'seu@email.com'}
             />
           </div>
 
           <div className="w-full">
-            <label className="block text-sm font-medium text-blue-700 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${
+              userType === 'enfermeiro' ? 'text-blue-700' : 'text-green-700'
+            }`}>
               Senha
             </label>
             <PasswordInput
@@ -167,6 +173,39 @@ export default function LoginEnfermeiroPage() {
               theme={lightTheme}
               placeholder="Sua senha de acesso"
             />
+          </div>
+
+          {/* Checkbox Lembrar-me */}
+          <div className="w-full">
+            <div className={`flex items-center p-4 rounded-lg border ${
+              userType === 'enfermeiro' 
+                ? 'bg-blue-50 border-blue-200' 
+                : 'bg-green-50 border-green-200'
+            }`}>
+              <input
+                type="checkbox"
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className={`w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-2 ${
+                  userType === 'enfermeiro' 
+                    ? 'text-blue-600 focus:ring-blue-500' 
+                    : 'text-green-600 focus:ring-green-500'
+                }`}
+              />
+              <label htmlFor="rememberMe" className="ml-3 flex-1">
+                <span className={`text-sm font-medium ${
+                  userType === 'enfermeiro' ? 'text-blue-700' : 'text-green-700'
+                }`}>
+                  Lembrar-me por 30 dias
+                </span>
+                <p className={`text-xs mt-1 ${
+                  userType === 'enfermeiro' ? 'text-blue-600' : 'text-green-600'
+                }`}>
+                  ⚠️ Use apenas em dispositivos pessoais e seguros
+                </p>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -197,38 +236,16 @@ export default function LoginEnfermeiroPage() {
           disabled={!allValid || cooldown > 0 || loading}
           className={`mt-8 w-full py-4 rounded-xl font-bold text-white text-lg transition-all duration-300 shadow-md
             ${allValid && cooldown === 0 && !loading
-              ? 'bg-blue-700 hover:bg-blue-800 hover:scale-105'
+              ? (userType === 'enfermeiro' 
+                  ? 'bg-blue-700 hover:bg-blue-800 hover:scale-105' 
+                  : 'bg-green-600 hover:bg-green-700 hover:scale-105')
               : 'bg-gray-400 cursor-not-allowed'
             }`}
         >
-          {loading ? 'Entrando...' : 'Entrar como Enfermeiro'}
+          {loading ? 'Entrando...' : `Entrar como ${userType === 'enfermeiro' ? 'Enfermeiro' : 'Paciente'}`}
         </button>
 
-        {/* Botão Teste */}
-        <button
-          onClick={handleTest}
-          className="mt-4 w-full py-4 rounded-xl font-bold text-gray-700 bg-yellow-400 hover:bg-yellow-500 text-lg transition-all duration-300 shadow-md"
-        >
-          Teste (Sem API)
-        </button>
 
-        {/* Link para login de paciente */}
-        <p className="mt-6 text-gray-700 text-sm">
-          É paciente?{' '}
-          <button 
-            onClick={handleRedirectToPaciente}
-            className="font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-          >
-            Faça login como paciente
-          </button>
-        </p>
-
-        {/* Informação adicional para enfermeiros */}
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-xs text-blue-700 text-center">
-            💡 Acesso restrito a enfermeiros cadastrados no sistema
-          </p>
-        </div>
       </div>
     </div>
   );

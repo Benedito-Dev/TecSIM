@@ -1,6 +1,7 @@
 const express = require('express');
 const authController = require('../controllers/auth/authController');
 const otpController = require('../controllers/auth/otpController');
+const refreshTokenController = require('../controllers/auth/refreshTokenController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 class AuthRoutes {
@@ -220,6 +221,74 @@ class AuthRoutes {
      *         description: Erro interno no servidor
      */
     this.router.post('/verify-otp', otpController.verifyOtp);
+
+    // Refresh Token Routes
+    /**
+     * @swagger
+     * /auth/refresh:
+     *   post:
+     *     summary: Renova o access token usando refresh token
+     *     tags: [Autenticação]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               refreshToken:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Token renovado com sucesso
+     *       401:
+     *         description: Refresh token inválido
+     */
+    this.router.post('/refresh', refreshTokenController.refresh);
+
+    /**
+     * @swagger
+     * /auth/revoke:
+     *   post:
+     *     summary: Revoga um refresh token específico
+     *     tags: [Autenticação]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               refreshToken:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Token revogado com sucesso
+     */
+    this.router.post('/revoke', refreshTokenController.revoke);
+
+    /**
+     * @swagger
+     * /auth/revoke-all:
+     *   post:
+     *     summary: Revoga todos os refresh tokens de um usuário
+     *     tags: [Autenticação]
+     *     security:
+     *       - bearerAuth: []
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               userId:
+     *                 type: integer
+     *     responses:
+     *       200:
+     *         description: Todos os tokens revogados
+     */
+    this.router.post('/revoke-all', authMiddleware, refreshTokenController.revokeAll);
   }
 
   getRouter() {

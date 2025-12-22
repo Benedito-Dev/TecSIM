@@ -7,7 +7,7 @@ import MessageList from '../../components/Chat/MessageList';
 import QuickActions from '../../components/Chat/QuickActions';
 import ChatInput from '../../components/Chat/ChatInput';
 
-import { useAuth } from '../../context/UserContext';
+import { useAuth } from '../../hooks/useAuth';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useTriagem } from '../../hooks/useTriagem';
 import { useChatMessages } from '../../hooks/useChatMessages';

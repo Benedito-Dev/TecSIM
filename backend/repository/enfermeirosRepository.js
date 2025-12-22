@@ -108,14 +108,8 @@ class EnfermeirosRepository {
         throw error;
       }
 
-      console.log(enfermeiroRaw)
-
-      console.log('Senha fornecida:', senha);
-      console.log('Senha esperada: Teste123456'); // Para debug
-
       // Use a senha fornecida no login para comparar
       const senhaMatch = await bcrypt.compare(senha, enfermeiroRaw.senha);
-      console.log('Senha match:', senhaMatch);
       
       if (!senhaMatch) {
         const error = new Error('Credenciais inválidas');

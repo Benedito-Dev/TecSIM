@@ -3,6 +3,8 @@ import Welcome from './views/Welcome';
 import RegisterPage from './views/Register';
 import LoginPage from './views/Login';
 import ConfirmCodePage from './views/Code';
+import AutoRedirect from './components/AutoRedirect';
+import RotaProtegida from './auth/RotaProtegida';
 
 import DashboardPage from './views/Dashboard/Dashboard';
 import DashboardGeral from './views/Dashboard/DashboardGeral';
@@ -18,7 +20,6 @@ import TriagemInicial from './components/TriagemInicial';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { RegisterProvider } from './context/RegisterContext';
-import { AuthProvider } from './context/UserContext'
 import { ElderModeProvider } from './context/ElderModeContext'
 import NewClient from './views/clients/NewClient';
 import FormPacient from './views/clients/FormPacient';
@@ -28,34 +29,46 @@ export default function App() {
   return (
     <Router>
       <ThemeProvider>
-        <AuthProvider>
-          <ElderModeProvider>
-
-            <RegisterProvider> 
+        <ElderModeProvider>
+          <RegisterProvider>
               <Routes>
-                <Route path="/" element={<Welcome />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/login" element={<LoginPage />} />
+                <Route path="/" element={
+                  <AutoRedirect>
+                    <Welcome />
+                  </AutoRedirect>
+                } />
+                <Route path="/register" element={
+                  <AutoRedirect>
+                    <RegisterPage />
+                  </AutoRedirect>
+                } />
+                <Route path="/login" element={
+                  <AutoRedirect>
+                    <LoginPage />
+                  </AutoRedirect>
+                } />
                 <Route path="/verify" element={<ConfirmCodePage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/dashboard-geral" element={<DashboardGeral />} />
-                <Route path="/medicamentos" element={<Medicines />} />
-                <Route path="/perfil" element={<Profile />} />
-                <Route path="/perfil/editar" element={<EditProfile />} />
-                <Route path="/lembretes" element={<Lembretes />} />
-                <Route path="/chat-inicial" element={<ChatScreen />} />
-                <Route path="/chatbot" element={<ChatScreen />} />
-                <Route path="/atendimento" element={<AtendimentoPaciente />} />
-                <Route path="/prescricoes" element={<Prescricao />} />
-                <Route path="ajustes" element={<Ajustes />} />
-                <Route path='/clientes' element={<Clients />} />
-                <Route path='/novocliente' element={<NewClient/>}/>
-                <Route path='/formpacient' element={<FormPacient/>}/>
+                
+                {/* Rotas Protegidas */}
+                <Route element={<RotaProtegida />}>
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/dashboard-geral" element={<DashboardGeral />} />
+                  <Route path="/medicamentos" element={<Medicines />} />
+                  <Route path="/perfil" element={<Profile />} />
+                  <Route path="/perfil/editar" element={<EditProfile />} />
+                  <Route path="/lembretes" element={<Lembretes />} />
+                  <Route path="/chat-inicial" element={<ChatScreen />} />
+                  <Route path="/chatbot" element={<ChatScreen />} />
+                  <Route path="/atendimento" element={<AtendimentoPaciente />} />
+                  <Route path="/prescricoes" element={<Prescricao />} />
+                  <Route path="ajustes" element={<Ajustes />} />
+                  <Route path='/clientes' element={<Clients />} />
+                  <Route path='/novocliente' element={<NewClient/>}/>
+                  <Route path='/formpacient' element={<FormPacient/>}/>
+                </Route>
               </Routes>
-            </RegisterProvider> 
-            
-          </ElderModeProvider>
-        </AuthProvider>
+          </RegisterProvider>
+        </ElderModeProvider>
       </ThemeProvider>
     </Router>
   );

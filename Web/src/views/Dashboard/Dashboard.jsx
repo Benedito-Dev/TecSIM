@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../../context/UserContext";
+import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
 import { MessageSquare, Pill, Clock, FileText, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";

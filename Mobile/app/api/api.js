@@ -28,15 +28,13 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-// Interceptor para tratar erros
+// Interceptor para tratar erros (removido refresh automático para evitar conflito)
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    // Apenas loga o erro, o refresh será tratado pelo authService
     if (error.response?.status === 401) {
-      // Token inválido - faz logout
-      await AsyncStorage.removeItem('@Auth:token');
-      await AsyncStorage.removeItem('@Auth:user');
-      // Você pode redirecionar para a tela de login aqui
+      console.log('Token expirado, será renovado pelo authService');
     }
     return Promise.reject(error);
   }

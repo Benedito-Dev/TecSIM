@@ -1,69 +1,52 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 function RotaProtegida() {
-  const [autorizado, setAutorizado] = useState(false);
-  const [carregando, setCarregando] = useState(true);
-  const [usuario, setUsuario] = useState(null);
+  const { isAuthenticated, user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const verificarAutenticacao = async () => {
-      setCarregando(true);
+    if (!loading && !isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, loading, navigate]);
 
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          // Sem token → redireciona
-          setAutorizado(false);
-          navigate("/login");
-          return;
-        }
-
-        // Faz a requisição ao backend usando JWT no header Authorization
-        const response = await fetch("http://localhost:3000/auth/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          // Token inválido → remove do localStorage e redireciona
-          localStorage.removeItem("token");
-          throw new Error(`Não autorizado (status ${response.status})`);
-        }
-
-        const dados = await response.json();
-        
-
-        // Espera-se que o backend retorne o usuário diretamente
-        if (dados && dados.id_usuario) {
-          setUsuario(dados);
-          setAutorizado(true);
-        } else {
-          throw new Error("Resposta do servidor inválida");
-        }
-
-      } catch (error) {
-        console.error("Erro de autenticação:", error.message || error);
-        setAutorizado(false);
-        navigate("/login");
-      } finally {
-        setCarregando(false);
-      }
-    };
-
-    verificarAutenticacao();
-  }, [navigate]);
-
-  if (carregando) {
-    return <div>Carregando...</div>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Carregando...</p>
+        <style jsx>{`
+          .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            gap: 1rem;
+          }
+          
+          .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+          
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
   }
 
-  return autorizado ? <Outlet context={{ usuario }} /> : null;
+  return isAuthenticated ? <Outlet context={{ usuario: user }} /> : null;
 }
 
 export default RotaProtegida;

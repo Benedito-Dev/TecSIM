@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const authConfig = require('../../config/auth');
 const pacienteRepository = require('../../repository/pacientesRepository');
 const enfermeirosRepository = require('../../repository/enfermeirosRepository');
+const refreshService = require('./refreshService');
 
 class AuthService {
   async login(email, senha, ip, tipo = 'paciente') {
@@ -81,9 +82,17 @@ class AuthService {
         { expiresIn: authConfig.expiresIn }
       );
 
+      // 7️⃣ Gerar refresh token
+      const { token: refreshToken, expiresAt } = await refreshService.generateForUser(
+        usuario.id, 
+        tipo
+      );
+
       return {
         usuario: usuarioData,
-        token
+        token,
+        refreshToken,
+        refreshExpiresAt: expiresAt
       };
 
     } catch (error) {
@@ -141,9 +150,12 @@ class AuthService {
         throw error;
       }
       
+      // Remove dados sensíveis antes de retornar
+      const { senha, ...safeUserData } = usuario;
+      
       // Adicionar tipo ao retorno
       return {
-        ...usuario,
+        ...safeUserData,
         tipo: decoded.tipo || 'paciente'
       };
     } catch (error) {
