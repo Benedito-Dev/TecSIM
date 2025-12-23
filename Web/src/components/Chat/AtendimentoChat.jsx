@@ -34,20 +34,6 @@ const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
 
   const { condicoes } = usePacienteCondicoes(paciente?.id);
 
-  // Envia mensagem inicial automaticamente quando o componente carrega
-  React.useEffect(() => {
-    if (mensagemInicial && !mensagemInicialEnviada && paciente) {
-      setTimeout(() => {
-        setNewMessage(mensagemInicial);
-        setMensagemInicialEnviada(true);
-        // Simula o envio da mensagem
-        setTimeout(() => {
-          handleSendMessageAuto(mensagemInicial);
-        }, AUTO_SEND_DELAY);
-      }, INITIAL_MESSAGE_DELAY);
-    }
-  }, [mensagemInicial, mensagemInicialEnviada, paciente]);
-
   const handleSendMessageAuto = useCallback(async (message) => {
     if (!message.trim() || isLoading) return;
 
@@ -59,6 +45,37 @@ const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
     await processarMensagem(messageText);
   }, [isLoading, addUserMessage, setIsLoading]);
 
+  // Envia mensagem inicial automaticamente quando o componente carrega
+  React.useEffect(() => {
+    if (mensagemInicial && !mensagemInicialEnviada && paciente?.id) {
+      const initialTimer = setTimeout(() => {
+        try {
+          if (!mensagemInicial.trim()) {
+            console.warn('Mensagem inicial vazia');
+            setMensagemInicialEnviada(true);
+            return;
+          }
+          setNewMessage(mensagemInicial);
+          setMensagemInicialEnviada(true);
+          // Simula o envio da mensagem
+          const sendTimer = setTimeout(() => {
+            handleSendMessageAuto(mensagemInicial).catch((err) => {
+              console.error('Erro ao enviar mensagem inicial:', err);
+              addBotMessage('⚠️ Erro ao processar mensagem inicial. Tente novamente.');
+              setIsLoading(false);
+            });
+          }, AUTO_SEND_DELAY);
+          return () => clearTimeout(sendTimer);
+        } catch (err) {
+          console.error('Erro ao inicializar chat:', err);
+          setMensagemInicialEnviada(true);
+          addBotMessage('⚠️ Erro ao inicializar chat. Tente novamente.');
+        }
+      }, INITIAL_MESSAGE_DELAY);
+      return () => clearTimeout(initialTimer);
+    }
+  }, [mensagemInicial, mensagemInicialEnviada, paciente?.id, handleSendMessageAuto, addBotMessage, setIsLoading]);
+
   const handleSendMessage = useCallback(async () => {
     if (!newMessage.trim() || isLoading) return;
 
@@ -67,30 +84,52 @@ const AtendimentoChat = ({ paciente, onTriagemComplete, mensagemInicial }) => {
     setNewMessage('');
     setIsLoading(true);
 
-    await processarMensagem(messageText);
-  }, [newMessage, isLoading, addUserMessage, setIsLoading]);
+    try {
+      await processarMensagem(messageText);
+    } catch (err) {
+      console.error('Erro ao enviar mensagem:', err);
+      addBotMessage('⚠️ Erro ao enviar mensagem. Tente novamente.');
+      setIsLoading(false);
+    }
+  }, [newMessage, isLoading, addUserMessage, setIsLoading, addBotMessage]);
 
   const processarMensagem = async (messageText) => {
-
     try {
+      if (!messageText?.trim()) {
+        console.warn('Mensagem vazia');
+        setIsLoading(false);
+        return;
+      }
+
+      if (!paciente?.id) {
+        throw new Error('Paciente não identificado');
+      }
+
       // Contexto do paciente para IA
-      const condicoesTexto = condicoes.map(c => `${c.condicao} (${c.severidade})`).join(', ');
+      const condicoesTexto = condicoes?.length ? condicoes.map(c => `${c?.condicao} (${c?.severidade})`).join(', ') : 'Nenhuma';
       const contextoAtendimento = `
 ATENDIMENTO FARMACÊUTICO - PAGUE MENOS
-Paciente: ${paciente.nome}
-Condições Médicas: ${condicoesTexto || 'Nenhuma'}
-Alergias: ${paciente.alergias?.join(', ') || 'Nenhuma'}
-Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
+Paciente: ${paciente?.nome || 'Desconhecido'}
+Condições Médicas: ${condicoesTexto}
+Alergias: ${paciente?.alergias?.join(', ') || 'Nenhuma'}
+Medicamentos: ${paciente?.medicamentosContinuos?.join(', ') || 'Nenhum'}
 `;
 
       // Verifica se deve iniciar triagem
       if (!emTriagem) {
-        const resultadoTriagem = iniciarProcessoTriagem(messageText, condicoes);
-        if (resultadoTriagem.sucesso) {
-          const tipoProtocolo = resultadoTriagem.especializado ? '🎯 **Protocolo Especializado**' : '🔍 **Triagem Padrão**';
-          addTriageMessage(
-            `${tipoProtocolo}: ${resultadoTriagem.protocolo.nome}\n\n${resultadoTriagem.primeiraPergunta.pergunta}`
-          );
+        try {
+          const resultadoTriagem = iniciarProcessoTriagem(messageText, condicoes || []);
+          if (resultadoTriagem?.sucesso) {
+            const tipoProtocolo = resultadoTriagem?.especializado ? '🎯 **Protocolo Especializado**' : '🔍 **Triagem Padrão**';
+            addTriageMessage(
+              `${tipoProtocolo}: ${resultadoTriagem?.protocolo?.nome}\n\n${resultadoTriagem?.primeiraPergunta?.pergunta}`
+            );
+            setIsLoading(false);
+            return;
+          }
+        } catch (triageErr) {
+          console.error('Erro ao iniciar triagem:', triageErr);
+          addBotMessage('⚠️ Erro ao iniciar triagem. Por favor, tente novamente.');
           setIsLoading(false);
           return;
         }
@@ -98,47 +137,67 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
 
       // Se está em triagem
       if (emTriagem) {
-        const resultado = await processarResposta(messageText);
-        if (resultado.sucesso) {
-          if (resultado.finalizada) {
-            const { classificacao, response } = resultado.analise;
-            
-            // Notifica componente pai sobre conclusão da triagem
-            onTriagemComplete?.({
-              classificacao: classificacao.nivel,
-              recomendacao: classificacao.recomendacao,
-              resumo: response,
-              paciente: paciente.nome
-            });
+        try {
+          const resultado = await processarResposta(messageText);
+          if (resultado?.sucesso) {
+            if (resultado?.finalizada) {
+              const { classificacao, response } = resultado?.analise || {};
+              
+              // Notifica componente pai sobre conclusão da triagem
+              onTriagemComplete?.({
+                classificacao: classificacao?.nivel,
+                recomendacao: classificacao?.recomendacao,
+                resumo: response,
+                paciente: paciente?.nome
+              });
 
-            addTriageMessage(
-              `📋 **TRIAGEM FINALIZADA**\n\n` +
-              `🔸 **Classificação**: ${classificacao.icone} ${classificacao.nivel}\n` +
-              `🔸 **Recomendação**: ${classificacao.recomendacao}\n\n` +
-              `**Resumo**: ${response || 'Triagem concluída'}\n\n` +
-              `⚠️ *Protocolo executado conforme diretrizes da Pague Menos*`
-            , true);
+              addTriageMessage(
+                `📋 **TRIAGEM FINALIZADA**\n\n` +
+                `🔸 **Classificação**: ${classificacao?.icone || '❓'} ${classificacao?.nivel || 'Desconhecida'}\n` +
+                `🔸 **Recomendação**: ${classificacao?.recomendacao || 'Nenhuma'}\n\n` +
+                `**Resumo**: ${response || 'Triagem concluída'}\n\n` +
+                `⚠️ *Protocolo executado conforme diretrizes da Pague Menos*`
+              , true);
+            } else {
+              addTriageMessage(resultado?.proximaPergunta?.pergunta || 'Continuando a triagem...');
+            }
+            setIsLoading(false);
+            return;
           } else {
-            addTriageMessage(resultado.proximaPergunta.pergunta);
+            throw new Error('Falha ao processar resposta de triagem');
           }
+        } catch (triageErr) {
+          console.error('Erro ao processar resposta de triagem:', triageErr);
+          addBotMessage('⚠️ Erro ao processar sua resposta. Por favor, tente novamente.');
           setIsLoading(false);
           return;
         }
       }
 
       // Fluxo normal com contexto do paciente
-      const formattedHistory = getFormattedHistory();
-      const promptComContexto = `${contextoAtendimento}\n\nPergunta do cliente: ${messageText}`;
-      
-      const aiResponse = await getAIResponse(promptComContexto, formattedHistory);
+      try {
+        const formattedHistory = getFormattedHistory();
+        const promptComContexto = `${contextoAtendimento}\n\nPergunta do cliente: ${messageText}`;
+        
+        const aiResponse = await getAIResponse(promptComContexto, formattedHistory);
 
-      if (aiResponse.success) {
-        addBotMessage(aiResponse.response);
-      } else {
-        throw new Error(aiResponse.error);
+        if (!aiResponse) {
+          throw new Error('Resposta vazia da IA');
+        }
+
+        if (aiResponse?.success) {
+          addBotMessage(aiResponse?.response || 'Resposta processada');
+        } else {
+          throw new Error(aiResponse?.error || 'Erro desconhecido da IA');
+        }
+      } catch (aiErr) {
+        console.error('Erro ao obter resposta da IA:', aiErr);
+        addBotMessage('⚠️ Erro no atendimento. Tente novamente ou chame um supervisor.');
+        setIsLoading(false);
+        return;
       }
     } catch (err) {
-      console.error('Erro:', err);
+      console.error('Erro geral:', err);
       addBotMessage('⚠️ Erro no atendimento. Tente novamente ou chame um supervisor.');
     } finally {
       setIsLoading(false);
@@ -153,11 +212,27 @@ Medicamentos: ${paciente.medicamentosContinuos?.join(', ') || 'Nenhum'}
   };
 
   const handleQuickButton = useCallback((message) => {
-    setNewMessage(message);
-    setTimeout(() => {
-      handleSendMessage();
-    }, 100);
-  }, [handleSendMessage]);
+    try {
+      if (!message?.trim()) {
+        console.warn('Mensagem de botão rápido vazia');
+        return;
+      }
+      setNewMessage(message);
+      const timerId = setTimeout(() => {
+        try {
+          handleSendMessage();
+        } catch (err) {
+          console.error('Erro ao enviar mensagem do botão rápido:', err);
+          addBotMessage('⚠️ Erro ao processar sua solicitação. Tente novamente.');
+          setIsLoading(false);
+        }
+      }, 100);
+      return () => clearTimeout(timerId);
+    } catch (err) {
+      console.error('Erro no botão rápido:', err);
+      addBotMessage('⚠️ Erro ao processar sua solicitação. Tente novamente.');
+    }
+  }, [handleSendMessage, addBotMessage, setIsLoading]);
 
   const quickButtons = [
     { 
