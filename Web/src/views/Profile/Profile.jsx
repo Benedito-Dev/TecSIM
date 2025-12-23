@@ -4,7 +4,6 @@ import Sidebar from "../../components/SideBarr";
 import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { getCurrentUser } from '../../services/auth/authService';
-import { getEnfermeiroById } from '../../services/enfermeirosService';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -19,13 +18,6 @@ export default function Profile() {
         
         if (userData && userData.tipo === 'enfermeiro') {
           setEnfermeiro(userData);
-          
-          try {
-            const completeData = await getEnfermeiroById(userData.id);
-            setEnfermeiro(completeData);
-          } catch (error) {
-            console.log('Usando dados do localStorage:', error.message);
-          }
         }
       } catch (error) {
         console.error('Erro ao carregar dados do enfermeiro:', error);

@@ -3,7 +3,6 @@ import { User, Save, ArrowLeft, Mail, Phone, Calendar } from 'lucide-react';
 import Sidebar from '../../components/SideBarr';
 import { ThemeContext } from '../../context/ThemeContext';
 import { getCurrentUser } from '../../services/auth/authService';
-import { getEnfermeiroById } from '../../services/enfermeirosService';
 
 export default function EditProfile() {
   const { theme } = useContext(ThemeContext);
@@ -33,21 +32,6 @@ export default function EditProfile() {
             coren: userData.registro_coren || '',
             especialidade: userData.especialidade || 'Enfermagem Geral'
           });
-          
-          try {
-            const completeData = await getEnfermeiroById(userData.id);
-            setFormData({
-              nome: completeData.nome || '',
-              email: completeData.email || '',
-              telefone: completeData.telefone || '',
-              cpf: completeData.cpf || '',
-              dataNascimento: completeData.data_nascimento || '',
-              coren: completeData.registro_coren || '',
-              especialidade: completeData.especialidade || 'Enfermagem Geral'
-            });
-          } catch (error) {
-            console.log('Usando dados do localStorage:', error.message);
-          }
         }
       } catch (error) {
         console.error('Erro ao carregar dados do usuário:', error);

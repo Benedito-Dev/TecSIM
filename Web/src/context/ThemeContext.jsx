@@ -1,6 +1,28 @@
 // context/ThemeContext.js
 import React, { createContext, useState, useMemo } from 'react';
-import { lightTheme, darkTheme } from '../constants/temas';
+
+// Temas inline para evitar dependência externa
+const lightTheme = {
+  primary: '#0284c7',
+  background: '#f8fafc',
+  backgroundCard: '#ffffff',
+  backgroundSecondary: '#f1f5f9',
+  textPrimary: '#1e293b',
+  textSecondary: '#64748b',
+  textOnPrimary: '#ffffff',
+  border: '#e2e8f0'
+};
+
+const darkTheme = {
+  primary: '#0ea5e9',
+  background: '#0f172a',
+  backgroundCard: '#1e293b',
+  backgroundSecondary: '#334155',
+  textPrimary: '#f1f5f9',
+  textSecondary: '#94a3b8',
+  textOnPrimary: '#0f172a',
+  border: '#475569'
+};
 
 export const ThemeContext = createContext();
 

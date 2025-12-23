@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Pill, Plus } from 'lucide-react';
+import { Pill, Plus } from 'lucide-react';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useElderMode } from "../../context/ElderModeContext";
 import Sidebar from '../../components/SideBarr';
-import { getLembretes, deleteLembrete } from '../../services/lembretesService';
 
 const Lembretes = () => {
   const navigate = useNavigate();
@@ -73,36 +72,15 @@ const Lembretes = () => {
   ];
 
   useEffect(() => {
-    async function fetchLembretes() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await getLembretes();
-        if (Array.isArray(response)) {
-          setLembretes(response);
-        } else {
-          console.warn("API não retornou array, usando dados mockados");
-          setLembretes(lembretesMock);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar lembretes:", error);
-        setError("Erro ao carregar lembretes. Usando dados de exemplo.");
-        setLembretes(lembretesMock);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchLembretes();
+    // Simula carregamento de dados
+    setIsLoading(true);
+    setError(null);
+    
+    setTimeout(() => {
+      setLembretes(lembretesMock);
+      setIsLoading(false);
+    }, 1000);
   }, []);
-
-  const handleGoBack = () => {
-    navigate('/dashboard');
-  };
-
-  const handleAddLembrete = () => {
-    navigate('/lembretes/novo');
-  };
 
   const handleToggleStatus = (id) => {
     setLembretes(prev => prev.map(lembrete => 
@@ -115,7 +93,7 @@ const Lembretes = () => {
   const handleDeleteLembrete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este lembrete?')) {
       try {
-        await deleteLembrete(id);
+        // Simula exclusão
         setLembretes(prev => prev.filter(lembrete => lembrete.id_lembrete !== id));
         alert('Lembrete excluído com sucesso!');
       } catch (error) {
@@ -123,14 +101,6 @@ const Lembretes = () => {
         alert('Erro ao excluir lembrete. Tente novamente.');
       }
     }
-  };
-
-  const getStatusColor = (status) => {
-    return status === true ? theme.success : theme.textMuted;
-  };
-
-  const getStatusText = (status) => {
-    return status === true ? 'Ativo' : 'Inativo';
   };
 
   return (
@@ -174,7 +144,7 @@ const Lembretes = () => {
           </div>
 
           <button
-            onClick={handleAddLembrete}
+            onClick={() => navigate('/lembretes/novo')}
             className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             style={{ 
               fontSize: `${fontSize}px`,
@@ -279,7 +249,7 @@ const Lembretes = () => {
                 Comece criando seu primeiro lembrete de medicamento para nunca mais esquecer de tomar.
               </p>
               <button
-                onClick={handleAddLembrete}
+                onClick={() => navigate('/lembretes/novo')}
                 className="px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                 style={{ 
                   fontSize: `${fontSize}px`,

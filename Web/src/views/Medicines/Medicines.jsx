@@ -1,9 +1,7 @@
-// src/pages/Medicamentos.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import Sidebar from "../../components/SideBarr";
 import { FaPills, FaSearch, FaSpinner, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
-import { getMedicamentos } from '../../services/medicamentosService';
 
 const Medicamentos = () => {
   const [medicamentos, setMedicamentos] = useState([]);
@@ -15,26 +13,29 @@ const Medicamentos = () => {
   const { theme, mode } = useTheme();
 
   useEffect(() => {
-    async function fetchMedicamentos() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await getMedicamentos();
-        if (Array.isArray(response)) {
-          setMedicamentos(response);
-        } else {
-          console.error("Resposta inesperada:", response);
-          setError("Formato de dados inválido recebido do servidor.");
+    // Simula carregamento de medicamentos
+    setIsLoading(true);
+    setError(null);
+    
+    setTimeout(() => {
+      // Dados mockados para demonstração
+      const mockMedicamentos = [
+        {
+          id_medicamento: 1,
+          nome: "Paracetamol",
+          tipo: "Analgésico",
+          descricao: "Medicamento para dor e febre",
+          composicao: "Paracetamol 500mg",
+          dosagem_padrao: "1 comprimido",
+          faixa_etaria_minima: 12,
+          faixa_etaria_maxima: 65,
+          contraindicacoes: "Problemas hepáticos",
+          interacoes_comuns: "Warfarina"
         }
-      } catch (error) {
-        console.error("Erro ao buscar medicamentos:", error);
-        setError("Erro ao carregar medicamentos. Tente novamente mais tarde.");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchMedicamentos();
+      ];
+      setMedicamentos(mockMedicamentos);
+      setIsLoading(false);
+    }, 1000);
   }, []);
 
   const filteredMedicamentos = medicamentos.filter(

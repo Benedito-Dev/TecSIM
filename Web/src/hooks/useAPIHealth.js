@@ -42,9 +42,11 @@ export const useAPIHealth = (checkInterval = DEFAULT_CHECK_INTERVAL) => {
     // Verificação inicial
     checkHealth();
     
-    // Verificação periódica
-    if (checkInterval > 0) {
-      const interval = setInterval(checkHealth, checkInterval);
+    // Verificação periódica com validação de entrada
+    const validatedInterval = typeof checkInterval === 'number' && checkInterval > 0 ? checkInterval : DEFAULT_CHECK_INTERVAL;
+    
+    if (validatedInterval > 0) {
+      const interval = setInterval(checkHealth, validatedInterval);
       return () => clearInterval(interval);
     }
   }, [checkHealth, checkInterval]);

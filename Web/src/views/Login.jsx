@@ -1,17 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import EmailInput from '../components/Inputs/EmailInput';
-import PasswordInput from '../components/Inputs/PasswordInput';
-import { lightTheme } from '../constants/temas';
-
-import logoImage from '../assets/images/logo.png';
 import { login, getCurrentUser } from '../services/auth/authService';
-
 import { useAuth } from '../context/UserContext';
-
-const COOLDOWN_TIMER_INTERVAL = 1000;
-const SUCCESS_REDIRECT_DELAY = 1000;
-const DEFAULT_COOLDOWN_SECONDS = 10;
 
 export default function LoginEnfermeiroPage() {
   const [email, setEmail] = useState('');
@@ -35,7 +25,7 @@ export default function LoginEnfermeiroPage() {
     
     // Contador regressivo do cooldown
     if (cooldown > 0) {
-      timerRef.current = setTimeout(() => setCooldown(cooldown - 1), COOLDOWN_TIMER_INTERVAL);
+      timerRef.current = setTimeout(() => setCooldown(cooldown - 1), 1000);
     }
     return () => {
       console.log('🔄 LoginEnfermeiroPage desmontou');
@@ -88,7 +78,7 @@ export default function LoginEnfermeiroPage() {
       console.log('🟡 Navegando para dashboard de enfermeiro...');
       setTimeout(() => {
         navigate('/dashboard'); // Rota específica para enfermeiros
-      }, SUCCESS_REDIRECT_DELAY);
+      }, 1000);
 
     } catch (error) {
       console.log('🔴 Erro no login de enfermeiro:', error);
@@ -99,7 +89,7 @@ export default function LoginEnfermeiroPage() {
         msg = 'Acesso permitido apenas para enfermeiros cadastrados.';
       }
       
-      let seconds = error.cooldown || DEFAULT_COOLDOWN_SECONDS;
+      let seconds = error.cooldown || 10;
 
       setCooldown(seconds);
       msg += ` Aguarde ${seconds} segundo${seconds > 1 ? 's' : ''} antes de tentar novamente.`;
@@ -107,13 +97,6 @@ export default function LoginEnfermeiroPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Teste: função simples sem API
-  const handleTest = (e) => {
-    if (e) e.preventDefault();
-    console.log('🧪 Teste de clique - sem API');
-    setErrorMessage('Mensagem de teste - sem recarregar');
   };
 
   // Função para redirecionar para login de paciente
@@ -132,11 +115,9 @@ export default function LoginEnfermeiroPage() {
 
         {/* Logo */}
         <div className="bg-white p-4 rounded-full shadow-lg mb-6 border-2 border-blue-200">
-          <img
-            src={logoImage}
-            alt="Logo do Sistema"
-            className="w-28 h-28"
-          />
+          <div className="w-28 h-28 bg-blue-500 rounded-full flex items-center justify-center">
+            <span className="text-white text-3xl font-bold">TS</span>
+          </div>
         </div>
 
         {/* Card de Inputs */}
@@ -152,12 +133,15 @@ export default function LoginEnfermeiroPage() {
             <label className="block text-sm font-medium text-blue-700 mb-2">
               E-mail Profissional
             </label>
-            <EmailInput
+            <input
+              type="email"
               value={email}
-              onChangeText={setEmail}
-              onValidityChange={setValidEmail}
-              theme={lightTheme}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setValidEmail(e.target.value.includes('@'));
+              }}
               placeholder="seu.email@hospital.com"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -165,11 +149,15 @@ export default function LoginEnfermeiroPage() {
             <label className="block text-sm font-medium text-blue-700 mb-2">
               Senha
             </label>
-            <PasswordInput
-              onChangeText={setPassword}
-              onValidityChange={setValidPassword}
-              theme={lightTheme}
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setValidPassword(e.target.value.length >= 6);
+              }}
               placeholder="Sua senha de acesso"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -206,14 +194,6 @@ export default function LoginEnfermeiroPage() {
             }`}
         >
           {loading ? 'Entrando...' : 'Entrar como Enfermeiro'}
-        </button>
-
-        {/* Botão Teste */}
-        <button
-          onClick={handleTest}
-          className="mt-4 w-full py-4 rounded-xl font-bold text-gray-700 bg-yellow-400 hover:bg-yellow-500 text-lg transition-all duration-300 shadow-md"
-        >
-          Teste (Sem API)
         </button>
 
         {/* Link para login de paciente */}

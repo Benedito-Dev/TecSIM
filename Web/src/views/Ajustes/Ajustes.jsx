@@ -34,10 +34,6 @@ export default function Ajustes() {
     modoRapido: true
   });
 
-  const handleGoBack = () => {
-    navigate('/dashboard');
-  };
-
   const toggleConfig = (key) => {
     setConfiguracoes(prev => ({
       ...prev,

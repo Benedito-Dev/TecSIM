@@ -1,20 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRegister } from '../context/RegisterContext';
-// Mantenha todos os seus imports
-import CpfInput from '../components/Inputs/CpfInput'
-import EmailInput from '../components/Inputs/EmailInput';
-import PasswordInput from '../components/Inputs/PasswordInput';
-import PesoInput from '../components/Inputs/PesoInput';
-import DateInput from '../components/Inputs/DataInput';
-import GenderInput from '../components/Inputs/InputGender';
-import InputField from '../components/Inputs/InputField';
-import TermsModal from '../components/Inputs/TermsModal';
-import { lightTheme } from '../constants/temas';
-
-import logoImage from '../assets/images/logo.png';
-
-import { requestOtp } from '../services/auth/otpService';
 
 export default function RegisterPage() {
     // --- States de Dados ---
@@ -24,8 +10,8 @@ export default function RegisterPage() {
     const [senha, setPassword] = useState('');
     const [peso_kg, setWeight] = useState('');
     const [data_nascimento, setBirthDate] = useState('');
-    const [genero, setGender] = useState(''); // Estado para o Gênero
-    const [aceite_termos, setTerms] = useState(true); // Estado para o Gênero
+    const [genero, setGender] = useState('');
+    const [aceite_termos, setTerms] = useState(true);
     
     // --- States de Validação ---
     const [validCpf, setValidCpf] = useState(false)
@@ -33,15 +19,15 @@ export default function RegisterPage() {
     const [validPassword, setValidPassword] = useState(false);
     const [validWeight, setValidWeight] = useState(false);
     const [validDate, setValidDate] = useState(false);
-    const [validGender, setValidGender] = useState(false); // Estado de validação do Gênero
+    const [validGender, setValidGender] = useState(false);
 
     const [showTerms, setShowTerms] = useState(false);
 
     const navigate = useNavigate();
     const { setRegisterData } = useRegister();
 
-    // Validação geral: agora inclui o validGender
-    const allValid =  validCpf && validEmail && validPassword && validWeight && validDate && validGender;
+    // Validação geral
+    const allValid = validCpf && validEmail && validPassword && validWeight && validDate && validGender;
 
     const handleCreateAccount = useCallback(() => {
         setShowTerms(true);
@@ -56,8 +42,9 @@ export default function RegisterPage() {
         }
 
         try {
-            const response = await requestOtp(email); // função que envia o OTP
-            if (response?.email) {
+            // Simula envio de OTP
+            console.log('Enviando OTP para:', email);
+            
             setRegisterData({
                 cpf,
                 nome,
@@ -70,10 +57,7 @@ export default function RegisterPage() {
             });
 
             alert('Código enviado! Verifique seu e-mail.');
-            navigate('/verify'); // vai para a tela de verificação
-            } else {
-            alert('Erro ao enviar código. Tente novamente.');
-            }
+            navigate('/verify');
         } catch (err) {
             alert('Falha ao enviar código de verificação.');
         }
@@ -95,8 +79,8 @@ export default function RegisterPage() {
                 {/* Cabeçalho */}
                 <div className="text-center mb-8">
                     {/* Logo Estilizada (Círculo Azul) */}
-                    <div className="mx-auto w-20 h-20 mb-3 flex items-center justify-center">
-                        <img src={logoImage} alt="" />
+                    <div className="mx-auto w-20 h-20 mb-3 flex items-center justify-center bg-blue-500 rounded-full">
+                        <span className="text-white text-2xl font-bold">TS</span>
                     </div>
                     
                     <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
@@ -115,63 +99,118 @@ export default function RegisterPage() {
                         
                         {/* COLUNA 1: Nome, Email, Senha */}
                         <div className="space-y-6">
-                            <InputField
-                                label="Nome Completo"
-                                value={nome}
-                                onChangeText={setName}
-                                placeholder="Seu nome"
-                                theme={lightTheme}
-                            />
-                            <CpfInput
-                                value={cpf}
-                                onChangeText={setCpf}
-                                onValidityChange={setValidCpf}
-                                theme={lightTheme}
-                            />
-                            <EmailInput
-                                value={email}
-                                onChangeText={setEmail}
-                                onValidityChange={setValidEmail}
-                                theme={lightTheme}
-                            />
-                            <PasswordInput
-                                onChangeText={setPassword}
-                                onValidityChange={setValidPassword}
-                                theme={lightTheme}
-                            />
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Nome Completo
+                                </label>
+                                <input
+                                    type="text"
+                                    value={nome}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="Seu nome"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    CPF
+                                </label>
+                                <input
+                                    type="text"
+                                    value={cpf}
+                                    onChange={(e) => {
+                                        setCpf(e.target.value);
+                                        setValidCpf(e.target.value.length >= 11);
+                                    }}
+                                    placeholder="000.000.000-00"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                        setValidEmail(e.target.value.includes('@'));
+                                    }}
+                                    placeholder="seu@email.com"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Senha
+                                </label>
+                                <input
+                                    type="password"
+                                    value={senha}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        setValidPassword(e.target.value.length >= 6);
+                                    }}
+                                    placeholder="Mínimo 6 caracteres"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
                         </div>
 
                         {/* COLUNA 2: Peso, Data de Nascimento, Gênero */}
                         <div className="space-y-6">
-                            <PesoInput
-                                label="Peso (kg)"
-                                value={peso_kg}
-                                onChangeText={setWeight}
-                                onValidityChange={setValidWeight}
-                                theme={lightTheme}
-                            />
-                            <DateInput
-                                label="Data de Nascimento"
-                                value={data_nascimento}
-                                onChange={setBirthDate}
-                                onValidityChange={setValidDate}
-                                theme={lightTheme}
-                            />
-                            {/* Input de Gênero Personalizado e Estilizado */}
-                            <div className="pt-2"> 
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Peso (kg)
+                                </label>
+                                <input
+                                    type="number"
+                                    value={peso_kg}
+                                    onChange={(e) => {
+                                        setWeight(e.target.value);
+                                        setValidWeight(e.target.value > 0);
+                                    }}
+                                    placeholder="Ex: 70"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Data de Nascimento
+                                </label>
+                                <input
+                                    type="date"
+                                    value={data_nascimento}
+                                    onChange={(e) => {
+                                        setBirthDate(e.target.value);
+                                        setValidDate(!!e.target.value);
+                                    }}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                            
+                            <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Gênero
                                 </label>
-                                <GenderInput
+                                <select
                                     value={genero}
-                                    onChange={(val) => {
-                                        setGender(val);
-                                        setValidGender(!!val); // Valida se algum valor foi escolhido
+                                    onChange={(e) => {
+                                        setGender(e.target.value);
+                                        setValidGender(!!e.target.value);
                                     }}
-                                    theme={lightTheme}
-                                    fontSize={16}
-                                />
-                                {/* OBS: O componente GenderInput deve ser um SELECT ou Radios para funcionar bem aqui */}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">Selecione</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="feminino">Feminino</option>
+                                    <option value="outro">Outro</option>
+                                </select>
                             </div>
                         </div>
                     </div> {/* Fim do Grid */}
@@ -206,12 +245,31 @@ export default function RegisterPage() {
                 </div>
             </div>
 
-            {/* Modal de Termos */}
-            <TermsModal
-                visible={showTerms}
-                onClose={() => setShowTerms(false)}
-                onAccept={handleAcceptTerms}
-            />
+            {/* Modal de Termos - Simples */}
+            {showTerms && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+                        <h3 className="text-lg font-bold mb-4">Termos de Uso</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Ao criar sua conta, você concorda com nossos termos de uso e política de privacidade.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowTerms(false)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleAcceptTerms}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            >
+                                Aceitar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

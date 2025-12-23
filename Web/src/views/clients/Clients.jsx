@@ -19,8 +19,6 @@ import {
 import Sidebar from "../../components/SideBarr";
 import { useTheme } from "../../context/ThemeContext";
 
-import { getPacientes } from '../../services/pacienteService'
-
 export default function Clients() {
   const navigate = useNavigate();
   const { theme } = useTheme();

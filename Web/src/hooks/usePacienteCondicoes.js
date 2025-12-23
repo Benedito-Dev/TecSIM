@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';
-
 export const usePacienteCondicoes = (pacienteId) => {
   const [condicoes, setCondicoes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,11 +12,9 @@ export const usePacienteCondicoes = (pacienteId) => {
     setError(null);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/pacientes/${pacienteId}/condicoes`);
-      if (!response.ok) throw new Error('Erro ao carregar condições');
-      
-      const data = await response.json();
-      setCondicoes(data);
+      // Simula dados mockados
+      const mockData = [];
+      setCondicoes(mockData);
     } catch (err) {
       setError(err.message);
       console.error('Erro ao carregar condições:', err);

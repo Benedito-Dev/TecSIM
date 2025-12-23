@@ -4,7 +4,6 @@ import { useTheme } from "../../context/ThemeContext";
 import { MessageSquare, Pill, Clock, FileText, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import NotificationIcon from "../../components/Home/Bell";
 import Sidebar from "../../components/SideBarr";
 
 export default function DashboardPage() {
@@ -70,10 +69,6 @@ export default function DashboardPage() {
               <Sun className="w-6 h-6" />
             )}
           </button>
-          
-          <div className="relative">
-            <NotificationIcon initialCount={5} />
-          </div>
         </div>
       </header>
 
