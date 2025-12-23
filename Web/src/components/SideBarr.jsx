@@ -41,9 +41,25 @@ export default function Sidebar() {
     { name: "Ajustes", icon: <Settings size={ICON_SIZE} />, path: "/ajustes" },
   ];
 
-  const handleLogout = useCallback(() => {
-    Logout();
-    navigate('/login');
+  const handleLogout = useCallback(async () => {
+    try {
+      if (typeof Logout !== 'function') {
+        throw new Error('Logout function not available');
+      }
+      await Logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Fallback: clear localStorage and redirect anyway
+      try {
+        localStorage.removeItem('@Auth:token');
+        localStorage.removeItem('@Auth:user');
+        localStorage.removeItem('@Auth:userType');
+      } catch (storageError) {
+        console.error('Failed to clear storage:', storageError);
+      }
+      navigate('/login');
+    }
   }, [Logout, navigate]);
 
   return (

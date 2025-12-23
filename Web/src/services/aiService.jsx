@@ -28,6 +28,11 @@ export const listAvailableModels = async () => {
       };
     }
 
+    // Validar se a API key está presente sem expô-la
+    if (!FINAL_API_KEY || FINAL_API_KEY.length < 10) {
+      throw new Error('API key inválida ou não configurada');
+    }
+
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${FINAL_API_KEY}`);
 
     if (!response.ok) {
@@ -68,13 +73,21 @@ export const listAvailableModels = async () => {
 };
 
 export const getAIResponse = async (message, history = [], options = {}) => {
-  // Log de auditoria para monitorar tentativas
-  console.log(`[AUDIT] Tentativa de mensagem: ${message.substring(0, 100)}${message.length > 100 ? '...' : ''}`);
-
+  // Validação de entrada
   if (typeof message !== 'string' || message.trim() === '') {
     return {
       success: false,
       error: "A mensagem não pode estar vazia"
+    };
+  }
+
+  // Sanitização adicional da mensagem
+  const sanitizedMessage = message.trim().substring(0, 1000); // Limita tamanho
+  
+  if (sanitizedMessage.length === 0) {
+    return {
+      success: false,
+      error: "Mensagem inválida após sanitização"
     };
   }
 
@@ -155,8 +168,8 @@ Para questões de saúde:
       history: chatHistory
     });
 
-    // 🔥 MUDANÇA CRÍTICA: System rules SEMPRE incluído
-    const userMessageContent = systemRules + "\n\nMensagem do usuário: " + message.trim();
+    // System rules SEMPRE incluído com mensagem sanitizada
+    const userMessageContent = systemRules + "\n\nMensagem do usuário: " + sanitizedMessage;
 
     const result = await chat.sendMessage(userMessageContent);
     const responseText = await result.response.text();

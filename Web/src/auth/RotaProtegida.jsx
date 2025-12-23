@@ -15,14 +15,6 @@ function RotaProtegida() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          // Sem token → redireciona
-          setAutorizado(false);
-          navigate("/login");
-          return;
-        }
-
-        // Simula verificação de autenticação
-        if (!token) {
           setAutorizado(false);
           navigate("/login");
           return;

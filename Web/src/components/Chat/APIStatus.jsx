@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { checkAPIHealth } from '../../services/aiService';
 import { APP_CONFIG } from '../../config/appConfig';
 
@@ -6,18 +6,61 @@ const APIStatus = ({ onStatusChange }) => {
   const [status, setStatus] = useState({ healthy: true, checking: true });
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkStatus = async () => {
+      if (!isMounted) {
+        console.warn('[APIStatus] Component unmounted, skipping health check');
+        return;
+      }
+
       try {
+        console.debug('[APIStatus] Iniciando verificação de saúde da API');
         const health = await checkAPIHealth();
+        
+        if (!isMounted) {
+          console.warn('[APIStatus] Component unmounted after health check');
+          return;
+        }
+
+        console.info('[APIStatus] API Health Check Result:', { healthy: health.healthy, timestamp: new Date().toISOString() });
         setStatus({ ...health, checking: false });
-        onStatusChange?.(health);
+        
+        if (typeof onStatusChange === 'function') {
+          onStatusChange(health);
+        }
       } catch (error) {
-        setStatus({ 
+        if (!isMounted) {
+          console.warn('[APIStatus] Component unmounted after error');
+          return;
+        }
+
+        const errorMessage = error?.message || 'Erro ao verificar API';
+        const errorStack = error?.stack || 'Stack trace não disponível';
+        
+        console.error('[APIStatus] Erro ao verificar saúde da API:', {
+          message: errorMessage,
+          stack: errorStack,
+          error: error?.toString(),
+          timestamp: new Date().toISOString()
+        });
+        
+        const errorStatus = { 
           healthy: false, 
           checking: false, 
-          message: 'Erro ao verificar API' 
-        });
-        onStatusChange?.({ healthy: false, message: 'Erro ao verificar API' });
+          message: errorMessage,
+          error: error?.toString()
+        };
+        
+        setStatus(errorStatus);
+        
+        if (typeof onStatusChange === 'function') {
+          try {
+            onStatusChange(errorStatus);
+          } catch (callbackError) {
+            console.error('[APIStatus] Erro ao executar onStatusChange callback:', callbackError);
+          }
+        }
       }
     };
 
@@ -25,7 +68,12 @@ const APIStatus = ({ onStatusChange }) => {
     
     // Verifica periodicamente
     const interval = setInterval(checkStatus, APP_CONFIG.API.HEALTH_CHECK_INTERVAL);
-    return () => clearInterval(interval);
+    
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+      console.debug('[APIStatus] Cleanup: component unmounted');
+    };
   }, [onStatusChange]);
 
   if (status.checking) {
