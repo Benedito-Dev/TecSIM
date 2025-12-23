@@ -15,13 +15,13 @@ const ChatHeader = ({ onGoBack, isLoading, emTriagem }) => {
         background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})` 
       }}
     >
-      <div className="py-4 text-white">
-        <div className="flex w-[100vw] justify-between items-center">
+      <div className="py-4 px-4 text-white">
+        <div className="flex w-full justify-between items-center">
 
           {/* BOTÃO VOLTAR */}
           <button 
             onClick={onGoBack}
-            className="flex items-center space-x-1 p-1 -ml-1 rounded-full hover:bg-white/20 transition-colors"
+            className="flex items-center space-x-1 p-1 rounded-full hover:bg-white/20 transition-colors"
           >
             <ChevronLeft size={fontSize * 1.5 * 0.9} />
             <span 
@@ -57,7 +57,7 @@ const ChatHeader = ({ onGoBack, isLoading, emTriagem }) => {
           </div>
 
           {/* ESPAÇO PARA ALINHAMENTO */}
-          <div className='w-[44px]' /> 
+          <div className="w-[44px]" /> 
         </div>
       </div>
     </div>

@@ -41,7 +41,10 @@ const ChatInput = ({
           placeholder={emTriagem ? "Responda à pergunta de triagem..." : "Digite sua mensagem..."}
           disabled={isLoading}
           rows={1}
-          className="flex-1 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed resize-none"
+          className={
+            "flex-1 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 " +
+            "disabled:opacity-50 disabled:cursor-not-allowed resize-none"
+          }
           style={{ 
             fontSize: `${fontSize}px`, 
             minHeight: MIN_INPUT_HEIGHT, 
