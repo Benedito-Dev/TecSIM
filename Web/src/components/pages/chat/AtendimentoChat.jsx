@@ -4,7 +4,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 import { useTriagem } from '../../hooks/useTriagem';
 import { useChatMessages } from '../../hooks/useChatMessages';
 import { usePacienteCondicoes } from '../../hooks/usePacienteCondicoes';
-import { getAIResponse } from '../../services/aiService';
+import { getAIResponse } from '@/services/aiService';
 import BouncingDots from './BouncingDots';
 
 const INITIAL_MESSAGE_DELAY = 1000;

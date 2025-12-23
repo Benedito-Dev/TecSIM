@@ -1,4 +1,4 @@
-import api from '../../api/api'; // Importa a instância configurada do axios
+import api from '@/api/api'; // Importa a instância configurada do axios
 
 // Utilitário para localStorage
 const storage = {

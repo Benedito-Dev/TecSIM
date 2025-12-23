@@ -33,6 +33,9 @@ import { RegisterProvider } from './context/RegisterContext';
 import { AuthProvider } from './context/UserContext';
 import { ElderModeProvider } from './context/ElderModeContext';
 
+// Constants
+import { ROUTES } from './constants/tecsim';
+
 export default function App() {
   return (
     <Router>
@@ -43,32 +46,32 @@ export default function App() {
             <RegisterProvider> 
               <Routes>
                 {/* Authentication Routes */}
-                <Route path="/" element={<Welcome />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/verify" element={<ConfirmCodePage />} />
+                <Route path={ROUTES.HOME} element={<Welcome />} />
+                <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+                <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+                <Route path={ROUTES.VERIFY} element={<ConfirmCodePage />} />
                 
                 {/* Dashboard Routes */}
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/dashboard-geral" element={<DashboardGeral />} />
+                <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+                <Route path={ROUTES.DASHBOARD_GERAL} element={<DashboardGeral />} />
                 
                 {/* Main Feature Routes */}
-                <Route path="/medicamentos" element={<Medicines />} />
-                <Route path="/perfil" element={<Profile />} />
-                <Route path="/perfil/editar" element={<EditProfile />} />
-                <Route path="/lembretes" element={<Lembretes />} />
-                <Route path="/prescricoes" element={<Prescricao />} />
-                <Route path="/ajustes" element={<Ajustes />} />
+                <Route path={ROUTES.MEDICAMENTOS} element={<Medicines />} />
+                <Route path={ROUTES.PERFIL} element={<Profile />} />
+                <Route path={ROUTES.PERFIL_EDITAR} element={<EditProfile />} />
+                <Route path={ROUTES.LEMBRETES} element={<Lembretes />} />
+                <Route path={ROUTES.PRESCRICOES} element={<Prescricao />} />
+                <Route path={ROUTES.AJUSTES} element={<Ajustes />} />
                 
                 {/* Chat Routes */}
                 <Route path="/chat-inicial" element={<ChatScreen />} />
-                <Route path="/chatbot" element={<ChatScreen />} />
-                <Route path="/atendimento" element={<AtendimentoPaciente />} />
+                <Route path={ROUTES.CHAT} element={<ChatScreen />} />
+                <Route path={ROUTES.ATENDIMENTO} element={<AtendimentoPaciente />} />
                 
                 {/* Client Management Routes */}
-                <Route path="/clientes" element={<Clients />} />
-                <Route path="/novocliente" element={<NewClient />} />
-                <Route path="/formpacient" element={<FormPacient />} />
+                <Route path={ROUTES.CLIENTES} element={<Clients />} />
+                <Route path={ROUTES.NOVO_CLIENTE} element={<NewClient />} />
+                <Route path={ROUTES.FORM_PACIENTE} element={<FormPacient />} />
               </Routes>
             </RegisterProvider> 
             

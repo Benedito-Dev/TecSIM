@@ -3,7 +3,7 @@ import { User, Mail, Phone, Calendar, MapPin, Stethoscope, Clock, Edit, Award, A
 import Sidebar from "../../components/SideBarr";
 import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
-import { getCurrentUser } from '../../services/auth/authService';
+import { getCurrentUser } from '@/services/auth/authService';
 
 export default function Profile() {
   const navigate = useNavigate();

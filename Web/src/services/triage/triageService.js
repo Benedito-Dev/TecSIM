@@ -1,5 +1,5 @@
 import { protocolosTriagem } from './protocolsConfig';
-import { getAIResponse } from '../aiService';
+import { getAIResponse } from '@/services/aiService';
 
 // Estado inicial da triagem
 export const iniciarTriagem = () => ({

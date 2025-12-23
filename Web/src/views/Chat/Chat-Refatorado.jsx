@@ -12,7 +12,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 import { useTriagem } from '../../hooks/useTriagem';
 import { useChatMessages } from '../../hooks/useChatMessages';
 import { useAPIHealth } from '../../hooks/useAPIHealth';
-import { getAIResponse } from '../../services/aiService';
+import { getAIResponse } from '@/services/aiService';
 
 export default function ChatScreen() {
   const { user } = useAuth();

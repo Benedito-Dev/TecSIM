@@ -6,7 +6,7 @@ import {
   processarRespostaTriagem, 
   determinarProximaEtapa,
   getTriageAnalysis 
-} from '../services/triage/triageService';
+} from '@/services/triage/triageService';
 
 export const useTriagem = () => {
   const [triagemState, setTriagemState] = useState(null);

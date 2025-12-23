@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { checkAPIHealth } from '../services/aiService';
+import { checkAPIHealth } from '@/services/aiService';
 
 const DEFAULT_CHECK_INTERVAL = 300000; // 5 minutos
 

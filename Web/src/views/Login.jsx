@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login, getCurrentUser } from '../services/auth/authService';
+import { login, getCurrentUser } from '@/services/auth/authService';
 import { useAuth } from '../context/UserContext';
 
 export default function LoginEnfermeiroPage() {

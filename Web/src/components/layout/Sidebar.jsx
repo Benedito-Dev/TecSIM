@@ -15,8 +15,9 @@ import {
   Moon
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/UserContext";
-import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "@/context/UserContext";
+import { useTheme } from "@/context/ThemeContext";
+import { ROUTES } from "@/constants/tecsim";
 
 const ICON_SIZE = 20;
 const MENU_ICON_SIZE = 22;
@@ -31,14 +32,14 @@ export default function Sidebar() {
   const { theme, toggleTheme, isDark } = useTheme();
 
   const navItems = [
-    { name: "Dashboard", icon: <Home size={ICON_SIZE} />, path: "/dashboard" },
-    { name: "Chatbot", icon: <MessageSquare size={ICON_SIZE} />, path: "/chatbot" },
-    { name: "Medicamentos", icon: <Pill size={ICON_SIZE} />, path: "/medicamentos" },
-    { name: "Prescrições", icon: <FileText size={ICON_SIZE} />, path: "/prescricoes" },
-    { name: "Lembretes", icon: <Clock size={ICON_SIZE} />, path: "/lembretes" },
-    { name: "Clientes", icon: <Users size={ICON_SIZE} />, path: "/clientes" },
-    { name: "Perfil", icon: <User size={ICON_SIZE} />, path: "/perfil" },
-    { name: "Ajustes", icon: <Settings size={ICON_SIZE} />, path: "/ajustes" },
+    { name: "Dashboard", icon: <Home size={ICON_SIZE} />, path: ROUTES.DASHBOARD },
+    { name: "Chatbot", icon: <MessageSquare size={ICON_SIZE} />, path: ROUTES.CHAT },
+    { name: "Medicamentos", icon: <Pill size={ICON_SIZE} />, path: ROUTES.MEDICAMENTOS },
+    { name: "Prescrições", icon: <FileText size={ICON_SIZE} />, path: ROUTES.PRESCRICOES },
+    { name: "Lembretes", icon: <Clock size={ICON_SIZE} />, path: ROUTES.LEMBRETES },
+    { name: "Clientes", icon: <Users size={ICON_SIZE} />, path: ROUTES.CLIENTES },
+    { name: "Perfil", icon: <User size={ICON_SIZE} />, path: ROUTES.PERFIL },
+    { name: "Ajustes", icon: <Settings size={ICON_SIZE} />, path: ROUTES.AJUSTES },
   ];
 
   const handleLogout = useCallback(async () => {
@@ -47,7 +48,7 @@ export default function Sidebar() {
         throw new Error('Logout function not available');
       }
       await Logout();
-      navigate('/login');
+      navigate(ROUTES.LOGIN);
     } catch (error) {
       console.error('Logout failed:', error);
       // Fallback: clear localStorage and redirect anyway
@@ -58,7 +59,7 @@ export default function Sidebar() {
       } catch (storageError) {
         console.error('Failed to clear storage:', storageError);
       }
-      navigate('/login');
+      navigate(ROUTES.LOGIN);
     }
   }, [Logout, navigate]);
 

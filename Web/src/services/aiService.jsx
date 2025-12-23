@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { APP_CONFIG } from '../config/appConfig';
+import { APP_CONFIG } from '@/config/appConfig';
 
 // Validação simplificada - só verifica se tem API key
 if (!APP_CONFIG.API.GOOGLE_API_KEY) {
