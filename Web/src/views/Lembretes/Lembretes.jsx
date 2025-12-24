@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Pill, Plus } from 'lucide-react';
+import { Pill, Plus, Clock } from 'lucide-react';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useElderMode } from "../../context/ElderModeContext";
 import Sidebar from '../../components/layout/Sidebar';
+import { PageContainer } from '../../components/layout/PageContainer';
 
 const Lembretes = () => {
   const navigate = useNavigate();
@@ -103,52 +104,21 @@ const Lembretes = () => {
     }
   };
 
+  const handleNovoLembrete = () => {
+    navigate('/lembretes/novo');
+  };
+
   return (
-    <div 
-      className="flex h-screen"
-      style={{ background: theme.background }}
-    >
+    <div className="flex min-h-screen">
       <Sidebar />
-
-      <div className="flex-1 flex flex-col">
-        {/* Header moderno */}
-        <div 
-          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
-          style={{ 
-            background: theme.primary,
-            color: theme.textOnPrimary
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <Pill size={28} />
-              <h1 className="text-2xl font-bold">Lembretes</h1>
-            </div>
-          </div>
-
-          <button
-            onClick={() => navigate('/lembretes/novo')}
-            className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-            style={{ 
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: theme.textOnPrimary
-            }}
-          >
-            <Plus size={18} />
-            Novo Lembrete
-          </button>
-        </div>
-
-        {/* Conteúdo */}
-        <div 
-          className="flex-1 overflow-y-auto p-8 ml-20 lg:ml-60"
-          style={{ 
-            color: theme.textPrimary,
-            background: `linear-gradient(to bottom, ${theme.background}, ${theme.backgroundSecondary})`
-          }}
-        >
+      
+      <PageContainer 
+        title="Lembretes" 
+        icon={Clock}
+        buttonText="Novo Lembrete"
+        onButtonClick={handleNovoLembrete}
+        style={{ backgroundImage: 'none', background: theme.background }}
+      >
           
           {/* Loading State */}
           {isLoading && (
@@ -204,7 +174,7 @@ const Lembretes = () => {
               <div 
                 className="mx-auto mb-8 p-8 rounded-full shadow-lg"
                 style={{ 
-                  background: `linear-gradient(135deg, ${theme.backgroundCard}, ${theme.backgroundSecondary})`,
+                  background: theme.backgroundCard,
                   width: 'fit-content'
                 }}
               >
@@ -236,7 +206,7 @@ const Lembretes = () => {
                 className="px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                 style={{ 
                   fontSize: `${fontSize}px`,
-                  background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
+                  background: theme.primary,
                   color: theme.textOnPrimary
                 }}
               >
@@ -284,7 +254,7 @@ const Lembretes = () => {
                     key={lembrete.id_lembrete}
                     className="group rounded-3xl p-8 shadow-md hover:shadow-2xl transition-all duration-500 border-2 hover:border-opacity-50 transform hover:-translate-y-1"
                     style={{
-                      background: `linear-gradient(135deg, ${theme.backgroundCard}, ${theme.backgroundSecondary})`,
+                      background: theme.backgroundCard,
                       borderColor: theme.border,
                       color: theme.textPrimary
                     }}
@@ -390,8 +360,8 @@ const Lembretes = () => {
                           className="px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
                           style={{
                             background: lembrete.status === 'ativo' 
-                              ? `linear-gradient(135deg, ${theme.error}, ${theme.error}dd)` 
-                              : `linear-gradient(135deg, ${theme.success}, ${theme.success}dd)`,
+                              ? theme.error
+                              : theme.success,
                             color: theme.textOnPrimary
                           }}
                         >
@@ -400,7 +370,7 @@ const Lembretes = () => {
                         <button 
                           className="px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
                           style={{
-                            background: `linear-gradient(135deg, ${theme.info}, ${theme.info}dd)`,
+                            background: theme.info,
                             color: theme.textOnPrimary
                           }}
                         >
@@ -410,7 +380,7 @@ const Lembretes = () => {
                           onClick={() => handleDeleteLembrete(lembrete.id_lembrete)}
                           className="px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
                           style={{
-                            background: `linear-gradient(135deg, ${theme.error}, ${theme.error}dd)`,
+                            background: theme.error,
                             color: theme.textOnPrimary
                           }}
                         >
@@ -423,8 +393,7 @@ const Lembretes = () => {
               </div>
             </div>
           )}
-        </div>
-      </div>
+      </PageContainer>
     </div>
   );
 };

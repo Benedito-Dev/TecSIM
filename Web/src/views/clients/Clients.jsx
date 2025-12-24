@@ -17,6 +17,7 @@ import {
   Stethoscope
 } from "lucide-react";
 import Sidebar from "../../components/layout/Sidebar";
+import { PageContainer } from "../../components/layout/PageContainer";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function Clients() {
@@ -732,59 +733,25 @@ export default function Clients() {
             >
               Imprimir Ficha
             </button>
-          </div>
+        </div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <div 
-      className="flex h-screen"
-      style={{ background: theme.background }}
-    >
-      {/* Sidebar */}
+    <>
+    <div className="flex min-h-screen">
       <Sidebar />
-
-      {/* Conteúdo principal */}
-      <div className="flex-1 flex flex-col transition-all duration-300">
-        
-        {/* Navbar */}
-        <div 
-          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
-          style={{ 
-            background: theme.primary,
-            color: theme.textOnPrimary
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <Users size={28} />
-              <h1 className="text-2xl font-bold">Gestão de Clientes</h1>
-            </div>
-          </div>
-
-          <button 
-            onClick={handleNovoCliente}
-            className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-            style={{ 
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: theme.textOnPrimary
-            }}
-          >
-            <Plus size={18} />
-            Novo Cliente
-          </button>
-        </div>
-
-        {/* Conteúdo */}
-        <div 
-          className="flex-1 ml-20 lg:ml-60 overflow-y-auto p-6"
-          style={{ color: theme.textPrimary }}
-        >
-          <div className="max-w-7xl mx-auto">
+      
+      <PageContainer 
+        title="Gestão de Clientes" 
+        icon={Users}
+        buttonText="Novo Cliente"
+        onButtonClick={handleNovoCliente}
+        style={{ backgroundImage: 'none', background: theme.background }}
+      >
+        <div className="max-w-7xl mx-auto">
             
             {/* Barra de Ferramentas */}
             <div 
@@ -1008,17 +975,17 @@ export default function Clients() {
               </div>
             )}
           </div>
-        </div>
-      </div>
-
-      {/* Modal de Detalhes - ATUALIZEI para passar a função de atendimento */}
-      {clienteSelecionado && (
-        <ModalDetalhes 
-          cliente={clienteSelecionado} 
-          onClose={handleFecharDetalhes}
-          onIniciarAtendimento={handleIniciarAtendimento}
-        />
-      )}
+      </PageContainer>
     </div>
+
+    {/* Modal de Detalhes */}
+    {clienteSelecionado && (
+      <ModalDetalhes 
+        cliente={clienteSelecionado} 
+        onClose={handleFecharDetalhes}
+        onIniciarAtendimento={handleIniciarAtendimento}
+      />
+    )}
+    </>
   );
 }

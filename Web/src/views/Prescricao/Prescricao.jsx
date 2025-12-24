@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
 import Sidebar from '../../components/layout/Sidebar';
+import { PageContainer } from '../../components/layout/PageContainer';
 import { useTheme } from '../../context/ThemeContext';
 
 export default function Prescricao() {
@@ -32,48 +33,21 @@ export default function Prescricao() {
     }
   ]);
 
+  const handleNovaPrescricao = () => {
+    console.log('Nova prescrição');
+    alert('Funcionalidade de nova prescrição em desenvolvimento!');
+  };
+
   return (
-    <div 
-      className="flex min-h-screen"
-      style={{ background: theme.background }}
-    >
+    <div className="flex min-h-screen">
       <Sidebar />
       
-      <div className="flex-1 transition-all duration-300">
-        {/* Header */}
-        <div 
-          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
-          style={{ 
-            background: theme.primary,
-            color: theme.textOnPrimary
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <FileText size={28} />
-              <h1 className="text-2xl font-bold">Prescrições</h1>
-            </div>
-          </div>
-
-          <button 
-            className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-            style={{ 
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: theme.textOnPrimary
-            }}
-          >
-            <Plus size={18} />
-            Nova Prescrição
-          </button>
-        </div>
-
-        {/* Content */}
-        <div 
-          className="p-6 ml-20 lg:ml-60"
-          style={{ color: theme.textPrimary }}
-        >
+      <PageContainer 
+        title="Prescrições" 
+        icon={FileText}
+        buttonText="Nova Prescrição"
+        onButtonClick={handleNovaPrescricao}
+      >
           {/* Search Bar */}
           <div className="mb-6">
             <div className="relative">
@@ -226,8 +200,7 @@ export default function Prescricao() {
               </table>
             </div>
           </div>
-        </div>
-      </div>
+      </PageContainer>
     </div>
   );
 }

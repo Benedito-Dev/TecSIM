@@ -4,6 +4,7 @@ import { PageContainer } from "../../components/layout/PageContainer";
 import { FaPills, FaSearch, FaSpinner, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Pill } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import api from "../../api/api";
 
 const Medicamentos = () => {
   const [medicamentos, setMedicamentos] = useState([]);
@@ -15,29 +16,39 @@ const Medicamentos = () => {
   const { theme, mode } = useTheme();
 
   useEffect(() => {
-    // Simula carregamento de medicamentos
-    setIsLoading(true);
-    setError(null);
-    
-    setTimeout(() => {
-      // Dados mockados para demonstração
-      const mockMedicamentos = [
-        {
-          id_medicamento: 1,
-          nome: "Paracetamol",
-          tipo: "Analgésico",
-          descricao: "Medicamento para dor e febre",
-          composicao: "Paracetamol 500mg",
-          dosagem_padrao: "1 comprimido",
-          faixa_etaria_minima: 12,
-          faixa_etaria_maxima: 65,
-          contraindicacoes: "Problemas hepáticos",
-          interacoes_comuns: "Warfarina"
-        }
-      ];
-      setMedicamentos(mockMedicamentos);
-      setIsLoading(false);
-    }, 1000);
+    const fetchMedicamentos = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const response = await api.get('/medicamentos');
+        setMedicamentos(response.data);
+      } catch (err) {
+        console.error('Erro ao buscar medicamentos:', err);
+        setError('Erro ao carregar medicamentos. Usando dados de exemplo.');
+        
+        // Fallback para dados mock
+        const mockMedicamentos = [
+          {
+            id_medicamento: 1,
+            nome: "Paracetamol",
+            tipo: "Analgésico",
+            descricao: "Medicamento para dor e febre",
+            composicao: "Paracetamol 500mg",
+            dosagem_padrao: "1 comprimido",
+            faixa_etaria_minima: 12,
+            faixa_etaria_maxima: 65,
+            contraindicacoes: "Problemas hepáticos",
+            interacoes_comuns: "Warfarina"
+          }
+        ];
+        setMedicamentos(mockMedicamentos);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMedicamentos();
   }, []);
 
   const filteredMedicamentos = medicamentos.filter(
