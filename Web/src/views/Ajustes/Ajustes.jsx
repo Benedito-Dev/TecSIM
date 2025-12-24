@@ -17,6 +17,7 @@ import {
   Printer
 } from "lucide-react";
 import Sidebar from "../../components/layout/Sidebar";
+import { PageContainer } from "../../components/layout/PageContainer";
 import { ThemeContext } from "../../context/ThemeContext";
 import { useElderMode } from "../../context/ElderModeContext";
 
@@ -121,37 +122,13 @@ export default function Ajustes() {
   );
 
   return (
-    <div 
-      className="flex h-screen"
-      style={{ background: theme.background }}
-    >
-      {/* Sidebar */}
+    <div className="flex min-h-screen">
       <Sidebar />
-
-      {/* Conteúdo principal */}
-      <div className="flex-1 flex flex-col transition-all duration-300">
-        
-        {/* Navbar */}
-        <div 
-          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
-          style={{ 
-            background: theme.primary,
-            color: theme.textOnPrimary
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <Settings size={28} />
-              <h1 className="text-2xl font-bold">Configurações do Sistema</h1>
-            </div>
-          </div>
-        </div>
-
-        {/* Conteúdo dos Ajustes */}
-        <div 
-          className="flex-1 overflow-y-auto ml-20 lg:ml-60 p-6"
-          style={{ color: theme.textPrimary }}
-        >
+      
+      <PageContainer 
+        title="Configurações do Sistema" 
+        icon={Settings}
+      >
           <div className="max-w-4xl mx-auto space-y-6">
             
             {/* Seção: Aparência e Acessibilidade */}
@@ -440,8 +417,7 @@ export default function Ajustes() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+      </PageContainer>
     </div>
   );
 }

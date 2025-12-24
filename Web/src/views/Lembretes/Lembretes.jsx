@@ -117,7 +117,6 @@ const Lembretes = () => {
         icon={Clock}
         buttonText="Novo Lembrete"
         onButtonClick={handleNovoLembrete}
-        style={{ backgroundImage: 'none', background: theme.background }}
       >
           
           {/* Loading State */}

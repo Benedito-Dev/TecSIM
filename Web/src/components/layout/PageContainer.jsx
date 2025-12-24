@@ -16,9 +16,28 @@ export function PageContainer({
   return (
     <div 
       className="min-h-screen flex-1"
-      style={{ background: theme.background }}
+      style={{ 
+        background: `${theme.background} !important`, 
+        backgroundImage: 'none !important',
+        backgroundAttachment: 'initial !important',
+        backgroundClip: 'initial !important',
+        backgroundOrigin: 'initial !important',
+        backgroundPosition: 'initial !important',
+        backgroundRepeat: 'no-repeat !important',
+        backgroundSize: 'initial !important'
+      }}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full bg-solid" 
+      style={{ 
+        background: `${theme.background} !important`, 
+        backgroundImage: 'none !important',
+        backgroundAttachment: 'initial !important',
+        backgroundClip: 'initial !important',
+        backgroundOrigin: 'initial !important',
+        backgroundPosition: 'initial !important',
+        backgroundRepeat: 'no-repeat !important',
+        backgroundSize: 'initial !important'
+      }}>
         
         {/* Navbar */}
         <div 
@@ -54,11 +73,13 @@ export function PageContainer({
 
         {/* Conteúdo principal */}
         <main 
-          className={cn('p-6 flex-1 max-w-7xl mx-auto w-full', className)}
-          style={{ color: theme.textPrimary }}
+          className={cn('p-6 flex-1 w-full', className)}
+          style={{ color: theme.textPrimary, background: theme.background, backgroundImage: 'none' }}
           {...props}
         >
-          {children}
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>

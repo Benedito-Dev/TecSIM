@@ -749,7 +749,6 @@ export default function Clients() {
         icon={Users}
         buttonText="Novo Cliente"
         onButtonClick={handleNovoCliente}
-        style={{ backgroundImage: 'none', background: theme.background }}
       >
         <div className="max-w-7xl mx-auto">
             
