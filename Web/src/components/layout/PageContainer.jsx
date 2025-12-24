@@ -1,20 +1,61 @@
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
+import { useTheme } from '../../context/ThemeContext';
+import { Plus } from 'lucide-react';
 
-export function PageContainer({ children, className, title, ...props }) {
+export function PageContainer({ 
+  children, 
+  className, 
+  title, 
+  icon: Icon,
+  buttonText,
+  onButtonClick,
+  ...props 
+}) {
+  const { theme } = useTheme();
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Espaço para sidebar */}
-      <div className="ml-20 transition-all duration-300">
-        {/* Header da página */}
-        {title && (
-          <div className="bg-white shadow-sm border-b px-6 py-4">
-            <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
-          </div>
-        )}
+    <div 
+      className="min-h-screen flex-1"
+      style={{ background: theme.background }}
+    >
+      <div className="flex flex-col h-full">
         
+        {/* Navbar */}
+        <div 
+          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
+          style={{ 
+            background: theme.primary,
+            color: theme.textOnPrimary
+          }}
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              {Icon && <Icon size={28} />}
+              <h1 className="text-2xl font-bold">{title}</h1>
+            </div>
+          </div>
+
+          {buttonText && onButtonClick && (
+            <button 
+              onClick={onButtonClick}
+              className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              style={{ 
+                background: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: theme.textOnPrimary
+              }}
+            >
+              <Plus size={18} />
+              {buttonText}
+            </button>
+          )}
+        </div>
+
         {/* Conteúdo principal */}
         <main 
-          className={cn('p-6', className)} 
+          className={cn('p-6 flex-1 max-w-7xl mx-auto w-full', className)}
+          style={{ color: theme.textPrimary }}
           {...props}
         >
           {children}

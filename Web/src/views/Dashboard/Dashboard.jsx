@@ -1,10 +1,11 @@
 import React from "react";
 import { useAuth } from "../../context/UserContext";
 import { useTheme } from "../../context/ThemeContext";
-import { MessageSquare, Pill, Clock, FileText, Sun, Moon } from "lucide-react";
+import { MessageSquare, Pill, Clock, FileText, Sun, Moon, House } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Sidebar from "../../components/layout/Sidebar";
+import { PageContainer } from "../../components/layout/PageContainer";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
@@ -40,27 +41,22 @@ export default function DashboardPage() {
   }
 
   return (
-    <div 
-      className="min-h-screen flex flex-col"
-      style={{ background: theme.background }}
-    >
+    <div className="flex min-h-screen">
       <Sidebar />
-
-      {/* Top Bar */}
-      <header 
-        className="flex items-center justify-between px-8 py-5 shadow-md"
-        style={{ 
-          background: theme.primary,
-          color: theme.textOnPrimary
-        }}
+      
+      <PageContainer 
+        title="Dashboard" 
+        icon={House}
       >
-        <h1 className="text-3xl font-extrabold tracking-wide">DashBoard</h1>
-        
-        <div className="flex items-center gap-4">
-          {/* Botão Toggle Theme */}
+        {/* Botão Toggle Theme - Posicionado no canto superior direito */}
+        <div className="absolute top-6 right-6">
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors"
+            style={{ 
+              background: 'rgba(255,255,255,0.1)',
+              color: theme.textOnPrimary
+            }}
             title={`Mudar para tema ${mode === 'light' ? 'escuro' : 'claro'}`}
           >
             {mode === 'light' ? (
@@ -70,10 +66,6 @@ export default function DashboardPage() {
             )}
           </button>
         </div>
-      </header>
-
-      {/* Conteúdo principal */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-6 py-10">
         {/* Saudação */}
         <div className="mb-10">
           <h2 
@@ -199,7 +191,7 @@ export default function DashboardPage() {
             </p>
           </div>
         </div>
-      </main>
+      </PageContainer>
     </div>
   );
 }

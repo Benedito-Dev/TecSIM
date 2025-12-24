@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Sidebar from "../../components/layout/Sidebar";
+import { PageContainer } from "../../components/layout/PageContainer";
 import { FaPills, FaSearch, FaSpinner, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Pill } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
 const Medicamentos = () => {
@@ -80,32 +82,21 @@ const Medicamentos = () => {
     alert(`${medicamento.nome} adicionado à sua lista!`);
   }, []);
 
+  const handleNovoMedicamento = () => {
+    console.log("Novo medicamento");
+    alert("Funcionalidade de novo medicamento em desenvolvimento!");
+  };
+
   return (
-    <div 
-      className="flex h-screen"
-      style={{ background: theme.background }}
-    >
-      {/* Sidebar */}
+    <div className="flex min-h-screen">
       <Sidebar />
-
-      {/* Conteúdo principal */}
-      <div className="flex-1 flex flex-col transition-all duration-300">
-        {/* Navbar */}
-        <div 
-          className="h-20 shadow flex items-center px-6 sticky top-0 z-10"
-          style={{ 
-            background: theme.primary,
-            color: theme.textOnPrimary
-          }}
-        >
-          <h1 className="text-3xl font-bold">Medicamentos</h1>
-        </div>
-
-        {/* Conteúdo da lista */}
-        <div 
-          className="p-6 overflow-y-auto flex-1 ml-20 lg:ml-60"
-          style={{ color: theme.textPrimary }}
-        >
+      
+      <PageContainer 
+        title="Medicamentos" 
+        icon={Pill}
+        buttonText="Novo Medicamento"
+        onButtonClick={handleNovoMedicamento}
+      >
           {/* Barra de busca */}
           <div className="relative mb-6">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -440,8 +431,7 @@ const Medicamentos = () => {
               )}
             </div>
           )}
-        </div>
-      </div>
+      </PageContainer>
     </div>
   );
 };
