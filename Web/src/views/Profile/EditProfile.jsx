@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { User, Save, ArrowLeft, Mail, Phone, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/layout/Sidebar';
 import { ThemeContext } from '../../context/ThemeContext';
 import { getCurrentUser } from '@/services/auth/authService';
 
 export default function EditProfile() {
+  const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
   const [formData, setFormData] = useState({
     nome: '',
@@ -69,6 +71,7 @@ export default function EditProfile() {
     
     console.log('Dados salvos:', formData);
     alert('Perfil atualizado com sucesso!');
+    navigate('/perfil'); // Volta para a tela de perfil
   };
 
   if (loading) {
@@ -103,6 +106,7 @@ export default function EditProfile() {
               <h1 className="text-2xl font-bold" style={{ color: theme.textOnPrimary }}>Editar Perfil</h1>
             </div>
             <button 
+              onClick={() => navigate('/perfil')}
               className="px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90 transition-colors"
               style={{ background: theme.backgroundCard, color: theme.primary }}
             >

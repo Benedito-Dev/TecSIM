@@ -8,7 +8,6 @@ import ConfirmCodePage from './views/Code';
 
 // Views - Dashboard
 import DashboardPage from './views/Dashboard/Dashboard';
-import DashboardGeral from './views/Dashboard/DashboardGeral';
 
 // Views - Main Features
 import Medicines from './views/Medicines/Medicines';
@@ -53,7 +52,6 @@ export default function App() {
                 
                 {/* Dashboard Routes */}
                 <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-                <Route path={ROUTES.DASHBOARD_GERAL} element={<DashboardGeral />} />
                 
                 {/* Main Feature Routes */}
                 <Route path={ROUTES.MEDICAMENTOS} element={<Medicines />} />

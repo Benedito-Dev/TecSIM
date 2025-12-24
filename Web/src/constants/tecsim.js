@@ -5,7 +5,6 @@ export const ROUTES = {
   REGISTER: '/register',
   VERIFY: '/verify',
   DASHBOARD: '/dashboard',
-  DASHBOARD_GERAL: '/dashboard-geral',
   MEDICAMENTOS: '/medicamentos',
   PERFIL: '/perfil',
   PERFIL_EDITAR: '/perfil/editar',
