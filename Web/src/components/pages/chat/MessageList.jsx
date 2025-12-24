@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, useMemo } from 'react';
-import { useElderMode } from '../../context/ElderModeContext';
-import { ThemeContext } from '../../context/ThemeContext';
+import { useElderMode } from '../../../context/ElderModeContext';
+import { ThemeContext } from '../../../context/ThemeContext';
 import BouncingDots from './BouncingDots';
 
 const MAX_MESSAGE_WIDTH_MOBILE = '80%';

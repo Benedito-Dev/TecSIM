@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Pill, Plus } from 'lucide-react';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useElderMode } from "../../context/ElderModeContext";
-import Sidebar from '../../components/SideBarr';
+import Sidebar from '../../components/layout/Sidebar';
 
 const Lembretes = () => {
   const navigate = useNavigate();
@@ -113,33 +113,16 @@ const Lembretes = () => {
       <div className="flex-1 flex flex-col">
         {/* Header moderno */}
         <div 
-          className="h-20 w-full shadow-lg flex items-center justify-between px-8 sticky top-0 z-10 border-b"
+          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
           style={{ 
-            background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
-            color: theme.textOnPrimary,
-            borderColor: theme.border
+            background: theme.primary,
+            color: theme.textOnPrimary
           }}
         >
           <div className="flex items-center gap-4">
-            <div 
-              className="p-3 rounded-xl shadow-lg"
-              style={{ background: 'rgba(255,255,255,0.1)' }}
-            >
-              <Pill size={fontSize * 1.2} color="white" />
-            </div>
-            <div>
-              <h1 
-                className="text-3xl font-bold mb-1"
-                style={{ fontSize: `${fontSize * 1.4}px` }}
-              >
-                Lembretes
-              </h1>
-              <p 
-                className="opacity-90"
-                style={{ fontSize: `${fontSize * 0.85}px` }}
-              >
-                Gerencie seus medicamentos
-              </p>
+            <div className="flex items-center gap-3">
+              <Pill size={28} />
+              <h1 className="text-2xl font-bold">Lembretes</h1>
             </div>
           </div>
 
@@ -147,13 +130,13 @@ const Lembretes = () => {
             onClick={() => navigate('/lembretes/novo')}
             className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             style={{ 
-              fontSize: `${fontSize}px`,
               background: 'rgba(255,255,255,0.15)',
               backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.2)'
+              border: '1px solid rgba(255,255,255,0.2)',
+              color: theme.textOnPrimary
             }}
           >
-            <Plus size={fontSize * 1.1} />
+            <Plus size={18} />
             Novo Lembrete
           </button>
         </div>

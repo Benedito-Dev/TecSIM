@@ -16,7 +16,7 @@ import {
   Eye,
   Stethoscope
 } from "lucide-react";
-import Sidebar from "../../components/SideBarr";
+import Sidebar from "../../components/layout/Sidebar";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function Clients() {

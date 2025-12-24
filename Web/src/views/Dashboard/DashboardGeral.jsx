@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../../components/SideBarr';
-import IntegracaoSUS from '../../components/IntegracaoSUS';
+import Sidebar from '../../components/layout/Sidebar';
+// import IntegracaoSUS from '../../components/IntegracaoSUS';
 import { BarChart3, ArrowRight } from 'lucide-react';
 
 const DashboardGeral = () => {
@@ -36,7 +36,7 @@ const DashboardGeral = () => {
           <div className="max-w-7xl mx-auto space-y-8">
             
             {/* Integração SUS */}
-            <IntegracaoSUS paciente={{nome: "Sistema Integrado"}} />
+            {/* <IntegracaoSUS paciente={{nome: "Sistema Integrado"}} /> */}
             
             {/* Call to Action */}
             <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white p-8 rounded-xl text-center">

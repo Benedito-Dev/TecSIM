@@ -1,7 +1,7 @@
 import React, { useContext, useCallback } from 'react';
 import { Clock, FileText, User, Pill } from 'lucide-react';
-import { useElderMode } from '../../context/ElderModeContext';
-import { ThemeContext } from '../../context/ThemeContext';
+import { useElderMode } from '../../../context/ElderModeContext';
+import { ThemeContext } from '../../../context/ThemeContext';
 
 const BUTTON_PRESS_DELAY = 100;
 

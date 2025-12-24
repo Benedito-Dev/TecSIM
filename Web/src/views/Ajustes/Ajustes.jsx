@@ -16,7 +16,7 @@ import {
   FileText,
   Printer
 } from "lucide-react";
-import Sidebar from "../../components/SideBarr";
+import Sidebar from "../../components/layout/Sidebar";
 import { ThemeContext } from "../../context/ThemeContext";
 import { useElderMode } from "../../context/ElderModeContext";
 

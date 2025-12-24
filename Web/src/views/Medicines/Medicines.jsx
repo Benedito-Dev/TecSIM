@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Sidebar from "../../components/SideBarr";
+import Sidebar from "../../components/layout/Sidebar";
 import { FaPills, FaSearch, FaSpinner, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 

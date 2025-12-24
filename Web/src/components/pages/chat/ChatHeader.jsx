@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { ChevronLeft } from 'lucide-react';
-import { useElderMode } from '../../context/ElderModeContext';
-import { ThemeContext } from '../../context/ThemeContext';
+import { useElderMode } from '../../../context/ElderModeContext';
+import { ThemeContext } from '../../../context/ThemeContext';
 import APIStatus from './APIStatus';
 
 const ChatHeader = ({ onGoBack, isLoading, emTriagem }) => {

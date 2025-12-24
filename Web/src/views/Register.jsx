@@ -61,7 +61,6 @@ export default function RegisterPage() {
         } catch (err) {
             alert('Falha ao enviar código de verificação.');
         }
-        };
     }, [allValid, email, cpf, nome, senha, data_nascimento, peso_kg, genero, aceite_termos, setRegisterData, navigate]);
 
     return (

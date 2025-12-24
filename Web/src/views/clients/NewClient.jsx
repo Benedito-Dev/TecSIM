@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/SideBarr";
+import Sidebar from "../../components/layout/Sidebar";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import FormPacient from "./FormPacient";
 import { useTheme } from "../../context/ThemeContext";

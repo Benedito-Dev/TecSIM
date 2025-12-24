@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { checkAPIHealth } from '@/services/aiService';
-import { APP_CONFIG } from '../../config/appConfig';
+import { APP_CONFIG } from '../../../config/appConfig';
 
 const APIStatus = ({ onStatusChange }) => {
   const [status, setStatus] = useState({ healthy: true, checking: true });

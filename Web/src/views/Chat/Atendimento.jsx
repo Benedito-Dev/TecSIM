@@ -23,11 +23,11 @@ import {
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
-import Sidebar from '../../components/SideBarr';
-import AtendimentoChat from '../../components/Chat/AtendimentoChat';
-import ProtocoloContinuidade from '../../components/ProtocoloContinuidade';
-import IntegracaoSUS from '../../components/IntegracaoSUS';
-import { usePacienteCondicoes } from '../../hooks/usePacienteCondicoes';
+import Sidebar from '../../components/layout/Sidebar';
+// import AtendimentoChat from '../../components/Chat/AtendimentoChat';
+// import ProtocoloContinuidade from '../../components/ProtocoloContinuidade';
+// import IntegracaoSUS from '../../components/IntegracaoSUS';
+// import { usePacienteCondicoes } from '../../hooks/usePacienteCondicoes';
 
 export default function AtendimentoPaciente() {
   const location = useLocation();
@@ -40,7 +40,7 @@ export default function AtendimentoPaciente() {
   const [resultadoTriagem, setResultadoTriagem] = useState(null);
   const [emTriagem, setEmTriagem] = useState(false);
 
-  const { condicoes } = usePacienteCondicoes(paciente?.id);
+  const condicoes = []; // Mock data since hook is commented
 
   // Função para determinar o tipo de gráfico baseado nas condições do paciente
   const getGraficoEspecifico = () => {
@@ -431,14 +431,14 @@ export default function AtendimentoPaciente() {
         </div>
 
         {/* Protocolo de Continuidade */}
-        <ProtocoloContinuidade 
+        {/* <ProtocoloContinuidade 
           paciente={paciente}
           tipoGrafico={tipoGrafico}
           ultimoAtendimento={{data: '15/01/2024', farmaceutico: 'Dr. Silva'}}
-        />
+        /> */}
 
         {/* Integração SUS */}
-        <IntegracaoSUS paciente={paciente} />
+        {/* <IntegracaoSUS paciente={paciente} /> */}
 
         {/* Serviços ClinicFarma - Acompanhamento de Adesão */}
         <div className="mb-8">
@@ -1143,12 +1143,15 @@ export default function AtendimentoPaciente() {
               </h2>
             </div>
             <div className="p-0">
-              <AtendimentoChat 
+              {/* <AtendimentoChat 
                 paciente={paciente} 
                 onTriagemComplete={handleTriagemComplete}
                 onTriagemStart={() => setEmTriagem(true)}
                 onTriagemEnd={() => setEmTriagem(false)}
-              />
+              /> */}
+              <div className="p-6 text-center" style={{ color: theme.textSecondary }}>
+                Chat de atendimento em desenvolvimento
+              </div>
             </div>
           </div>
 

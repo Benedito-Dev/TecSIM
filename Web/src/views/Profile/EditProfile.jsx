@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { User, Save, ArrowLeft, Mail, Phone, Calendar } from 'lucide-react';
-import Sidebar from '../../components/SideBarr';
+import Sidebar from '../../components/layout/Sidebar';
 import { ThemeContext } from '../../context/ThemeContext';
 import { getCurrentUser } from '@/services/auth/authService';
 

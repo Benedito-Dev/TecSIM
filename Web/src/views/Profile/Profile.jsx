@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { User, Mail, Phone, Calendar, MapPin, Stethoscope, Clock, Edit, Award, Activity } from "lucide-react";
-import Sidebar from "../../components/SideBarr";
+import Sidebar from "../../components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { getCurrentUser } from '@/services/auth/authService';

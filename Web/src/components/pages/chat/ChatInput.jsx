@@ -1,7 +1,7 @@
 import React, { useRef, useContext, useCallback } from 'react';
 import { Send } from 'lucide-react';
-import { useElderMode } from '../../context/ElderModeContext';
-import { ThemeContext } from '../../context/ThemeContext';
+import { useElderMode } from '../../../context/ElderModeContext';
+import { ThemeContext } from '../../../context/ThemeContext';
 
 const MIN_INPUT_HEIGHT = '48px';
 const MAX_INPUT_HEIGHT = '100px';

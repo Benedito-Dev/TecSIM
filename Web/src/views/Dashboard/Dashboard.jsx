@@ -4,7 +4,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { MessageSquare, Pill, Clock, FileText, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import Sidebar from "../../components/SideBarr";
+import Sidebar from "../../components/layout/Sidebar";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();

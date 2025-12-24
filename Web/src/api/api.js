@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const REQUEST_TIMEOUT = 10000;
 
 // Para Android emulador, use:

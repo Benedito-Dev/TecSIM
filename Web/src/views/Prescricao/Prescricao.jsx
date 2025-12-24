@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
-import Sidebar from '../../components/SideBarr';
+import Sidebar from '../../components/layout/Sidebar';
 import { useTheme } from '../../context/ThemeContext';
 
 export default function Prescricao() {
@@ -42,31 +42,31 @@ export default function Prescricao() {
       <div className="flex-1 transition-all duration-300">
         {/* Header */}
         <div 
-          className="shadow-sm border-b p-5"
-          style={{
+          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
+          style={{ 
             background: theme.primary,
-            color: theme.textOnPrimary,
-            borderColor: theme.border
+            color: theme.textOnPrimary
           }}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               <FileText size={28} />
               <h1 className="text-2xl font-bold">Prescrições</h1>
             </div>
-            <button 
-              className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-              style={{ 
-                background: 'rgba(255,255,255,0.15)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                color: theme.textOnPrimary
-              }}
-            >
-              <Plus size={20} />
-              Nova Prescrição
-            </button>
           </div>
+
+          <button 
+            className="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            style={{ 
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              color: theme.textOnPrimary
+            }}
+          >
+            <Plus size={18} />
+            Nova Prescrição
+          </button>
         </div>
 
         {/* Content */}
