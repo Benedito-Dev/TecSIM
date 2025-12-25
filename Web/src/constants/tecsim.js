@@ -8,7 +8,6 @@ export const ROUTES = {
   MEDICAMENTOS: '/medicamentos',
   PERFIL: '/perfil',
   PERFIL_EDITAR: '/perfil/editar',
-  LEMBRETES: '/lembretes',
   PRESCRICOES: '/prescricoes',
   AJUSTES: '/ajustes',
   CHAT: '/chatbot',

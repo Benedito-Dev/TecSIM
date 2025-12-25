@@ -1,8 +1,8 @@
 import React from 'react';
-import { Phone, Calendar, Pill, Stethoscope, Eye, Edit } from 'lucide-react';
+import { Phone, Calendar, Pill, Stethoscope, Eye, Edit, Bell } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 
-export const ClientCard = ({ cliente, onIniciarAtendimento, onVerDetalhes, onEditar }) => {
+export const ClientCard = ({ cliente, onIniciarAtendimento, onVerDetalhes, onEditar, onVerLembretes }) => {
   const { theme } = useTheme();
 
   return (
@@ -138,6 +138,18 @@ export const ClientCard = ({ cliente, onIniciarAtendimento, onVerDetalhes, onEdi
           >
             <Edit size={14} />
             Editar
+          </button>
+          
+          <button
+            onClick={() => onVerLembretes(cliente)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:opacity-90 transition-colors text-sm"
+            style={{
+              background: theme.info,
+              color: theme.textOnPrimary
+            }}
+          >
+            <Bell size={14} />
+            Lembretes
           </button>
         </div>
       </div>

@@ -110,6 +110,12 @@ export default function Clients() {
     console.log('Editar cliente:', cliente);
   };
 
+  const handleVerLembretes = (cliente) => {
+    navigate(`/lembretes/paciente/${cliente.id}`, {
+      state: { paciente: cliente }
+    });
+  };
+
   const clientesFiltrados = clientes.filter(cliente => {
     // Filtro por status
     if (filtroAtivo !== "todos" && cliente.status !== filtroAtivo) {
@@ -171,6 +177,7 @@ export default function Clients() {
               onIniciarAtendimento={handleIniciarAtendimento}
               onVerDetalhes={handleVerDetalhes}
               onEditar={handleEditarCliente}
+              onVerLembretes={handleVerLembretes}
               onClearSearch={() => setSearchTerm("")}
             />
           </div>

@@ -9,6 +9,7 @@ export const ClientsList = ({
   onIniciarAtendimento, 
   onVerDetalhes, 
   onEditar,
+  onVerLembretes,
   onClearSearch 
 }) => {
   const { theme } = useTheme();
@@ -60,6 +61,7 @@ export const ClientsList = ({
             onIniciarAtendimento={onIniciarAtendimento}
             onVerDetalhes={onVerDetalhes}
             onEditar={onEditar}
+            onVerLembretes={onVerLembretes}
           />
         ))}
       </div>

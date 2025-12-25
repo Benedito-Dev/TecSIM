@@ -13,7 +13,7 @@ import DashboardPage from './views/Dashboard/Dashboard';
 import Medicines from './views/Medicines/Medicines';
 import Profile from './views/Profile/Profile';
 import EditProfile from './views/Profile/EditProfile';
-import Lembretes from './views/Lembretes/Lembretes';
+import LembretesPaciente from './views/Lembretes/LembretesPaciente';
 import Prescricao from './views/Prescricao/Prescricao';
 import Ajustes from './views/Ajustes/Ajustes';
 
@@ -57,7 +57,7 @@ export default function App() {
                 <Route path={ROUTES.MEDICAMENTOS} element={<Medicines />} />
                 <Route path={ROUTES.PERFIL} element={<Profile />} />
                 <Route path={ROUTES.PERFIL_EDITAR} element={<EditProfile />} />
-                <Route path={ROUTES.LEMBRETES} element={<Lembretes />} />
+                <Route path="/lembretes/paciente/:pacienteId" element={<LembretesPaciente />} />
                 <Route path={ROUTES.PRESCRICOES} element={<Prescricao />} />
                 <Route path={ROUTES.AJUSTES} element={<Ajustes />} />
                 
