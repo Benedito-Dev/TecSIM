@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Stethoscope, User, ArrowLeft, Save } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 
 export const AtendimentoHeader = ({ paciente, emTriagem, onVoltar, onSalvar }) => {
   const { theme } = useTheme();
+
+  // Fixa o horário no momento da criação do componente
+  const horarioAtendimento = useMemo(() => {
+    return new Date().toLocaleString('pt-BR');
+  }, [paciente.id]); // Só recalcula se mudar de paciente
 
   return (
     <div 
@@ -34,7 +39,7 @@ export const AtendimentoHeader = ({ paciente, emTriagem, onVoltar, onSalvar }) =
           <div className="text-right">
             <p className="text-sm opacity-75">Data/Hora</p>
             <p className="text-sm font-medium">
-              {new Date().toLocaleString('pt-BR')}
+              {horarioAtendimento}
             </p>
           </div>
           <button 
