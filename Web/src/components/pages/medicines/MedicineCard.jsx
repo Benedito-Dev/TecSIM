@@ -34,7 +34,7 @@ const MedicineCard = ({ medicine, onAdd, formatPrice }) => {
                 className="text-xs font-medium px-2 py-1 rounded-full"
                 style={{
                   background: theme.primaryLight,
-                  color: theme.primary
+                  color: theme.textOnPrimary
                 }}
               >
                 {medicine.tipo}
