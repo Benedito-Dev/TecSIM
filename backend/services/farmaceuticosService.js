@@ -1,20 +1,20 @@
-const repository = require('../repository/enfermeirosRepository');
+const repository = require('../repository/farmaceuticosRepository');
 const { ValidationError, ConflictError, NotFoundError } = require('../utils/errors');
 const { isValidEmail } = require('../utils/validationUtils');
 
-class EnfermeirosService {
+class FarmaceuticosService {
   static async getAll() {
-    const enfermeiros = await repository.findAll();
-    return enfermeiros;
+    const farmaceuticos = await repository.findAll();
+    return farmaceuticos;
   }
 
   static async getById(id) {
     if (isNaN(id)) throw new ValidationError('ID inválido. Informe um número válido.');
     
-    const enfermeiro = await repository.findById(id);
-    if (!enfermeiro) throw new NotFoundError('Enfermeiro não encontrado.');
+    const farmaceutico = await repository.findById(id);
+    if (!farmaceutico) throw new NotFoundError('Farmacêutico não encontrado.');
     
-    return enfermeiro;
+    return farmaceutico;
   }
 
   static async getByEmail(email) {
@@ -22,32 +22,32 @@ class EnfermeirosService {
       throw new ValidationError('Email inválido.');
     }
 
-    const enfermeiro = await repository.findByEmail(email);
-    if (!enfermeiro) throw new NotFoundError('Enfermeiro não encontrado.');
+    const farmaceutico = await repository.findByEmail(email);
+    if (!farmaceutico) throw new NotFoundError('Farmacêutico não encontrado.');
     
-    return enfermeiro;
+    return farmaceutico;
   }
 
-  static async getByCoren(registro_coren) {
-    if (!registro_coren || registro_coren.trim().length === 0) {
-      throw new ValidationError('Registro COREN inválido.');
+  static async getByCrf(registro_crf) {
+    if (!registro_crf || registro_crf.trim().length === 0) {
+      throw new ValidationError('Registro CRF inválido.');
     }
 
-    const enfermeiro = await repository.findByCOREN(registro_coren.trim());
-    if (!enfermeiro) throw new NotFoundError('Enfermeiro não encontrado.');
+    const farmaceutico = await repository.findByCRF(registro_crf.trim());
+    if (!farmaceutico) throw new NotFoundError('Farmacêutico não encontrado.');
     
-    return enfermeiro;
+    return farmaceutico;
   }
 
   static async create(dados) {
-    const { email, registro_coren, nome, senha } = dados;
+    const { email, registro_crf, nome, senha } = dados;
 
     if (!email || !isValidEmail(email)) {
       throw new ValidationError('Email inválido ou não fornecido.');
     }
     
-    if (!registro_coren || registro_coren.trim().length === 0) {
-      throw new ValidationError('Registro COREN inválido ou não fornecido.');
+    if (!registro_crf || registro_crf.trim().length === 0) {
+      throw new ValidationError('Registro CRF inválido ou não fornecido.');
     }
     
     if (!nome || nome.trim().length < 3) {
@@ -63,38 +63,36 @@ class EnfermeirosService {
       throw new ConflictError('Email já cadastrado.');
     }
 
-    const existingByCoren = await repository.findByCOREN(registro_coren);
-    if (existingByCoren) {
-      throw new ConflictError('Registro COREN já cadastrado.');
+    const existingByCrf = await repository.findByCRF(registro_crf);
+    if (existingByCrf) {
+      throw new ConflictError('Registro CRF já cadastrado.');
     }
 
-    // Preparar dados e criptografar senha
-    const enfermeiroData = {
+    const farmaceuticoData = {
       ...dados,
       nome: dados.nome.trim(),
       email: dados.email.trim().toLowerCase(),
-      registro_coren: dados.registro_coren.trim(),
+      registro_crf: dados.registro_crf.trim(),
       telefone: dados.telefone ? dados.telefone.trim() : null,
       senha: dados.senha,
-      cargo: dados.cargo || 'Enfermeiro',
+      cargo: dados.cargo || 'Farmacêutico',
       status: dados.status || 'Ativo',
       ativo: dados.ativo !== undefined ? dados.ativo : true
     };
 
-    const novoEnfermeiro = await repository.create(enfermeiroData);
-    return novoEnfermeiro;
+    const novoFarmaceutico = await repository.create(farmaceuticoData);
+    return novoFarmaceutico;
   }
 
   static async update(id, dados) {
     if (isNaN(id)) throw new ValidationError('ID inválido.');
 
-    // Remover campos que não devem ser atualizados
     delete dados.senha;
-    delete dados.id_enfermeiro;
+    delete dados.id_farmaceutico;
     delete dados.data_cadastro;
 
     const existing = await repository.findById(id);
-    if (!existing) throw new NotFoundError('Enfermeiro não encontrado.');
+    if (!existing) throw new NotFoundError('Farmacêutico não encontrado.');
 
     if (dados.email && dados.email !== existing.email) {
       const existingByEmail = await repository.findByEmail(dados.email);
@@ -103,22 +101,21 @@ class EnfermeirosService {
       }
     }
 
-    if (dados.registro_coren && dados.registro_coren !== existing.registro_coren) {
-      const existingByCoren = await repository.findByCOREN(dados.registro_coren);
-      if (existingByCoren) {
-        throw new ConflictError('Registro COREN já cadastrado.');
+    if (dados.registro_crf && dados.registro_crf !== existing.registro_crf) {
+      const existingByCrf = await repository.findByCRF(dados.registro_crf);
+      if (existingByCrf) {
+        throw new ConflictError('Registro CRF já cadastrado.');
       }
     }
 
-    // Preparar dados para atualização
     const updateData = { ...dados };
     if (updateData.nome) updateData.nome = updateData.nome.trim();
     if (updateData.email) updateData.email = updateData.email.trim().toLowerCase();
-    if (updateData.registro_coren) updateData.registro_coren = updateData.registro_coren.trim();
+    if (updateData.registro_crf) updateData.registro_crf = updateData.registro_crf.trim();
     if (updateData.telefone) updateData.telefone = updateData.telefone.trim();
 
-    const enfermeiroAtualizado = await repository.update(id, updateData);
-    return enfermeiroAtualizado;
+    const farmaceuticoAtualizado = await repository.update(id, updateData);
+    return farmaceuticoAtualizado;
   }
 
   static async updatePassword(id, senhaAtual, novaSenha) {
@@ -130,8 +127,8 @@ class EnfermeirosService {
       throw new ValidationError('Nova senha deve ter pelo menos 6 caracteres.');
     }
 
-    const enfermeiro = await repository.findById(id);
-    if (!enfermeiro) throw new NotFoundError('Enfermeiro não encontrado.');
+    const farmaceutico = await repository.findById(id);
+    if (!farmaceutico) throw new NotFoundError('Farmacêutico não encontrado.');
 
     const resultado = await repository.updatePassword(id, senhaAtual, novaSenha);
     if (!resultado) {
@@ -144,26 +141,26 @@ class EnfermeirosService {
   static async desativar(id) {
     if (isNaN(id)) throw new ValidationError('ID inválido.');
 
-    const enfermeiro = await repository.desativar(id);
-    if (!enfermeiro) throw new NotFoundError('Enfermeiro não encontrado.');
+    const farmaceutico = await repository.desativar(id);
+    if (!farmaceutico) throw new NotFoundError('Farmacêutico não encontrado.');
 
-    return enfermeiro;
+    return farmaceutico;
   }
 
   static async reativar(id) {
     if (isNaN(id)) throw new ValidationError('ID inválido.');
 
-    const enfermeiro = await repository.reativar(id);
-    if (!enfermeiro) throw new NotFoundError('Enfermeiro não encontrado.');
+    const farmaceutico = await repository.reativar(id);
+    if (!farmaceutico) throw new NotFoundError('Farmacêutico não encontrado.');
 
-    return enfermeiro;
+    return farmaceutico;
   }
 
   static async remove(id) {
     if (isNaN(id)) throw new ValidationError('ID inválido.');
 
     const resultado = await repository.remove(id);
-    if (!resultado) throw new NotFoundError('Enfermeiro não encontrado.');
+    if (!resultado) throw new NotFoundError('Farmacêutico não encontrado.');
 
     return resultado;
   }
@@ -177,8 +174,8 @@ class EnfermeirosService {
       throw new ValidationError('Caminho da imagem não fornecido.');
     }
 
-    const enfermeiro = await repository.findById(id);
-    if (!enfermeiro) throw new NotFoundError('Enfermeiro não encontrado.');
+    const farmaceutico = await repository.findById(id);
+    if (!farmaceutico) throw new NotFoundError('Farmacêutico não encontrado.');
 
     await repository.atualizarFoto(id, caminhoImagem);
     return { message: 'Foto atualizada com sucesso' };
@@ -191,11 +188,11 @@ class EnfermeirosService {
 
     const resultados = await repository.search(searchTerm.trim());
     if (!resultados || resultados.length === 0) {
-      throw new NotFoundError('Nenhum enfermeiro encontrado para o termo de busca.');
+      throw new NotFoundError('Nenhum farmacêutico encontrado para o termo de busca.');
     }
 
     return resultados;
   }
 }
 
-module.exports = EnfermeirosService;
+module.exports = FarmaceuticosService;

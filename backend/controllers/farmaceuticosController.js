@@ -1,20 +1,20 @@
-const service = require('../services/enfermeirosService');
+const service = require('../services/farmaceuticosService');
 
-class EnfermeirosController {
+class FarmaceuticosController {
   async create(req, res) {
     try {
       if (!req.body || Object.keys(req.body).length === 0) {
-        return res.status(400).json({ error: 'Dados do enfermeiro não fornecidos.' });
+        return res.status(400).json({ error: 'Dados do farmacêutico não fornecidos.' });
       }
 
-      const enfermeiro = await service.create(req.body);
+      const farmaceutico = await service.create(req.body);
 
       res.status(201).json({
-        message: 'Enfermeiro criado com sucesso',
-        data: enfermeiro
+        message: 'Farmacêutico criado com sucesso',
+        data: farmaceutico
       });
     } catch (err) {
-      console.error('Erro ao criar enfermeiro:', err);
+      console.error('Erro ao criar farmacêutico:', err);
 
       if (err.statusCode) {
         return res.status(err.statusCode).json({ error: err.message });
@@ -26,16 +26,16 @@ class EnfermeirosController {
 
   async findAll(req, res) {
     try {
-      const enfermeiros = await service.getAll();
-      res.status(200).json(enfermeiros);
+      const farmaceuticos = await service.getAll();
+      res.status(200).json(farmaceuticos);
     } catch (err) {
-      console.error('Erro ao listar enfermeiros:', err);
+      console.error('Erro ao listar farmacêuticos:', err);
 
       if (err.statusCode) {
         return res.status(err.statusCode).json({ error: err.message });
       }
 
-      res.status(500).json({ error: 'Erro ao buscar enfermeiros.' });
+      res.status(500).json({ error: 'Erro ao buscar farmacêuticos.' });
     }
   }
 
@@ -48,10 +48,10 @@ class EnfermeirosController {
         });
       }
 
-      const enfermeiros = await service.search(q.trim());
-      res.status(200).json(enfermeiros);
+      const farmaceuticos = await service.search(q.trim());
+      res.status(200).json(farmaceuticos);
     } catch (err) {
-      console.error('Erro ao buscar enfermeiros:', err);
+      console.error('Erro ao buscar farmacêuticos:', err);
 
       if (err.statusCode) {
         return res.status(err.statusCode).json({ error: err.message });
@@ -68,10 +68,10 @@ class EnfermeirosController {
         return res.status(400).json({ error: 'ID inválido. Deve ser um número.' });
       }
 
-      const enfermeiro = await service.getById(id);
-      res.status(200).json(enfermeiro);
+      const farmaceutico = await service.getById(id);
+      res.status(200).json(farmaceutico);
     } catch (err) {
-      console.error('Erro ao buscar enfermeiro por ID:', err);
+      console.error('Erro ao buscar farmacêutico por ID:', err);
 
       if (err.statusCode) {
         return res.status(err.statusCode).json({ error: err.message });
@@ -92,13 +92,13 @@ class EnfermeirosController {
         return res.status(400).json({ error: 'Nenhum dado fornecido para atualização.' });
       }
 
-      const enfermeiro = await service.update(id, req.body);
+      const farmaceutico = await service.update(id, req.body);
       res.status(200).json({
-        message: 'Enfermeiro atualizado com sucesso',
-        data: enfermeiro
+        message: 'Farmacêutico atualizado com sucesso',
+        data: farmaceutico
       });
     } catch (err) {
-      console.error('Erro ao atualizar enfermeiro:', err);
+      console.error('Erro ao atualizar farmacêutico:', err);
 
       if (err.statusCode) {
         return res.status(err.statusCode).json({ error: err.message });
@@ -117,11 +117,11 @@ class EnfermeirosController {
 
       const removed = await service.remove(id);
       res.status(200).json({
-        message: 'Enfermeiro removido com sucesso',
+        message: 'Farmacêutico removido com sucesso',
         data: removed
       });
     } catch (err) {
-      console.error('Erro ao remover enfermeiro:', err);
+      console.error('Erro ao remover farmacêutico:', err);
 
       if (err.statusCode) {
         return res.status(err.statusCode).json({ error: err.message });
@@ -132,4 +132,4 @@ class EnfermeirosController {
   }
 }
 
-module.exports = new EnfermeirosController();
+module.exports = new FarmaceuticosController();
