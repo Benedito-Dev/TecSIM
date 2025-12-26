@@ -12,11 +12,13 @@ class Paciente {
     aceite_termos,
     data_cadastro,
     ativo,
-    foto_perfil, // Adicionado
-    cpf, // Adicionado pois vi que vem do banco (opcional)
-    alergias = [], // Novo
-    medicacoes = [], // Novo
-    condicoes = [] // Novo
+    foto_perfil,
+    cpf,
+    telefone,
+    endereco,
+    alergias = [],
+    medicacoes = [],
+    condicoes = []
   }) {
     this.id = id;
     this.nome = nome;
@@ -30,9 +32,11 @@ class Paciente {
     this.ativo = ativo;
     this.foto_perfil = foto_perfil;
     this.cpf = cpf;
-    this.alergias = alergias;       // Novo
-    this.medicacoes = medicacoes;   // Novo
-    this.condicoes = condicoes;     // Novo
+    this.telefone = telefone;
+    this.endereco = endereco;
+    this.alergias = alergias;
+    this.medicacoes = medicacoes;
+    this.condicoes = condicoes;
   }
 
   // Método para serialização segura
@@ -49,9 +53,11 @@ class Paciente {
       ativo: this.ativo,
       foto_perfil: this.foto_perfil,
       cpf: this.cpf,
-      alergias: this.alergias,       // Novo
-      medicacoes: this.medicacoes,   // Novo
-      condicoes: this.condicoes      // Novo
+      telefone: this.telefone,
+      endereco: this.endereco,
+      alergias: this.alergias,
+      medicacoes: this.medicacoes,
+      condicoes: this.condicoes
     };
   }
 

@@ -153,12 +153,7 @@ class PacienteController {
         return res.status(400).json({ error: 'ID inválido.' });
       }
 
-      const dadosAtualizacao = req.body;
-      delete dadosAtualizacao.senha;
-      delete dadosAtualizacao.id_paciente;
-      delete dadosAtualizacao.data_cadastro;
-
-      const pacienteAtualizado = await PacienteService.update(id, dadosAtualizacao);
+      const pacienteAtualizado = await PacienteService.update(id, req.body);
       if (!pacienteAtualizado) {
         return res.status(404).json({ error: 'Paciente não encontrado para atualizar.' });
       }
@@ -172,7 +167,7 @@ class PacienteController {
       }
 
       if (error.code === '23505') {
-        return res.status(409).json({ error: 'Email já cadastrado.' });
+        return res.status(409).json({ error: 'Email ou CPF já cadastrado.' });
       }
 
       if (error.name === 'ValidationError') {

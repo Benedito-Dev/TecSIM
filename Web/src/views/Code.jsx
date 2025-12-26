@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
-import { lightTheme } from '../constants/temas';
 import { useRegister } from '../context/RegisterContext';
 import { useNavigate } from 'react-router-dom';
-
-import logoImage from '../assets/images/logo.png';
-
-import { requestOtp, verifyOtp } from '../services/auth/otpService';
-import { createPaciente } from '../services/pacienteService';
 
 export default function ConfirmCodePage() {
   const [code, setCode] = useState('');
@@ -28,31 +22,25 @@ export default function ConfirmCodePage() {
   const handleConfirm = async () => {
     setLoading(true);
     try {
-      const verified = await verifyOtp(registerData.email, code)
-      if (!verified) throw new Error('Codigo invalido');
-
-      const result = await createPaciente(registerData)
-
-      if (result?.data.id) {
-        Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+      // Simula verificação do código
+      if (code === '123456') {
+        alert('Cadastro realizado com sucesso!');
         navigate('/login');
       } else {
-        throw new Error('Erro inesperado ao criar paciente. Tente novamente.');
+        throw new Error('Código inválido');
       }
     } catch (error) {
-      alert('Erro', error.message || 'Ocorreu um erro. Tente novamente.');
-      setCode('')
+      alert(error.message || 'Ocorreu um erro. Tente novamente.');
+      setCode('');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const handleResend = async () => {
     if (resendTimer > 0) return;
     setResendTimer(30);
-    const response = await requestOtp(registerData.email)
     alert('Novo código enviado para o seu e-mail!');
-    // Aqui você chamaria sua API para reenviar o código
   };
 
   // Contagem regressiva
@@ -67,11 +55,9 @@ export default function ConfirmCodePage() {
     <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-gray-50 to-gray-100 py-16 px-4">
 
       {/* Logo */}
-      <img
-        src={logoImage}
-        alt="Logo do Sistema"
-        className="w-32 h-32 mb-10 drop-shadow-md"
-      />
+      <div className="w-32 h-32 mb-10 bg-blue-500 rounded-full flex items-center justify-center">
+        <span className="text-white text-4xl font-bold">TS</span>
+      </div>
 
       {/* Card Container */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center space-y-6">

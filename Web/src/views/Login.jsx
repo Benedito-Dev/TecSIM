@@ -1,15 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import EmailInput from '../components/Inputs/EmailInput';
-import PasswordInput from '../components/Inputs/PasswordInput';
-import { lightTheme } from '../constants/temas';
-
-import logoImage from '../assets/images/logo.png';
-import { login, getCurrentUser } from '../services/auth/authService';
-
+import { login, getCurrentUser } from '@/services/auth/authService';
 import { useAuth } from '../context/UserContext';
 
-export default function LoginEnfermeiroPage() {
+export default function LoginFarmaceuticoPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,14 +21,14 @@ export default function LoginEnfermeiroPage() {
   const { setUser } = useAuth();
 
   useEffect(() => {
-    console.log('✅ LoginEnfermeiroPage montou');
+    console.log('✅ LoginFarmaceuticoPage montou');
     
     // Contador regressivo do cooldown
     if (cooldown > 0) {
       timerRef.current = setTimeout(() => setCooldown(cooldown - 1), 1000);
     }
     return () => {
-      console.log('🔄 LoginEnfermeiroPage desmontou');
+      console.log('🔄 LoginFarmaceuticoPage desmontou');
       clearTimeout(timerRef.current);
     };
   }, [cooldown]);
@@ -46,7 +40,7 @@ export default function LoginEnfermeiroPage() {
       e.stopPropagation();
     }
     
-    console.log('🟡 handleLogin chamado - ENFERMEIRO');
+    console.log('🟡 handleLogin chamado - FARMACEUTICO');
 
     if (!allValid) {
       console.log('🔴 Campos inválidos');
@@ -64,35 +58,35 @@ export default function LoginEnfermeiroPage() {
     setSuccessMessage('');
 
     try {
-      console.log('🟡 Fazendo requisição de login como ENFERMEIRO...');
+      console.log('🟡 Fazendo requisição de login como FARMACEUTICO...');
       
-      // Login específico para enfermeiros
-      const response = await login(email, password, 'enfermeiro');
+      // Login específico para farmaceuticos
+      const response = await login(email, password, 'farmaceutico');
       const userData = await getCurrentUser();
       
-      // Verifica se o usuário retornado é realmente um enfermeiro
-      if (userData.tipo !== 'enfermeiro') {
-        throw new Error('Acesso permitido apenas para enfermeiros');
+      // Verifica se o usuário retornado é realmente um farmaceutico
+      if (userData.tipo !== 'farmaceutico') {
+        throw new Error('Acesso permitido apenas para farmaceuticos');
       }
       
       setUser(userData);
 
-      console.log('✅ Login de enfermeiro bem-sucedido:', response);
+      console.log('✅ Login de farmaceutico bem-sucedido:', response);
 
       setSuccessMessage('Login realizado com sucesso!');
       
-      console.log('🟡 Navegando para dashboard de enfermeiro...');
+      console.log('🟡 Navegando para dashboard de farmaceutico...');
       setTimeout(() => {
-        navigate('/dashboard'); // Rota específica para enfermeiros
+        navigate('/dashboard'); // Rota específica para farmaceuticos
       }, 1000);
 
     } catch (error) {
-      console.log('🔴 Erro no login de enfermeiro:', error);
+      console.log('🔴 Erro no login de farmaceutico:', error);
       let msg = error.message || 'Erro ao realizar login.';
       
       // Tratamento específico para erro de tipo de usuário
-      if (msg.includes('enfermeiro') || msg.includes('tipo') || msg.includes('permitido')) {
-        msg = 'Acesso permitido apenas para enfermeiros cadastrados.';
+      if (msg.includes('farmaceutico') || msg.includes('tipo') || msg.includes('permitido')) {
+        msg = 'Acesso permitido apenas para farmaceuticos cadastrados.';
       }
       
       let seconds = error.cooldown || 10;
@@ -103,13 +97,6 @@ export default function LoginEnfermeiroPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Teste: função simples sem API
-  const handleTest = (e) => {
-    if (e) e.preventDefault();
-    console.log('🧪 Teste de clique - sem API');
-    setErrorMessage('Mensagem de teste - sem recarregar');
   };
 
   // Função para redirecionar para login de paciente
@@ -128,17 +115,15 @@ export default function LoginEnfermeiroPage() {
 
         {/* Logo */}
         <div className="bg-white p-4 rounded-full shadow-lg mb-6 border-2 border-blue-200">
-          <img
-            src={logoImage}
-            alt="Logo do Sistema"
-            className="w-28 h-28"
-          />
+          <div className="w-28 h-28 bg-blue-500 rounded-full flex items-center justify-center">
+            <span className="text-white text-3xl font-bold">TS</span>
+          </div>
         </div>
 
         {/* Card de Inputs */}
         <div className="w-full bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center space-y-6 border border-blue-100">
           <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-4">
-            Área do Enfermeiro
+            Área do Farmacêutico
           </h1>
           <p className="text-gray-600 text-center mb-6">
             Entre com seu e-mail e senha para acessar o sistema
@@ -148,12 +133,15 @@ export default function LoginEnfermeiroPage() {
             <label className="block text-sm font-medium text-blue-700 mb-2">
               E-mail Profissional
             </label>
-            <EmailInput
+            <input
+              type="email"
               value={email}
-              onChangeText={setEmail}
-              onValidityChange={setValidEmail}
-              theme={lightTheme}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setValidEmail(e.target.value.includes('@'));
+              }}
               placeholder="seu.email@hospital.com"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -161,11 +149,15 @@ export default function LoginEnfermeiroPage() {
             <label className="block text-sm font-medium text-blue-700 mb-2">
               Senha
             </label>
-            <PasswordInput
-              onChangeText={setPassword}
-              onValidityChange={setValidPassword}
-              theme={lightTheme}
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setValidPassword(e.target.value.length >= 6);
+              }}
               placeholder="Sua senha de acesso"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -201,15 +193,7 @@ export default function LoginEnfermeiroPage() {
               : 'bg-gray-400 cursor-not-allowed'
             }`}
         >
-          {loading ? 'Entrando...' : 'Entrar como Enfermeiro'}
-        </button>
-
-        {/* Botão Teste */}
-        <button
-          onClick={handleTest}
-          className="mt-4 w-full py-4 rounded-xl font-bold text-gray-700 bg-yellow-400 hover:bg-yellow-500 text-lg transition-all duration-300 shadow-md"
-        >
-          Teste (Sem API)
+          {loading ? 'Entrando...' : 'Entrar como Farmacêutico'}
         </button>
 
         {/* Link para login de paciente */}
@@ -223,10 +207,10 @@ export default function LoginEnfermeiroPage() {
           </button>
         </p>
 
-        {/* Informação adicional para enfermeiros */}
+        {/* Informação adicional para farmaceuticos */}
         <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
           <p className="text-xs text-blue-700 text-center">
-            💡 Acesso restrito a enfermeiros cadastrados no sistema
+            💡 Acesso restrito a farmacêuticos cadastrados no sistema
           </p>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import { protocolosTriagem } from './protocolsConfig';
-import { getAIResponse } from '../aiService';
-import { protocolosEspecializados } from './protocolsEspecializados';
+import { getAIResponse } from '@/services/aiService';
 
 // Estado inicial da triagem
 export const iniciarTriagem = () => ({
@@ -46,32 +45,14 @@ export const identificarProtocolo = (mensagemUsuario) => {
 
 // Identificar protocolo especializado baseado nas condições do paciente
 export const identificarProtocoloEspecializado = (mensagemUsuario, condicoesPaciente = []) => {
-  // 1. Identifica protocolo base
+  // Identifica protocolo base
   const protocoloBase = identificarProtocolo(mensagemUsuario);
   
   if (!protocoloBase || !condicoesPaciente.length) {
     return protocoloBase;
   }
   
-  // 2. Verifica se existe versão especializada
-  const condicoesAtivas = condicoesPaciente.filter(c => c.ativo);
-  
-  for (const condicao of condicoesAtivas) {
-    const chaveEspecializada = `${protocoloBase.nome.toLowerCase()}_${condicao.condicao}`;
-    
-    if (protocolosEspecializados[chaveEspecializada]) {
-      const protocoloEspecializado = {
-        ...protocoloBase,
-        ...protocolosEspecializados[chaveEspecializada],
-        tipo: 'especializado',
-        condicao_relacionada: condicao.condicao,
-        severidade_paciente: condicao.severidade
-      };
-      
-      return protocoloEspecializado;
-    }
-  }
-  
+  // Por enquanto retorna o protocolo base até implementar protocolos especializados
   return protocoloBase;
 };
 

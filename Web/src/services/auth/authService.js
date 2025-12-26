@@ -1,8 +1,12 @@
-import api from '../../api/api'; // Importa a instância configurada do axios
+import api from '@/api/api'; // Importa a instância configurada do axios
 
 // Utilitário para localStorage
 const storage = {
   setItem: (key, value) => {
+    if (!key || typeof key !== 'string') {
+      console.error('Chave inválida para localStorage');
+      return;
+    }
     try {
       localStorage.setItem(key, value);
     } catch (error) {
@@ -11,6 +15,10 @@ const storage = {
   },
   
   getItem: (key) => {
+    if (!key || typeof key !== 'string') {
+      console.error('Chave inválida para localStorage');
+      return null;
+    }
     try {
       return localStorage.getItem(key);
     } catch (error) {
@@ -20,6 +28,10 @@ const storage = {
   },
   
   removeItem: (key) => {
+    if (!key || typeof key !== 'string') {
+      console.error('Chave inválida para localStorage');
+      return;
+    }
     try {
       localStorage.removeItem(key);
     } catch (error) {
@@ -28,8 +40,16 @@ const storage = {
   },
   
   multiRemove: (keys) => {
+    if (!Array.isArray(keys)) {
+      console.error('Keys deve ser um array');
+      return;
+    }
     try {
-      keys.forEach(key => localStorage.removeItem(key));
+      keys.forEach(key => {
+        if (key && typeof key === 'string') {
+          localStorage.removeItem(key);
+        }
+      });
     } catch (error) {
       console.error('Erro ao remover múltiplos itens do localStorage:', error);
     }
@@ -37,6 +57,19 @@ const storage = {
 };
 
 export const login = async (email, senha, tipo = 'paciente') => {
+  // Validação de entrada
+  if (!email || !senha) {
+    throw new Error('Email e senha são obrigatórios');
+  }
+  
+  if (typeof email !== 'string' || typeof senha !== 'string') {
+    throw new Error('Email e senha devem ser strings');
+  }
+  
+  if (!['paciente', 'farmaceutico'].includes(tipo)) {
+    throw new Error('Tipo de usuário inválido');
+  }
+  
   try {
     const response = await api.post('/auth/login', { 
       email, 
@@ -70,10 +103,20 @@ export const login = async (email, senha, tipo = 'paciente') => {
   }
 };
 
-export const getCurrentUser = () => { // Removido async pois é síncrono
+export const getCurrentUser = () => {
   try {
     const user = storage.getItem('@Auth:user');
-    return user ? JSON.parse(user) : null;
+    if (!user) return null;
+    
+    const parsedUser = JSON.parse(user);
+    
+    // Validação básica da estrutura do usuário
+    if (typeof parsedUser !== 'object' || !parsedUser.id) {
+      console.warn('Dados de usuário inválidos no localStorage');
+      return null;
+    }
+    
+    return parsedUser;
   } catch (error) {
     console.error('Erro ao recuperar usuário:', error);
     return null;
@@ -99,11 +142,11 @@ export const isAuthenticated = () => { // Removido async pois é síncrono
   }
 };
 
-// Nova função para verificar se é enfermeiro
-export const isEnfermeiro = () => {
+// Nova função para verificar se é farmaceutico
+export const isFarmaceutico = () => {
   try {
     const userType = storage.getItem('@Auth:userType');
-    return userType === 'enfermeiro';
+    return userType === 'farmaceutico';
   } catch (error) {
     console.error('Erro ao verificar tipo de usuário:', error);
     return false;
@@ -146,13 +189,13 @@ export const refreshToken = async () => {
 export const authService = {
   // Login
   loginPaciente: (email, senha) => login(email, senha, 'paciente'),
-  loginEnfermeiro: (email, senha) => login(email, senha, 'enfermeiro'),
+  loginFarmaceutico: (email, senha) => login(email, senha, 'farmaceutico'),
   
   // Getters
   getCurrentUser,
   getCurrentUserType,
   isAuthenticated,
-  isEnfermeiro,
+  isFarmaceutico,
   isPaciente,
   
   // Logout

@@ -55,16 +55,16 @@ const tables = [
     `
   },
   {
-    name: 'enfermeiros',
+    name: 'farmaceuticos',
     createQuery: `
-      CREATE TABLE enfermeiros (
+      CREATE TABLE farmaceuticos (
         id SERIAL PRIMARY KEY,
         nome VARCHAR(100) NOT NULL,
         email VARCHAR(150) UNIQUE NOT NULL,
         senha VARCHAR(255) NOT NULL,
         telefone VARCHAR(16) NOT NULL,
-        registro_coren VARCHAR(30) UNIQUE NOT NULL,
-        cargo VARCHAR(100) DEFAULT 'Enfermeiro',
+        registro_crf VARCHAR(30) UNIQUE NOT NULL,
+        cargo VARCHAR(100) DEFAULT 'Farmacêutico',
         unidade VARCHAR(150),
         turno VARCHAR(50),
         data_admissao DATE,

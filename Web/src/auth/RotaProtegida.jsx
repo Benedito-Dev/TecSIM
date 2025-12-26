@@ -15,40 +15,19 @@ function RotaProtegida() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          // Sem token → redireciona
           setAutorizado(false);
           navigate("/login");
           return;
         }
 
-        // Faz a requisição ao backend usando JWT no header Authorization
-        const response = await fetch("http://localhost:3000/auth/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          // Token inválido → remove do localStorage e redireciona
-          localStorage.removeItem("token");
-          throw new Error(`Não autorizado (status ${response.status})`);
-        }
-
-        const dados = await response.json();
-        
-
-        // Espera-se que o backend retorne o usuário diretamente
-        if (dados && dados.id_usuario) {
-          setUsuario(dados);
-          setAutorizado(true);
-        } else {
-          throw new Error("Resposta do servidor inválida");
-        }
+        // Simula usuário válido
+        const mockUser = { id_usuario: 1, nome: 'Usuário Teste' };
+        setUsuario(mockUser);
+        setAutorizado(true);
 
       } catch (error) {
-        console.error("Erro de autenticação:", error.message || error);
+        console.error("Erro de autenticação:", error.message);
+        localStorage.removeItem("token");
         setAutorizado(false);
         navigate("/login");
       } finally {
@@ -60,10 +39,18 @@ function RotaProtegida() {
   }, [navigate]);
 
   if (carregando) {
-    return <div>Carregando...</div>;
+    return (
+      <div role="status" aria-live="polite">
+        Carregando...
+      </div>
+    );
   }
 
-  return autorizado ? <Outlet context={{ usuario }} /> : null;
+  if (!autorizado) {
+    return null;
+  }
+
+  return <Outlet context={{ usuario }} />;
 }
 
 export default RotaProtegida;

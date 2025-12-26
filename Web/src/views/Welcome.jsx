@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logoImage from '../assets/images/logo.png';
 
 export default function WelcomeScreen() {
   const navigate = useNavigate();
@@ -10,11 +9,9 @@ export default function WelcomeScreen() {
       
       {/* Header com logo */}
       <div className="flex flex-col items-center mb-12">
-        <img
-          src={logoImage}
-          alt="Logo"
-          className="w-20 h-20 mb-4 drop-shadow-md"
-        />
+        <div className="w-20 h-20 mb-4 bg-blue-500 rounded-full flex items-center justify-center">
+          <span className="text-white text-2xl font-bold">TS</span>
+        </div>
         <h1 className="text-3xl font-bold text-[#0284c7]">TecSim</h1>
         <p className="text-sm text-gray-500 mt-1 tracking-wide">
           Cuidando da sua saúde com tecnologia
