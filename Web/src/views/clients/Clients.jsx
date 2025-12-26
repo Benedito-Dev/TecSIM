@@ -7,6 +7,8 @@ import { ClientsFilters } from "../../components/pages/clients/ClientsFilters";
 import { ClientsStats } from "../../components/pages/clients/ClientsStats";
 import { ClientsList } from "../../components/pages/clients/ClientsList";
 import { ClientDetailsModal } from "../../components/pages/clients/ClientDetailsModal";
+import { ClientEditModal } from "../../components/pages/clients/ClientEditModal";
+import pacientesService from "../../services/pacientesService";
 
 export default function Clients() {
   const navigate = useNavigate();
@@ -16,98 +18,73 @@ export default function Clients() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filtroAtivo, setFiltroAtivo] = useState("todos");
   const [clienteSelecionado, setClienteSelecionado] = useState(null);
+  const [clienteEditando, setClienteEditando] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Dados mockados de clientes
-  const clientesMock = [
-    {
-      id: 1,
-      nome: "Maria Silva Santos",
-      cpf: "123.456.789-00",
-      telefone: "(85) 99999-1234",
-      email: "maria.silva@email.com",
-      dataNascimento: "15/05/1985",
-      endereco: "Rua das Flores, 123 - Centro, Fortaleza/CE",
-      alergias: ["Penicilina", "Dipirona"],
-      medicamentosContinuos: ["Losartana 50mg", "Metformina 850mg"],
-      condicoesCronicas: ["Hipertensão", "Diabetes tipo 2"],
-      ultimaCompra: "15/01/2024",
-      status: "ativo"
-    },
-    {
-      id: 2,
-      nome: "João Pereira Oliveira",
-      cpf: "987.654.321-00",
-      telefone: "(85) 98888-5678",
-      email: "joao.pereira@email.com",
-      dataNascimento: "20/08/1978",
-      endereco: "Av. Beira Mar, 456 - Meireles, Fortaleza/CE",
-      alergias: ["Sulfas"],
-      medicamentosContinuos: ["Atorvastatina 20mg", "AAS 100mg"],
-      condicoesCronicas: [],
-      ultimaCompra: "10/01/2024",
-      status: "ativo"
-    },
-    {
-      id: 3,
-      nome: "Ana Costa Ferreira",
-      cpf: "456.789.123-00",
-      telefone: "(85) 97777-9012",
-      email: "ana.costa@email.com",
-      dataNascimento: "03/12/1990",
-      endereco: "Rua dos Coqueiros, 789 - Aldeota, Fortaleza/CE",
-      alergias: [],
-      medicamentosContinuos: ["Anticoncepcional"],
-      condicoesCronicas: [],
-      ultimaCompra: "08/01/2024",
-      status: "ativo"
-    },
-    {
-      id: 4,
-      nome: "Carlos Eduardo Lima",
-      cpf: "789.123.456-00",
-      telefone: "(85) 96666-3456",
-      email: "carlos.lima@email.com",
-      dataNascimento: "12/03/1965",
-      endereco: "Travessa das Palmeiras, 321 - Jacarecanga, Fortaleza/CE",
-      alergias: ["Ibuprofeno"],
-      medicamentosContinuos: ["Insulina", "Sinvastatina 40mg", "Propranolol 40mg"],
-      condicoesCronicas: ["Diabetes tipo 1", "Hipertensão"],
-      ultimaCompra: "05/01/2024",
-      status: "inativo"
-    },
-    {
-      id: 5,
-      nome: "Francisca Almeida Rocha",
-      cpf: "321.654.987-00",
-      telefone: "(85) 95555-7890",
-      email: "francisca.almeida@email.com",
-      dataNascimento: "08/11/1952",
-      endereco: "Rua São José, 567 - Benfica, Fortaleza/CE",
-      alergias: ["Aspirina", "Corantes"],
-      medicamentosContinuos: ["Captopril 25mg", "Hidroclorotiazida 25mg", "Omeprazol 20mg"],
-      condicoesCronicas: ["Hipertensão", "Gastrite crônica"],
-      ultimaCompra: "20/01/2024",
-      status: "ativo"
+  const formatarData = (dataISO) => {
+    if (!dataISO) return 'Não informado';
+    const data = new Date(dataISO);
+    return data.toLocaleDateString('pt-BR');
+  };
+
+  const mapearPaciente = (paciente) => ({
+    id: paciente.id,
+    nome: paciente.nome || 'Não informado',
+    cpf: paciente.cpf || 'Não informado',
+    telefone: paciente.telefone || 'Não informado',
+    email: paciente.email || 'Não informado',
+    dataNascimento: formatarData(paciente.data_nascimento),
+    endereco: paciente.endereco || 'Não informado',
+    alergias: Array.isArray(paciente.alergias) ? paciente.alergias : [],
+    medicamentosContinuos: Array.isArray(paciente.medicacoes) ? paciente.medicacoes : [],
+    condicoesCronicas: Array.isArray(paciente.condicoes) ? paciente.condicoes : [],
+    ultimaCompra: 'Não informado',
+    status: paciente.ativo ? 'ativo' : 'inativo',
+    genero: paciente.genero || 'Não informado',
+    data_cadastro: formatarData(paciente.data_cadastro)
+  });
+
+  const carregarClientes = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const dados = await pacientesService.getAll();
+      const clientesMapeados = dados.map(mapearPaciente);
+      setClientes(clientesMapeados);
+    } catch (err) {
+      console.error('Erro ao carregar clientes:', err);
+      setError('Erro ao carregar clientes. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   useEffect(() => {
-    setTimeout(() => {
-      setClientes(clientesMock);
-      setLoading(false);
-    }, 1000);
+    carregarClientes();
   }, []);
 
   const handleNovoCliente = () => navigate('/novocliente');
   const handleVerDetalhes = (cliente) => setClienteSelecionado(cliente);
   const handleFecharDetalhes = () => setClienteSelecionado(null);
+  
   const handleIniciarAtendimento = (paciente) => {
     navigate('/atendimento', { 
       state: { paciente }
     });
   };
+  
   const handleEditarCliente = (cliente) => {
-    console.log('Editar cliente:', cliente);
+    setClienteEditando(cliente);
+  };
+
+  const handleSalvarEdicao = async (dadosAtualizados) => {
+    try {
+      await pacientesService.update(clienteEditando.id, dadosAtualizados);
+      await carregarClientes();
+      setClienteEditando(null);
+    } catch (err) {
+      throw new Error(err.response?.data?.error || 'Erro ao atualizar cliente');
+    }
   };
 
   const handleVerLembretes = (cliente) => {
@@ -144,6 +121,25 @@ export default function Clients() {
           <div className="flex flex-col items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
             <p className="text-gray-600">Carregando clientes...</p>
+          </div>
+        </PageContainer>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <PageContainer title="Gestão de Clientes" icon={Users}>
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-red-600 mb-4">{error}</p>
+            <button
+              onClick={carregarClientes}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Tentar Novamente
+            </button>
           </div>
         </PageContainer>
       </div>
@@ -189,6 +185,14 @@ export default function Clients() {
           cliente={clienteSelecionado} 
           onClose={handleFecharDetalhes}
           onIniciarAtendimento={handleIniciarAtendimento}
+        />
+      )}
+
+      {clienteEditando && (
+        <ClientEditModal
+          cliente={clienteEditando}
+          onClose={() => setClienteEditando(null)}
+          onSave={handleSalvarEdicao}
         />
       )}
     </>

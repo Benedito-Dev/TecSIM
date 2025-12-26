@@ -2,9 +2,8 @@ FROM node:18
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN rm -rf node_modules package-lock.json
-RUN npm install
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
 COPY . .
 
