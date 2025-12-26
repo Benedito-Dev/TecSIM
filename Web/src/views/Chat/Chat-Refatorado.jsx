@@ -1,18 +1,18 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Sidebar from '../../components/SideBarr';
-import ChatHeader from '../../components/chat/ChatHeader';
-import MessageList from '../../components/chat/MessageList';
-import QuickActions from '../../components/chat/QuickActions';
-import ChatInput from '../../components/chat/ChatInput';
+import Sidebar from '../../components/layout/Sidebar';
+import ChatHeader from '../../components/pages/chat/ChatHeader';
+import MessageList from '../../components/pages/chat/MessageList';
+import QuickActions from '../../components/pages/chat/QuickActions';
+import ChatInput from '../../components/pages/chat/ChatInput';
 
 import { useAuth } from '../../context/UserContext';
 import { ThemeContext } from '../../context/ThemeContext';
-import { useTriagem } from '../../hooks/useTriagem';
-import { useChatMessages } from '../../hooks/useChatMessages';
-import { useAPIHealth } from '../../hooks/useAPIHealth';
-import { getAIResponse } from '../../services/aiService';
+import { useTriagem } from '../../hooks/pages/chat/useTriagem';
+import { useChatMessages } from '../../hooks/pages/chat/useChatMessages';
+import { useAPIHealth } from '../../hooks/shared/useAPIHealth';
+import { getAIResponse } from '@/services/aiService';
 
 export default function ChatScreen() {
   const { user } = useAuth();

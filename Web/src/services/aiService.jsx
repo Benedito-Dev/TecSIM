@@ -1,11 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { verificarGatilhoCritico, detectarTemaForaDaSaude, validarMencaoMedicamentos } from '../utils/filters';
-import { APP_CONFIG, validateConfig } from '../config/appConfig';
+import { APP_CONFIG } from '@/config/appConfig';
 
-// Validação de configuração
-const configValidation = validateConfig();
-if (!configValidation.isValid) {
-  throw new Error(`Configuração inválida: ${configValidation.errors.join(', ')}`);
+// Validação simplificada - só verifica se tem API key
+if (!APP_CONFIG.API.GOOGLE_API_KEY) {
+  throw new Error('VITE_GOOGLE_API_KEY não configurada');
 }
 
 const FINAL_API_KEY = APP_CONFIG.API.GOOGLE_API_KEY;
@@ -17,14 +15,7 @@ const CACHE_EXPIRATION_MS = APP_CONFIG.AI.CACHE_EXPIRATION;
 // Função para sanitizar o histórico de conversa
 const sanitizarHistorico = (historico) => {
   if (!Array.isArray(historico)) return [];
-  
-  return historico.filter(msg => {
-    if (msg.isBot) {
-      // Remove mensagens do bot que contenham temas proibidos
-      return !detectarTemaForaDaSaude(msg.text);
-    }
-    return true; // Mantém todas as mensagens do usuário
-  });
+  return historico.filter(msg => msg && msg.text);
 };
 
 export const listAvailableModels = async () => {
@@ -35,6 +26,11 @@ export const listAvailableModels = async () => {
         models: cachedModels.data,
         fromCache: true
       };
+    }
+
+    // Validar se a API key está presente sem expô-la
+    if (!FINAL_API_KEY || FINAL_API_KEY.length < 10) {
+      throw new Error('API key inválida ou não configurada');
     }
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${FINAL_API_KEY}`);
@@ -77,9 +73,7 @@ export const listAvailableModels = async () => {
 };
 
 export const getAIResponse = async (message, history = [], options = {}) => {
-  // Log de auditoria para monitorar tentativas
-  console.log(`[AUDIT] Tentativa de mensagem: ${message.substring(0, 100)}${message.length > 100 ? '...' : ''}`);
-
+  // Validação de entrada
   if (typeof message !== 'string' || message.trim() === '') {
     return {
       success: false,
@@ -87,30 +81,13 @@ export const getAIResponse = async (message, history = [], options = {}) => {
     };
   }
 
-  // 🔒 Filtro de segurança — Gatilhos críticos
-  if (verificarGatilhoCritico(message)) {
-    console.warn('[AUDIT] Gatilho crítico detectado');
+  // Sanitização adicional da mensagem
+  const sanitizedMessage = message.trim().substring(0, 1000); // Limita tamanho
+  
+  if (sanitizedMessage.length === 0) {
     return {
-      success: true,
-      response: APP_CONFIG.SECURITY.CRITICAL_TRIGGER_RESPONSE
-    };
-  }
-
-  // 🔒 Filtro de segurança — Temas fora da saúde
-  if (detectarTemaForaDaSaude(message)) {
-    console.warn('[AUDIT] Tema proibido detectado:', message);
-    return {
-      success: true,
-      response: APP_CONFIG.SECURITY.BLOCKED_TOPICS_RESPONSE
-    };
-  }
-
-  // 🔒 Filtro de segurança — Medicamentos controlados
-  if (validarMencaoMedicamentos(message)) {
-    console.warn('[AUDIT] Menção a medicamento controlado detectada');
-    return {
-      success: true,
-      response: APP_CONFIG.SECURITY.CONTROLLED_MEDICATION_RESPONSE
+      success: false,
+      error: "Mensagem inválida após sanitização"
     };
   }
 
@@ -191,20 +168,11 @@ Para questões de saúde:
       history: chatHistory
     });
 
-    // 🔥 MUDANÇA CRÍTICA: System rules SEMPRE incluído
-    const userMessageContent = systemRules + "\n\nMensagem do usuário: " + message.trim();
+    // System rules SEMPRE incluído com mensagem sanitizada
+    const userMessageContent = systemRules + "\n\nMensagem do usuário: " + sanitizedMessage;
 
     const result = await chat.sendMessage(userMessageContent);
     const responseText = await result.response.text();
-
-    // 🔒 Verificação final da resposta do modelo
-    if (detectarTemaForaDaSaude(responseText) || validarMencaoMedicamentos(responseText)) {
-      console.warn('[AUDIT] Resposta do modelo contém conteúdo proibido');
-      return {
-        success: true,
-        response: APP_CONFIG.SECURITY.BLOCKED_TOPICS_RESPONSE
-      };
-    }
 
     return {
       success: true,

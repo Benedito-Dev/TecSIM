@@ -2,7 +2,7 @@ const rateLimiter = require('../../utils/rateLimiter');
 const jwt = require('jsonwebtoken');
 const authConfig = require('../../config/auth');
 const pacienteRepository = require('../../repository/pacientesRepository');
-const enfermeirosRepository = require('../../repository/enfermeirosRepository');
+const farmaceuticosRepository = require('../../repository/farmaceuticosRepository');
 
 class AuthService {
   async login(email, senha, ip, tipo = 'paciente') {
@@ -21,8 +21,8 @@ class AuthService {
       let usuario;
       
       // 2️⃣ Verifica credenciais baseado no tipo
-      if (tipo === 'enfermeiro') {
-        usuario = await enfermeirosRepository.verifyCredentials(email, senha);
+      if (tipo === 'farmaceutico') {
+        usuario = await farmaceuticosRepository.verifyCredentials(email, senha);
       } else {
         usuario = await pacienteRepository.verifyCredentials(email, senha);
       }
@@ -66,7 +66,7 @@ class AuthService {
 
         // Reativar conta se estiver desativada
         if (usuario.ativo === false) {
-          await enfermeirosRepository.reativar(usuario.id);
+          await farmaceuticosRepository.reativar(usuario.id);
         }
       }
 
@@ -124,7 +124,7 @@ class AuthService {
       
       // Buscar usuário baseado no tipo
       if (decoded.tipo === 'enfermeiro') {
-        usuario = await enfermeirosRepository.findById(decoded.id);
+        usuario = await farmaceuticosRepository.findById(decoded.id);
       } else {
         usuario = await pacienteRepository.findById(decoded.id);
       }

@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/SideBarr";
+import Sidebar from "../../components/layout/Sidebar";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import FormPacient from "./FormPacient";
+import { useTheme } from "../../context/ThemeContext";
+
+const CPF_MAX_LENGTH = 14;
+const PHONE_MAX_LENGTH = 15;
+const CEP_MAX_LENGTH = 9;
+const CEP_COMPLETE_LENGTH = 9;
+const VIACEP_API_URL = 'https://viacep.com.br/ws';
 
 export default function NewClient() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -66,7 +74,7 @@ export default function NewClient() {
         .replace(/(\d{3})(\d)/, "$1.$2")
         .replace(/(\d{3})(\d)/, "$1.$2")
         .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
-        .slice(0, 14);
+        .slice(0, CPF_MAX_LENGTH);
       
       setPatientData((prev) => ({
         ...prev,
@@ -81,7 +89,7 @@ export default function NewClient() {
         .replace(/\D/g, "")
         .replace(/(\d{2})(\d)/, "($1) $2")
         .replace(/(\d{5})(\d)/, "$1-$2")
-        .slice(0, 15);
+        .slice(0, PHONE_MAX_LENGTH);
       
       setPatientData((prev) => ({
         ...prev,
@@ -95,7 +103,7 @@ export default function NewClient() {
       const formattedCEP = value
         .replace(/\D/g, "")
         .replace(/(\d{5})(\d)/, "$1-$2")
-        .slice(0, 9);
+        .slice(0, CEP_MAX_LENGTH);
       
       setPatientData((prev) => ({
         ...prev,
@@ -103,7 +111,7 @@ export default function NewClient() {
       }));
 
       // Busca automática do CEP quando completo
-      if (formattedCEP.length === 9) {
+      if (formattedCEP.length === CEP_COMPLETE_LENGTH) {
         handleCEPSearch(formattedCEP);
       }
       return;
@@ -121,7 +129,7 @@ export default function NewClient() {
       const cleanCEP = cep.replace(/\D/g, "");
       if (cleanCEP.length !== 8) return;
 
-      const response = await fetch(`https://viacep.com.br/ws/${cleanCEP}/json/`);
+      const response = await fetch(`${VIACEP_API_URL}/${cleanCEP}/json/`);
       const data = await response.json();
 
       if (!data.erro) {
@@ -236,26 +244,38 @@ export default function NewClient() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div 
+      className="flex h-screen"
+      style={{ background: theme.background }}
+    >
       <Sidebar />
 
       <div className="flex-1 flex flex-col">
         {/* 🔹 Navbar */}
-        <div className="h-20 bg-sky-600 shadow flex items-center justify-between px-6 sticky top-0 z-10">
+        <div 
+          className="h-20 shadow flex items-center justify-between px-6 sticky top-0 z-10"
+          style={{
+            background: theme.primary,
+            color: theme.textOnPrimary
+          }}
+        >
           <div className="flex items-center gap-3">
             <button
               onClick={handleCancelar}
-              className="text-white hover:scale-110 transition transform"
+              className="hover:scale-110 transition transform"
             >
               <ArrowLeft size={24} />
             </button>
-            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+            <h1 className="text-2xl font-bold flex items-center gap-2">
               <UserPlus size={26} />
               Novo Cliente
             </h1>
           </div>
 
-          <div className="text-white text-sm">
+          <div 
+            className="text-sm"
+            style={{ color: theme.textOnPrimary }}
+          >
             Etapa {currentStep} de 4
           </div>
         </div>

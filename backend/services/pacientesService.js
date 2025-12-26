@@ -65,14 +65,16 @@ class PacienteService {
   static async update(id, dados) {
     if (isNaN(id)) throw new ValidationError('ID inválido.');
 
-    delete dados.senha;
-    delete dados.id_paciente;
-    delete dados.data_cadastro;
+    const fieldsToRemove = ['senha', 'id_paciente', 'data_cadastro', 'genero', 'ativo'];
+    fieldsToRemove.forEach(field => delete dados[field]);
 
     const existing = await repository.findById(id);
     if (!existing) throw new NotFoundError('Paciente não encontrado.');
 
     if (dados.email && dados.email !== existing.email) {
+      if (!isValidEmail(dados.email)) {
+        throw new ValidationError('Email inválido.');
+      }
       const existingByEmail = await repository.findByEmail(dados.email);
       if (existingByEmail) {
         throw new ConflictError('Email já cadastrado.');
@@ -80,6 +82,9 @@ class PacienteService {
     }
 
     if (dados.cpf && dados.cpf !== existing.cpf) {
+      if (!isValidCPF(dados.cpf)) {
+        throw new ValidationError('CPF inválido.');
+      }
       const existingByCPF = await repository.findByCPF(dados.cpf);
       if (existingByCPF) {
         throw new ConflictError('CPF já cadastrado.');
