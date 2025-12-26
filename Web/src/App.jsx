@@ -5,6 +5,8 @@ import Welcome from './views/Welcome';
 import RegisterPage from './views/Register';
 import LoginPage from './views/Login';
 import ConfirmCodePage from './views/Code';
+import ForgotPasswordPage from './views/ForgotPassword';
+import ResetPasswordPage from './views/ResetPassword';
 
 // Views - Dashboard
 import DashboardPage from './views/Dashboard/Dashboard';
@@ -49,6 +51,8 @@ export default function App() {
                 <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
                 <Route path={ROUTES.LOGIN} element={<LoginPage />} />
                 <Route path={ROUTES.VERIFY} element={<ConfirmCodePage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
                 
                 {/* Dashboard Routes */}
                 <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />

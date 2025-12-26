@@ -99,9 +99,9 @@ export default function LoginFarmaceuticoPage() {
     }
   };
 
-  // Função para redirecionar para login de paciente
-  const handleRedirectToPaciente = () => {
-    navigate('/login'); // Rota padrão de login (pacientes)
+  // Função para redirecionar para recuperação de senha
+  const handleForgotPassword = () => {
+    navigate('/forgot-password');
   };
 
   return (
@@ -196,14 +196,14 @@ export default function LoginFarmaceuticoPage() {
           {loading ? 'Entrando...' : 'Entrar como Farmacêutico'}
         </button>
 
-        {/* Link para login de paciente */}
+        {/* Link para recuperação de senha */}
         <p className="mt-6 text-gray-700 text-sm">
-          É paciente?{' '}
+          Esqueceu sua senha ?{' '}
           <button 
-            onClick={handleRedirectToPaciente}
+            onClick={handleForgotPassword}
             className="font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
           >
-            Faça login como paciente
+            Recuperar Senha
           </button>
         </p>
 
