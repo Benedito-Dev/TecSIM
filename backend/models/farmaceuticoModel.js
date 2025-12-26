@@ -1,13 +1,13 @@
 const crypto = require('crypto');
 
-class Enfermeiro {
+class Farmaceutico {
   constructor({
     id,
     nome,
     email,
     senha,
     telefone,
-    registro_coren,
+    registro_crf,
     cargo,
     unidade,
     turno,
@@ -25,7 +25,7 @@ class Enfermeiro {
     this.email = email;
     this.senha = senha;
     this.telefone = telefone;
-    this.registro_coren = registro_coren;
+    this.registro_crf = registro_crf;
     this.cargo = cargo;
     this.unidade = unidade;
     this.turno = turno;
@@ -45,7 +45,7 @@ class Enfermeiro {
       nome: this.nome,
       email: this.email,
       telefone: this.telefone,
-      registro_coren: this.registro_coren,
+      registro_crf: this.registro_crf,
       cargo: this.cargo,
       unidade: this.unidade,
       turno: this.turno,
@@ -90,4 +90,4 @@ class Enfermeiro {
   }
 }
 
-module.exports = Enfermeiro;
+module.exports = Farmaceutico;

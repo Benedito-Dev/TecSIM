@@ -1,7 +1,7 @@
 const express = require('express');
-const controller = require('../controllers/enfermeirosController');
+const controller = require('../controllers/farmaceuticosController');
 
-class EnfermeirosRoutes {
+class FarmaceuticosRoutes {
   constructor() {
     this.router = express.Router();
     this.registerRoutes();
@@ -11,29 +11,29 @@ class EnfermeirosRoutes {
     /**
      * @swagger
      * tags:
-     *   name: Enfermeiros
-     *   description: Gestão de enfermeiros
+     *   name: Farmaceuticos
+     *   description: Gestão de farmacêuticos
      */
 
     /**
      * @swagger
-     * /enfermeiros:
+     * /farmaceuticos:
      *   post:
-     *     summary: Cria um novo enfermeiro
-     *     tags: [Enfermeiros]
+     *     summary: Cria um novo farmacêutico
+     *     tags: [Farmaceuticos]
      *     requestBody:
      *       required: true
      *       content:
      *         application/json:
      *           schema:
-     *             $ref: '#/components/schemas/Enfermeiro'
+     *             $ref: '#/components/schemas/Farmaceutico'
      *     responses:
      *       201:
-     *         description: Enfermeiro criado com sucesso
+     *         description: Farmacêutico criado com sucesso
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Enfermeiro'
+     *               $ref: '#/components/schemas/Farmaceutico'
      *       400:
      *         description: Requisição inválida
      *       409:
@@ -45,19 +45,19 @@ class EnfermeirosRoutes {
 
     /**
      * @swagger
-     * /enfermeiros:
+     * /farmaceuticos:
      *   get:
-     *     summary: Retorna todos os enfermeiros
-     *     tags: [Enfermeiros]
+     *     summary: Retorna todos os farmacêuticos
+     *     tags: [Farmaceuticos]
      *     responses:
      *       200:
-     *         description: Lista de enfermeiros
+     *         description: Lista de farmacêuticos
      *         content:
      *           application/json:
      *             schema:
      *               type: array
      *               items:
-     *                 $ref: '#/components/schemas/Enfermeiro'
+     *                 $ref: '#/components/schemas/Farmaceutico'
      *       500:
      *         description: Erro interno do servidor
      */
@@ -65,10 +65,10 @@ class EnfermeirosRoutes {
 
     /**
      * @swagger
-     * /enfermeiros/search:
+     * /farmaceuticos/search:
      *   get:
-     *     summary: Busca enfermeiros por termo (nome, email ou registro)
-     *     tags: [Enfermeiros]
+     *     summary: Busca farmacêuticos por termo (nome, email ou registro)
+     *     tags: [Farmaceuticos]
      *     parameters:
      *       - in: query
      *         name: q
@@ -78,13 +78,13 @@ class EnfermeirosRoutes {
      *         description: Termo de busca
      *     responses:
      *       200:
-     *         description: Lista de enfermeiros filtrados
+     *         description: Lista de farmacêuticos filtrados
      *         content:
      *           application/json:
      *             schema:
      *               type: array
      *               items:
-     *                 $ref: '#/components/schemas/Enfermeiro'
+     *                 $ref: '#/components/schemas/Farmaceutico'
      *       400:
      *         description: Parâmetro de busca ausente ou inválido
      *       500:
@@ -94,28 +94,28 @@ class EnfermeirosRoutes {
 
     /**
      * @swagger
-     * /enfermeiros/{id}:
+     * /farmaceuticos/{id}:
      *   get:
-     *     summary: Obtém um enfermeiro por ID
-     *     tags: [Enfermeiros]
+     *     summary: Obtém um farmacêutico por ID
+     *     tags: [Farmaceuticos]
      *     parameters:
      *       - in: path
      *         name: id
      *         schema:
      *           type: string
      *         required: true
-     *         description: ID do enfermeiro
+     *         description: ID do farmacêutico
      *     responses:
      *       200:
-     *         description: Enfermeiro encontrado
+     *         description: Farmacêutico encontrado
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Enfermeiro'
+     *               $ref: '#/components/schemas/Farmaceutico'
      *       400:
      *         description: ID inválido
      *       404:
-     *         description: Enfermeiro não encontrado
+     *         description: Farmacêutico não encontrado
      *       500:
      *         description: Erro interno do servidor
      */
@@ -123,34 +123,34 @@ class EnfermeirosRoutes {
 
     /**
      * @swagger
-     * /enfermeiros/{id}:
+     * /farmaceuticos/{id}:
      *   put:
-     *     summary: Atualiza um enfermeiro existente
-     *     tags: [Enfermeiros]
+     *     summary: Atualiza um farmacêutico existente
+     *     tags: [Farmaceuticos]
      *     parameters:
      *       - in: path
      *         name: id
      *         schema:
      *           type: string
      *         required: true
-     *         description: ID do enfermeiro
+     *         description: ID do farmacêutico
      *     requestBody:
      *       required: true
      *       content:
      *         application/json:
      *           schema:
-     *             $ref: '#/components/schemas/Enfermeiro'
+     *             $ref: '#/components/schemas/Farmaceutico'
      *     responses:
      *       200:
-     *         description: Enfermeiro atualizado com sucesso
+     *         description: Farmacêutico atualizado com sucesso
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Enfermeiro'
+     *               $ref: '#/components/schemas/Farmaceutico'
      *       400:
      *         description: Requisição inválida
      *       404:
-     *         description: Enfermeiro não encontrado
+     *         description: Farmacêutico não encontrado
      *       500:
      *         description: Erro interno do servidor
      */
@@ -158,28 +158,28 @@ class EnfermeirosRoutes {
 
     /**
      * @swagger
-     * /enfermeiros/{id}:
+     * /farmaceuticos/{id}:
      *   delete:
-     *     summary: Remove um enfermeiro
-     *     tags: [Enfermeiros]
+     *     summary: Remove um farmacêutico
+     *     tags: [Farmaceuticos]
      *     parameters:
      *       - in: path
      *         name: id
      *         schema:
      *           type: string
      *         required: true
-     *         description: ID do enfermeiro
+     *         description: ID do farmacêutico
      *     responses:
      *       200:
-     *         description: Enfermeiro removido com sucesso
+     *         description: Farmacêutico removido com sucesso
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: '#/components/schemas/Enfermeiro'
+     *               $ref: '#/components/schemas/Farmaceutico'
      *       400:
      *         description: ID inválido
      *       404:
-     *         description: Enfermeiro não encontrado
+     *         description: Farmacêutico não encontrado
      *       500:
      *         description: Erro interno do servidor
      */
@@ -191,4 +191,4 @@ class EnfermeirosRoutes {
   }
 }
 
-module.exports = new EnfermeirosRoutes().getRouter();
+module.exports = new FarmaceuticosRoutes().getRouter();
