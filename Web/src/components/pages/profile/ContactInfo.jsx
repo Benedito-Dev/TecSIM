@@ -2,29 +2,29 @@ import React from 'react';
 import { Mail, Phone, Calendar, MapPin } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 
-const ContactInfo = ({ enfermeiro, formatarData }) => {
+const ContactInfo = ({ farmaceutico, formatarData }) => {
   const { theme } = useTheme();
 
   const contactItems = [
     {
       icon: Mail,
       label: 'Email',
-      value: enfermeiro.email
+      value: farmaceutico.email
     },
     {
       icon: Phone,
       label: 'Telefone',
-      value: enfermeiro.telefone || '(11) 95555-1234'
+      value: farmaceutico.telefone || '(11) 95555-1234'
     },
     {
       icon: Calendar,
       label: 'Data de Admissão',
-      value: formatarData(enfermeiro.data_admissao)
+      value: formatarData(farmaceutico.data_admissao)
     },
     {
       icon: MapPin,
       label: 'Unidade',
-      value: enfermeiro.unidade
+      value: farmaceutico.unidade
     }
   ];
 

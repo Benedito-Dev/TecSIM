@@ -2,28 +2,28 @@ import React from 'react';
 import { User, Clock, Award } from 'lucide-react';
 import { useTheme } from '../../../context/ThemeContext';
 
-const ProfessionalBadges = ({ enfermeiro }) => {
+const ProfessionalBadges = ({ farmaceutico }) => {
   const { theme } = useTheme();
 
   const badges = [
     {
       icon: User,
-      label: 'Registro COREN',
-      value: enfermeiro.registro_coren,
+      label: 'Registro CRF',
+      value: farmaceutico.registro_crf,
       color: theme.primary,
       bgColor: theme.primaryLight + '20'
     },
     {
       icon: Clock,
       label: 'Turno de Trabalho',
-      value: enfermeiro.turno || 'Noite',
+      value: farmaceutico.turno || 'Noite',
       color: theme.success,
       bgColor: theme.success + '20'
     },
     {
       icon: Award,
       label: 'Especialidade',
-      value: enfermeiro.especialidade,
+      value: farmaceutico.especialidade,
       color: theme.info,
       bgColor: theme.info + '20'
     }

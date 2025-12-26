@@ -19,7 +19,7 @@ export const ROUTES = {
 
 // Tipos de usuário
 export const USER_TYPES = {
-  ENFERMEIRO: 'enfermeiro',
+  FARMACEUTICO: 'farmaceutico',
   CUIDADOR: 'cuidador',
   ESTUDANTE: 'estudante'
 };

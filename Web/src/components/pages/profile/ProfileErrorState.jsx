@@ -17,7 +17,7 @@ const ProfileErrorState = () => {
         <div className="text-center">
           <p style={{ color: theme.textSecondary }}>Erro ao carregar perfil</p>
           <button 
-            onClick={() => navigate('/dashboard-enfermeiro')}
+            onClick={() => navigate('/dashboard')}
             className="mt-4 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-colors"
             style={{ background: theme.primary }}
           >

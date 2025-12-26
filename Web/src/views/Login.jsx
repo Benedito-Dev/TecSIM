@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { login, getCurrentUser } from '@/services/auth/authService';
 import { useAuth } from '../context/UserContext';
 
-export default function LoginEnfermeiroPage() {
+export default function LoginFarmaceuticoPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,14 +21,14 @@ export default function LoginEnfermeiroPage() {
   const { setUser } = useAuth();
 
   useEffect(() => {
-    console.log('✅ LoginEnfermeiroPage montou');
+    console.log('✅ LoginFarmaceuticoPage montou');
     
     // Contador regressivo do cooldown
     if (cooldown > 0) {
       timerRef.current = setTimeout(() => setCooldown(cooldown - 1), 1000);
     }
     return () => {
-      console.log('🔄 LoginEnfermeiroPage desmontou');
+      console.log('🔄 LoginFarmaceuticoPage desmontou');
       clearTimeout(timerRef.current);
     };
   }, [cooldown]);
@@ -40,7 +40,7 @@ export default function LoginEnfermeiroPage() {
       e.stopPropagation();
     }
     
-    console.log('🟡 handleLogin chamado - ENFERMEIRO');
+    console.log('🟡 handleLogin chamado - FARMACEUTICO');
 
     if (!allValid) {
       console.log('🔴 Campos inválidos');
@@ -58,35 +58,35 @@ export default function LoginEnfermeiroPage() {
     setSuccessMessage('');
 
     try {
-      console.log('🟡 Fazendo requisição de login como ENFERMEIRO...');
+      console.log('🟡 Fazendo requisição de login como FARMACEUTICO...');
       
-      // Login específico para enfermeiros
-      const response = await login(email, password, 'enfermeiro');
+      // Login específico para farmaceuticos
+      const response = await login(email, password, 'farmaceutico');
       const userData = await getCurrentUser();
       
-      // Verifica se o usuário retornado é realmente um enfermeiro
-      if (userData.tipo !== 'enfermeiro') {
-        throw new Error('Acesso permitido apenas para enfermeiros');
+      // Verifica se o usuário retornado é realmente um farmaceutico
+      if (userData.tipo !== 'farmaceutico') {
+        throw new Error('Acesso permitido apenas para farmaceuticos');
       }
       
       setUser(userData);
 
-      console.log('✅ Login de enfermeiro bem-sucedido:', response);
+      console.log('✅ Login de farmaceutico bem-sucedido:', response);
 
       setSuccessMessage('Login realizado com sucesso!');
       
-      console.log('🟡 Navegando para dashboard de enfermeiro...');
+      console.log('🟡 Navegando para dashboard de farmaceutico...');
       setTimeout(() => {
-        navigate('/dashboard'); // Rota específica para enfermeiros
+        navigate('/dashboard'); // Rota específica para farmaceuticos
       }, 1000);
 
     } catch (error) {
-      console.log('🔴 Erro no login de enfermeiro:', error);
+      console.log('🔴 Erro no login de farmaceutico:', error);
       let msg = error.message || 'Erro ao realizar login.';
       
       // Tratamento específico para erro de tipo de usuário
-      if (msg.includes('enfermeiro') || msg.includes('tipo') || msg.includes('permitido')) {
-        msg = 'Acesso permitido apenas para enfermeiros cadastrados.';
+      if (msg.includes('farmaceutico') || msg.includes('tipo') || msg.includes('permitido')) {
+        msg = 'Acesso permitido apenas para farmaceuticos cadastrados.';
       }
       
       let seconds = error.cooldown || 10;
@@ -123,7 +123,7 @@ export default function LoginEnfermeiroPage() {
         {/* Card de Inputs */}
         <div className="w-full bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center space-y-6 border border-blue-100">
           <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-4">
-            Área do Enfermeiro
+            Área do Farmacêutico
           </h1>
           <p className="text-gray-600 text-center mb-6">
             Entre com seu e-mail e senha para acessar o sistema
@@ -193,7 +193,7 @@ export default function LoginEnfermeiroPage() {
               : 'bg-gray-400 cursor-not-allowed'
             }`}
         >
-          {loading ? 'Entrando...' : 'Entrar como Enfermeiro'}
+          {loading ? 'Entrando...' : 'Entrar como Farmacêutico'}
         </button>
 
         {/* Link para login de paciente */}
@@ -207,10 +207,10 @@ export default function LoginEnfermeiroPage() {
           </button>
         </p>
 
-        {/* Informação adicional para enfermeiros */}
+        {/* Informação adicional para farmaceuticos */}
         <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
           <p className="text-xs text-blue-700 text-center">
-            💡 Acesso restrito a enfermeiros cadastrados no sistema
+            💡 Acesso restrito a farmacêuticos cadastrados no sistema
           </p>
         </div>
       </div>

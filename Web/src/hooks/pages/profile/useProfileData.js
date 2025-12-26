@@ -2,25 +2,25 @@ import { useState, useEffect } from 'react';
 import { getCurrentUser } from '@/services/auth/authService';
 
 export const useProfileData = () => {
-  const [enfermeiro, setEnfermeiro] = useState(null);
+  const [farmaceutico, setFarmaceutico] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadEnfermeiroData = async () => {
+    const loadFarmaceuticoData = async () => {
       try {
         const userData = getCurrentUser();
         
-        if (userData && userData.tipo === 'enfermeiro') {
-          setEnfermeiro(userData);
+        if (userData && userData.tipo === 'farmaceutico') {
+          setFarmaceutico(userData);
         }
       } catch (error) {
-        console.error('Erro ao carregar dados do enfermeiro:', error);
+        console.error('Erro ao carregar dados do farmaceutico:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadEnfermeiroData();
+    loadFarmaceuticoData();
   }, []);
 
   const formatarData = (dataString) => {
@@ -48,7 +48,7 @@ export const useProfileData = () => {
   };
 
   const getIniciais = (nome) => {
-    if (!nome) return 'EN';
+    if (!nome) return 'FA';
     const nomes = nome.split(' ');
     if (nomes.length >= 2) {
       return (nomes[0][0] + nomes[1][0]).toUpperCase();
@@ -57,7 +57,7 @@ export const useProfileData = () => {
   };
 
   return {
-    enfermeiro,
+    farmaceutico,
     loading,
     formatarData,
     calcularExperiencia,

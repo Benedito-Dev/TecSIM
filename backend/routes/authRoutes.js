@@ -42,7 +42,7 @@ class AuthRoutes {
      *           example: Senha@123
      *         tipo:
      *           type: string
-     *           enum: [paciente, enfermeiro]
+     *           enum: [paciente, farmaceutico]
      *           example: paciente
      *     LoginResponse:
      *       type: object
@@ -77,7 +77,7 @@ class AuthRoutes {
      * @swagger
      * /auth/login:
      *   post:
-     *     summary: Autentica um usuário (paciente ou enfermeiro)
+     *     summary: Autentica um usuário (paciente ou farmaceutico)
      *     tags: [Autenticação]
      *     requestBody:
      *       required: true
@@ -125,7 +125,7 @@ class AuthRoutes {
      *                   type: string
      *                 tipo:
      *                   type: string
-     *                   enum: [paciente, enfermeiro]
+     *                   enum: [paciente, farmaceutico]
      *       401:
      *         description: Token inválido ou não fornecido
      *       404:

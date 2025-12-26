@@ -7,9 +7,9 @@ class AuthController {
       const ip = req.ip;
       
       // Validar tipo
-      if (tipo && !['paciente', 'enfermeiro'].includes(tipo)) {
+      if (tipo && !['paciente', 'farmaceutico'].includes(tipo)) {
         return res.status(400).json({ 
-          message: 'Tipo de usuário inválido. Use "paciente" ou "enfermeiro".' 
+          message: 'Tipo de usuário inválido. Use "paciente" ou "farmaceutico".' 
         });
       }
       

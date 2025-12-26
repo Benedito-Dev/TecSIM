@@ -66,7 +66,7 @@ export const login = async (email, senha, tipo = 'paciente') => {
     throw new Error('Email e senha devem ser strings');
   }
   
-  if (!['paciente', 'enfermeiro'].includes(tipo)) {
+  if (!['paciente', 'farmaceutico'].includes(tipo)) {
     throw new Error('Tipo de usuário inválido');
   }
   
@@ -142,11 +142,11 @@ export const isAuthenticated = () => { // Removido async pois é síncrono
   }
 };
 
-// Nova função para verificar se é enfermeiro
-export const isEnfermeiro = () => {
+// Nova função para verificar se é farmaceutico
+export const isFarmaceutico = () => {
   try {
     const userType = storage.getItem('@Auth:userType');
-    return userType === 'enfermeiro';
+    return userType === 'farmaceutico';
   } catch (error) {
     console.error('Erro ao verificar tipo de usuário:', error);
     return false;
@@ -189,13 +189,13 @@ export const refreshToken = async () => {
 export const authService = {
   // Login
   loginPaciente: (email, senha) => login(email, senha, 'paciente'),
-  loginEnfermeiro: (email, senha) => login(email, senha, 'enfermeiro'),
+  loginFarmaceutico: (email, senha) => login(email, senha, 'farmaceutico'),
   
   // Getters
   getCurrentUser,
   getCurrentUserType,
   isAuthenticated,
-  isEnfermeiro,
+  isFarmaceutico,
   isPaciente,
   
   // Logout

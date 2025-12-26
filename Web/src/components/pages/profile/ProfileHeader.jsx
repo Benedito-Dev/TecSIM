@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../../context/ThemeContext';
 
-const ProfileHeader = ({ enfermeiro, getIniciais }) => {
+const ProfileHeader = ({ farmaceutico, getIniciais }) => {
   const { theme } = useTheme();
 
   return (
@@ -13,14 +13,14 @@ const ProfileHeader = ({ enfermeiro, getIniciais }) => {
           background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`
         }}
       >
-        {enfermeiro.foto_perfil ? (
+        {farmaceutico.foto_perfil ? (
           <img 
-            src={enfermeiro.foto_perfil} 
-            alt={enfermeiro.nome}
+            src={farmaceutico.foto_perfil} 
+            alt={farmaceutico.nome}
             className="w-full h-full rounded-full object-cover"
           />
         ) : (
-          getIniciais(enfermeiro.nome)
+          getIniciais(farmaceutico.nome)
         )}
       </div>
 
@@ -30,13 +30,13 @@ const ProfileHeader = ({ enfermeiro, getIniciais }) => {
           className="text-2xl font-semibold mb-1"
           style={{ color: theme.textPrimary }}
         >
-          {enfermeiro.nome}
+          {farmaceutico.nome}
         </h2>
         <p 
           className="text-lg mb-6"
           style={{ color: theme.textSecondary }}
         >
-          {enfermeiro.cargo}
+          {farmaceutico.cargo}
         </p>
       </div>
     </div>

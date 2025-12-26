@@ -14,7 +14,7 @@ export default function EditProfile() {
     telefone: '',
     cpf: '',
     dataNascimento: '',
-    coren: '',
+    crf: '',
     especialidade: ''
   });
   const [loading, setLoading] = useState(true);
@@ -24,15 +24,15 @@ export default function EditProfile() {
       try {
         const userData = getCurrentUser();
         
-        if (userData && userData.tipo === 'enfermeiro') {
+        if (userData && userData.tipo === 'farmaceutico') {
           setFormData({
             nome: userData.nome || '',
             email: userData.email || '',
             telefone: userData.telefone || '',
             cpf: userData.cpf || '',
             dataNascimento: userData.data_nascimento || '',
-            coren: userData.registro_coren || '',
-            especialidade: userData.especialidade || 'Enfermagem Geral'
+            crf: userData.registro_crf || '',
+            especialidade: userData.especialidade || 'Farmácia Clínica'
           });
         }
       } catch (error) {
@@ -63,7 +63,7 @@ export default function EditProfile() {
         email: formData.email,
         telefone: formData.telefone,
         data_nascimento: formData.dataNascimento,
-        registro_coren: formData.coren,
+        registro_crf: formData.crf,
         especialidade: formData.especialidade
       };
       localStorage.setItem('@Auth:user', JSON.stringify(updatedUser));
@@ -214,15 +214,15 @@ export default function EditProfile() {
                   />
                 </div>
 
-                {/* COREN */}
+                {/* CRF */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    COREN
+                    CRF
                   </label>
                   <input
                     type="text"
-                    name="coren"
-                    value={formData.coren}
+                    name="crf"
+                    value={formData.crf}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -239,11 +239,11 @@ export default function EditProfile() {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="Enfermagem Geral">Enfermagem Geral</option>
-                    <option value="Enfermagem Obstétrica">Enfermagem Obstétrica</option>
-                    <option value="Enfermagem Pediátrica">Enfermagem Pediátrica</option>
-                    <option value="Enfermagem em UTI">Enfermagem em UTI</option>
-                    <option value="Enfermagem Cirúrgica">Enfermagem Cirúrgica</option>
+                    <option value="Farmácia Clínica">Farmácia Clínica</option>
+                    <option value="Farmácia Hospitalar">Farmácia Hospitalar</option>
+                    <option value="Farmácia Industrial">Farmácia Industrial</option>
+                    <option value="Análises Clínicas">Análises Clínicas</option>
+                    <option value="Farmácia Comunitária">Farmácia Comunitária</option>
                   </select>
                 </div>
 

@@ -1,39 +1,39 @@
 import React from 'react';
 import { useTheme } from '../../../context/ThemeContext';
 
-const ProfessionalInfo = ({ enfermeiro, formatarData, calcularExperiencia }) => {
+const ProfessionalInfo = ({ farmaceutico, formatarData, calcularExperiencia }) => {
   const { theme } = useTheme();
 
   const infoItems = [
     {
       label: 'Status',
-      value: enfermeiro.status,
-      color: enfermeiro.status === 'Ativo' ? theme.success : theme.error
+      value: farmaceutico.status,
+      color: farmaceutico.status === 'Ativo' ? theme.success : theme.error
     },
     {
       label: 'Especialidade',
-      value: enfermeiro.especialidade,
+      value: farmaceutico.especialidade,
       color: theme.textPrimary
     },
     {
       label: 'Anos de Experiência',
-      value: enfermeiro.anos_experiencia || calcularExperiencia(enfermeiro.data_admissao),
+      value: farmaceutico.anos_experiencia || calcularExperiencia(farmaceutico.data_admissao),
       color: theme.textPrimary
     },
     {
       label: 'Última Atualização',
-      value: formatarData(enfermeiro.data_atualizacao),
+      value: formatarData(farmaceutico.data_atualizacao),
       color: theme.textPrimary
     },
     {
       label: 'Data de Cadastro',
-      value: formatarData(enfermeiro.data_cadastro),
+      value: formatarData(farmaceutico.data_cadastro),
       color: theme.textPrimary
     },
     {
       label: 'Conta Ativa',
-      value: enfermeiro.ativo ? 'Sim' : 'Não',
-      color: enfermeiro.ativo ? theme.success : theme.error
+      value: farmaceutico.ativo ? 'Sim' : 'Não',
+      color: farmaceutico.ativo ? theme.success : theme.error
     }
   ];
 

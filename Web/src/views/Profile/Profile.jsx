@@ -19,7 +19,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { 
-    enfermeiro, 
+    farmaceutico, 
     loading, 
     formatarData, 
     calcularExperiencia, 
@@ -34,7 +34,7 @@ export default function Profile() {
     return <ProfileLoadingState />;
   }
 
-  if (!enfermeiro) {
+  if (!farmaceutico) {
     return <ProfileErrorState />;
   }
 
@@ -43,7 +43,7 @@ export default function Profile() {
       <Sidebar />
       
       <PageContainer 
-        title="Perfil do Enfermeiro" 
+        title="Perfil do Farmacêutico" 
         icon={Stethoscope}
         buttonText="Editar Perfil"
         onButtonClick={handleEditProfile}
@@ -57,19 +57,19 @@ export default function Profile() {
             }}
           >
             <ProfileHeader 
-              enfermeiro={enfermeiro} 
+              farmaceutico={farmaceutico} 
               getIniciais={getIniciais} 
             />
             
             <ContactInfo 
-              enfermeiro={enfermeiro} 
+              farmaceutico={farmaceutico} 
               formatarData={formatarData} 
             />
             
-            <ProfessionalBadges enfermeiro={enfermeiro} />
+            <ProfessionalBadges farmaceutico={farmaceutico} />
             
             <ProfessionalInfo 
-              enfermeiro={enfermeiro} 
+              farmaceutico={farmaceutico} 
               formatarData={formatarData}
               calcularExperiencia={calcularExperiencia}
             />
