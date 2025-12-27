@@ -161,7 +161,7 @@ export default function ChatScreen() {
         icon={MessageCircle}
         className="flex-1 p-0 h-screen"
       >
-        <div className="flex flex-col mt-2 h-[90vh] min-h-0 ">
+        <div className="flex flex-col h-[calc(100vh-8rem)] justify-end">
           <div className="flex-1 overflow-hidden min-h-0">
             <MessageList 
               messages={messages}

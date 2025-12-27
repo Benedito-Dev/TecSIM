@@ -11,7 +11,8 @@ import {
   Settings,
   Users,
   Sun,
-  Moon
+  Moon,
+  DollarSign
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/UserContext";
@@ -34,6 +35,7 @@ export default function Sidebar() {
     { name: "Dashboard", icon: <Home size={ICON_SIZE} />, path: ROUTES.DASHBOARD },
     { name: "Chatbot", icon: <MessageSquare size={ICON_SIZE} />, path: ROUTES.CHAT },
     { name: "Medicamentos", icon: <Pill size={ICON_SIZE} />, path: ROUTES.MEDICAMENTOS },
+    { name: "Vendas", icon: <DollarSign size={ICON_SIZE} />, path: "/vendas" },
     { name: "Prescrições", icon: <FileText size={ICON_SIZE} />, path: ROUTES.PRESCRICOES },
     { name: "Clientes", icon: <Users size={ICON_SIZE} />, path: ROUTES.CLIENTES },
     { name: "Perfil", icon: <User size={ICON_SIZE} />, path: ROUTES.PERFIL },
