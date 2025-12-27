@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MessageCircle } from 'lucide-react';
 
 import Sidebar from '../../components/layout/Sidebar';
-import ChatHeader from '../../components/pages/chat/ChatHeader';
+import { PageContainer } from '../../components/layout/PageContainer';
 import MessageList from '../../components/pages/chat/MessageList';
 import QuickActions from '../../components/pages/chat/QuickActions';
 import ChatInput from '../../components/pages/chat/ChatInput';
@@ -151,49 +152,46 @@ export default function ChatScreen() {
     setTimeout(() => handleSendMessage(message), 150);
   };
 
-  const handleGoBack = () => navigate('/dashboard');
-
   return (
-    <div 
-      className="flex flex-col h-screen font-sans"
-      style={{ background: theme.background }}
-    >
+    <div className="flex h-screen">
       <Sidebar />
       
-      <div className="flex flex-col flex-1 h-screen transition-all duration-300">
-        <ChatHeader 
-          onGoBack={handleGoBack}
-          isLoading={isLoading}
-          emTriagem={emTriagem}
-        />
+      <PageContainer
+        title="Chat Médico"
+        icon={MessageCircle}
+        className="flex-1 p-0 h-screen"
+      >
+        <div className="flex flex-col mt-2 h-[90vh] min-h-0 ">
+          <div className="flex-1 overflow-hidden min-h-0">
+            <MessageList 
+              messages={messages}
+              isLoading={isLoading}
+              messagesEndRef={messagesEndRef}
+            />
+          </div>
 
-        <MessageList 
-          messages={messages}
-          isLoading={isLoading}
-          messagesEndRef={messagesEndRef}
-        />
+          <div 
+            className="flex-shrink-0 border-t"
+            style={{
+              background: theme.backgroundCard,
+              borderColor: theme.border
+            }}
+          >
+            <QuickActions 
+              onButtonPress={handleQuickActionPress} 
+              isLoading={isLoading} 
+            />
 
-        <div 
-          className="flex-shrink-0 w-full border-t"
-          style={{
-            background: theme.backgroundCard,
-            borderColor: theme.border
-          }}
-        >
-          <QuickActions 
-            onButtonPress={handleQuickActionPress} 
-            isLoading={isLoading} 
-          />
-
-          <ChatInput 
-            message={newMessage}
-            setMessage={setNewMessage}
-            onSend={handleSendMessage}
-            isLoading={isLoading}
-            emTriagem={emTriagem}
-          />
+            <ChatInput 
+              message={newMessage}
+              setMessage={setNewMessage}
+              onSend={handleSendMessage}
+              isLoading={isLoading}
+              emTriagem={emTriagem}
+            />
+          </div>
         </div>
-      </div>
+      </PageContainer>
     </div>
   );
 }
