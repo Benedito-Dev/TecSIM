@@ -33,6 +33,10 @@ import { ThemeProvider } from './context/ThemeContext';
 import { RegisterProvider } from './context/RegisterContext';
 import { AuthProvider } from './context/UserContext';
 import { ElderModeProvider } from './context/ElderModeContext';
+import { CartProvider } from './context/CartContext';
+
+// Components
+import FloatingCart from './components/ui/FloatingCart';
 
 // Constants
 import { ROUTES } from './constants/tecsim';
@@ -43,8 +47,9 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <ElderModeProvider>
+            <CartProvider>
 
-            <RegisterProvider> 
+              <RegisterProvider> 
               <Routes>
                 {/* Authentication Routes */}
                 <Route path={ROUTES.HOME} element={<Welcome />} />
@@ -75,8 +80,13 @@ export default function App() {
                 <Route path={ROUTES.NOVO_CLIENTE} element={<NewClient />} />
                 <Route path={ROUTES.FORM_PACIENTE} element={<FormPacient />} />
               </Routes>
-            </RegisterProvider> 
-            
+              
+              {/* Carrinho Flutuante */}
+              <FloatingCart />
+              
+              </RegisterProvider> 
+              
+            </CartProvider>
           </ElderModeProvider>
         </AuthProvider>
       </ThemeProvider>

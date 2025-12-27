@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../../../api/api';
+import { useCart } from '../../../context/CartContext';
 
 export const useMedicinesData = () => {
+  const { addToCart } = useCart();
   const [medicamentos, setMedicamentos] = useState([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -73,9 +75,13 @@ export const useMedicinesData = () => {
   }, []);
 
   const handleAddMedicamento = useCallback((medicamento) => {
-    console.log("Medicamento adicionado:", medicamento);
-    alert(`${medicamento.nome} adicionado à sua lista!`);
-  }, []);
+    const medicamentoComPreco = {
+      ...medicamento,
+      preco: parseFloat(formatPrice(medicamento).replace('R$ ', '').replace(',', '.'))
+    };
+    addToCart(medicamentoComPreco);
+    alert(`${medicamento.nome} adicionado ao carrinho!`);
+  }, [addToCart]);
 
   const formatPrice = (medicamento) => {
     const priceMap = {
