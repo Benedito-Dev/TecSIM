@@ -8,10 +8,13 @@ export function PageContainer({
   title, 
   icon: Icon,
   buttonText,
+  buttonIcon: ButtonIcon,
   onButtonClick,
   ...props 
 }) {
   const { theme } = useTheme();
+
+  const DefaultButtonIcon = ButtonIcon || Plus;
 
   return (
     <div 
@@ -65,7 +68,7 @@ export function PageContainer({
                 color: theme.textOnPrimary
               }}
             >
-              <Plus size={18} />
+              <DefaultButtonIcon size={18} />
               {buttonText}
             </button>
           )}

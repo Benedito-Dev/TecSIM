@@ -18,6 +18,7 @@ import EditProfile from './views/Profile/EditProfile';
 import LembretesPaciente from './views/Lembretes/LembretesPaciente';
 import Prescricao from './views/Prescricao/Prescricao';
 import Ajustes from './views/Ajustes/Ajustes';
+import Checkout from './views/Checkout/Checkout';
 
 // Views - Chat
 import ChatScreen from './views/Chat/Chat-Refatorado';
@@ -69,6 +70,7 @@ export default function App() {
                 <Route path="/lembretes/paciente/:pacienteId" element={<LembretesPaciente />} />
                 <Route path={ROUTES.PRESCRICOES} element={<Prescricao />} />
                 <Route path={ROUTES.AJUSTES} element={<Ajustes />} />
+                <Route path="/checkout" element={<Checkout />} />
                 
                 {/* Chat Routes */}
                 <Route path="/chat-inicial" element={<ChatScreen />} />
