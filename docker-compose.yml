@@ -51,6 +51,7 @@ services:
       - /app/node_modules
     environment:
       VITE_GOOGLE_API_KEY: ${API_KEY}
+      VITE_API_BASE_URL: "https://tecsim.vercel.app"
     depends_on:
       - backend
     networks:

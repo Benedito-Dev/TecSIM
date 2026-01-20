@@ -1,8 +1,7 @@
 const Server = require('./server');
 
-// Inicia o servidor imediatamente quando o arquivo é executado
+// Para Vercel - não inicia o servidor, apenas exporta o app
 const server = new Server();
-server.start();
 
-// Exporta o app do Express para testes ou outros usos
+// Exporta o app do Express para o Vercel
 module.exports = server.app;
