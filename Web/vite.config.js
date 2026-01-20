@@ -17,13 +17,7 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
-    proxy: {
-      '/api': {
-        target: 'http://tecsim-backend:3000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
+    // Proxy removido - usando variáveis de ambiente
   },
   css: {
     postcss: {

@@ -3,7 +3,7 @@ export const APP_CONFIG = {
   // API Configuration
   API: {
     GOOGLE_API_KEY: import.meta.env.VITE_GOOGLE_API_KEY,
-    BASE_URL: `http://${import.meta.env.VITE_IP_HOST || 'localhost'}:3000`,
+    BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://tecsim.vercel.app',
     TIMEOUT: 10000,
     HEALTH_CHECK_INTERVAL: 300000, // 5 minutos
   },
