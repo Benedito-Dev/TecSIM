@@ -10,7 +10,12 @@ const options = {
     },
     servers: [
       {
+        url: 'https://tecsim.vercel.app',
+        description: 'Servidor de Produção (Vercel)'
+      },
+      {
         url: 'http://localhost:3000',
+        description: 'Servidor de Desenvolvimento'
       },
     ],
     components: {

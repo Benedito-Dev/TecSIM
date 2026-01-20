@@ -36,7 +36,24 @@ class Server {
     this.app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
     // Documentação Swagger
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { swaggerOptions: { persistAuthorization: true } }));
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { 
+      swaggerOptions: { 
+        persistAuthorization: true,
+        tryItOutEnabled: true,
+        requestInterceptor: (req) => {
+          req.headers['Accept'] = 'application/json';
+          return req;
+        }
+      },
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'TecSim API Documentation'
+    }));
+
+    // Rota para servir o JSON do Swagger
+    this.app.get('/api-docs.json', (req, res) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(swaggerSpec);
+    });
   }
 
   routes() {
