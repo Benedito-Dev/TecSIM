@@ -8,7 +8,6 @@ const medicosRoutes = require('./routes/medicoRoutes');
 const farmaceuticoRoutes = require('./routes/farmaceuticosRoutes')
 const authRoutes = require('./routes/authRoutes');
 const dbInit = require('./db/dbinit');
-const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
 const lembretesRoutes = require('./routes/lembreteRoutes')
@@ -35,24 +34,70 @@ class Server {
     // Pasta 'uploads' pública
     this.app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-    // Documentação Swagger
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { 
-      swaggerOptions: { 
-        persistAuthorization: true,
-        tryItOutEnabled: true,
-        requestInterceptor: (req) => {
-          req.headers['Accept'] = 'application/json';
-          return req;
-        }
-      },
-      customCss: '.swagger-ui .topbar { display: none }',
-      customSiteTitle: 'TecSim API Documentation'
-    }));
-
     // Rota para servir o JSON do Swagger
     this.app.get('/api-docs.json', (req, res) => {
       res.setHeader('Content-Type', 'application/json');
       res.send(swaggerSpec);
+    });
+
+    // Rota alternativa para documentação (sem Swagger UI)
+    this.app.get('/api-docs', (req, res) => {
+      res.setHeader('Content-Type', 'text/html');
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>TecSim API Documentation</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .endpoint { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+            .method { font-weight: bold; color: #fff; padding: 5px 10px; border-radius: 3px; }
+            .post { background-color: #49cc90; }
+            .get { background-color: #61affe; }
+            pre { background-color: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto; }
+          </style>
+        </head>
+        <body>
+          <h1>TecSim API Documentation</h1>
+          <p>Base URL: <strong>https://tecsim.vercel.app</strong></p>
+          
+          <div class="endpoint">
+            <h3><span class="method post">POST</span> /auth/login</h3>
+            <p>Autentica um usuário (paciente ou farmaceutico)</p>
+            <pre>{
+  "email": "usuario@example.com",
+  "senha": "Senha@123",
+  "tipo": "paciente"
+}</pre>
+          </div>
+          
+          <div class="endpoint">
+            <h3><span class="method get">GET</span> /auth/me</h3>
+            <p>Obtém informações do usuário autenticado</p>
+            <p>Requer: Authorization: Bearer {token}</p>
+          </div>
+          
+          <div class="endpoint">
+            <h3><span class="method post">POST</span> /auth/request-otp</h3>
+            <p>Envia código OTP para o email</p>
+            <pre>{
+  "email": "usuario@example.com"
+}</pre>
+          </div>
+          
+          <div class="endpoint">
+            <h3><span class="method post">POST</span> /auth/verify-otp</h3>
+            <p>Verifica código OTP</p>
+            <pre>{
+  "email": "usuario@example.com",
+  "otp": "123456"
+}</pre>
+          </div>
+          
+          <p><a href="/api-docs.json">Ver documentação completa em JSON</a></p>
+        </body>
+        </html>
+      `);
     });
   }
 
