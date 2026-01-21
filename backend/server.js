@@ -8,6 +8,7 @@ const medicosRoutes = require('./routes/medicoRoutes');
 const farmaceuticoRoutes = require('./routes/farmaceuticosRoutes')
 const authRoutes = require('./routes/authRoutes');
 const dbInit = require('./db/dbinit');
+const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swaggerConfig');
 const medicamentoRoutes = require('./routes/medicamentosRoutes');
 const lembretesRoutes = require('./routes/lembreteRoutes')
@@ -33,6 +34,48 @@ class Server {
 
     // Pasta 'uploads' pública
     this.app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+    // Swagger UI com CDN para funcionar no Vercel
+    this.app.get('/swagger', (req, res) => {
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>TecSim API - Swagger UI</title>
+          <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" />
+          <style>
+            html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+            *, *:before, *:after { box-sizing: inherit; }
+            body { margin:0; background: #fafafa; }
+          </style>
+        </head>
+        <body>
+          <div id="swagger-ui"></div>
+          <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+          <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js"></script>
+          <script>
+            window.onload = function() {
+              const ui = SwaggerUIBundle({
+                url: '/api-docs.json',
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                  SwaggerUIBundle.presets.apis,
+                  SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                  SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                persistAuthorization: true,
+                tryItOutEnabled: true
+              });
+            };
+          </script>
+        </body>
+        </html>
+      `);
+    });
 
     // Rota para servir o JSON do Swagger
     this.app.get('/api-docs.json', (req, res) => {
@@ -94,7 +137,7 @@ class Server {
 }</pre>
           </div>
           
-          <p><a href="/api-docs.json">Ver documentação completa em JSON</a></p>
+          <p><a href="/swagger">🚀 Ver Swagger UI Completo</a> | <a href="/api-docs.json">Ver JSON</a></p>
         </body>
         </html>
       `);
