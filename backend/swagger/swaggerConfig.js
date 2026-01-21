@@ -1,3 +1,4 @@
+const path = require('path');
 const swaggerJSDoc = require('swagger-jsdoc');
 
 const options = {
@@ -290,7 +291,10 @@ const options = {
       { bearerAuth: [] }
     ]
   },
-  apis: ['./routes/*.js']
+  apis: [
+    path.join(__dirname, '../routes/*.js'),
+    path.join(__dirname, '../controllers/**/*.js')
+  ]
 };
 
 const swaggerSpec = swaggerJSDoc(options);
